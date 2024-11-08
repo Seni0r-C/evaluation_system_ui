@@ -37,7 +37,7 @@ const Layout = ({ children }) => {
                 </header>
 
                 {/* Contenido principal */}
-                <main className="flex-1 overflow-y-auto">{children}</main>
+                <main className="flex-1 p-0 overflow-y-auto">{children}</main>
             </div>
         </div>
     );
