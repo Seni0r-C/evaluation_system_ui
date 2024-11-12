@@ -143,14 +143,14 @@ const Login = () => {
                     <form onSubmit={handleSubmit} className="text-white">
                         <div className="mb-4">
                             <label
-                                htmlFor="cedula"
+                                htmlFor="email"
                                 className="block font-medium mb-2 text-white"
                             >
-                                CÉDULA
+                                CORREO
                             </label>
                             <input
-                                type="number"
-                                id="cedula"
+                                type="email"
+                                id="email"
                                 value={usuario}
                                 onChange={(e) => setUsuario(e.target.value)}
                                 className="w-full px-4 py-2 border border-transparent bg-opacity-70 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-300 text-black"
