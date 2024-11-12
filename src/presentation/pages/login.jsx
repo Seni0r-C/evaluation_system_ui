@@ -140,14 +140,13 @@ const Login = () => {
 
                 {/* Contenedor del formulario a la derecha */}
                 <div className="max-w-lg w-full md:w-1/2 bg-white bg-opacity-10 p-10 rounded-lg md:shadow-xl backdrop-filter backdrop-blur-md md:backdrop-blur-lg">
-                    <h2 className="text-3xl font-extrabold text-center text-white mb-6">Iniciar Sesión</h2>
                     <form onSubmit={handleSubmit} className="text-white">
                         <div className="mb-4">
                             <label
                                 htmlFor="cedula"
                                 className="block font-medium mb-2 text-white"
                             >
-                                Cédula
+                                CÉDULA
                             </label>
                             <input
                                 type="number"
@@ -169,7 +168,7 @@ const Login = () => {
                                 htmlFor="password"
                                 className="block font-medium mb-2 text-white"
                             >
-                                Contraseña
+                                CONTRASEÑA
                             </label>
                             <div className="relative">
                                 <input
