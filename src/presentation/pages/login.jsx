@@ -116,7 +116,7 @@ const Login = () => {
     return (<>
         <LoadingScreen isLoading={isLoading} />
         <MessageDialog message={errorMessage} onClose={handleCerrar} isOpen={showMessage} />
-        <div className="flex flex-col md:justify-center md:items-center h-screen bg-gradient-to-r md:from-[#009fe3] md:to-[#004071] bg-white">
+        <div className="flex flex-col md:justify-center md:items-center h-screen bg-gradient-to-r md:from-[#02953a] md:to-[#136e36] bg-white">
 
             <div className="max-w-md w-full bg-white p-8 rounded-lg md:shadow-2xl pt-14 md:pt-8">
                 <div className="mb-6 text-center">
@@ -182,15 +182,13 @@ const Login = () => {
 
                     <button
                         type="submit"
-                        className="w-full bg-gradient-to-br from-[#009fe3] to-[#004071] text-white py-4 md:py-2 text-lg md:text-base font-bold md:font-normal rounded-md hover:from-[#166a8e] hover:to-[#004071] focus:outline-none focus:ring-4 focus:ring-purple-300 transition duration-300 transform hover:scale-105"
+                        className="w-full bg-gradient-to-br from-[#f0d33a] to-[#eed970] text-[#4c4c4c] py-4 md:py-2 text-lg md:text-base font-bold rounded-md hover:from-[#d4b933] hover:to-[#cfbc61] focus:outline-none focus:ring-4 focus:ring-purple-300 transition duration-300 transform hover:scale-105"
                     >
                         Iniciar Sesión
                     </button>
                 </form>
             </div>
             <footer className="mt-4 mx-7 text-center text-[#004071] md:text-white text-xs">
-                <p>Desarrollado por el Equipo de Tecnología de Portocomercio EP</p>
-                <p>Integrado por Henry Fuertes, Hugo Molina, Carlos Arteaga, Marco Giler, y César Ruiz</p>
                 {/* <p>{VERSION}</p> */}
             </footer>
         </div>
