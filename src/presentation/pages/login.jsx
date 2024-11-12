@@ -1,11 +1,12 @@
 import { useState } from "react";
 import CryptoJS from "crypto-js";
 import axios from "axios";
-import logo from "../../assets/logo.webp";
+import logo from "../../assets/logo_utm.webp";
 import { useNavigate } from "react-router-dom";
 import LoadingScreen from "../components/LoadingScreen";
 import MessageDialog from "../components/MessageDialog";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+import background from "../../assets/utm.webp";
 
 const Login = () => {
     const [usuario, setUsuario] = useState("");
@@ -113,86 +114,100 @@ const Login = () => {
         setShowPassword(!showPassword); // Alterna la visibilidad de la contraseña
     };
 
-    return (<>
-        <LoadingScreen isLoading={isLoading} />
-        <MessageDialog message={errorMessage} onClose={handleCerrar} isOpen={showMessage} />
-        <div className="flex flex-col md:justify-center md:items-center h-screen bg-gradient-to-r md:from-[#02953a] md:to-[#136e36] bg-white">
+    return (
+        <>
+            <LoadingScreen isLoading={isLoading} />
+            <MessageDialog message={errorMessage} onClose={handleCerrar} isOpen={showMessage} />
+            <div className="flex flex-col md:flex-row h-screen relative items-center justify-center">
+                {/* Fondo con imagen difuminada */}
+                <div
+                    className="absolute top-0 left-0 w-full h-full bg-cover bg-center"
+                    style={{
+                        backgroundImage: `url(${background})`,
+                        filter: 'blur(5px) brightness(0.7)',
+                        zIndex: -1,
+                    }}
+                />
 
-            <div className="max-w-md w-full bg-white p-8 rounded-lg md:shadow-2xl pt-14 md:pt-8">
-                <div className="mb-6 text-center">
+                {/* Contenedor del logo a la izquierda en pantallas grandes */}
+                <div className="hidden md:flex md:w-1/3 justify-center items-center mr-5">
                     <img
                         src={logo}
-                        alt="Logo de Recaudación - Portoviejo innova"
-                        className="mx-auto w-96 h-32 object-contain"
+                        alt="Logo de al Universidad Técnica de Manabí"
+                        className="w-full h-auto object-contain"
                     />
                 </div>
-                <h2 className="text-2xl font-extrabold mb-6 text-center text-gray-800">Iniciar Sesión</h2>
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                        <label
-                            htmlFor="cedula"
-                            className="block text-gray-700 font-medium mb-2"
-                        >
-                            Cédula
-                        </label>
-                        <input
-                            type="number"
-                            id="cedula"
-                            value={usuario}
-                            onChange={(e) => setUsuario(e.target.value)}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300"
-                            required
-                            inputMode="numeric" // Muestra un teclado numérico con flecha para avanzar
-                            onKeyDown={(e) => {
-                                if (e.key == 'Enter') {
-                                    document.getElementById("password").focus(); // Mover el foco al campo de contraseña
-                                }
-                            }}
-                        />
-                    </div>
-                    <div className="mb-6 relative">
-                        <label
-                            htmlFor="password"
-                            className="block text-gray-700 font-medium mb-2"
-                        >
-                            Contraseña
-                        </label>
-                        <div className="relative">
-                            <input
-                                type={showPassword ? "text" : "password"} // Alterna entre 'text' y 'password'
-                                id="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="w-full px-4 py-2 pr-12 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300"
-                                required
-                            />
-                            <button
-                                type="button"
-                                onClick={toggleShowPassword}
-                                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-600 hover:text-gray-800"
-                            >
-                                {showPassword ? (
-                                    <FaRegEyeSlash />
-                                ) : (
-                                    <FaRegEye />
-                                )}
-                            </button>
-                        </div>
-                    </div>
 
-                    <button
-                        type="submit"
-                        className="w-full bg-gradient-to-br from-[#f0d33a] to-[#eed970] text-[#4c4c4c] py-4 md:py-2 text-lg md:text-base font-bold rounded-md hover:from-[#d4b933] hover:to-[#cfbc61] focus:outline-none focus:ring-4 focus:ring-purple-300 transition duration-300 transform hover:scale-105"
-                    >
-                        Iniciar Sesión
-                    </button>
-                </form>
+                {/* Contenedor del formulario a la derecha */}
+                <div className="max-w-lg w-full md:w-1/2 bg-white bg-opacity-10 p-10 rounded-lg md:shadow-xl backdrop-filter backdrop-blur-md md:backdrop-blur-lg">
+                    <h2 className="text-3xl font-extrabold text-center text-white mb-6">Iniciar Sesión</h2>
+                    <form onSubmit={handleSubmit} className="text-white">
+                        <div className="mb-4">
+                            <label
+                                htmlFor="cedula"
+                                className="block font-medium mb-2 text-white"
+                            >
+                                Cédula
+                            </label>
+                            <input
+                                type="number"
+                                id="cedula"
+                                value={usuario}
+                                onChange={(e) => setUsuario(e.target.value)}
+                                className="w-full px-4 py-2 border border-transparent bg-opacity-70 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-300 text-black"
+                                required
+                                inputMode="numeric"
+                                onKeyDown={(e) => {
+                                    if (e.key == 'Enter') {
+                                        document.getElementById("password").focus();
+                                    }
+                                }}
+                            />
+                        </div>
+                        <div className="mb-6">
+                            <label
+                                htmlFor="password"
+                                className="block font-medium mb-2 text-white"
+                            >
+                                Contraseña
+                            </label>
+                            <div className="relative">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    id="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="w-full px-4 py-2 pr-12 border border-transparent bg-opacity-70 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-300 text-black"
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    onClick={toggleShowPassword}
+                                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-800 hover:text-black"
+                                >
+                                    {showPassword ? (
+                                        <FaRegEyeSlash />
+                                    ) : (
+                                        <FaRegEye />
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+                        <button
+                            type="submit"
+                            className="w-full bg-gradient-to-r from-[#ffaf36] to-[#ffd659] text-[#3e3e3e] py-3 font-bold rounded-md hover:from-[#ffc163] hover:to-[#ffdf7e] transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-yellow-400"
+                        >
+                            Iniciar Sesión
+                        </button>
+                    </form>
+                </div>
+
+                {/* Footer */}
+                <footer className="absolute bottom-4 w-full text-center text-white text-xs">
+                    {/* <p>{VERSION}</p> */}
+                </footer>
             </div>
-            <footer className="mt-4 mx-7 text-center text-[#004071] md:text-white text-xs">
-                {/* <p>{VERSION}</p> */}
-            </footer>
-        </div>
-    </>
+        </>
     );
 }
 
