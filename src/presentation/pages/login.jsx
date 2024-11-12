@@ -7,6 +7,7 @@ import LoadingScreen from "../components/LoadingScreen";
 import MessageDialog from "../components/MessageDialog";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import background from "../../assets/utm.webp";
+import { VERSION } from "../../utils/constants";
 
 const Login = () => {
     const [usuario, setUsuario] = useState("");
@@ -206,7 +207,8 @@ const Login = () => {
 
                 {/* Footer */}
                 <footer className="absolute bottom-4 w-full text-center text-white text-xs">
-                    {/* <p>{VERSION}</p> */}
+                    <p>Desarrollado por Arteaga Carlos y Rodriguez Jostin</p>
+                    <p>Versión {VERSION}</p>
                 </footer>
             </div>
         </>
