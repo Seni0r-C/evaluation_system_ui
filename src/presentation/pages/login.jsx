@@ -118,7 +118,7 @@ const Login = () => {
         <>
             <LoadingScreen isLoading={isLoading} />
             <MessageDialog message={errorMessage} onClose={handleCerrar} isOpen={showMessage} />
-            <div className="flex flex-col md:flex-row h-screen relative items-center justify-center">
+            <div className="flex flex-col md:flex-row h-screen relative items-start md:items-center md:justify-center">
                 {/* Fondo con imagen difuminada */}
                 <div
                     className="absolute top-0 left-0 w-full h-full bg-cover bg-center"
@@ -130,7 +130,7 @@ const Login = () => {
                 />
 
                 {/* Contenedor del logo a la izquierda en pantallas grandes */}
-                <div className="hidden md:flex md:w-1/3 justify-center items-center mr-5">
+                <div className="mx-8 flex md:w-1/3 justify-center items-center mr-5">
                     <img
                         src={logo}
                         alt="Logo de al Universidad Técnica de Manabí"
@@ -139,8 +139,11 @@ const Login = () => {
                 </div>
 
                 {/* Contenedor del formulario a la derecha */}
-                <div className="max-w-lg w-full md:w-1/2 bg-white bg-opacity-10 p-10 rounded-lg md:shadow-xl backdrop-filter backdrop-blur-md md:backdrop-blur-lg">
+                <div className="max-w-lg w-full md:w-1/2 md:bg-white md:bg-opacity-10 p-10 rounded-lg md:shadow-xl backdrop-filter md:backdrop-blur-xl">
                     <form onSubmit={handleSubmit} className="text-white">
+                        <h2 className="text-center text-3xl font-semibold mb-4">
+                            Sistema de Calificación de Titulación
+                        </h2>
                         <div className="mb-4">
                             <label
                                 htmlFor="email"
