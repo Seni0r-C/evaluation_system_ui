@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
 const Principal = () => {
     // Datos de ejemplo para las tesis
@@ -25,23 +27,64 @@ const Principal = () => {
         },
     ];
 
+    // Estadísticas generales de tesis
+    const [estadisticas] = useState({
+        pendiente: tesisData.filter((tesis) => tesis.estado === "Pendiente").length,
+        enRevision: tesisData.filter((tesis) => tesis.estado === "En revisión").length,
+    });
+
+    // Gráfico para la cantidad de tesis por estado
+    const data = [
+        { name: 'Pendientes', value: estadisticas.pendiente },
+        { name: 'En Revisión', value: estadisticas.enRevision },
+    ];
+
     return (
         <div className="min-h-screen bg-gray-50">
-            {/* Navbar */}
-            <nav className="bg-blue-600 text-white p-4">
-                <div className="container mx-auto flex justify-between items-center">
-                    <h1 className="text-2xl font-bold">Sistema de Calificación de Tesis</h1>
-                    <div className="flex items-center space-x-4">
-                        <span>Bienvenido, Juan Pérez</span>
-                        <button className="bg-blue-800 px-4 py-2 rounded">Cerrar sesión</button>
-                    </div>
-                </div>
-            </nav>
-
             {/* Main Content */}
             <div className="container mx-auto p-6">
-                <h2 className="text-xl font-semibold mb-6">Tesis Pendientes de Calificación</h2>
+                <h2 className="text-xl font-semibold mb-6">Dashboard de Tesis</h2>
 
+                {/* Resumen Estadístico */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <div className="bg-white shadow-lg rounded-lg p-6 flex flex-col items-center">
+                        <h3 className="text-lg font-semibold text-blue-700">Tesis Pendientes</h3>
+                        <p className="text-4xl font-bold">{estadisticas.pendiente}</p>
+                    </div>
+                    <div className="bg-white shadow-lg rounded-lg p-6 flex flex-col items-center">
+                        <h3 className="text-lg font-semibold text-yellow-600">Tesis en Revisión</h3>
+                        <p className="text-4xl font-bold">{estadisticas.enRevision}</p>
+                    </div>
+                    <div className="bg-white shadow-lg rounded-lg p-6 flex flex-col items-center">
+                        <h3 className="text-lg font-semibold text-green-600">Tesis Finalizadas</h3>
+                        <p className="text-4xl font-bold">{tesisData.length - estadisticas.pendiente - estadisticas.enRevision}</p>
+                    </div>
+                </div>
+
+                {/* Gráfico de Tesis por Estado */}
+                <div className="bg-white shadow-lg rounded-lg p-6 mb-8">
+                    <h3 className="text-lg font-semibold text-gray-700 mb-4">Distribución de Tesis por Estado</h3>
+                    <ResponsiveContainer width="100%" height={250}>
+                        <PieChart>
+                            <Pie
+                                data={data}
+                                dataKey="value"
+                                nameKey="name"
+                                cx="50%"
+                                cy="50%"
+                                outerRadius={80}
+                                fill="#8884d8"
+                                label
+                            >
+                                <Cell fill="#ff7300" />
+                                <Cell fill="#387908" />
+                            </Pie>
+                        </PieChart>
+                    </ResponsiveContainer>
+                </div>
+
+                {/* Tesis List */}
+                <h3 className="text-xl font-semibold mb-6">Tesis Pendientes de Calificación</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {tesisData.map((tesis) => (
                         <div key={tesis.id} className="bg-white shadow-lg rounded-lg p-4 flex flex-col">

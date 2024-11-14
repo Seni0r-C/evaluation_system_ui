@@ -6,7 +6,7 @@ import logo from '../../assets/logo_bar.webp';
 const menuData = [
     {
         name: 'Opción 1',
-        href: '#opcion1',
+        href: '#',
         subOptions: [
             { name: 'Subopción 1.1', href: '#subopcion1.1' },
             { name: 'Subopción 1.2', href: '#subopcion1.2' },
@@ -14,7 +14,7 @@ const menuData = [
     },
     {
         name: 'Opción 2',
-        href: '#opcion2',
+        href: '#',
         subOptions: [
             { name: 'Subopción 2.1', href: '#subopcion2.1' },
             { name: 'Subopción 2.2', href: '#subopcion2.2' },
