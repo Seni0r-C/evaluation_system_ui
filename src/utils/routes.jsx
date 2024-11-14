@@ -3,6 +3,7 @@ import ErrorBoundary from '../presentation/components/ErrorBoundary';
 import Login from '../presentation/pages/login';
 import NotFound from '../presentation/pages/not_found';
 import Layout from '../presentation/layout/Layout';
+import ProtectedRoute from '../domain/ProtectedRoute';
 
 const router = createBrowserRouter([
   {
@@ -25,9 +26,11 @@ const router = createBrowserRouter([
     path: '/',
     element: (
       <ErrorBoundary>
-        <Layout>
-          <h1>Hello Vite!</h1>
-        </Layout>
+        <ProtectedRoute>
+          <Layout>
+            <h1>Hello Vite!</h1>
+          </Layout>
+        </ProtectedRoute>
       </ErrorBoundary>
     ),
   },
