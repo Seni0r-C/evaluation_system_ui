@@ -4,6 +4,7 @@ import Login from '../presentation/pages/login';
 import NotFound from '../presentation/pages/not_found';
 import Layout from '../presentation/layout/Layout';
 import ProtectedRoute from '../domain/ProtectedRoute';
+import Principal from '../presentation/pages/principal';
 
 const router = createBrowserRouter([
   {
@@ -28,7 +29,7 @@ const router = createBrowserRouter([
       <ErrorBoundary>
         <ProtectedRoute>
           <Layout>
-            <h1>Hello Vite!</h1>
+            <Principal />
           </Layout>
         </ProtectedRoute>
       </ErrorBoundary>
