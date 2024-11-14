@@ -1,6 +1,4 @@
 import { useState } from "react";
-import CryptoJS from "crypto-js";
-import axios from "axios";
 import logo from "../../assets/logo_utm.webp";
 import { useNavigate } from "react-router-dom";
 import LoadingScreen from "../components/LoadingScreen";
@@ -8,6 +6,7 @@ import MessageDialog from "../components/MessageDialog";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import background from "../../assets/utm.webp";
 import { VERSION } from "../../utils/constants";
+import { useAuth } from "../../domain/useAuth";
 
 const Login = () => {
     const [usuario, setUsuario] = useState("");
@@ -17,93 +16,23 @@ const Login = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [showMessage, setShowMessage] = useState(false);
 
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
+    const { isAuthenticated, setIsAuthenticated } = useAuth();
+    if (isAuthenticated) {
+        navigate('/');
+    }
 
-    // const login = async (usuario, password) => {
-    //     setIsLoading(true);
-    //     try {
-    //         const contrasena = CryptoJS.MD5(password).toString();
-    //         const response = await axios.post(
-    //             `${API_URL}/login/auth`,
-    //             {
-    //                 usuario,
-    //                 contrasena,
-    //             },
-    //             {
-    //                 headers: {
-    //                     "Content-Type": "application/json",
-    //                 },
-    //             }
-    //         );
-    //         setIsLoading(false);
-
-    //         const data = response.data;
-
-    //         if (response.status === 200 && response.data.exito == true) {
-    //             setIsLoading(true);
-    //             const userInfo = await axios.get(`${API_URL}/login/infoUsuario`, {
-    //                 headers: {
-    //                     "Content-Type": "application/json",
-    //                     'Authorization': `Bearer ${data.datos}`,
-    //                 },
-    //             });
-    //             setIsLoading(false);
-    //             if (userInfo.status === 200 && userInfo.data.exito == true) {
-
-    //                 //Verificar si es un recaudador
-    //                 setIsLoading(true);
-    //                 const usertype = await axios.get(`${API_URL}/sgp/tipoUsuario/${usuario}`, {
-    //                     headers: {
-    //                         "Content-Type": "application/json",
-    //                         'Authorization': `Bearer ${data.datos}`,
-    //                     },
-    //                 });
-    //                 setIsLoading(false);
-    //                 if (usertype.data.datos.innova == null) {
-    //                     setErrorMessage(`Usted no tiene acceso a este sistema, o no es Recaudador`);
-    //                     setShowMessage(true);
-    //                     return;
-    //                 }
-
-    //                 if (password == usuario) {
-    //                     navigate('/cambiar-contrasena', { state: { token: data.datos } });
-    //                 } else {
-    //                     const currentTime = new Date().getTime(); // Tiempo actual en milisegundos
-    //                     localStorage.setItem("token", data.datos);
-    //                     localStorage.setItem("tokenCreationTime", currentTime.toString());
-    //                     localStorage.setItem("tipoUsuario", usertype.data.datos.innova);
-    //                     localStorage.setItem("userInfo", JSON.stringify(userInfo.data.datos));
-    //                     navigate('/');
-    //                 }
-    //             } else {
-    //                 setErrorMessage(`Ocurrió un error al iniciar sesión. ${userInfo.data.mensaje}`);
-    //                 setShowMessage(true);
-    //             }
-    //         } else {
-    //             setErrorMessage(data.mensaje);
-    //             setShowMessage(true);
-    //         }
-    //     } catch (error) {
-    //         if (!error.response) {
-    //             // Verificar si hay conexión a Internet
-    //             const hasInternet = await checkInternetConnection();
-    //             if (hasInternet) {
-    //                 setErrorMessage("No se pudo conectar al servidor. Problemas de Internet.");
-    //             } else {
-    //                 setErrorMessage("Parece que tu conexión a Internet está fallando. Por favor, verifica tu conexión e inténtalo nuevamente.");
-    //             }
-    //         } else {
-    //             setErrorMessage(`Ocurrió un error.${error.message}`);
-    //         }
-    //         setIsLoading(false);
-    //         console.log("Error al iniciar sesión: ", error);
-    //         setShowMessage(true);
-    //     }
-    // };
+    function login(username, password) {
+        console.log(username, password)
+        setIsLoading(true);
+        setIsAuthenticated(true);
+        setIsLoading(false);
+        navigate('/');
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // login(usuario, password);
+        login(usuario, password);
     };
 
     const handleCerrar = () => {
