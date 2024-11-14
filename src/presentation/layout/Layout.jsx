@@ -5,12 +5,9 @@ import logo from '../../assets/logo_bar.webp';
 
 const menuData = [
     {
-        name: 'Opción 1',
-        href: '#',
-        subOptions: [
-            { name: 'Subopción 1.1', href: '#subopcion1.1' },
-            { name: 'Subopción 1.2', href: '#subopcion1.2' },
-        ],
+        name: 'Modalidades de Titulación',
+        href: '/modalidades',
+        subOptions: [],
     },
     {
         name: 'Opción 2',
