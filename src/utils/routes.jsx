@@ -6,6 +6,8 @@ import Layout from '../presentation/layout/Layout';
 import ProtectedRoute from '../domain/ProtectedRoute';
 import Principal from '../presentation/pages/principal';
 import ModalidadesTitulacion from '../presentation/pages/modalidadesTitulacion';
+import EvaluacionTesis from '../presentation/pages/evaluacionTesis';
+import EvaluacionArticulo from '../presentation/pages/evaluacionArticulo';
 
 const router = createBrowserRouter([
   {
@@ -41,9 +43,33 @@ const router = createBrowserRouter([
     element: (
       <ErrorBoundary>
         {/* <ProtectedRoute> */}
-          <Layout>
-            <ModalidadesTitulacion />
-          </Layout>
+        <Layout>
+          <ModalidadesTitulacion />
+        </Layout>
+        {/* </ProtectedRoute> */}
+      </ErrorBoundary>
+    ),
+  },
+  {
+    path: '/evaluacion-tesis',
+    element: (
+      <ErrorBoundary>
+        {/* <ProtectedRoute> */}
+        <Layout>
+          <EvaluacionTesis />
+        </Layout>
+        {/* </ProtectedRoute> */}
+      </ErrorBoundary>
+    ),
+  },
+  {
+    path: '/evaluacion-articulo',
+    element: (
+      <ErrorBoundary>
+        {/* <ProtectedRoute> */}
+        <Layout>
+          <EvaluacionArticulo />
+        </Layout>
         {/* </ProtectedRoute> */}
       </ErrorBoundary>
     ),

@@ -10,11 +10,11 @@ const menuData = [
         subOptions: [],
     },
     {
-        name: 'Opción 2',
+        name: 'Evaluación',
         href: '#',
         subOptions: [
-            { name: 'Subopción 2.1', href: '#subopcion2.1' },
-            { name: 'Subopción 2.2', href: '#subopcion2.2' },
+            { name: 'Propuesta Tecnologica', href: '/evaluacion-tesis' },
+            { name: 'Artículo Científico', href: '/evaluacion-articulo' },
         ],
     },
     {
