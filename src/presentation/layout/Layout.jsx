@@ -5,6 +5,11 @@ import logo from '../../assets/logo_bar.webp';
 
 const menuData = [
     {
+        name: 'Inicio',
+        href: '/',
+        subOptions: [],
+    },
+    {
         name: 'Modalidades de Titulación',
         href: '/modalidades',
         subOptions: [],
@@ -146,8 +151,7 @@ const Layout = ({ children }) => {
 
             {/* Contenido principal */}
             <main
-                className={`flex-grow bg-white shadow-inner transition-all duration-300 ease-in-out ${isSidebarVisible ? 'ml-64' : 'ml-0'
-                    }`}
+                className={`flex-grow bg-white shadow-inner transition-all duration-300 ease-in-out ${isSidebarVisible ? 'md:ml-64' : 'md:ml-0'}`}
             >
                 {children}
             </main>
