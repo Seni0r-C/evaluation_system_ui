@@ -5,8 +5,9 @@ import LoadingScreen from "../components/LoadingScreen";
 import MessageDialog from "../components/MessageDialog";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import background from "../../assets/utm.webp";
-import { VERSION } from "../../utils/constants";
+import { API_URL, VERSION } from "../../utils/constants";
 import { useAuth } from "../../domain/useAuth";
+import axios from "axios";
 
 const Login = () => {
     const [usuario, setUsuario] = useState("");
@@ -22,14 +23,42 @@ const Login = () => {
         navigate('/');
     }
 
-    function login(username, password) {
-        console.log(username, password)
-        setIsLoading(true);
-        setIsAuthenticated(true);
-        setIsLoading(false);
-        navigate('/');
-    }
+    async function login(username, password) {
 
+        try {
+            setIsLoading(true);
+            const response = await axios.post(`${API_URL}/auth/login`, {
+                email: username,
+                password: password,
+            });
+
+            const data = response.data;
+
+            setIsLoading(false);
+            if (data.exito) {
+                // Guardar el token en localStorage
+                localStorage.setItem('token', data.datos);
+                // Guardar la fecha de creación del token en localStorage
+                localStorage.setItem('tokenCreationTime', new Date().getTime());
+
+                // Marcar como autenticado
+                setIsAuthenticated(true);
+                // Navegar a la página principal
+                navigate('/');
+            } else {
+                // Manejar errores del servidor
+                console.error(data.mensaje);
+                alert(data.mensaje);
+                setIsLoading(false);
+            }
+        } catch (error) {
+            setIsLoading(false);
+            // Manejar errores de red u otros
+            console.error('Error de conexión:', error);
+            alert('Error de conexión. Por favor, intenta de nuevo.');
+            setIsLoading(false);
+        }
+    }
     const handleSubmit = (e) => {
         e.preventDefault();
         login(usuario, password);
