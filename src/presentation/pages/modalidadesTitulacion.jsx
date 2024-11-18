@@ -1,153 +1,185 @@
-import { useState } from 'react';
+// Import React and Tailwind CSS
+import { useState, useEffect } from "react";
 
-const ModalidadesTitulacion = () => {
-    // Estado para almacenar las modalidades de titulación
-    const [modalidades, setModalidades] = useState([
-        { id: 1, nombre: 'Tesis de Grado', descripcion: 'Elaboración de una tesis formal para obtener el título' },
-        { id: 2, nombre: 'Examen Profesional', descripcion: 'Evaluación teórica y práctica sobre la carrera' },
-    ]);
-    const [editModal, setEditModal] = useState(null); // Para editar una modalidad
-    const [newModalidad, setNewModalidad] = useState({ nombre: '', descripcion: '' }); // Nueva modalidad
+const AdminCarrerasModalidades = () => {
+    const [carreras, setCarreras] = useState([]); // List of carreras
+    const [modalidades, setModalidades] = useState([]); // List of modalidades
+    const [carreraModalidades, setCarreraModalidades] = useState([]); // Associations
 
-    // Función para agregar una nueva modalidad
-    const agregarModalidad = () => {
-        if (newModalidad.nombre && newModalidad.descripcion) {
-            const newId = modalidades.length + 1;
-            setModalidades([...modalidades, { ...newModalidad, id: newId }]);
-            setNewModalidad({ nombre: '', descripcion: '' });
+    const [selectedCarrera, setSelectedCarrera] = useState("");
+    const [selectedModalidad, setSelectedModalidad] = useState("");
+
+    const [newCarrera, setNewCarrera] = useState("");
+    const [newModalidad, setNewModalidad] = useState("");
+
+    // Mock data fetching (replace with API calls)
+    useEffect(() => {
+        // Replace with real API calls
+        setCarreras([
+            { id: 1, nombre: "Ingeniería de Software" },
+            { id: 2, nombre: "Ingeniería Civil" },
+        ]);
+        setModalidades([
+            { id: 1, nombre: "Tesis" },
+            { id: 2, nombre: "Proyecto Final" },
+        ]);
+        setCarreraModalidades([
+            { id: 1, id_carrera: 1, id_modalidad: 1 },
+            { id: 2, id_carrera: 1, id_modalidad: 2 },
+        ]);
+    }, []);
+
+    const handleAddAssociation = () => {
+        if (selectedCarrera && selectedModalidad) {
+            setCarreraModalidades([
+                ...carreraModalidades,
+                {
+                    id: carreraModalidades.length + 1,
+                    id_carrera: parseInt(selectedCarrera),
+                    id_modalidad: parseInt(selectedModalidad),
+                },
+            ]);
+            setSelectedCarrera("");
+            setSelectedModalidad("");
         }
     };
 
-    // Función para editar una modalidad existente
-    const editarModalidad = (id) => {
-        const modalidadToEdit = modalidades.find((modalidad) => modalidad.id === id);
-        setEditModal(modalidadToEdit);
+    const handleRemoveAssociation = (id) => {
+        setCarreraModalidades(carreraModalidades.filter((item) => item.id !== id));
     };
 
-    // Función para guardar la modalidad editada
-    const guardarModalidadEditada = () => {
-        const updatedModalidades = modalidades.map((modalidad) =>
-            modalidad.id === editModal.id ? editModal : modalidad
-        );
-        setModalidades(updatedModalidades);
-        setEditModal(null);
+    const handleAddCarrera = () => {
+        if (newCarrera.trim() !== "") {
+            setCarreras([...carreras, { id: carreras.length + 1, nombre: newCarrera }]);
+            setNewCarrera("");
+        }
     };
 
-    // Función para eliminar una modalidad
-    const eliminarModalidad = (id) => {
-        setModalidades(modalidades.filter((modalidad) => modalidad.id !== id));
+    const handleAddModalidad = () => {
+        if (newModalidad.trim() !== "") {
+            setModalidades([...modalidades, { id: modalidades.length + 1, nombre: newModalidad }]);
+            setNewModalidad("");
+        }
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <div className="container mx-auto p-6">
-                <h2 className="text-2xl font-semibold text-gray-800 mb-6">Administrar Modalidades de Titulación</h2>
+        <div className="p-8 bg-gray-100 min-h-screen">
+            <h1 className="text-2xl font-bold mb-4">Administrar Modalidades de Titulación por Carrera</h1>
 
-                {/* Formulario para agregar una modalidad */}
-                <div className="bg-white shadow-md rounded-lg p-6 mb-6">
-                    <h3 className="text-xl font-semibold text-gray-700 mb-4">Agregar Nueva Modalidad</h3>
-                    <div className="space-y-4">
-                        <div>
-                            <label className="block text-gray-600">Nombre de la Modalidad</label>
-                            <input
-                                type="text"
-                                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                value={newModalidad.nombre}
-                                onChange={(e) => setNewModalidad({ ...newModalidad, nombre: e.target.value })}
-                                placeholder="Ejemplo: Tesis de Grado"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-gray-600">Descripción</label>
-                            <textarea
-                                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                value={newModalidad.descripcion}
-                                onChange={(e) => setNewModalidad({ ...newModalidad, descripcion: e.target.value })}
-                                placeholder="Describe brevemente la modalidad"
-                            />
-                        </div>
-                        <button
-                            onClick={agregarModalidad}
-                            className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none"
+            {/* Form to Add Association */}
+            <div className="bg-white p-4 shadow rounded mb-6">
+                <h2 className="text-xl font-semibold mb-4">Agregar Modalidad a Carrera</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label className="block mb-2 font-medium">Selecciona Carrera</label>
+                        <select
+                            value={selectedCarrera}
+                            onChange={(e) => setSelectedCarrera(e.target.value)}
+                            className="w-full p-2 border rounded"
                         >
-                            Agregar Modalidad
-                        </button>
+                            <option value="">-- Selecciona --</option>
+                            {carreras.map((carrera) => (
+                                <option key={carrera.id} value={carrera.id}>
+                                    {carrera.nombre}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div>
+                        <label className="block mb-2 font-medium">Selecciona Modalidad</label>
+                        <select
+                            value={selectedModalidad}
+                            onChange={(e) => setSelectedModalidad(e.target.value)}
+                            className="w-full p-2 border rounded"
+                        >
+                            <option value="">-- Selecciona --</option>
+                            {modalidades.map((modalidad) => (
+                                <option key={modalidad.id} value={modalidad.id}>
+                                    {modalidad.nombre}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                 </div>
+                <button
+                    onClick={handleAddAssociation}
+                    className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                >
+                    Agregar
+                </button>
+            </div>
 
-                {/* Modalidades list */}
-                <div className="bg-white shadow-md rounded-lg p-6">
-                    <h3 className="text-xl font-semibold text-gray-700 mb-4">Lista de Modalidades de Titulación</h3>
-                    <div className="space-y-4">
-                        {modalidades.map((modalidad) => (
-                            <div key={modalidad.id} className="flex items-center justify-between p-4 border-b border-gray-200">
-                                <div>
-                                    <h4 className="text-lg font-semibold text-gray-800">{modalidad.nombre}</h4>
-                                    <p className="text-gray-600">{modalidad.descripcion}</p>
-                                </div>
-                                <div className="flex space-x-2">
-                                    <button
-                                        onClick={() => editarModalidad(modalidad.id)}
-                                        className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600"
-                                    >
-                                        Editar
-                                    </button>
-                                    <button
-                                        onClick={() => eliminarModalidad(modalidad.id)}
-                                        className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
-                                    >
-                                        Eliminar
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+            {/* List of Associations */}
+            <div className="bg-white p-4 shadow rounded mb-6">
+                <h2 className="text-xl font-semibold mb-4">Modalidades por Carrera</h2>
+                <table className="w-full border-collapse border border-gray-300">
+                    <thead>
+                        <tr className="bg-gray-200">
+                            <th className="border border-gray-300 p-2">Carrera</th>
+                            <th className="border border-gray-300 p-2">Modalidad</th>
+                            <th className="border border-gray-300 p-2">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {carreraModalidades.map((assoc) => {
+                            const carrera = carreras.find((c) => c.id === assoc.id_carrera);
+                            const modalidad = modalidades.find((m) => m.id === assoc.id_modalidad);
+                            return (
+                                <tr key={assoc.id}>
+                                    <td className="border border-gray-300 p-2">{carrera?.nombre}</td>
+                                    <td className="border border-gray-300 p-2">{modalidad?.nombre}</td>
+                                    <td className="border border-gray-300 p-2 text-center">
+                                        <button
+                                            onClick={() => handleRemoveAssociation(assoc.id)}
+                                            className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                                        >
+                                            Eliminar
+                                        </button>
+                                    </td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
+            </div>
 
-                {/* Modal de edición */}
-                {editModal && (
-                    <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
-                        <div className="bg-white rounded-lg p-6 w-96">
-                            <h3 className="text-xl font-semibold text-gray-700 mb-4">Editar Modalidad</h3>
-                            <div className="space-y-4">
-                                <div>
-                                    <label className="block text-gray-600">Nombre de la Modalidad</label>
-                                    <input
-                                        type="text"
-                                        className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        value={editModal.nombre}
-                                        onChange={(e) => setEditModal({ ...editModal, nombre: e.target.value })}
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-gray-600">Descripción</label>
-                                    <textarea
-                                        className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        value={editModal.descripcion}
-                                        onChange={(e) => setEditModal({ ...editModal, descripcion: e.target.value })}
-                                    />
-                                </div>
-                                <div className="flex justify-between mt-4">
-                                    <button
-                                        onClick={guardarModalidadEditada}
-                                        className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
-                                    >
-                                        Guardar
-                                    </button>
-                                    <button
-                                        onClick={() => setEditModal(null)}
-                                        className="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500"
-                                    >
-                                        Cancelar
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
+            {/* Add Carrera */}
+            <div className="bg-white p-4 shadow rounded mb-6">
+                <h2 className="text-xl font-semibold mb-4">Agregar Carrera</h2>
+                <input
+                    type="text"
+                    value={newCarrera}
+                    onChange={(e) => setNewCarrera(e.target.value)}
+                    placeholder="Nombre de la carrera"
+                    className="w-full p-2 border rounded mb-4"
+                />
+                <button
+                    onClick={handleAddCarrera}
+                    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                >
+                    Agregar Carrera
+                </button>
+            </div>
+
+            {/* Add Modalidad */}
+            <div className="bg-white p-4 shadow rounded mb-6">
+                <h2 className="text-xl font-semibold mb-4">Agregar Modalidad</h2>
+                <input
+                    type="text"
+                    value={newModalidad}
+                    onChange={(e) => setNewModalidad(e.target.value)}
+                    placeholder="Nombre de la modalidad"
+                    className="w-full p-2 border rounded mb-4"
+                />
+                <button
+                    onClick={handleAddModalidad}
+                    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                >
+                    Agregar Modalidad
+                </button>
             </div>
         </div>
     );
 };
 
-export default ModalidadesTitulacion;
+export default AdminCarrerasModalidades;
