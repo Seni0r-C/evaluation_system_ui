@@ -118,7 +118,7 @@ const Layout = ({ children }) => {
                             </button>
                             <button
                                 className="w-full flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 text-gray-700"
-                                onClick={() => { localStorage.clear(); setIsAuthenticated(false) }}
+                                onClick={() => { localStorage.clear(); setIsAuthenticated(false); navigate("/") }}
                             >
                                 <IoIosLogOut className="h-5 w-5" />
                                 <span>Cerrar Sesión</span>
