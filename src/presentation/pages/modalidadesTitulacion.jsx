@@ -11,17 +11,18 @@ const AdminCarrerasModalidades = () => {
 
     const [newCarrera, setNewCarrera] = useState("");
     const [newModalidad, setNewModalidad] = useState("");
-
+// 
     // Mock data fetching (replace with API calls)
     useEffect(() => {
         // Replace with real API calls
         setCarreras([
-            { id: 1, nombre: "Ingeniería de Software" },
-            { id: 2, nombre: "Ingeniería Civil" },
+            { id: 1, nombre: "INGENIERIA DE SISTEMAS DE INFORMACION" },
+            { id: 2, nombre: "TECNOLOGIAS DE LA INFORMACION Y LA COMUNICACION" },
+            { id: 3, nombre: "INGENIERIA DE SOFWARE" },
         ]);
         setModalidades([
-            { id: 1, nombre: "Tesis" },
-            { id: 2, nombre: "Proyecto Final" },
+            { id: 1, nombre: "PROPUESTA TECNOLOGICA" },
+            { id: 2, nombre: "ARTICULO ACADEMICO" },
         ]);
         setCarreraModalidades([
             { id: 1, id_carrera: 1, id_modalidad: 1 },

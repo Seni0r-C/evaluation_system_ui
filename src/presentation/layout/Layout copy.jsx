@@ -18,22 +18,20 @@ const menuData = [
         name: 'Modalidades de Titulación',
         href: '/modalidades',
         subOptions: [],
-    },   
+    },
     {
-        name: 'Items de revista',
-        href: '/items-revista',
-        subOptions: [],
-    },   
+        name: 'Evaluación',
+        href: '#',
+        subOptions: [
+            { name: 'Propuesta Tecnologica', href: '/evaluacion-tesis' },
+            { name: 'Artículo Científico', href: '/evaluacion-articulo' },
+        ],
+    },
     {
-        name: 'Items de rúbrica',
-        href: '/items-rubrica',
+        name: 'Opción 3',
+        href: '#opcion3',
         subOptions: [],
-    },   
-    {
-        name: 'Registro proyectos titulación',
-        href: '/registro-proyecto-titulacion',
-        subOptions: [],
-    },   
+    },
 ];
 const Layout = ({ children }) => {
     // Lee el estado inicial de localStorage

@@ -6,8 +6,6 @@ import Layout from '../presentation/layout/Layout';
 import ProtectedRoute from '../domain/ProtectedRoute';
 import Principal from '../presentation/pages/principal';
 import ModalidadesTitulacion from '../presentation/pages/modalidadesTitulacion';
-import ItemsRevista from '../presentation/pages/itemsRevista';
-import ItemsRubrica from '../presentation/pages/itemsRubrica';
 import EvaluacionTesis from '../presentation/pages/evaluacionTesis';
 import EvaluacionArticulo from '../presentation/pages/evaluacionArticulo';
 
@@ -53,24 +51,24 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: '/items-revista',
+    path: '/evaluacion-tesis',
     element: (
       <ErrorBoundary>
         {/* <ProtectedRoute> */}
         <Layout>
-          <ItemsRevista/>
+          <EvaluacionTesis />
         </Layout>
         {/* </ProtectedRoute> */}
       </ErrorBoundary>
     ),
   },
   {
-    path: '/items-rubrica',
+    path: '/evaluacion-articulo',
     element: (
       <ErrorBoundary>
         {/* <ProtectedRoute> */}
         <Layout>
-          <ItemsRubrica/>
+          <EvaluacionArticulo />
         </Layout>
         {/* </ProtectedRoute> */}
       </ErrorBoundary>
