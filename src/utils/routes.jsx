@@ -8,6 +8,7 @@ import Principal from '../presentation/pages/principal';
 import ModalidadesTitulacion from '../presentation/pages/modalidadesTitulacion';
 import ItemsRevista from '../presentation/pages/itemsRevista';
 import ItemsRubrica from '../presentation/pages/itemsRubrica';
+import RegistroTrabajosTitulacion from '../presentation/pages/registroTrabajosTitulacion';
 import EvaluacionTesis from '../presentation/pages/evaluacionTesis';
 import EvaluacionArticulo from '../presentation/pages/evaluacionArticulo';
 
@@ -71,6 +72,18 @@ const router = createBrowserRouter([
         {/* <ProtectedRoute> */}
         <Layout>
           <ItemsRubrica/>
+        </Layout>
+        {/* </ProtectedRoute> */}
+      </ErrorBoundary>
+    ),
+  },
+  {
+    path: '/registro-proyecto-titulacion',
+    element: (
+      <ErrorBoundary>
+        {/* <ProtectedRoute> */}
+        <Layout>
+          <RegistroTrabajosTitulacion/>
         </Layout>
         {/* </ProtectedRoute> */}
       </ErrorBoundary>
