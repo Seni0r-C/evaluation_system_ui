@@ -7,8 +7,9 @@ import { FaChevronDown, FaChevronUp, FaUserCircle } from "react-icons/fa";
 import logo from '../../assets/logo_bar.webp';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../domain/useAuth';
+import { subRuta } from '../../utils/constants';
 
-const menuData = [
+const pre_menuData = [
     {
         name: 'Inicio',
         href: '/',
@@ -18,23 +19,30 @@ const menuData = [
         name: 'Modalidades de Titulación',
         href: '/modalidades',
         subOptions: [],
-    },   
+    },
     {
         name: 'Items de revista',
         href: '/items-revista',
         subOptions: [],
-    },   
+    },
     {
         name: 'Items de rúbrica',
         href: '/items-rubrica',
         subOptions: [],
-    },   
+    },
     {
         name: 'Registro proyectos titulación',
         href: '/registro-proyecto-titulacion',
         subOptions: [],
-    },   
+    },
 ];
+
+// Agregar prefijo a cada ruta
+const menuData = pre_menuData.map((route) => ({
+    ...route,
+    href: subRuta + route.href,
+}));
+
 const Layout = ({ children }) => {
     // Lee el estado inicial de localStorage
     const [isSidebarVisible, setSidebarVisible] = useState(() => {

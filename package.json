@@ -1,5 +1,6 @@
 {
-  "name": "evaluation_system",  
+  "homepage": "/react-app/",
+  "name": "evaluation_system",
   "private": true,
   "version": "0.0.0",
   "type": "module",

@@ -12,7 +12,9 @@ import RegistroTrabajosTitulacion from '../presentation/pages/registroTrabajosTi
 import EvaluacionTesis from '../presentation/pages/evaluacionTesis';
 import EvaluacionArticulo from '../presentation/pages/evaluacionArticulo';
 
-const router = createBrowserRouter([
+import { subRuta } from './constants';
+
+const routes = [
   {
     path: '/login',
     element: (
@@ -59,7 +61,7 @@ const router = createBrowserRouter([
       <ErrorBoundary>
         {/* <ProtectedRoute> */}
         <Layout>
-          <ItemsRevista/>
+          <ItemsRevista />
         </Layout>
         {/* </ProtectedRoute> */}
       </ErrorBoundary>
@@ -71,7 +73,7 @@ const router = createBrowserRouter([
       <ErrorBoundary>
         {/* <ProtectedRoute> */}
         <Layout>
-          <ItemsRubrica/>
+          <ItemsRubrica />
         </Layout>
         {/* </ProtectedRoute> */}
       </ErrorBoundary>
@@ -83,12 +85,28 @@ const router = createBrowserRouter([
       <ErrorBoundary>
         {/* <ProtectedRoute> */}
         <Layout>
-          <RegistroTrabajosTitulacion/>
+          <RegistroTrabajosTitulacion />
         </Layout>
         {/* </ProtectedRoute> */}
       </ErrorBoundary>
     ),
   },
-]);
+];
+
+// Agregar prefijo a cada ruta
+let prefixedRoutes = routes.map((route) => ({
+  ...route,
+  path: subRuta + route.path,
+}));
+
+prefixedRoutes = [...prefixedRoutes, {
+  path: '*',
+  element: (
+    <ErrorBoundary>
+      <NotFound />
+    </ErrorBoundary>
+  ),
+},];
+const router = createBrowserRouter(prefixedRoutes);
 
 export default router;
