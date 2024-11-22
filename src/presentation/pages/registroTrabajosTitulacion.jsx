@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ModalBusqueda from "../components/ModalBusqueda";
 
 const RegistroTrabajosTitulacion = () => {
+    const [modalidades, setModalidades] = useState([]);
     const [newTrabajo, setNewTrabajo] = useState({
         titulo: "",
         modalidad: "",
@@ -31,12 +32,12 @@ const RegistroTrabajosTitulacion = () => {
             const existe = newTrabajo.integrantes.some(
                 (integrante) => integrante.id === nuevoIntegrante.id
             );
-        
+
             if (existe) {
                 alert("Este integrante ya ha sido añadido.");
                 return;
             }
-        
+
             setNewTrabajo((prevState) => ({
                 ...prevState,
                 integrantes: [...prevState.integrantes, nuevoIntegrante],
@@ -53,14 +54,76 @@ const RegistroTrabajosTitulacion = () => {
         }));
     };
 
+
+    // Simula la obtención de datos desde una API
+    useEffect(() => {
+        setTimeout(() => {
+            setModalidades(["PROPUESTA TECNOLOGICA", "ARTICULO ACADEMICO"]);
+            // setCarreras([
+            //     "INGENIERIA EN SISTEMAS DE INFORMACION",
+            //     "INGENIERIA DE SOFTWARE",
+            //     "TECNOLOGIAS DE LA INFORMACION Y COMUNICACION",
+            // ]);
+            // setDocentesTutorado([
+            //     { id: 1, name: "ALCIVAR CEDEÑO ROBERTH ABEL" },
+            //     { id: 4, name: "QUIMIZ CALCELO IVAN ALFONZO" },
+            // ]);
+            // setDocentesCotutorado([{ id: 3, name: "BARREIRO CEDEÑO BERNARDA LUCIA" }]);
+            // setEstudiantes([
+            //     { id: 1, name: "RODRIGUEZ MALDONADO JUAN PECHICHO" },
+            //     { id: 2, name: "MENDOZA CASTRO IGNACIO GUTEMBERG" },
+            // ]);
+            // setTrabajos([
+            //     {
+            //         id: 1,
+            //         titulo: "ChatBot de atención a estudiantes de nivelación en la Universidad Técnica de Manabí.",
+            //         fechaRegistro: "2021-11-12",
+            //         modalidad: "PROPUESTA TECNOLOGICA",
+            //         carrera: "INGENIERIA EN SISTEMAS DE INFORMACION",
+            //         tutorId: 1,
+            //         integrantesIds: [1, 2],
+            //         archivoLink: "archivo-link.com",
+            //     },
+            // ]);
+        }, 500);
+    }, []);
+
+
     return (
         <div className="p-8 bg-gray-100 min-h-screen">
             <h1 className="text-2xl font-bold mb-4">Gestión de Trabajos de Titulación</h1>
 
             {/* Formulario */}
             <div className="bg-white p-4 shadow rounded mb-6">
-                <h2 className="text-xl font-semibold mb-4">Registrar Trabajo</h2>
+                <h2 className="text-xl font-semibold mb-4">Registrar Trabajo de Titulación</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label className="block mb-2 font-medium">Título</label>
+                        <input
+                            type="text"
+                            value={newTrabajo.titulo}
+                            onChange={(e) => setNewTrabajo({ ...newTrabajo, titulo: e.target.value })}
+                            placeholder="Ej: Sistema de gestión académica"
+                            className="w-full p-2 border rounded"
+                        />
+                    </div>
+                    <div>
+                        <label className="block mb-2 font-medium">Modalidad</label>
+                        <select
+                            value={newTrabajo.modalidad}
+                            onChange={(e) => setNewTrabajo({ ...newTrabajo, modalidad: e.target.value })}
+                            className="w-full p-2 border rounded"
+                        >
+                            <option value="">-- Selecciona --</option>
+                            {modalidades.map((modalidad, index) => (
+                                <option key={index} value={modalidad}>
+                                    {modalidad}
+                                </option>
+                            ))}
+                        </select>
+                    </div>                   
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                     {/* Otros campos */}
                     <div>
                         <label className="block mb-2 font-medium">Tutor</label>
