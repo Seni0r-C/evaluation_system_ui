@@ -92,18 +92,6 @@ const routes = [
       </ErrorBoundary>
     ),
   },
-  {
-    path: '/asignacion-tribunal',
-    element: (
-      <ErrorBoundary>
-        {/* <ProtectedRoute> */}
-        <Layout>
-          <AsignacionTribunal />
-        </Layout>
-        {/* </ProtectedRoute> */}
-      </ErrorBoundary>
-    ),
-  },
 ];
 
 // Agregar prefijo a cada ruta
