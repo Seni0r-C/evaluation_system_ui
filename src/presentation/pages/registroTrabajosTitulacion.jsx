@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import ModalBusqueda from "../components/ModalBusqueda";
 import DynamicModal from "../components/modal/ModalData";
+import ModalAsignarTribunal from "../pages/asignacionTribunal";
 
 const RegistroTrabajosTitulacion = () => {
     const [modalidades, setModalidades] = useState([]);
@@ -17,8 +18,27 @@ const RegistroTrabajosTitulacion = () => {
     const [isModalOpen, setIsModalOpen] = useState({ tipo: "", abierto: false });
     const [selectedTrabajo, setSelectedTrabajo] = useState(null);
     const [isModalDataOpen, setIsModalDataOpen] = useState(false);
+    const [isModalTribunalOpen, setIsModalTribunalOpen] = useState(false);
 
-    const handleOpenModal = (tipo) => {        
+    const handleOpenModalTribunal = (trabajo) => {
+        setSelectedTrabajo(trabajo);
+        setIsModalTribunalOpen(true);
+    };
+
+    const handleCloseModalTribunal = () => {
+        setIsModalTribunalOpen(false);
+    };
+
+    const handleAssignTribunal = (tribunal) => {
+        setProyectos((prevProyectos) =>
+            prevProyectos.map((proyecto) =>
+                proyecto.id === selectedTrabajo.id ? { ...proyecto, tribunal } : proyecto
+            )
+        );
+        alert("Tribunal asignado exitosamente.");
+    };
+
+    const handleOpenModal = (tipo) => {
         setIsModalOpen({ tipo, abierto: true });
     };
 
@@ -233,14 +253,15 @@ const RegistroTrabajosTitulacion = () => {
                                     <td className="border border-gray-300 p-2 text-center">
                                         <button
                                             className="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600"
-                                            // onClick={() => alert(`Detalles de: ${proyecto.titulo}`)}
                                             onClick={() => handleOpenModalData(proyecto)}
                                         >
-                                        {/* <button
-                                            className="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600"
-                                            onClick={() => alert(`Detalles de: ${proyecto.titulo}`)}
-                                        > */}
                                             Ver detalles
+                                        </button>
+                                        <button
+                                            className="px-2 py-1 bg-yellow-500 ml-2 text-white rounded hover:bg-yellow-600"
+                                            onClick={() => handleOpenModalTribunal(proyecto)}
+                                        >
+                                            Asignar tribunal
                                         </button>
                                     </td>
                                 </tr>
@@ -266,6 +287,12 @@ const RegistroTrabajosTitulacion = () => {
                 isOpen={isModalOpen.abierto}
                 onClose={handleCloseModal}
                 onSelect={handleSelect}
+            />
+            <ModalAsignarTribunal
+                isOpen={isModalTribunalOpen}
+                onClose={handleCloseModalTribunal}
+                onAssign={handleAssignTribunal}
+                trabajo={selectedTrabajo}
             />
         </div>
     );

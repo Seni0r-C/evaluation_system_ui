@@ -55,7 +55,7 @@ const Login = () => {
             setIsLoading(false);
             // Manejar errores de red u otros
             console.error('Error de conexión:', error);
-            alert('Error de conexión. Por favor, intenta de nuevo.');
+            alert('Error de conexión. Por favor, intenta de nuevo. '+error);
             setIsLoading(false);
         }
     }

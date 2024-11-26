@@ -22,12 +22,22 @@ const ModalBusqueda = ({ tipo, isOpen, onClose, onSelect }) => {
             if (tipo === "estudiante") {
                 data = [
                     { id: 1, cedula: "1351337603", name: "Juan Rodríguez" },
-                    { id: 2, cedula: "0987654321", name: "Ana Mendoza" },
+                    { id: 2, cedula: "1234567890", name: "Ana Mendoza" },
                 ];
             } else if (tipo === "tutor") {
                 data = [
                     { id: 1, cedula: "1351337603", name: "Roberto Alcívar" },
-                    { id: 4, cedula: "2233445566", name: "Iván Quimiz" },
+                    { id: 4, cedula: "1234567890", name: "Iván Quimiz" },
+                ];
+            } else if (tipo === "cotutor") {
+                data = [
+                    { id: 1, cedula: "1351337603", name: "Marcelo Villamar" },
+                    { id: 4, cedula: "1234567890", name: "Humberto Castro Salazar" },
+                ];
+            } else if (tipo === "tribunal") {
+                data = [
+                    { id: 1, cedula: "1351337603", name: "Marco Antonio Soliz" },
+                    { id: 4, cedula: "1234567890", name: "Benavides María Sandoval" },
                 ];
             }
 

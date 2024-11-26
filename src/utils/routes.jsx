@@ -9,6 +9,7 @@ import ModalidadesTitulacion from '../presentation/pages/modalidadesTitulacion';
 import ItemsRevista from '../presentation/pages/itemsRevista';
 import ItemsRubrica from '../presentation/pages/itemsRubrica';
 import RegistroTrabajosTitulacion from '../presentation/pages/registroTrabajosTitulacion';
+import AsignacionTribunal from '../presentation/pages/asignacionTribunal';
 import EvaluacionTesis from '../presentation/pages/evaluacionTesis';
 import EvaluacionArticulo from '../presentation/pages/evaluacionArticulo';
 
@@ -86,6 +87,18 @@ const routes = [
         {/* <ProtectedRoute> */}
         <Layout>
           <RegistroTrabajosTitulacion />
+        </Layout>
+        {/* </ProtectedRoute> */}
+      </ErrorBoundary>
+    ),
+  },
+  {
+    path: '/asignacion-tribunal',
+    element: (
+      <ErrorBoundary>
+        {/* <ProtectedRoute> */}
+        <Layout>
+          <AsignacionTribunal />
         </Layout>
         {/* </ProtectedRoute> */}
       </ErrorBoundary>

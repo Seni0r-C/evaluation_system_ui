@@ -35,6 +35,11 @@ const pre_menuData = [
         href: '/registro-proyecto-titulacion',
         subOptions: [],
     },
+    {
+        name: 'Asignación de tribunal',
+        href: '/asignacion-tribunal',
+        subOptions: [],
+    },
 ];
 
 // Agregar prefijo a cada ruta
