@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { subRuta } from '../../utils/constants';
+import { Rutaraiz } from '../../utils/constants';
 
 const NotFound = () => {
     return (
@@ -13,7 +13,7 @@ const NotFound = () => {
                     Es posible que la página haya sido movida o eliminada.
                 </p>
                 <Link
-                    to={`${subRuta}/`}
+                    to={Rutaraiz}
                     className="mt-6 inline-block px-6 py-3 text-white bg-[#009fe3] hover:bg-[#0077d1] rounded-full text-lg font-medium shadow-md transition-transform transform hover:scale-105"
                 >
                     Volver a la página de inicio

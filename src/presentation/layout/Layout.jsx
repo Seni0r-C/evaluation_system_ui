@@ -5,14 +5,14 @@ import { FaChevronDown, FaChevronUp, FaUserCircle } from "react-icons/fa";
 
 
 import logo from '../../assets/logo_bar.webp';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../domain/useAuth';
-import { subRuta } from '../../utils/constants';
+import { Rutaraiz } from '../../utils/constants';
 
-const pre_menuData = [
+const menuData = [
     {
         name: 'Inicio',
-        href: '/',
+        href: Rutaraiz,
         subOptions: [],
     },
     {
@@ -34,14 +34,14 @@ const pre_menuData = [
         name: 'Registro proyectos titulación',
         href: '/registro-proyecto-titulacion',
         subOptions: [],
-    },    
+    },
 ];
 
-// Agregar prefijo a cada ruta
-const menuData = pre_menuData.map((route) => ({
-    ...route,
-    href: subRuta + route.href,
-}));
+// // Agregar prefijo a cada ruta
+// const menuData = pre_menuData.map((route) => ({
+//     ...route,
+//     href: Rutaraiz + route.href,
+// }));
 
 const Layout = ({ children }) => {
     // Lee el estado inicial de localStorage
@@ -128,7 +128,7 @@ const Layout = ({ children }) => {
                             </button>
                             <button
                                 className="w-full flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 text-gray-700"
-                                onClick={() => { localStorage.clear(); setIsAuthenticated(false); navigate("/") }}
+                                onClick={() => { localStorage.clear(); setIsAuthenticated(false); }}
                             >
                                 <IoIosLogOut className="h-5 w-5" />
                                 <span>Cerrar Sesión</span>
@@ -153,10 +153,11 @@ const Layout = ({ children }) => {
                         {menuData.map((item, index) => (
                             <div key={index}>
                                 {/* Opción principal con el ícono dentro del <a> */}
-                                <a
-                                    href={item.href}
+                                <Link
+                                    to={item.href}
                                     className="flex items-center p-2 hover:bg-blue-600 rounded-md transition-colors flex-1 justify-between"
                                     onClick={() => toggleSubOptions(index)} // Manejar clic para expandir/contraer
+
                                 >
                                     {item.name}
 
@@ -170,7 +171,7 @@ const Layout = ({ children }) => {
                                             )}
                                         </span>
                                     )}
-                                </a>
+                                </Link>
 
                                 {/* Subopciones (solo visibles si 'openMenuIndex' coincide con el índice actual) */}
                                 {item.subOptions.length > 0 && (
@@ -180,13 +181,13 @@ const Layout = ({ children }) => {
                                     >
                                         <div className="space-y-2">
                                             {item.subOptions.map((subItem, subIndex) => (
-                                                <a
+                                                <Link
                                                     key={subIndex}
                                                     href={subItem.href}
                                                     className="block p-2 hover:bg-blue-500 rounded-md transition-colors"
                                                 >
                                                     {subItem.name}
-                                                </a>
+                                                </Link>
                                             ))}
                                         </div>
                                     </div>

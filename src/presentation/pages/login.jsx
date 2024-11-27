@@ -5,7 +5,7 @@ import LoadingScreen from "../components/LoadingScreen";
 import MessageDialog from "../components/MessageDialog";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import background from "../../assets/utm.webp";
-import { API_URL, subRuta, VERSION } from "../../utils/constants";
+import { API_URL, Rutaraiz, VERSION } from "../../utils/constants";
 import { useAuth } from "../../domain/useAuth";
 import axios from "axios";
 
@@ -20,7 +20,7 @@ const Login = () => {
     const navigate = useNavigate();
     const { isAuthenticated, setIsAuthenticated } = useAuth();
     if (isAuthenticated) {
-        navigate(subRuta + '/');
+        navigate(Rutaraiz);
     }
 
     async function login(username, password) {
@@ -44,7 +44,7 @@ const Login = () => {
                 // Marcar como autenticado
                 setIsAuthenticated(true);
                 // Navegar a la página principal
-                navigate(subRuta + '/');
+                navigate(Rutaraiz);
             } else {
                 // Manejar errores del servidor
                 console.error(data.mensaje);
@@ -55,7 +55,7 @@ const Login = () => {
             setIsLoading(false);
             // Manejar errores de red u otros
             console.error('Error de conexión:', error);
-            alert('Error de conexión. Por favor, intenta de nuevo. '+error);
+            alert('Error de conexión. Por favor, intenta de nuevo. ' + error);
             setIsLoading(false);
         }
     }
