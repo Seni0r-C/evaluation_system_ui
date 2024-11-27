@@ -7,12 +7,12 @@ import { FaChevronDown, FaChevronUp, FaUserCircle } from "react-icons/fa";
 import logo from '../../assets/logo_bar.webp';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../domain/useAuth';
-import { Rutaraiz } from '../../utils/constants';
+import { RutaRaiz } from '../../utils/constants';
 
 const menuData = [
     {
         name: 'Inicio',
-        href: Rutaraiz,
+        href: RutaRaiz,
         subOptions: [],
     },
     {
@@ -36,12 +36,6 @@ const menuData = [
         subOptions: [],
     },
 ];
-
-// // Agregar prefijo a cada ruta
-// const menuData = pre_menuData.map((route) => ({
-//     ...route,
-//     href: Rutaraiz + route.href,
-// }));
 
 const Layout = ({ children }) => {
     // Lee el estado inicial de localStorage

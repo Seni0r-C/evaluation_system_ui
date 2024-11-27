@@ -13,7 +13,7 @@ import AsignacionTribunal from '../presentation/pages/asignacionTribunal';
 import EvaluacionTesis from '../presentation/pages/evaluacionTesis';
 import EvaluacionArticulo from '../presentation/pages/evaluacionArticulo';
 
-import { Rutaraiz } from './constants';
+import { RutaRaiz } from './constants';
 
 const routes = [
   {
@@ -33,7 +33,7 @@ const routes = [
     ),
   },
   {
-    path: Rutaraiz,
+    path: RutaRaiz,
     element: (
       <ErrorBoundary>
         <ProtectedRoute>
@@ -97,7 +97,7 @@ const routes = [
 // Agregar prefijo a cada ruta
 let prefixedRoutes = routes.map((route) => ({
   ...route,
-  path: Rutaraiz + route.path,
+  path: RutaRaiz + route.path,
 }));
 
 prefixedRoutes = [...prefixedRoutes, {
