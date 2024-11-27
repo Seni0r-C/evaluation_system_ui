@@ -92,22 +92,17 @@ const routes = [
       </ErrorBoundary>
     ),
   },
+  {
+    path: '*',
+    element: (
+      <ErrorBoundary>
+        <NotFound />
+      </ErrorBoundary>
+    ),
+  }
 ];
 
-// Agregar prefijo a cada ruta
-let prefixedRoutes = routes.map((route) => ({
-  ...route,
-  path: RutaRaiz + route.path,
-}));
 
-prefixedRoutes = [...prefixedRoutes, {
-  path: '*',
-  element: (
-    <ErrorBoundary>
-      <NotFound />
-    </ErrorBoundary>
-  ),
-},];
-const router = createBrowserRouter(prefixedRoutes);
+const router = createBrowserRouter(routes);
 
 export default router;
