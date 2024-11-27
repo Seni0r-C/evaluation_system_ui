@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import ModalBusqueda from "../components/ModalBusqueda";
 import DynamicModal from "../components/modal/ModalData";
-import ModalAsignarTribunal from "../pages/asignacionTribunal";
+// import ModalAsignarTribunal from "../pages/asignacionTribunal";
 
 const RegistroTrabajosTitulacion = () => {
     const [modalidades, setModalidades] = useState([]);
@@ -288,12 +288,12 @@ const RegistroTrabajosTitulacion = () => {
                 onClose={handleCloseModal}
                 onSelect={handleSelect}
             />
-            <ModalAsignarTribunal
+            {/* <ModalAsignarTribunal
                 isOpen={isModalTribunalOpen}
                 onClose={handleCloseModalTribunal}
                 onAssign={handleAssignTribunal}
                 trabajo={selectedTrabajo}
-            />
+            /> */}
         </div>
     );
 };

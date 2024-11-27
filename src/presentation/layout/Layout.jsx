@@ -177,7 +177,7 @@ const Layout = ({ children }) => {
                                             {item.subOptions.map((subItem, subIndex) => (
                                                 <Link
                                                     key={subIndex}
-                                                    href={subItem.href}
+                                                    to={subItem.href}
                                                     className="block p-2 hover:bg-blue-500 rounded-md transition-colors"
                                                 >
                                                     {subItem.name}
