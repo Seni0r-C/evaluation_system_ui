@@ -48,11 +48,11 @@ const routes = [
     path: '/modalidades',
     element: (
       <ErrorBoundary>
-        {/* <ProtectedRoute> */}
-        <Layout>
-          <ModalidadesTitulacion />
-        </Layout>
-        {/* </ProtectedRoute> */}
+        <ProtectedRoute>
+          <Layout>
+            <ModalidadesTitulacion />
+          </Layout>
+        </ProtectedRoute>
       </ErrorBoundary>
     ),
   },
@@ -60,11 +60,11 @@ const routes = [
     path: '/items-revista',
     element: (
       <ErrorBoundary>
-        {/* <ProtectedRoute> */}
-        <Layout>
-          <ItemsRevista />
-        </Layout>
-        {/* </ProtectedRoute> */}
+        <ProtectedRoute>
+          <Layout>
+            <ItemsRevista />
+          </Layout>
+        </ProtectedRoute>
       </ErrorBoundary>
     ),
   },
@@ -72,11 +72,11 @@ const routes = [
     path: '/items-rubrica',
     element: (
       <ErrorBoundary>
-        {/* <ProtectedRoute> */}
+        <ProtectedRoute>
         <Layout>
           <ItemsRubrica />
         </Layout>
-        {/* </ProtectedRoute> */}
+        </ProtectedRoute>
       </ErrorBoundary>
     ),
   },
@@ -84,11 +84,11 @@ const routes = [
     path: '/registro-proyecto-titulacion',
     element: (
       <ErrorBoundary>
-        {/* <ProtectedRoute> */}
+        <ProtectedRoute>
         <Layout>
           <RegistroTrabajosTitulacion />
         </Layout>
-        {/* </ProtectedRoute> */}
+        </ProtectedRoute>
       </ErrorBoundary>
     ),
   },
