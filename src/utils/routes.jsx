@@ -9,11 +9,10 @@ import ModalidadesTitulacion from '../presentation/pages/modalidadesTitulacion';
 import ItemsRevista from '../presentation/pages/itemsRevista';
 import ItemsRubrica from '../presentation/pages/itemsRubrica';
 import RegistroTrabajosTitulacion from '../presentation/pages/registroTrabajosTitulacion';
-import AsignacionTribunal from '../presentation/pages/asignacionTribunal';
-import EvaluacionTesis from '../presentation/pages/evaluacionTesis';
-import EvaluacionArticulo from '../presentation/pages/evaluacionArticulo';
+
 
 import { RutaRaiz } from './constants';
+import CalificacionUI from '../presentation/pages/calificar';
 
 const routes = [
   {
@@ -48,11 +47,11 @@ const routes = [
     path: '/modalidades',
     element: (
       <ErrorBoundary>
-        {/* <ProtectedRoute> */}
-        <Layout>
-          <ModalidadesTitulacion />
-        </Layout>
-        {/* </ProtectedRoute> */}
+        <ProtectedRoute>
+          <Layout>
+            <ModalidadesTitulacion />
+          </Layout>
+        </ProtectedRoute>
       </ErrorBoundary>
     ),
   },
@@ -60,11 +59,11 @@ const routes = [
     path: '/items-revista',
     element: (
       <ErrorBoundary>
-        {/* <ProtectedRoute> */}
-        <Layout>
-          <ItemsRevista />
-        </Layout>
-        {/* </ProtectedRoute> */}
+        <ProtectedRoute>
+          <Layout>
+            <ItemsRevista />
+          </Layout>
+        </ProtectedRoute>
       </ErrorBoundary>
     ),
   },
@@ -72,11 +71,11 @@ const routes = [
     path: '/items-rubrica',
     element: (
       <ErrorBoundary>
-        {/* <ProtectedRoute> */}
-        <Layout>
-          <ItemsRubrica />
-        </Layout>
-        {/* </ProtectedRoute> */}
+        <ProtectedRoute>
+          <Layout>
+            <ItemsRubrica />
+          </Layout>
+        </ProtectedRoute>
       </ErrorBoundary>
     ),
   },
@@ -84,11 +83,23 @@ const routes = [
     path: '/registro-proyecto-titulacion',
     element: (
       <ErrorBoundary>
-        {/* <ProtectedRoute> */}
-        <Layout>
-          <RegistroTrabajosTitulacion />
-        </Layout>
-        {/* </ProtectedRoute> */}
+        <ProtectedRoute>
+          <Layout>
+            <RegistroTrabajosTitulacion />
+          </Layout>
+        </ProtectedRoute>
+      </ErrorBoundary>
+    ),
+  },
+  {
+    path: '/calificar',
+    element: (
+      <ErrorBoundary>
+        <ProtectedRoute>
+          <Layout>
+            <CalificacionUI />
+          </Layout>
+        </ProtectedRoute>
       </ErrorBoundary>
     ),
   },

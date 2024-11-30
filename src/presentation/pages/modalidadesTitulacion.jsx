@@ -1,186 +1,172 @@
-// Import React and Tailwind CSS
-import { useState, useEffect } from "react";
+import { useState } from 'react';
+import PropTypes from 'prop-types';
 
-const AdminCarrerasModalidades = () => {
-    const [carreras, setCarreras] = useState([]); // List of carreras
-    const [modalidades, setModalidades] = useState([]); // List of modalidades
-    const [carreraModalidades, setCarreraModalidades] = useState([]); // Associations
-
-    const [selectedCarrera, setSelectedCarrera] = useState("");
-    const [selectedModalidad, setSelectedModalidad] = useState("");
-
-    const [newCarrera, setNewCarrera] = useState("");
-    const [newModalidad, setNewModalidad] = useState("");
-// 
-    // Mock data fetching (replace with API calls)
-    useEffect(() => {
-        // Replace with real API calls
-        setCarreras([
-            { id: 1, nombre: "INGENIERIA DE SISTEMAS DE INFORMACION" },
-            { id: 2, nombre: "TECNOLOGIAS DE LA INFORMACION Y LA COMUNICACION" },
-            { id: 3, nombre: "INGENIERIA DE SOFWARE" },
-        ]);
-        setModalidades([
-            { id: 1, nombre: "PROPUESTA TECNOLOGICA" },
-            { id: 2, nombre: "ARTICULO ACADEMICO" },
-        ]);
-        setCarreraModalidades([
-            { id: 1, id_carrera: 1, id_modalidad: 1 },
-            { id: 2, id_carrera: 1, id_modalidad: 2 },
-        ]);
-    }, []);
-
-    const handleAddAssociation = () => {
-        if (selectedCarrera && selectedModalidad) {
-            setCarreraModalidades([
-                ...carreraModalidades,
+const ModalidadesTitulacion = () => {
+    // Datos de prueba
+    const [faculties, setFaculties] = useState([
+        {
+            id: 1,
+            name: 'Ciencias Informáticas',
+            careers: [
                 {
-                    id: carreraModalidades.length + 1,
-                    id_carrera: parseInt(selectedCarrera),
-                    id_modalidad: parseInt(selectedModalidad),
+                    id: 1,
+                    name: 'Tecnología de la Información',
+                    modalities: ['Tesis', 'Examen General', 'Proyecto Integrador'],
                 },
-            ]);
-            setSelectedCarrera("");
-            setSelectedModalidad("");
-        }
+                // {
+                //     id: 2,
+                //     name: 'Telecomunicaciones',
+                //     modalities: ['Tesis', 'Examen General'],
+                // },
+            ],
+        },
+    ]);
+
+    const [selectedCareer, setSelectedCareer] = useState(null);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [editingMode, setEditingMode] = useState(false);
+    const [modalInput, setModalInput] = useState('');
+
+    const openModal = (career) => {
+        setSelectedCareer(career);
+        setModalVisible(true);
+        setEditingMode(false);
+        setModalInput('');
     };
 
-    const handleRemoveAssociation = (id) => {
-        setCarreraModalidades(carreraModalidades.filter((item) => item.id !== id));
+    const handleAddModal = () => {
+        if (!modalInput.trim()) return;
+        const updatedFaculties = faculties.map((faculty) => ({
+            ...faculty,
+            careers: faculty.careers.map((career) =>
+                career.id === selectedCareer.id
+                    ? { ...career, modalities: [...career.modalities, modalInput] }
+                    : career
+            ),
+        }));
+        setFaculties(updatedFaculties);
+        setModalInput('');
+        setModalVisible(false);
     };
 
-    const handleAddCarrera = () => {
-        if (newCarrera.trim() !== "") {
-            setCarreras([...carreras, { id: carreras.length + 1, nombre: newCarrera }]);
-            setNewCarrera("");
-        }
-    };
-
-    const handleAddModalidad = () => {
-        if (newModalidad.trim() !== "") {
-            setModalidades([...modalidades, { id: modalidades.length + 1, nombre: newModalidad }]);
-            setNewModalidad("");
-        }
+    const handleDeleteModal = (careerId, modality) => {
+        const updatedFaculties = faculties.map((faculty) => ({
+            ...faculty,
+            careers: faculty.careers.map((career) =>
+                career.id === careerId
+                    ? {
+                        ...career,
+                        modalities: career.modalities.filter((mod) => mod !== modality),
+                    }
+                    : career
+            ),
+        }));
+        setFaculties(updatedFaculties);
     };
 
     return (
-        <div className="p-8 bg-gray-100 min-h-screen">
-            <h1 className="text-2xl font-bold mb-4">Administrar Modalidades de Titulación por Carrera</h1>
+        <div className="min-h-screen bg-gray-100 p-6">
+            <h1 className="text-2xl font-bold text-gray-800 mb-4">Gestión de Modalidades de Titulación</h1>
 
-            {/* Form to Add Association */}
-            <div className="bg-white p-4 shadow rounded mb-6">
-                <h2 className="text-xl font-semibold mb-4">Agregar Modalidad a Carrera</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label className="block mb-2 font-medium">Selecciona Carrera</label>
-                        <select
-                            value={selectedCarrera}
-                            onChange={(e) => setSelectedCarrera(e.target.value)}
-                            className="w-full p-2 border rounded"
-                        >
-                            <option value="">-- Selecciona --</option>
-                            {carreras.map((carrera) => (
-                                <option key={carrera.id} value={carrera.id}>
-                                    {carrera.nombre}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div>
-                        <label className="block mb-2 font-medium">Selecciona Modalidad</label>
-                        <select
-                            value={selectedModalidad}
-                            onChange={(e) => setSelectedModalidad(e.target.value)}
-                            className="w-full p-2 border rounded"
-                        >
-                            <option value="">-- Selecciona --</option>
-                            {modalidades.map((modalidad) => (
-                                <option key={modalidad.id} value={modalidad.id}>
-                                    {modalidad.nombre}
-                                </option>
-                            ))}
-                        </select>
+            {faculties.map((faculty) => (
+                <div key={faculty.id} className="mb-6">
+                    <h2 className="text-xl font-semibold text-blue-600">{faculty.name}</h2>
+                    {faculty.careers.map((career) => (
+                        <div key={career.id} className="bg-white shadow p-4 rounded mt-4">
+                            <h3 className="text-lg font-medium text-gray-700">{career.name}</h3>
+                            <ModalitiesTable
+                                career={career}
+                                onAdd={() => openModal(career)}
+                                onDelete={handleDeleteModal}
+                            />
+                        </div>
+                    ))}
+                </div>
+            ))}
+
+            {modalVisible && (
+                <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
+                    <div className="bg-white rounded p-6 shadow w-96">
+                        <h3 className="text-lg font-bold text-gray-700">
+                            {editingMode ? 'Editar Modalidad' : 'Agregar Modalidad'}
+                        </h3>
+                        <input
+                            type="text"
+                            className="border border-gray-300 rounded w-full mt-4 p-2"
+                            placeholder="Nombre de la modalidad"
+                            value={modalInput}
+                            onChange={(e) => setModalInput(e.target.value)}
+                        />
+                        <div className="mt-4 flex justify-end space-x-2">
+                            <button
+                                className="bg-gray-300 text-gray-700 px-4 py-2 rounded"
+                                onClick={() => setModalVisible(false)}
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                className="bg-blue-600 text-white px-4 py-2 rounded"
+                                onClick={handleAddModal}
+                            >
+                                Guardar
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <button
-                    onClick={handleAddAssociation}
-                    className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                >
-                    Agregar
-                </button>
-            </div>
-
-            {/* List of Associations */}
-            <div className="bg-white p-4 shadow rounded mb-6">
-                <h2 className="text-xl font-semibold mb-4">Modalidades por Carrera</h2>
-                <table className="w-full border-collapse border border-gray-300">
-                    <thead>
-                        <tr className="bg-gray-200">
-                            <th className="border border-gray-300 p-2">Carrera</th>
-                            <th className="border border-gray-300 p-2">Modalidad</th>
-                            <th className="border border-gray-300 p-2">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {carreraModalidades.map((assoc) => {
-                            const carrera = carreras.find((c) => c.id === assoc.id_carrera);
-                            const modalidad = modalidades.find((m) => m.id === assoc.id_modalidad);
-                            return (
-                                <tr key={assoc.id}>
-                                    <td className="border border-gray-300 p-2">{carrera?.nombre}</td>
-                                    <td className="border border-gray-300 p-2">{modalidad?.nombre}</td>
-                                    <td className="border border-gray-300 p-2 text-center">
-                                        <button
-                                            onClick={() => handleRemoveAssociation(assoc.id)}
-                                            className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-                                        >
-                                            Eliminar
-                                        </button>
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
-            </div>
-
-            {/* Add Carrera */}
-            <div className="bg-white p-4 shadow rounded mb-6">
-                <h2 className="text-xl font-semibold mb-4">Agregar Carrera</h2>
-                <input
-                    type="text"
-                    value={newCarrera}
-                    onChange={(e) => setNewCarrera(e.target.value)}
-                    placeholder="Nombre de la carrera"
-                    className="w-full p-2 border rounded mb-4"
-                />
-                <button
-                    onClick={handleAddCarrera}
-                    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-                >
-                    Agregar Carrera
-                </button>
-            </div>
-
-            {/* Add Modalidad */}
-            <div className="bg-white p-4 shadow rounded mb-6">
-                <h2 className="text-xl font-semibold mb-4">Agregar Modalidad</h2>
-                <input
-                    type="text"
-                    value={newModalidad}
-                    onChange={(e) => setNewModalidad(e.target.value)}
-                    placeholder="Nombre de la modalidad"
-                    className="w-full p-2 border rounded mb-4"
-                />
-                <button
-                    onClick={handleAddModalidad}
-                    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-                >
-                    Agregar Modalidad
-                </button>
-            </div>
+            )}
         </div>
     );
 };
 
-export default AdminCarrerasModalidades;
+const ModalitiesTable = ({ career, onAdd, onDelete }) => {
+    return (
+        <div className="mt-2">
+            <table className="w-full table-auto border-collapse border border-gray-200">
+                <thead>
+                    <tr className="bg-gray-100">
+                        <th className="border border-gray-200 p-2 text-left">Modalidad</th>
+                        <th className="border border-gray-200 p-2 text-right">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {career.modalities.map((modality, index) => (
+                        <tr key={index}>
+                            <td className="border border-gray-200 p-2">{modality}</td>
+                            <td className="border border-gray-200 p-2 text-right">
+                                <button
+                                    className="text-red-600 hover:text-red-800 font-bold"
+                                    onClick={() => onDelete(career.id, modality)}
+                                >
+                                    Eliminar
+                                </button>
+                            </td>
+                        </tr>
+                    ))}
+                    <tr>
+                        <td colSpan="2" className="p-2 text-right">
+                            <button
+                                className="bg-blue-600 text-white px-4 py-2 rounded"
+                                onClick={onAdd}
+                            >
+                                Agregar Modalidad
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    );
+};
+
+ModalidadesTitulacion.propTypes = {
+    faculties: PropTypes.array.isRequired,
+    setFaculties: PropTypes.func.isRequired,
+};
+
+ModalitiesTable.propTypes = {
+    career: PropTypes.object.isRequired,
+    onAdd: PropTypes.func.isRequired,
+    onDelete: PropTypes.func.isRequired,
+};
+
+export default ModalidadesTitulacion;
