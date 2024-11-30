@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import ModalBusqueda from "../components/ModalBusqueda";
+import ModalCalificarRubrica from "../components/ModalCalificarRubrica";
 import DynamicModal from "../components/modal/ModalData";
 import ModalAsignarTribunal from "../pages/asignacionTribunal";
 
@@ -19,6 +20,7 @@ const RegistroTrabajosTitulacion = () => {
     const [selectedTrabajo, setSelectedTrabajo] = useState(null);
     const [isModalDataOpen, setIsModalDataOpen] = useState(false);
     const [isModalTribunalOpen, setIsModalTribunalOpen] = useState(false);
+    const [isModalRubricaOpen, setIsModalRubricaOpen] = useState(false);
 
     const handleOpenModalTribunal = (trabajo) => {
         setSelectedTrabajo(trabajo);
@@ -37,6 +39,28 @@ const RegistroTrabajosTitulacion = () => {
         );
         alert("Tribunal asignado exitosamente.");
     };
+
+    // Handler para abrir el modal
+    const handleOpenModalRubrica = (trabajo) => {
+        setSelectedTrabajo(trabajo); // Guardar el trabajo seleccionado
+        setIsModalRubricaOpen(true); // Abrir el modal
+    };
+
+    // Handler para cerrar el modal
+    const handleCloseModalRubrica = () => {
+        setIsModalRubricaOpen(false); // Cerrar el modal
+    };
+
+    // Handler para guardar las calificaciones de la rúbrica
+    const handleSaveRubrica = (updatedTrabajo) => {
+        setProyectos((prevProyectos) =>
+            prevProyectos.map((proyecto) =>
+                proyecto.id === updatedTrabajo.id ? updatedTrabajo : proyecto
+            )
+        );
+        alert("Calificaciones de la rúbrica guardadas exitosamente.");
+    };
+
 
     const handleOpenModal = (tipo) => {
         setIsModalOpen({ tipo, abierto: true });
@@ -263,6 +287,12 @@ const RegistroTrabajosTitulacion = () => {
                                         >
                                             Asignar tribunal
                                         </button>
+                                        <button
+                                            className="px-2 py-1 bg-gray-500 ml-2 text-white rounded hover:bg-gray-600"
+                                            onClick={() => handleOpenModalRubrica(proyecto)}
+                                        >
+                                            Calificar
+                                        </button>
                                     </td>
                                 </tr>
                             ))
@@ -292,6 +322,20 @@ const RegistroTrabajosTitulacion = () => {
                 isOpen={isModalTribunalOpen}
                 onClose={handleCloseModalTribunal}
                 onAssign={handleAssignTribunal}
+                trabajo={selectedTrabajo}
+            />
+            {/* <ModalCalificarRubrica
+                isOpen={isModalRubricaOpen}
+                onClose={handleCloseModalRubrica}
+                trabajo={selectedTrabajo}
+                onSave={handleSaveRubrica}
+            /> */}
+
+            <ModalCalificarRubrica
+                isOpen={isModalRubricaOpen}
+                onClose={handleCloseModalRubrica}
+                integrantesTrabajo={selectedTrabajo?.integrantes}
+                // onAssign={handleAssignTribunal}
                 trabajo={selectedTrabajo}
             />
         </div>
