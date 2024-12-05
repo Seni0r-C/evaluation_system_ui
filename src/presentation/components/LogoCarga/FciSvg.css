@@ -1,4 +1,4 @@
-.linea-animada {
+.s0 {
   stroke-dasharray: 1000;
   stroke-dashoffset: 1000;
   animation: dibujarYborrar 2.5s linear infinite;
