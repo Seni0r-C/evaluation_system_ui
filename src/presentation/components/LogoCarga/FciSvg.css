@@ -1,15 +1,32 @@
 .s0 {
-  stroke-dasharray: 1000;
-  stroke-dashoffset: 1000;
-  animation: dibujarYborrar 2.5s linear infinite;
+  stroke-dasharray: 2000;
+  stroke-dashoffset: 2000;
+  animation: dibujarYborrar 4s linear infinite;
 }
 
 @keyframes dibujarYborrar {
   0% {
-    stroke-dashoffset: 1000;
+    stroke-dashoffset: 2000;
   }
 
   100% {
-    stroke-dashoffset: -1000;
+    stroke-dashoffset: -2000;
   }
+}
+
+/* Animación para el relleno */
+@keyframes animateFill {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
+
+.s1 {
+  animation:  animateFill 1s ease-in-out infinite;
 }
