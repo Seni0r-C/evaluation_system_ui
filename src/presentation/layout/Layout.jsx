@@ -99,7 +99,10 @@ const Layout = ({ children }) => {
                             <IoMdMenu className="h-6 w-6" />
                         )}
                     </button>
-                    <img src={logo} alt="Logo de Portocomercio" className="h-14 w-auto" />
+                    <Link to={RutaRaiz}>
+                        <img src={logo} alt="Logo de Portocomercio" className="h-14 w-auto" />
+                    </Link>
+
                 </div>
                 <div className="relative">
                     <div

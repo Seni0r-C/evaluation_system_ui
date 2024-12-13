@@ -13,6 +13,7 @@ import RegistroTrabajosTitulacion from '../presentation/pages/registroTrabajosTi
 
 import { RutaRaiz } from './constants';
 import CalificacionUI from '../presentation/pages/calificar';
+import TrabajosTitulacion from '../presentation/pages/trabajosTitulacion';
 
 const routes = [
   {
@@ -50,6 +51,18 @@ const routes = [
         <ProtectedRoute>
           <Layout>
             <ModalidadesTitulacion />
+          </Layout>
+        </ProtectedRoute>
+      </ErrorBoundary>
+    ),
+  },
+  {
+    path: '/ingresar-trabajos',
+    element: (
+      <ErrorBoundary>
+        <ProtectedRoute>
+          <Layout>
+            <TrabajosTitulacion />
           </Layout>
         </ProtectedRoute>
       </ErrorBoundary>
