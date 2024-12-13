@@ -1,172 +1,224 @@
-import { useState } from 'react';
-import PropTypes from 'prop-types';
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { API_URL } from "../../utils/constants";
 
 const ModalidadesTitulacion = () => {
-    // Datos de prueba
-    const [faculties, setFaculties] = useState([
-        {
-            id: 1,
-            name: 'Ciencias Informáticas',
-            careers: [
-                {
-                    id: 1,
-                    name: 'Tecnología de la Información',
-                    modalities: ['Tesis', 'Examen General', 'Proyecto Integrador'],
-                },
-                // {
-                //     id: 2,
-                //     name: 'Telecomunicaciones',
-                //     modalities: ['Tesis', 'Examen General'],
-                // },
-            ],
-        },
-    ]);
+    const [modalidades, setModalidades] = useState([]);
+    const [formData, setFormData] = useState({ nombre: "", max_participantes: "" });
+    const [selectedId, setSelectedId] = useState(null);
+    const [carreras, setCarreras] = useState([]);
+    const [selectedCarrera, setSelectedCarrera] = useState("");
+    const [asociaciones, setAsociaciones] = useState([]);
 
-    const [selectedCareer, setSelectedCareer] = useState(null);
-    const [modalVisible, setModalVisible] = useState(false);
-    const [editingMode, setEditingMode] = useState(false);
-    const [modalInput, setModalInput] = useState('');
-
-    const openModal = (career) => {
-        setSelectedCareer(career);
-        setModalVisible(true);
-        setEditingMode(false);
-        setModalInput('');
+    // Fetch modalidades
+    const fetchModalidades = async () => {
+        try {
+            const res = await axios.get(API_URL + "/modalidad-titulacion/listar");
+            setModalidades(res.data);
+        } catch (err) {
+            console.error(err);
+        }
     };
 
-    const handleAddModal = () => {
-        if (!modalInput.trim()) return;
-        const updatedFaculties = faculties.map((faculty) => ({
-            ...faculty,
-            careers: faculty.careers.map((career) =>
-                career.id === selectedCareer.id
-                    ? { ...career, modalities: [...career.modalities, modalInput] }
-                    : career
-            ),
-        }));
-        setFaculties(updatedFaculties);
-        setModalInput('');
-        setModalVisible(false);
+    // Fetch carreras
+    const fetchCarreras = async () => {
+        try {
+            const res = await axios.get(API_URL + "/carrera/listar");
+            setCarreras(res.data.datos);
+        } catch (err) {
+            console.error(err);
+        }
     };
 
-    const handleDeleteModal = (careerId, modality) => {
-        const updatedFaculties = faculties.map((faculty) => ({
-            ...faculty,
-            careers: faculty.careers.map((career) =>
-                career.id === careerId
-                    ? {
-                        ...career,
-                        modalities: career.modalities.filter((mod) => mod !== modality),
-                    }
-                    : career
-            ),
-        }));
-        setFaculties(updatedFaculties);
+    // Fetch asociaciones por carrera
+    const fetchAsociaciones = async (idCarrera) => {
+        try {
+            const res = await axios.get(`${API_URL}/modalidad-titulacion/listarPorCarrera/${idCarrera}`);
+            setAsociaciones(res.data);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    useEffect(() => {
+        fetchModalidades();
+        fetchCarreras();
+    }, []);
+
+    // Handle input changes
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
+
+    // Create or update modalidad
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            if (selectedId) {
+                await axios.put(`${API_URL}/modalidad-titulacion/actualizar/${selectedId}`, formData);
+            } else {
+                await axios.post(API_URL + "/modalidad-titulacion/crear", formData);
+            }
+            setFormData({ nombre: "", max_participantes: "" });
+            setSelectedId(null);
+            fetchModalidades();
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    // Edit modalidad
+    const handleEdit = (modalidad) => {
+        setFormData({ nombre: modalidad.nombre, max_participantes: modalidad.max_participantes });
+        setSelectedId(modalidad.id);
+    };
+
+    // Delete modalidad
+    const handleDelete = async (id) => {
+        try {
+            await axios.delete(`${API_URL}/modalidad-titulacion/eliminar/${id}`);
+            fetchModalidades();
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    // Associate modalidad with carrera
+    const handleAsociar = async (idModalidad) => {
+        try {
+            await axios.post(API_URL + "/modalidad-titulacion/asociar", { id_carrera: selectedCarrera, id_modalidad_titulacion: idModalidad });
+            fetchAsociaciones(selectedCarrera);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    // Disassociate modalidad from carrera
+    const handleDesasociar = async (idModalidad) => {
+        try {
+            await axios.delete(API_URL + "/modalidad-titulacion/desasociar", { data: { id_carrera: selectedCarrera, id_modalidad_titulacion: idModalidad } });
+            fetchAsociaciones(selectedCarrera);
+        } catch (err) {
+            console.error(err);
+        }
     };
 
     return (
-        <div className="min-h-screen bg-gray-100 p-6">
-            <h1 className="text-2xl font-bold text-gray-800 mb-4">Gestión de Modalidades de Titulación</h1>
+        <div className="p-6 space-y-6">
+            <h1 className="text-2xl font-bold">Gestión de Modalidades de Titulación</h1>
 
-            {faculties.map((faculty) => (
-                <div key={faculty.id} className="mb-6">
-                    <h2 className="text-xl font-semibold text-blue-600">{faculty.name}</h2>
-                    {faculty.careers.map((career) => (
-                        <div key={career.id} className="bg-white shadow p-4 rounded mt-4">
-                            <h3 className="text-lg font-medium text-gray-700">{career.name}</h3>
-                            <ModalitiesTable
-                                career={career}
-                                onAdd={() => openModal(career)}
-                                onDelete={handleDeleteModal}
-                            />
-                        </div>
-                    ))}
+            {/* Formulario de Modalidades */}
+            <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="flex flex-col space-y-2">
+                    <label className="font-semibold">Nombre:</label>
+                    <input
+                        type="text"
+                        name="nombre"
+                        value={formData.nombre}
+                        onChange={handleInputChange}
+                        className="p-2 border rounded"
+                        required
+                    />
                 </div>
-            ))}
-
-            {modalVisible && (
-                <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
-                    <div className="bg-white rounded p-6 shadow w-96">
-                        <h3 className="text-lg font-bold text-gray-700">
-                            {editingMode ? 'Editar Modalidad' : 'Agregar Modalidad'}
-                        </h3>
-                        <input
-                            type="text"
-                            className="border border-gray-300 rounded w-full mt-4 p-2"
-                            placeholder="Nombre de la modalidad"
-                            value={modalInput}
-                            onChange={(e) => setModalInput(e.target.value)}
-                        />
-                        <div className="mt-4 flex justify-end space-x-2">
-                            <button
-                                className="bg-gray-300 text-gray-700 px-4 py-2 rounded"
-                                onClick={() => setModalVisible(false)}
-                            >
-                                Cancelar
-                            </button>
-                            <button
-                                className="bg-blue-600 text-white px-4 py-2 rounded"
-                                onClick={handleAddModal}
-                            >
-                                Guardar
-                            </button>
-                        </div>
-                    </div>
+                <div className="flex flex-col space-y-2">
+                    <label className="font-semibold">Máximo de Participantes:</label>
+                    <input
+                        type="number"
+                        name="max_participantes"
+                        value={formData.max_participantes}
+                        onChange={handleInputChange}
+                        className="p-2 border rounded"
+                        required
+                    />
                 </div>
-            )}
-        </div>
-    );
-};
+                <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded">
+                    {selectedId ? "Actualizar" : "Crear"}
+                </button>
+            </form>
 
-const ModalitiesTable = ({ career, onAdd, onDelete }) => {
-    return (
-        <div className="mt-2">
-            <table className="w-full table-auto border-collapse border border-gray-200">
-                <thead>
-                    <tr className="bg-gray-100">
-                        <th className="border border-gray-200 p-2 text-left">Modalidad</th>
-                        <th className="border border-gray-200 p-2 text-right">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {career.modalities.map((modality, index) => (
-                        <tr key={index}>
-                            <td className="border border-gray-200 p-2">{modality}</td>
-                            <td className="border border-gray-200 p-2 text-right">
+            {/* Lista de Modalidades */}
+            <div>
+                <h2 className="text-xl font-bold">Modalidades Existentes</h2>
+                <ul className="space-y-2">
+                    {modalidades.map((modalidad) => (
+                        <li key={modalidad.id} className="p-2 border rounded flex justify-between items-center">
+                            <span>{modalidad.nombre} (Máx: {modalidad.max_participantes})</span>
+                            <div className="space-x-2">
                                 <button
-                                    className="text-red-600 hover:text-red-800 font-bold"
-                                    onClick={() => onDelete(career.id, modality)}
+                                    onClick={() => handleEdit(modalidad)}
+                                    className="px-2 py-1 bg-yellow-500 text-white rounded"
+                                >
+                                    Editar
+                                </button>
+                                <button
+                                    onClick={() => handleDelete(modalidad.id)}
+                                    className="px-2 py-1 bg-red-500 text-white rounded"
                                 >
                                     Eliminar
                                 </button>
-                            </td>
-                        </tr>
+                            </div>
+                        </li>
                     ))}
-                    <tr>
-                        <td colSpan="2" className="p-2 text-right">
-                            <button
-                                className="bg-blue-600 text-white px-4 py-2 rounded"
-                                onClick={onAdd}
-                            >
-                                Agregar Modalidad
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                </ul>
+            </div>
+
+            {/* Gestión de Asociaciones */}
+            <div>
+                <h2 className="text-xl font-bold">Asociar Modalidades a Carreras</h2>
+                <div className="space-y-4">
+                    <div className="flex flex-col space-y-2">
+                        <label className="font-semibold">Seleccionar Carrera:</label>
+                        <select
+                            onChange={(e) => {
+                                setSelectedCarrera(e.target.value);
+                                fetchAsociaciones(e.target.value);
+                            }}
+                            value={selectedCarrera}
+                            className="p-2 border rounded"
+                        >
+                            <option value="">Seleccione una carrera</option>
+                            {carreras.map((carrera) => (
+                                <option key={carrera.id} value={carrera.id}>
+                                    {carrera.nombre}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <h3 className="font-semibold">Modalidades Asociadas</h3>
+                    <ul className="space-y-2">
+                        {asociaciones.map((asociacion) => (
+                            <li key={asociacion.id} className="p-2 border rounded flex justify-between items-center">
+                                <span>{asociacion.nombre}</span>
+                                <button
+                                    onClick={() => handleDesasociar(asociacion.id)}
+                                    className="px-2 py-1 bg-red-500 text-white rounded"
+                                >
+                                    Desasociar
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+
+                    <h3 className="font-semibold">Modalidades Disponibles</h3>
+                    <ul className="space-y-2">
+                        {modalidades.map((modalidad) => (
+                            <li key={modalidad.id} className="p-2 border rounded flex justify-between items-center">
+                                <span>{modalidad.nombre}</span>
+                                <button
+                                    onClick={() => handleAsociar(modalidad.id)}
+                                    className="px-2 py-1 bg-green-500 text-white rounded"
+                                >
+                                    Asociar
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            </div>
         </div>
     );
-};
-
-ModalidadesTitulacion.propTypes = {
-    faculties: PropTypes.array.isRequired,
-    setFaculties: PropTypes.func.isRequired,
-};
-
-ModalitiesTable.propTypes = {
-    career: PropTypes.object.isRequired,
-    onAdd: PropTypes.func.isRequired,
-    onDelete: PropTypes.func.isRequired,
 };
 
 export default ModalidadesTitulacion;
