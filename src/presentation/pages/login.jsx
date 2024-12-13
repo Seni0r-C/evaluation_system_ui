@@ -1,5 +1,5 @@
 import { useState } from "react";
-import logo from "../../assets/logo_utm.webp";
+import logo from "../../assets/logo_inicio.png";
 import { useNavigate } from "react-router-dom";
 import LoadingScreen from "../components/LoadingScreen";
 import MessageDialog from "../components/MessageDialog";
@@ -83,13 +83,20 @@ const Login = () => {
                     className="absolute top-0 left-0 w-full h-full bg-cover bg-center"
                     style={{
                         backgroundImage: `url(${background})`,
-                        filter: 'blur(5px) brightness(0.7)',
                         zIndex: -1,
                     }}
-                />
+                >
+                    <div
+                        style={{
+                            backdropFilter: 'blur(5px) brightness(0.5)',
+                            width: '100%',
+                            height: '100%',
+                        }}
+                    />
+                </div>
 
                 {/* Contenedor del logo a la izquierda en pantallas grandes */}
-                <div className="mx-8 flex md:w-1/3 justify-center items-center mr-5">
+                <div className="mx-8 flex md:w-1/3 justify-center items-center mr-5 md:mt-0 mt-10">
                     <img
                         src={logo}
                         alt="Logo de al Universidad Técnica de Manabí"
@@ -100,9 +107,6 @@ const Login = () => {
                 {/* Contenedor del formulario a la derecha */}
                 <div className="max-w-lg w-full md:w-1/2 md:bg-white md:bg-opacity-10 p-10 rounded-lg md:shadow-xl backdrop-filter md:backdrop-blur-xl">
                     <form onSubmit={handleSubmit} className="text-white">
-                        <h2 className="text-center text-3xl font-semibold mb-4">
-                            Sistema de Calificación de Titulación
-                        </h2>
                         <div className="mb-4">
                             <label
                                 htmlFor="email"
