@@ -41,6 +41,13 @@ const Login = () => {
                 // Guardar la fecha de creación del token en localStorage
                 localStorage.setItem('tokenCreationTime', new Date().getTime());
 
+                const info = await axios.get(`${API_URL}/auth/me`);
+
+                if (info.data.exito == true) {
+                    // Guardar el nombre del usuario en localStorage
+                    localStorage.setItem('userInfo', JSON.stringify(info.data.datos));
+                }
+
                 // Marcar como autenticado
                 setIsAuthenticated(true);
                 // Navegar a la página principal
