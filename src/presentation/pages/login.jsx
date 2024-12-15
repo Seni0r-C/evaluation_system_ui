@@ -14,7 +14,7 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false); // Controla la visibilidad de la contraseña
     const [errorMessage, setErrorMessage] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [showMessage, setShowMessage] = useState(false);
 
     const navigate = useNavigate();
