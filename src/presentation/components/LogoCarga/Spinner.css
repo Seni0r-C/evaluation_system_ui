@@ -1,40 +1,25 @@
 /* CSS */
 .spinner {
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.spinner div {
-    box-sizing: border-box;
-    display: block;
-    position: absolute;
+.spinner .circle {
     width: 100%;
     height: 100%;
-    border: 6px solid transparent;
+    border: 12px solid transparent;
+    border-top: 12px solid #fff;
+    border-right: 12px solid #f8cf12;
+    border-bottom: 12px solid #fff;
+    border-left: 12px solid #0e9343;
     border-radius: 50%;
-    animation: spin 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite, pulse 1.2s ease-in-out infinite;
-}
-
-.spinner div:nth-child(1) {
-    border-top-color: #ff6f61;
-    border-left-color: #f7e018;
-    animation-delay: -0.4s;
-}
-
-.spinner div:nth-child(2) {
-    border-top-color: #36d1dc;
-    border-left-color: #5b86e5;
-    animation-delay: -0.2s;
-}
-
-.spinner div:nth-child(3) {
-    border-top-color: #ff9a9e;
-    border-left-color: #fad0c4;
-    animation-delay: 0s;
+    animation: spin 2s linear infinite, glow 1.5s ease-in-out infinite;
+    background: radial-gradient(circle, rgba(255,255,255,0.3), rgba(0,0,0,0.1));
+    box-shadow: 0 0 20px rgba(255, 111, 97, 0.8), 0 0 40px rgba(255, 215, 0, 0.6), 0 0 60px rgba(54, 209, 220, 0.4);
 }
 
 @keyframes spin {
@@ -46,13 +31,11 @@
     }
 }
 
-@keyframes pulse {
+@keyframes glow {
     0%, 100% {
-        transform: scale(1);
-        opacity: 1;
+        box-shadow: 0 0 20px rgba(255, 111, 97, 0.8), 0 0 40px rgba(255, 215, 0, 0.6), 0 0 60px rgba(54, 209, 220, 0.4);
     }
     50% {
-        transform: scale(1.1);
-        opacity: 0.7;
+        box-shadow: 0 0 40px rgba(255, 111, 97, 1), 0 0 80px rgba(255, 215, 0, 0.8), 0 0 120px rgba(54, 209, 220, 0.6);
     }
 }
