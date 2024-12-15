@@ -2,7 +2,7 @@ import './FciSvg.css';
 import PropTypes from 'prop-types';
 
 
-const FciSvg = ({ ancho = '120' }) => {
+const FciSvg = ({ ancho = 120 }) => {
     return (
         <svg  viewBox="0 0 1055 1055" width={ancho} height={ancho}>
 	<g >

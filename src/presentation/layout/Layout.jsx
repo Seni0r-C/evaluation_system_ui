@@ -54,8 +54,8 @@ const Layout = ({ children }) => {
         const userInfo = localStorage.getItem('userInfo');
         if (userInfo) {
             const userInfoParsed = JSON.parse(userInfo);
-            const nombre = userInfoParsed[0].nombre;
-            const apellido = userInfoParsed[0].apellido;
+            const nombre = userInfoParsed.nombre;
+            const apellido = userInfoParsed.apellido;
 
             // Extraer solo el primer nombre y el primer apellido
             const primerNombre = nombre.split(' ')[0];  // Toma la primera palabra antes del espacio

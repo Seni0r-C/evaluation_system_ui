@@ -7,7 +7,7 @@ const LoadingScreen = ({ isLoading, mensaje = "Cargando..." }) => {
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
             <div className="flex flex-col items-center">
-                <FciSvg ancho='300'/>
+                <FciSvg ancho={300}/>
                 <p className="mt-4 text-xl font-medium text-[#f7f7f7]">{mensaje}</p>
             </div>
         </div>

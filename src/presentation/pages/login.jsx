@@ -41,7 +41,13 @@ const Login = () => {
                 // Guardar la fecha de creación del token en localStorage
                 localStorage.setItem('tokenCreationTime', new Date().getTime());
 
-                const info = await axios.get(`${API_URL}/auth/me`);
+                const info = await axios.get(`${API_URL}/auth/me`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${data.datos}`,
+                        },
+                    },
+                );
 
                 if (info.data.exito == true) {
                     // Guardar el nombre del usuario en localStorage
