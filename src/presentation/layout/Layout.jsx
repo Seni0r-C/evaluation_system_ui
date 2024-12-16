@@ -93,7 +93,7 @@ const Layout = ({ children }) => {
     return (
         <div className="min-h-screen flex flex-col bg-[#2a8c44] text-gray-800">
             {/* Barra superior */}
-            <header className="bg-gray-100 text-gray-800 p-2 flex justify-between items-center shadow-lg z-50 fixed w-full top-0 left-0">
+            <header className="bg-gray-100 text-gray-800 p-2 flex justify-between items-center shadow-md z-50 fixed w-full top-0 left-0">
                 <div className="flex items-center space-x-4">
                     <button
                         onClick={toggleSidebar}
