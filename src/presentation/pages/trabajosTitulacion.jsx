@@ -1,188 +1,175 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
-import { API_URL } from "../../utils/constants";
+import{ useEffect, useState } from 'react';
+import axios from 'axios';
+import { API_URL } from '../../utils/constants';
 
-const TrabajosTitulacion = () => {
-    const [trabajos, setTrabajos] = useState([]);
-    const [formData, setFormData] = useState({
-        carrera_id: "",
-        modalidad_id: "",
-        tutor_id: "",
-        cotutor_id: "",
-        titulo: "",
-        link_archivo: "",
-    });
+const CrearTrabajo = () => {
+  const [carreras, setCarreras] = useState([]);
+  const [modalidades, setModalidades] = useState([]);
+  const [tutores, setTutores] = useState([]);
+  const [cotutores, setCotutores] = useState([]);
 
-    const [editId, setEditId] = useState(null);
+  const [selectedCarrera, setSelectedCarrera] = useState('');
+  const [selectedModalidad, setSelectedModalidad] = useState('');
+  const [selectedTutor, setSelectedTutor] = useState('');
+  const [selectedCotutor, setSelectedCotutor] = useState('');
+  const [titulo, setTitulo] = useState('');
+  const [linkArchivo, setLinkArchivo] = useState('');
 
-    // Fetch trabajos de titulación
-    const fetchTrabajos = async () => {
-        try {
-            const response = await axios.get(API_URL + "/trabajo-titulacion/listar");
-            setTrabajos(response.data);
-        } catch (error) {
-            console.error("Error fetching trabajos:", error);
-        }
+  const [tutorSearch, setTutorSearch] = useState('');
+  const [cotutorSearch, setCotutorSearch] = useState('');
+
+  // Fetch carreras
+  useEffect(() => {
+    axios.get(API_URL+'/carrera/listar')
+      .then(response => setCarreras(response.data.datos))
+      .catch(error => console.error('Error al cargar carreras:', error));
+  }, []);
+
+  // Fetch modalidades cuando cambia la carrera seleccionada
+  useEffect(() => {
+    if (selectedCarrera) {
+      axios.get(`${API_URL}/modalidad-titulacion/listarPorCarrera/${selectedCarrera}`)
+        .then(response => setModalidades(response.data))
+        .catch(error => console.error('Error al cargar modalidades:', error));
+    }
+  }, [selectedCarrera]);
+
+  // Fetch usuarios
+  const buscarUsuarios = (query, setResults) => {
+    axios.get(`${API_URL}/usuarios`, { params: { nombre: query } })
+      .then(response => setResults(response.data))
+      .catch(error => console.error('Error al buscar usuarios:', error));
+  };
+
+  const handleCrearTrabajo = () => {
+    const trabajoData = {
+      carrera_id: selectedCarrera,
+      modalidad_id: selectedModalidad,
+      tutor_id: selectedTutor,
+      cotutor_id: selectedCotutor,
+      titulo,
+      link_archivo: linkArchivo,
     };
 
-    useEffect(() => {
-        fetchTrabajos();
-    }, []);
+    axios.post(API_URL+'/trabajo-titulacion/crear', trabajoData)
+      .then(response => {
+        alert('Trabajo creado con éxito: ' + response.data.datos.id);
+      })
+      .catch(error => console.error('Error al crear trabajo:', error));
+  };
 
-    // Handle form input changes
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
+  return (
+    <div className="p-6 max-w-4xl mx-auto">
+      <h1 className="text-2xl font-bold mb-6">Crear Trabajo de Titulación</h1>
 
-    // Handle form submission for create or update
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            if (editId) {
-                // Update trabajo
-                await axios.put(`${API_URL}/trabajo-titulacion/actualizar/${editId}`, formData);
-            } else {
-                // Create trabajo
-                await axios.post(API_URL + "/trabajo-titulacion/crear", formData);
-            }
-            setFormData({
-                carrera_id: "",
-                modalidad_id: "",
-                tutor_id: "",
-                cotutor_id: "",
-                titulo: "",
-                link_archivo: "",
-            });
-            setEditId(null);
-            fetchTrabajos();
-        } catch (error) {
-            console.error("Error saving trabajo:", error);
-        }
-    };
+      {/* Seleccionar carrera */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-2">Carrera</label>
+        <select
+          value={selectedCarrera}
+          onChange={(e) => setSelectedCarrera(e.target.value)}
+          className="w-full border rounded px-3 py-2">
+          <option value="">Seleccione una carrera</option>
+          {carreras.map(carrera => (
+            <option key={carrera.id} value={carrera.id}>{carrera.nombre}</option>
+          ))}
+        </select>
+      </div>
 
-    // Handle delete
-    const handleDelete = async (id) => {
-        try {
-            await axios.delete(`${API_URL}/trabajo-titulacion/eliminar/${id}`);
-            fetchTrabajos();
-        } catch (error) {
-            console.error("Error deleting trabajo:", error);
-        }
-    };
+      {/* Seleccionar modalidad */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-2">Modalidad</label>
+        <select
+          value={selectedModalidad}
+          onChange={(e) => setSelectedModalidad(e.target.value)}
+          className="w-full border rounded px-3 py-2">
+          <option value="">Seleccione una modalidad</option>
+          {modalidades.map(modalidad => (
+            <option key={modalidad.id} value={modalidad.id}>{modalidad.nombre}</option>
+          ))}
+        </select>
+      </div>
 
-    // Handle edit
-    const handleEdit = (trabajo) => {
-        setFormData(trabajo);
-        setEditId(trabajo.id);
-    };
+      {/* Búsqueda de tutor */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-2">Buscar Tutor</label>
+        <input
+          type="text"
+          value={tutorSearch}
+          onChange={(e) => {
+            setTutorSearch(e.target.value);
+            buscarUsuarios(e.target.value, setTutores);
+          }}
+          placeholder="Ingrese el nombre del tutor"
+          className="w-full border rounded px-3 py-2 mb-2"
+        />
+        <select
+          value={selectedTutor}
+          onChange={(e) => setSelectedTutor(e.target.value)}
+          className="w-full border rounded px-3 py-2">
+          <option value="">Seleccione un tutor</option>
+          {tutores.map(tutor => (
+            <option key={tutor.id} value={tutor.id}>{tutor.nombre} {tutor.apellido}</option>
+          ))}
+        </select>
+      </div>
 
-    return (
-        <div className="p-6 bg-gray-100 min-h-screen">
-            <h1 className="text-2xl font-bold mb-4">Gestión de Trabajos de Titulación</h1>
+      {/* Búsqueda de cotutor */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-2">Buscar Cotutor</label>
+        <input
+          type="text"
+          value={cotutorSearch}
+          onChange={(e) => {
+            setCotutorSearch(e.target.value);
+            buscarUsuarios(e.target.value, setCotutores);
+          }}
+          placeholder="Ingrese el nombre del cotutor"
+          className="w-full border rounded px-3 py-2 mb-2"
+        />
+        <select
+          value={selectedCotutor}
+          onChange={(e) => setSelectedCotutor(e.target.value)}
+          className="w-full border rounded px-3 py-2">
+          <option value="">Seleccione un cotutor</option>
+          {cotutores.map(cotutor => (
+            <option key={cotutor.id} value={cotutor.id}>{cotutor.nombre} {cotutor.apellido}</option>
+          ))}
+        </select>
+      </div>
 
-            <form onSubmit={handleSubmit} className="bg-white p-4 rounded shadow mb-6">
-                <div className="grid grid-cols-2 gap-4">
-                    <input
-                        type="text"
-                        name="titulo"
-                        placeholder="Título del Trabajo"
-                        value={formData.titulo}
-                        onChange={handleChange}
-                        className="p-2 border rounded"
-                        required
-                    />
-                    <input
-                        type="text"
-                        name="carrera_id"
-                        placeholder="ID de Carrera"
-                        value={formData.carrera_id}
-                        onChange={handleChange}
-                        className="p-2 border rounded"
-                        required
-                    />
-                    <input
-                        type="text"
-                        name="modalidad_id"
-                        placeholder="ID de Modalidad"
-                        value={formData.modalidad_id}
-                        onChange={handleChange}
-                        className="p-2 border rounded"
-                        required
-                    />
-                    <input
-                        type="text"
-                        name="tutor_id"
-                        placeholder="ID del Tutor"
-                        value={formData.tutor_id}
-                        onChange={handleChange}
-                        className="p-2 border rounded"
-                        required
-                    />
-                    <input
-                        type="text"
-                        name="cotutor_id"
-                        placeholder="ID del Cotutor (Opcional)"
-                        value={formData.cotutor_id}
-                        onChange={handleChange}
-                        className="p-2 border rounded"
-                    />
-                    <input
-                        type="text"
-                        name="link_archivo"
-                        placeholder="Link al Archivo"
-                        value={formData.link_archivo}
-                        onChange={handleChange}
-                        className="p-2 border rounded"
-                    />
-                </div>
-                <button
-                    type="submit"
-                    className="bg-blue-500 text-white px-4 py-2 rounded mt-4 hover:bg-blue-600"
-                >
-                    {editId ? "Actualizar" : "Crear"} Trabajo
-                </button>
-            </form>
+      {/* Título */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-2">Título</label>
+        <input
+          type="text"
+          value={titulo}
+          onChange={(e) => setTitulo(e.target.value)}
+          placeholder="Ingrese el título del trabajo"
+          className="w-full border rounded px-3 py-2"
+        />
+      </div>
 
-            <div className="bg-white p-4 rounded shadow">
-                <h2 className="text-xl font-bold mb-4">Lista de Trabajos</h2>
-                <table className="table-auto w-full text-left">
-                    <thead>
-                        <tr>
-                            <th className="border px-4 py-2">ID</th>
-                            <th className="border px-4 py-2">Título</th>
-                            <th className="border px-4 py-2">Carrera</th>
-                            <th className="border px-4 py-2">Modalidad</th>
-                            <th className="border px-4 py-2">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {trabajos.map((trabajo) => (
-                            <tr key={trabajo.id}>
-                                <td className="border px-4 py-2">{trabajo.id}</td>
-                                <td className="border px-4 py-2">{trabajo.titulo}</td>
-                                <td className="border px-4 py-2">{trabajo.carrera}</td>
-                                <td className="border px-4 py-2">{trabajo.modalidad}</td>
-                                <td className="border px-4 py-2">
-                                    <button
-                                        onClick={() => handleEdit(trabajo)}
-                                        className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600 mr-2"
-                                    >
-                                        Editar
-                                    </button>
-                                    <button
-                                        onClick={() => handleDelete(trabajo.id)}
-                                        className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
-                                    >
-                                        Eliminar
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    );
+      {/* Link del archivo */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-2">Link del Archivo</label>
+        <input
+          type="text"
+          value={linkArchivo}
+          onChange={(e) => setLinkArchivo(e.target.value)}
+          placeholder="Ingrese el link del archivo"
+          className="w-full border rounded px-3 py-2"
+        />
+      </div>
+
+      {/* Botón de creación */}
+      <button
+        onClick={handleCrearTrabajo}
+        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+        Crear Trabajo
+      </button>
+    </div>
+  );
 };
 
-export default TrabajosTitulacion;
+export default CrearTrabajo;
