@@ -15,8 +15,8 @@ const CrearTrabajo = () => {
   
     const [selectedCarrera, setSelectedCarrera] = useState('');
     const [selectedModalidad, setSelectedModalidad] = useState('');
-    const [selectedTutor, setSelectedTutor] = useState('');
-    const [selectedCotutor, setSelectedCotutor] = useState('');
+    const [selectedTutor, setSelectedTutor] = useState(null);
+    const [selectedCotutor, setSelectedCotutor] = useState(null);
     const [selectedEstudiantes, setSelectedEstudiantes] = useState([]);
     const [titulo, setTitulo] = useState('');
     const [linkArchivo, setLinkArchivo] = useState('');
@@ -55,22 +55,42 @@ const CrearTrabajo = () => {
       .finally(() => setLoading(false));
   };
 
-  const handleCrearTrabajo = () => {
+  const handleCrearTrabajo = async () => {
     const trabajoData = {
       carrera_id: selectedCarrera,
       modalidad_id: selectedModalidad,
-      tutor_id: selectedTutor,
-      cotutor_id: selectedCotutor,
+      tutor_id: selectedTutor.id,
+      cotutor_id: selectedCotutor ? selectedCotutor.id : null,
       titulo,
       link_archivo: linkArchivo,
     };
-
-    axios.post(API_URL + '/trabajo-titulacion/crear', trabajoData)
-      .then(response => {
-        alert('Trabajo creado con éxito: ' + response.data.datos.id);
-      })
-      .catch(error => console.error('Error al crear trabajo:', error));
-  };
+  
+    try {
+      const respuesta = await axios.post(API_URL + '/trabajo-titulacion/crear', trabajoData);
+      const trabajoId = respuesta.data.id;
+  console.log("hi");
+      try {
+        // Agregar estudiantes
+        for (let i = 0; i < selectedEstudiantes.length; i++) {
+          const estudiante = selectedEstudiantes[i];
+          console.log("Vamos por este estudiante: " + estudiante.nombre);
+          
+          const response = await axios.post(API_URL + '/trabajo-titulacion/asociarEstudiante', {
+            trabajo_id: trabajoId,
+            estudiante_id: estudiante.id,
+          });
+          console.log(response.data);
+        }
+  
+        alert('Trabajo creado con éxito: ' + trabajoId);
+      } catch (error) {
+        console.error('Error al agregar estudiantes:', error.response?.data?.error || error);
+      }
+  
+    } catch (error) {
+      console.error('Error al crear trabajo:', error.response?.data?.error || error);
+    }
+  }; 
 
   const handleKeyDown = (e, type) => {
     const setHighlightedIndex = 
