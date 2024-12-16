@@ -20,7 +20,8 @@ const CrearTrabajo = () => {
   const [tutorSearch, setTutorSearch] = useState('');
   const [cotutorSearch, setCotutorSearch] = useState('');
 
-  const [highlightedIndex, setHighlightedIndex] = useState(-1); // Índice resaltado
+  const [highlightedIndexTutor, setHighlightedIndexTutor] = useState(-1); // Índice resaltado para tutores
+  const [highlightedIndexCotutor, setHighlightedIndexCotutor] = useState(-1); // Índice resaltado para cotutores
 
   // Fetch carreras
   useEffect(() => {
@@ -28,7 +29,6 @@ const CrearTrabajo = () => {
       .then(response => setCarreras(response.data.datos))
       .catch(error => console.error('Error al cargar carreras:', error));
 
-      buscarUsuarios(tutorSearch, setTutores, setIsLoadingTutores);
   }, []);
 
   // Fetch modalidades cuando cambia la carrera seleccionada
@@ -66,24 +66,35 @@ const CrearTrabajo = () => {
       .catch(error => console.error('Error al crear trabajo:', error));
   };
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = (e, type) => {
+    // Lógica para la navegación de las teclas de dirección y selección en función del tipo (tutor o cotutor)
+    const setHighlightedIndex = type === 'tutor' ? setHighlightedIndexTutor : setHighlightedIndexCotutor;
+    const highlightedIndex = type === 'tutor' ? highlightedIndexTutor : highlightedIndexCotutor;
+    const results = type === 'tutor' ? tutores : cotutores;
+    
     if (e.key === "ArrowDown") {
-      setHighlightedIndex((prev) => (prev + 1) % tutores.length);
+      setHighlightedIndex((prev) => (prev + 1) % results.length);
     } else if (e.key === "ArrowUp") {
-      setHighlightedIndex((prev) => (prev - 1 + tutores.length) % tutores.length);
-    } else if (e.key === "Enter" && highlightedIndex >= 0) {
+      setHighlightedIndex((prev) => (prev - 1 + results.length) % results.length);
+    } else if (e.key === "Enter" && highlightedIndexTutor >= 0) {
       e.preventDefault();
-      const selectedTutor = tutores[highlightedIndex];
-      setSelectedTutor(selectedTutor);
-      setTutorSearch("");
-      setTutores([]);
+      const selected = results[highlightedIndex];
+      if (type === 'tutor') {
+        setSelectedTutor(selected);
+      } else {
+        setSelectedCotutor(selected);
+      }
+      setTutorSearch(""); // Limpiar búsqueda
       setHighlightedIndex(-1);
     }
   };
 
-  const handleChipRemove = () => {
-    setSelectedTutor(null);
-    buscarUsuarios(tutorSearch, setTutores, setIsLoadingTutores);
+  const handleChipRemove = (type) => {
+    if (type === 'tutor') {
+      setSelectedTutor(null);
+    } else {
+      setSelectedCotutor(null);
+    }
   };
 
   return (
@@ -118,89 +129,104 @@ const CrearTrabajo = () => {
         </select>
       </div>
 
+      {/* Buscar Tutor */}
       <div className="mb-4">
-      <label className="block text-sm font-medium text-gray-700 mb-2">Buscar Tutor</label>
-      <div className="relative">
-        <input
-          type="text"
-          value={tutorSearch}
-          onChange={(e) => {
-            setTutorSearch(e.target.value);
-            buscarUsuarios(e.target.value, setTutores, setIsLoadingTutores);
-          }}
-          onKeyDown={handleKeyDown}
-          placeholder="Ingrese el nombre del tutor"
-          className="w-full border rounded px-3 py-2 mb-2"
-        />
-        {isLoadingTutores && <p className="text-gray-500">Cargando tutores...</p>}
-        {tutores.length > 0 && (
-          <ul className="absolute border rounded bg-white w-full max-h-40 overflow-auto z-10">
-            {tutores.map((tutor, index) => (
-              <li
-                key={tutor.id}
-                className={`px-3 py-2 cursor-pointer hover:bg-gray-100 ${
-                  highlightedIndex === index ? "bg-gray-100" : ""
-                }`}
-                onMouseEnter={() => setHighlightedIndex(index)}
-                onClick={() => {
-                  setSelectedTutor(tutor);
-                  setTutorSearch("");
-                  setTutores([]);
-                  setHighlightedIndex(-1);
-                }}
-              >
-                {tutor.nombre} {tutor.apellido}
-              </li>
-            ))}
-          </ul>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Buscar Tutor</label>
+        <div className="relative">
+          <input
+            type="text"
+            value={tutorSearch}
+            onChange={(e) => {
+              setTutorSearch(e.target.value);
+              buscarUsuarios(e.target.value, setTutores, setIsLoadingTutores);
+            }}
+            onKeyDown={(e) => handleKeyDown(e, 'tutor')}
+            placeholder="Ingrese el nombre del tutor"
+            className="w-full border rounded px-3 py-2 mb-2"
+          />
+          {isLoadingTutores && <p className="text-gray-500">Cargando tutores...</p>}
+          {tutores.length > 0 && (
+            <ul className="absolute border rounded bg-white w-full max-h-40 overflow-auto z-10">
+              {tutores.map((tutor, index) => (
+                <li
+                  key={tutor.id}
+                  className={`px-3 py-2 cursor-pointer hover:bg-gray-100 ${highlightedIndexTutor === index ? "bg-gray-100" : ""}`}
+                  onMouseEnter={() => setHighlightedIndexTutor(index)}
+                  onClick={() => {
+                    setSelectedTutor(tutor);
+                    setTutorSearch("");
+                    setTutores([]);
+                    setHighlightedIndexTutor(-1);
+                  }}
+                >
+                  {tutor.nombre} {tutor.apellido}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        {selectedTutor && (
+          <div className="flex items-center bg-blue-100 text-blue-700 px-3 py-1 rounded-full mt-2">
+            <span className="mr-2">{selectedTutor.nombre} {selectedTutor.apellido}</span>
+            <button
+              onClick={() => handleChipRemove('tutor')}
+              className="text-red-500 hover:text-red-700"
+            >
+              ✕
+            </button>
+          </div>
         )}
       </div>
 
-      {/* Mostrar tutor seleccionado como "chip" */}
-      {selectedTutor && (
-        <div className="flex items-center bg-blue-100 text-blue-700 px-3 py-1 rounded-full mt-2">
-          <span className="mr-2">{selectedTutor.nombre} {selectedTutor.apellido}</span>
-          <button
-            onClick={handleChipRemove}
-            className="text-red-500 hover:text-red-700"
-          >
-            ✕
-          </button>
-        </div>
-      )}
-    </div>
-
-      {/* Búsqueda de cotutor */}
+      {/* Buscar Cotutor */}
       <div className="mb-4">
-      <label className="block text-sm font-medium text-gray-700 mb-2">
-  Buscar Cotutor <span className="text-gray-500 text-sm">(Opcional)</span>
-</label>
-
-        <input
-          type="text"
-          value={cotutorSearch}
-          onChange={(e) => {
-            setCotutorSearch(e.target.value);
-            buscarUsuarios(e.target.value, setCotutores, setIsLoadingCotutores);
-          }}
-          placeholder="Ingrese el nombre del cotutor"
-          className="w-full border rounded px-3 py-2 mb-2"
-        />
-        {isLoadingCotutores && <p className="text-gray-500">Cargando cotutores...</p>}
-        <ul className="border rounded max-h-40 overflow-auto">
-          {cotutores.map(cotutor => (
-            <li
-              key={cotutor.id}
-              className="px-3 py-2 cursor-pointer hover:bg-gray-100"
-              onClick={() => {
-                setSelectedCotutor(cotutor.id);
-                setCotutorSearch(`${cotutor.nombre} ${cotutor.apellido}`);
-              }}
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Buscar Cotutor <span className="text-gray-500 text-sm">(Opcional)</span>
+        </label>
+        <div className="relative">
+          <input
+            type="text"
+            value={cotutorSearch}
+            onChange={(e) => {
+              setCotutorSearch(e.target.value);
+              buscarUsuarios(e.target.value, setCotutores, setIsLoadingCotutores);
+            }}
+            onKeyDown={(e) => handleKeyDown(e, 'cotutor')}
+            placeholder="Ingrese el nombre del cotutor"
+            className="w-full border rounded px-3 py-2 mb-2"
+          />
+          {isLoadingCotutores && <p className="text-gray-500">Cargando cotutores...</p>}
+          {cotutores.length > 0 && (
+            <ul className="absolute border rounded bg-white w-full max-h-40 overflow-auto z-10">
+              {cotutores.map((cotutor, index) => (
+                <li
+                  key={cotutor.id}
+                  className={`px-3 py-2 cursor-pointer hover:bg-gray-100 ${highlightedIndexCotutor === index ? "bg-gray-100" : ""}`}
+                  onMouseEnter={() => setHighlightedIndexCotutor(index)}
+                  onClick={() => {
+                    setSelectedCotutor(cotutor);
+                    setCotutorSearch("");
+                    setCotutores([]);
+                    setHighlightedIndexCotutor(-1);
+                  }}
+                >
+                  {cotutor.nombre} {cotutor.apellido}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        {selectedCotutor && (
+          <div className="flex items-center bg-blue-100 text-blue-700 px-3 py-1 rounded-full mt-2">
+            <span className="mr-2">{selectedCotutor.nombre} {selectedCotutor.apellido}</span>
+            <button
+              onClick={() => handleChipRemove('cotutor')}
+              className="text-red-500 hover:text-red-700"
             >
-              {cotutor.nombre} {cotutor.apellido}
-            </li>
-          ))}
-        </ul>
+              ✕
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Título */}
