@@ -4,13 +4,14 @@ import Login from '../pages/login';
 import NotFound from '../pages/not_found';
 import Layout from '../components/Layout';
 import ProtectedRoute from '../components/ProtectedRoute';
-import Principal from '../pages/principal';
+// import Principal from '../pages/principal';
 import ModalidadesTitulacion from '../pages/modalidadesTitulacion';
 import ItemsRevista from '../pages/itemsRevista';
 import ItemsRubrica from '../pages/itemsRubrica';
 import { RutaRaiz } from '../utils/constants';
 import CalificacionUI from '../pages/calificar';
 import CrearTrabajoTitulacionFormulario from '../pages/CrearTrabajoTitulacionFormulario';
+import TrabajoTitulacionList from '../pages/TrabajoTitulacionList';
 
 const routes = [
   {
@@ -35,7 +36,7 @@ const routes = [
       <ErrorBoundary>
         <ProtectedRoute>
           <Layout>
-            <Principal />
+            <TrabajoTitulacionList />
           </Layout>
         </ProtectedRoute>
       </ErrorBoundary>
