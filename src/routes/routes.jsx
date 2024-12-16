@@ -11,7 +11,7 @@ import ItemsRubrica from '../pages/itemsRubrica';
 import RegistroTrabajosTitulacion from '../pages/registroTrabajosTitulacion';
 
 
-import { RutaRaiz } from './constants';
+import { RutaRaiz } from '../utils/constants';
 import CalificacionUI from '../pages/calificar';
 import TrabajosTitulacion from '../pages/trabajosTitulacion';
 
