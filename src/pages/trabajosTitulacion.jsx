@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { API_URL } from '../utils/constants';
 import BuscadorYSelectorDeUsuarios from '../components/BuscadorYSelectorDeUsuarios';
 import { buscarUsuarios } from '../services/usuarioService';
 import { obtenerCarreras } from '../services/carreraService';
 import { obtenerModalidadesPorCarrera } from '../services/modalidadService';
+import axiosInstance from '../services/axiosConfig';
 
 const CrearTrabajo = () => {
     const [carreras, setCarreras] = useState([]);
@@ -57,7 +56,7 @@ const CrearTrabajo = () => {
     };
   
     try {
-      const respuesta = await axios.post(API_URL + '/trabajo-titulacion/crear', trabajoData);
+      const respuesta = await axiosInstance.post('/trabajo-titulacion/crear', trabajoData);
       const trabajoId = respuesta.data.id;
   console.log("hi");
       try {
@@ -66,7 +65,7 @@ const CrearTrabajo = () => {
           const estudiante = selectedEstudiantes[i];
           console.log("Vamos por este estudiante: " + estudiante.nombre);
           
-          const response = await axios.post(API_URL + '/trabajo-titulacion/asociarEstudiante', {
+          const response = await axiosInstance.post('/trabajo-titulacion/asociarEstudiante', {
             trabajo_id: trabajoId,
             estudiante_id: estudiante.id,
           });
@@ -134,18 +133,22 @@ const handleKeyDown = (e, type) => {
   };
 
   const handleEstudianteSelect = (user) => {
-    const modalidad = modalidades.find((mod) => mod.id === selectedModalidad);
-    if (selectedEstudiantes.length >= parseInt(modalidad.max_participantes)) {
-      alert('No puedes agregar más estudiantes a este trabajo');
-      return;
-    }
-    setSelectedEstudiantes((prevSelectedEstudiantes) => {
-      if (prevSelectedEstudiantes.find(est => est.id === user.id)) {
-        alert('Este estudiante ya está seleccionado');
-        return prevSelectedEstudiantes;
+    try{
+      const modalidad = modalidades.find((mod) => mod.id === parseInt(selectedModalidad));
+      if (selectedEstudiantes.length >= parseInt(modalidad.max_participantes)) {
+        alert('No puedes agregar más estudiantes a este trabajo');
+        return;
       }
-      return [...prevSelectedEstudiantes, user];
-    });
+      setSelectedEstudiantes((prevSelectedEstudiantes) => {
+        if (prevSelectedEstudiantes.find(est => est.id === user.id)) {
+          alert('Este estudiante ya está seleccionado');
+          return prevSelectedEstudiantes;
+        }
+        return [...prevSelectedEstudiantes, user];
+      });
+    } catch(error){
+      console.log(error)
+    }
   };
   
 
