@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { API_URL } from '../utils/constants';
-import BuscarUsuario from '../components/BuscarTutor';
+import BuscadorYSelectorDeUsuarios from '../components/BuscadorYSelectorDeUsuarios';
+import { buscarUsuarios } from '../services/usuarioService';
+import { obtenerCarreras } from '../services/carreraService';
+import { obtenerModalidadesPorCarrera } from '../services/modalidadService';
 
 const CrearTrabajo = () => {
     const [carreras, setCarreras] = useState([]);
@@ -29,30 +32,19 @@ const CrearTrabajo = () => {
     const [highlightedIndexCotutor, setHighlightedIndexCotutor] = useState(-1);
     const [highlightedIndexEstudiante, setHighlightedIndexEstudiante] = useState(-1);
 
-  // Fetch carreras
-  useEffect(() => {
-    axios.get(API_URL + '/carrera/listar')
-      .then(response => setCarreras(response.data.datos))
-      .catch(error => console.error('Error al cargar carreras:', error));
+    useEffect(() => {
+      obtenerCarreras(setCarreras);
+    }, []);
 
-  }, []);
-
-  // Fetch modalidades cuando cambia la carrera seleccionada
-  useEffect(() => {
-    if (selectedCarrera) {
-      axios.get(`${API_URL}/modalidad-titulacion/listarPorCarrera/${selectedCarrera}`)
-        .then(response => setModalidades(response.data))
-        .catch(error => console.error('Error al cargar modalidades:', error));
-    }
-  }, [selectedCarrera]);
+    useEffect(() => {
+      if (selectedCarrera) {
+        obtenerModalidadesPorCarrera(selectedCarrera, setModalidades);
+      }
+    }, [selectedCarrera]);
 
   // Fetch usuarios
-  const buscarUsuarios = (query, setResults, setLoading, rol = 3) => {
-    setLoading(true);
-    axios.get(`${API_URL}/usuarios`, { params: { nombre: query, rol } })
-      .then(response => setResults(response.data))
-      .catch(error => console.error('Error al buscar usuarios:', error))
-      .finally(() => setLoading(false));
+  const buscarUsuariosConRol = (query, setResults, setLoading, rol) => {
+    buscarUsuarios(query, setResults, setLoading, rol);
   };
 
   const handleCrearTrabajo = async () => {
@@ -212,7 +204,7 @@ const CrearTrabajo = () => {
     {/* Columna 2 */}
     <div>
       {/* Buscar Tutor */}
-      <BuscarUsuario
+      <BuscadorYSelectorDeUsuarios
         label="Buscar Tutor"
         placeholder="Ingrese el nombre del tutor"
         searchValue={tutorSearch}
@@ -228,11 +220,11 @@ const CrearTrabajo = () => {
         type="tutor"
         setHighlightedIndex={setHighlightedIndexTutor}
         highlightedIndex={highlightedIndexTutor}
-        buscarUsuarios={buscarUsuarios}
+        buscarUsuarios={buscarUsuariosConRol}
       />
 
       {/* Buscar Cotutor */}
-      <BuscarUsuario
+      <BuscadorYSelectorDeUsuarios
         label="Buscar Cotutor"
         optional={true}
         placeholder="Ingrese el nombre del cotutor"
@@ -249,11 +241,11 @@ const CrearTrabajo = () => {
         type="cotutor"
         setHighlightedIndex={setHighlightedIndexCotutor}
         highlightedIndex={highlightedIndexCotutor}
-        buscarUsuarios={buscarUsuarios}
+        buscarUsuarios={buscarUsuariosConRol}
       />
 
       {/* Buscar Estudiantes */}
-      <BuscarUsuario
+      <BuscadorYSelectorDeUsuarios
         label="Buscar Estudiante"
         placeholder="Ingrese el nombre del estudiante"
         searchValue={estudianteSearch}
@@ -270,7 +262,7 @@ const CrearTrabajo = () => {
         type="estudiante"
         setHighlightedIndex={setHighlightedIndexEstudiante}
         highlightedIndex={highlightedIndexEstudiante}
-        buscarUsuarios={(query, setResults, setLoading) => buscarUsuarios(query, setResults, setLoading, 4)} // Rol para estudiantes
+        buscarUsuarios={(query, setResults, setLoading) => buscarUsuariosConRol(query, setResults, setLoading, 4)} // Rol para estudiantes
       />
     </div>
   </div>

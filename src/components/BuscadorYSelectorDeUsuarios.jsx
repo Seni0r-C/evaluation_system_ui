@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-const BuscarUsuario = ({
+const BuscadorYSelectorDeUsuarios = ({
   label,
   optional,
   placeholder,
@@ -94,7 +94,7 @@ const BuscarUsuario = ({
   );
 };
 
-BuscarUsuario.propTypes = {
+BuscadorYSelectorDeUsuarios.propTypes = {
   label: PropTypes.string.isRequired,
   optional: PropTypes.bool,
   placeholder: PropTypes.string.isRequired,
@@ -115,4 +115,4 @@ BuscarUsuario.propTypes = {
   buscarUsuarios: PropTypes.func.isRequired,
 };
 
-export default BuscarUsuario;
+export default BuscadorYSelectorDeUsuarios;
