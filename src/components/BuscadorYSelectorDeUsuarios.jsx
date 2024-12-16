@@ -18,12 +18,12 @@ const BuscadorYSelectorDeUsuarios = ({
   type, // para distinguir entre tutor y cotutor
   setHighlightedIndex,
   highlightedIndex,
-  buscarUsuarios,
+   handleBuscar,
 }) => {
   const handleSearchChange = (e) => {
     setSearchValue(e.target.value);
     setIsLoading(true);
-    buscarUsuarios(e.target.value, setSearchResults, setIsLoading);
+    handleBuscar(e.target.value, setSearchResults, setIsLoading);
     // Aquí se hace la búsqueda de usuarios
   };
 
@@ -112,7 +112,7 @@ BuscadorYSelectorDeUsuarios.propTypes = {
   type: PropTypes.string.isRequired,
   setHighlightedIndex: PropTypes.func.isRequired,
   highlightedIndex: PropTypes.number.isRequired,
-  buscarUsuarios: PropTypes.func.isRequired,
+  handleBuscar: PropTypes.func.isRequired,
 };
 
 export default BuscadorYSelectorDeUsuarios;

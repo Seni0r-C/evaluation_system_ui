@@ -12,9 +12,8 @@ const CrearTrabajo = () => {
     const [tutores, setTutores] = useState([]);
     const [cotutores, setCotutores] = useState([]);
     const [estudiantes, setEstudiantes] = useState([]);
-    const [isLoadingTutores, setIsLoadingTutores] = useState(false);
-    const [isLoadingCotutores, setIsLoadingCotutores] = useState(false);
-    const [isLoadingEstudiantes, setIsLoadingEstudiantes] = useState(false);
+
+    const [isLoading, setIsLoading] = useState(true);
   
     const [selectedCarrera, setSelectedCarrera] = useState('');
     const [selectedModalidad, setSelectedModalidad] = useState('');
@@ -86,40 +85,43 @@ const CrearTrabajo = () => {
     }
   }; 
 
-  const handleKeyDown = (e, type) => {
-    const setHighlightedIndex = 
-      type === 'tutor' ? setHighlightedIndexTutor :
-      type === 'cotutor' ? setHighlightedIndexCotutor :
-      setHighlightedIndexEstudiante;
+const handleKeyDown = (e, type) => {
+  const setHighlightedIndex = {
+    tutor: setHighlightedIndexTutor,
+    cotutor: setHighlightedIndexCotutor,
+    estudiante: setHighlightedIndexEstudiante,
+  }[type];
 
-    const highlightedIndex = 
-      type === 'tutor' ? highlightedIndexTutor :
-      type === 'cotutor' ? highlightedIndexCotutor :
-      highlightedIndexEstudiante;
+  const highlightedIndex = {
+    tutor: highlightedIndexTutor,
+    cotutor: highlightedIndexCotutor,
+    estudiante: highlightedIndexEstudiante,
+  }[type];
 
-    const results = 
-      type === 'tutor' ? tutores :
-      type === 'cotutor' ? cotutores :
-      estudiantes;
+  const results = {
+    tutor: tutores,
+    cotutor: cotutores,
+    estudiante: estudiantes,
+  }[type];
 
-    if (e.key === "ArrowDown") {
-      setHighlightedIndex((prev) => (prev + 1) % results.length);
-    } else if (e.key === "ArrowUp") {
-      setHighlightedIndex((prev) => (prev - 1 + results.length) % results.length);
-    } else if (e.key === "Enter" && highlightedIndex >= 0) {
-      e.preventDefault();
-      const selected = results[highlightedIndex];
-      if (type === 'tutor') {
-        setSelectedTutor(selected);
-      } else if (type === 'cotutor') {
-        setSelectedCotutor(selected);
-      } else if (type === 'estudiante') {
-        setEstudiantes((prevEstudiantes) => [...prevEstudiantes, selected]);
-      }
-      setEstudianteSearch(""); // Limpiar búsqueda
-      setHighlightedIndex(-1);
-    }
-  };
+  if (e.key === "ArrowDown") {
+    setHighlightedIndex((prev) => (prev + 1) % results.length);
+  } else if (e.key === "ArrowUp") {
+    setHighlightedIndex((prev) => (prev - 1 + results.length) % results.length);
+  } else if (e.key === "Enter" && highlightedIndex >= 0) {
+    e.preventDefault();
+    const selected = results[highlightedIndex];
+    const setSelectedUser = {
+      tutor: setSelectedTutor,
+      cotutor: setSelectedCotutor,
+      estudiante: (user) => setSelectedEstudiantes((prev) => [...prev, user]),
+    }[type];
+    setSelectedUser(selected);
+    setEstudianteSearch(""); // Limpiar búsqueda
+    setHighlightedIndex(-1);
+  }
+};
+
 
   const handleChipRemove = (type, user) => {
     if (type === 'tutor') {
@@ -132,13 +134,20 @@ const CrearTrabajo = () => {
   };
 
   const handleEstudianteSelect = (user) => {
-   const modalidad= modalidades.find((mod) => mod.id == selectedModalidad);
-    if(selectedEstudiantes.length >= parseInt(modalidad.max_participantes)) {
+    const modalidad = modalidades.find((mod) => mod.id === selectedModalidad);
+    if (selectedEstudiantes.length >= parseInt(modalidad.max_participantes)) {
       alert('No puedes agregar más estudiantes a este trabajo');
       return;
     }
-    setSelectedEstudiantes((prevSelectedEstudiantes) => [...prevSelectedEstudiantes, user]);
+    setSelectedEstudiantes((prevSelectedEstudiantes) => {
+      if (prevSelectedEstudiantes.find(est => est.id === user.id)) {
+        alert('Este estudiante ya está seleccionado');
+        return prevSelectedEstudiantes;
+      }
+      return [...prevSelectedEstudiantes, user];
+    });
   };
+  
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
@@ -211,8 +220,8 @@ const CrearTrabajo = () => {
         setSearchValue={setTutorSearch}
         searchResults={tutores}
         setSearchResults={setTutores}
-        isLoading={isLoadingTutores}
-        setIsLoading={setIsLoadingTutores}
+        isLoading={isLoading}
+        setIsLoading={setIsLoading}
         selectedUser={selectedTutor}
         setSelectedUser={setSelectedTutor}
         handleKeyDown={handleKeyDown}
@@ -220,7 +229,7 @@ const CrearTrabajo = () => {
         type="tutor"
         setHighlightedIndex={setHighlightedIndexTutor}
         highlightedIndex={highlightedIndexTutor}
-        buscarUsuarios={buscarUsuariosConRol}
+        handleBuscar={buscarUsuariosConRol}
       />
 
       {/* Buscar Cotutor */}
@@ -232,8 +241,8 @@ const CrearTrabajo = () => {
         setSearchValue={setCotutorSearch}
         searchResults={cotutores}
         setSearchResults={setCotutores}
-        isLoading={isLoadingCotutores}
-        setIsLoading={setIsLoadingCotutores}
+        isLoading={isLoading}
+        setIsLoading={setIsLoading}
         selectedUser={selectedCotutor}
         setSelectedUser={setSelectedCotutor}
         handleKeyDown={handleKeyDown}
@@ -241,7 +250,7 @@ const CrearTrabajo = () => {
         type="cotutor"
         setHighlightedIndex={setHighlightedIndexCotutor}
         highlightedIndex={highlightedIndexCotutor}
-        buscarUsuarios={buscarUsuariosConRol}
+        handleBuscar={buscarUsuariosConRol}
       />
 
       {/* Buscar Estudiantes */}
@@ -252,8 +261,8 @@ const CrearTrabajo = () => {
         setSearchValue={setEstudianteSearch}
         searchResults={estudiantes}
         setSearchResults={setEstudiantes}
-        isLoading={isLoadingEstudiantes}
-        setIsLoading={setIsLoadingEstudiantes}
+        isLoading={isLoading}
+        setIsLoading={setIsLoading}
         selectedUser={null} // No hay uno solo seleccionado
         selectedUSers={selectedEstudiantes}
         setSelectedUser={handleEstudianteSelect} // No hay uno solo seleccionado
@@ -262,7 +271,7 @@ const CrearTrabajo = () => {
         type="estudiante"
         setHighlightedIndex={setHighlightedIndexEstudiante}
         highlightedIndex={highlightedIndexEstudiante}
-        buscarUsuarios={(query, setResults, setLoading) => buscarUsuariosConRol(query, setResults, setLoading, 4)} // Rol para estudiantes
+        handleBuscar={(query, setResults, setLoading) => buscarUsuariosConRol(query, setResults, setLoading, 4)} // Rol para estudiantes
       />
     </div>
   </div>
