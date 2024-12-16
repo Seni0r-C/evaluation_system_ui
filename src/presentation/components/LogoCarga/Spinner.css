@@ -1,41 +1,65 @@
-/* CSS */
-.spinner {
-    width: 120px;
-    height: 120px;
+.loading-spinner {
     position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+    margin: 0 auto;
+    width: 75px;
 
-.spinner .circle {
-    width: 100%;
+  }
+  .loading-spinner:before {
+    content: '';
+    display: block;
+    padding-top: 100%;
+  }
+  .loading-spinner__circle-svg {
+    animation: loading-spinner-rotate 1.28973s linear infinite;
     height: 100%;
-    border: 12px solid transparent;
-    border-top: 12px solid #fff;
-    border-right: 12px solid #f8cf12;
-    border-bottom: 12px solid #fff;
-    border-left: 12px solid #0e9343;
-    border-radius: 50%;
-    animation: spin 2s linear infinite, glow 1.5s ease-in-out infinite;
-    background: radial-gradient(circle, rgba(255,255,255,0.3), rgba(0,0,0,0.1));
-    box-shadow: 0 0 20px rgba(255, 111, 97, 0.8), 0 0 40px rgba(255, 215, 0, 0.6), 0 0 60px rgba(54, 209, 220, 0.4);
-}
-
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
+    transform-origin: center center;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+  }
+  .loading-spinner__circle-stroke {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+    animation: loading-spinner-dash 2s ease-in-out infinite, loading-spinner-color 8s ease-in-out infinite;
+    stroke-linecap: round;
+    stroke-width: 4px;
+  }
+  @keyframes loading-spinner-rotate {
     100% {
-        transform: rotate(360deg);
+      transform: rotate(360deg);
     }
-}
-
-@keyframes glow {
-    0%, 100% {
-        box-shadow: 0 0 20px rgba(255, 111, 97, 0.8), 0 0 40px rgba(255, 215, 0, 0.6), 0 0 60px rgba(54, 209, 220, 0.4);
+  }
+  @keyframes loading-spinner-dash {
+    0% {
+      stroke-dasharray: 1, 200;
+      stroke-dashoffset: 0;
     }
     50% {
-        box-shadow: 0 0 40px rgba(255, 111, 97, 1), 0 0 80px rgba(255, 215, 0, 0.8), 0 0 120px rgba(54, 209, 220, 0.6);
+      stroke-dasharray: 89, 200;
+      stroke-dashoffset: -35px;
     }
-}
+    100% {
+      stroke-dasharray: 89, 200;
+      stroke-dashoffset: -124px;
+    }
+  }
+  @keyframes loading-spinner-color {
+    100%,
+    0% {
+      stroke: #f8cf12;
+    }
+    40% {
+      stroke: #0e9343;
+    }
+    66% {
+      stroke: #fff;
+    }
+    80%,
+    90% {
+      stroke: #ee1433;
+    }
+  }
