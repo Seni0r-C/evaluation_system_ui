@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 
 const BuscarUsuario = ({
   label,
+  optional,
   placeholder,
   searchValue,
   setSearchValue,
@@ -21,14 +22,14 @@ const BuscarUsuario = ({
   const handleSearchChange = (e) => {
     setSearchValue(e.target.value);
     setIsLoading(true);
-    buscarUsuarios(e.target.value, setSearchResults, setIsLoading);
+    buscarUsuarios(e.target.value, setSearchResults, setIsLoading, type);
     // Aquí se hace la búsqueda de usuarios
   };
 
   return (
     <div className="mb-4">
       <label className="block text-sm font-medium text-gray-700 mb-2">
-        {label} <span className="text-gray-500 text-sm">(Opcional)</span>
+        {label}{optional && <span className="text-gray-500 text-sm">(Opcional)</span>}
       </label>
       <div className="relative">
         <input
@@ -77,6 +78,7 @@ const BuscarUsuario = ({
 
 BuscarUsuario.propTypes = {
   label: PropTypes.string.isRequired,
+  optional: PropTypes.bool,
   placeholder: PropTypes.string.isRequired,
   searchValue: PropTypes.string.isRequired,
   setSearchValue: PropTypes.func.isRequired,

@@ -153,6 +153,7 @@ const CrearTrabajo = () => {
       {/* Buscar Cotutor */}
       <BuscarUsuario
         label="Buscar Cotutor"
+        optional={true}
         placeholder="Ingrese el nombre del cotutor"
         searchValue={cotutorSearch}
         setSearchValue={setCotutorSearch}
