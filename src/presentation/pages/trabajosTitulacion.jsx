@@ -118,6 +118,12 @@ const CrearTrabajo = () => {
   };
 
   const handleEstudianteSelect = (user) => {
+   const modalidad= modalidades.find((mod) => mod.id == selectedModalidad);
+    console.log (selectedEstudiantes.length);
+    if(selectedEstudiantes.length >= parseInt(modalidad.max_participantes)) {
+      alert('No puedes agregar más estudiantes a este trabajo');
+      return;
+    }
     setSelectedEstudiantes((prevSelectedEstudiantes) => [...prevSelectedEstudiantes, user]);
   };
 
