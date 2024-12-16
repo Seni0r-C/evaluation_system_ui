@@ -3,7 +3,7 @@ import ErrorBoundary from '../components/ErrorBoundary';
 import Login from '../pages/login';
 import NotFound from '../pages/not_found';
 import Layout from '../components/Layout';
-import ProtectedRoute from '../domain/ProtectedRoute';
+import ProtectedRoute from '../components/ProtectedRoute';
 import Principal from '../pages/principal';
 import ModalidadesTitulacion from '../pages/modalidadesTitulacion';
 import ItemsRevista from '../pages/itemsRevista';

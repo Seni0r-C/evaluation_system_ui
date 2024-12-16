@@ -6,7 +6,7 @@ import MessageDialog from "../components/MessageDialog";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import background from "../assets/utm.webp";
 import { API_URL, RutaRaiz, VERSION } from "../utils/constants";
-import { useAuth } from "../domain/useAuth";
+import { useAuth } from "../hooks/useAuth";
 import axios from "axios";
 
 const Login = () => {
