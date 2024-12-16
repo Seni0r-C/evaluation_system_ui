@@ -22,7 +22,7 @@ const BuscarUsuario = ({
   const handleSearchChange = (e) => {
     setSearchValue(e.target.value);
     setIsLoading(true);
-    buscarUsuarios(e.target.value, setSearchResults, setIsLoading, type);
+    buscarUsuarios(e.target.value, setSearchResults, setIsLoading);
     // Aquí se hace la búsqueda de usuarios
   };
 

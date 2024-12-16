@@ -4,25 +4,30 @@ import { API_URL } from '../../utils/constants';
 import BuscarUsuario from '../components/BuscarTutor';
 
 const CrearTrabajo = () => {
-  const [carreras, setCarreras] = useState([]);
-  const [modalidades, setModalidades] = useState([]);
-  const [tutores, setTutores] = useState([]);
-  const [cotutores, setCotutores] = useState([]);
-  const [isLoadingTutores, setIsLoadingTutores] = useState(false);
-  const [isLoadingCotutores, setIsLoadingCotutores] = useState(false);
-
-  const [selectedCarrera, setSelectedCarrera] = useState('');
-  const [selectedModalidad, setSelectedModalidad] = useState('');
-  const [selectedTutor, setSelectedTutor] = useState('');
-  const [selectedCotutor, setSelectedCotutor] = useState('');
-  const [titulo, setTitulo] = useState('');
-  const [linkArchivo, setLinkArchivo] = useState('');
-
-  const [tutorSearch, setTutorSearch] = useState('');
-  const [cotutorSearch, setCotutorSearch] = useState('');
-
-  const [highlightedIndexTutor, setHighlightedIndexTutor] = useState(-1); // Índice resaltado para tutores
-  const [highlightedIndexCotutor, setHighlightedIndexCotutor] = useState(-1); // Índice resaltado para cotutores
+    const [carreras, setCarreras] = useState([]);
+    const [modalidades, setModalidades] = useState([]);
+    const [tutores, setTutores] = useState([]);
+    const [cotutores, setCotutores] = useState([]);
+    const [estudiantes, setEstudiantes] = useState([]);
+    const [isLoadingTutores, setIsLoadingTutores] = useState(false);
+    const [isLoadingCotutores, setIsLoadingCotutores] = useState(false);
+    const [isLoadingEstudiantes, setIsLoadingEstudiantes] = useState(false);
+  
+    const [selectedCarrera, setSelectedCarrera] = useState('');
+    const [selectedModalidad, setSelectedModalidad] = useState('');
+    const [selectedTutor, setSelectedTutor] = useState('');
+    const [selectedCotutor, setSelectedCotutor] = useState('');
+    const [selectedEstudiantes, setSelectedEstudiantes] = useState([]);
+    const [titulo, setTitulo] = useState('');
+    const [linkArchivo, setLinkArchivo] = useState('');
+  
+    const [tutorSearch, setTutorSearch] = useState('');
+    const [cotutorSearch, setCotutorSearch] = useState('');
+    const [estudianteSearch, setEstudianteSearch] = useState('');
+  
+    const [highlightedIndexTutor, setHighlightedIndexTutor] = useState(-1);
+    const [highlightedIndexCotutor, setHighlightedIndexCotutor] = useState(-1);
+    const [highlightedIndexEstudiante, setHighlightedIndexEstudiante] = useState(-1);
 
   // Fetch carreras
   useEffect(() => {
@@ -42,9 +47,9 @@ const CrearTrabajo = () => {
   }, [selectedCarrera]);
 
   // Fetch usuarios
-  const buscarUsuarios = (query, setResults, setLoading) => {
+  const buscarUsuarios = (query, setResults, setLoading, rol = 3) => {
     setLoading(true);
-    axios.get(`${API_URL}/usuarios`, { params: { nombre: query, rol: 3 } })
+    axios.get(`${API_URL}/usuarios`, { params: { nombre: query, rol } })
       .then(response => setResults(response.data))
       .catch(error => console.error('Error al buscar usuarios:', error))
       .finally(() => setLoading(false));
@@ -68,34 +73,52 @@ const CrearTrabajo = () => {
   };
 
   const handleKeyDown = (e, type) => {
-    // Lógica para la navegación de las teclas de dirección y selección en función del tipo (tutor o cotutor)
-    const setHighlightedIndex = type === 'tutor' ? setHighlightedIndexTutor : setHighlightedIndexCotutor;
-    const highlightedIndex = type === 'tutor' ? highlightedIndexTutor : highlightedIndexCotutor;
-    const results = type === 'tutor' ? tutores : cotutores;
-    
+    const setHighlightedIndex = 
+      type === 'tutor' ? setHighlightedIndexTutor :
+      type === 'cotutor' ? setHighlightedIndexCotutor :
+      setHighlightedIndexEstudiante;
+
+    const highlightedIndex = 
+      type === 'tutor' ? highlightedIndexTutor :
+      type === 'cotutor' ? highlightedIndexCotutor :
+      highlightedIndexEstudiante;
+
+    const results = 
+      type === 'tutor' ? tutores :
+      type === 'cotutor' ? cotutores :
+      estudiantes;
+
     if (e.key === "ArrowDown") {
       setHighlightedIndex((prev) => (prev + 1) % results.length);
     } else if (e.key === "ArrowUp") {
       setHighlightedIndex((prev) => (prev - 1 + results.length) % results.length);
-    } else if (e.key === "Enter" && highlightedIndexTutor >= 0) {
+    } else if (e.key === "Enter" && highlightedIndex >= 0) {
       e.preventDefault();
       const selected = results[highlightedIndex];
       if (type === 'tutor') {
         setSelectedTutor(selected);
-      } else {
+      } else if (type === 'cotutor') {
         setSelectedCotutor(selected);
+      } else if (type === 'estudiante') {
+        setEstudiantes((prevEstudiantes) => [...prevEstudiantes, selected]);
       }
-      setTutorSearch(""); // Limpiar búsqueda
+      setEstudianteSearch(""); // Limpiar búsqueda
       setHighlightedIndex(-1);
     }
   };
 
-  const handleChipRemove = (type) => {
+  const handleChipRemove = (type, user) => {
     if (type === 'tutor') {
       setSelectedTutor(null);
-    } else {
+    } else if (type === 'cotutor') {
       setSelectedCotutor(null);
+    } else if (type === 'estudiante') {
+      setSelectedEstudiantes((prevSelectedEstudiantes) => prevSelectedEstudiantes.filter((est) => est.id !== user.id));
     }
+  };
+
+  const handleEstudianteSelect = (user) => {
+    setSelectedEstudiantes((prevSelectedEstudiantes) => [...prevSelectedEstudiantes, user]);
   };
 
   return (
@@ -170,6 +193,42 @@ const CrearTrabajo = () => {
         highlightedIndex={highlightedIndexCotutor}
         buscarUsuarios={buscarUsuarios}
       />
+
+      {/* Buscar Estudiantes */}
+      <BuscarUsuario
+        label="Buscar Estudiante"
+        placeholder="Ingrese el nombre del estudiante"
+        searchValue={estudianteSearch}
+        setSearchValue={setEstudianteSearch}
+        searchResults={estudiantes}
+        setSearchResults={setEstudiantes}
+        isLoading={isLoadingEstudiantes}
+        setIsLoading={setIsLoadingEstudiantes}
+        selectedUser={null} // No hay uno solo seleccionado
+        setSelectedUser={handleEstudianteSelect} // No hay uno solo seleccionado
+        handleKeyDown={handleKeyDown}
+        handleChipRemove={handleChipRemove}
+        type="estudiante"
+        setHighlightedIndex={setHighlightedIndexEstudiante}
+        highlightedIndex={highlightedIndexEstudiante}
+        buscarUsuarios={(query, setResults, setLoading) => buscarUsuarios(query, setResults, setLoading, 4)} // Rol para estudiantes
+      />
+
+      {/* Mostrar estudiantes seleccionados */}
+      <div className="mt-2">
+        {selectedEstudiantes.map((est) => (
+          <div key={est.id} className="flex items-center bg-blue-100 text-blue-700 px-3 py-1 rounded-full mt-1">
+            <span className="mr-2">{est.nombre} {est.apellido}</span>
+            <button
+              onClick={() => handleChipRemove('estudiante', est)}
+              className="text-red-500 hover:text-red-700"
+            >
+              ✕
+            </button>
+          </div>
+        ))}
+      </div>
+
 
       {/* Título */}
       <div className="mb-4">
