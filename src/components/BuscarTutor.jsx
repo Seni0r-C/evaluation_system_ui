@@ -11,6 +11,7 @@ const BuscarUsuario = ({
   isLoading,
   setIsLoading,
   selectedUser,
+  selectedUSers,
   setSelectedUser,
   handleKeyDown,
   handleChipRemove,
@@ -72,6 +73,23 @@ const BuscarUsuario = ({
           </button>
         </div>
       )}
+
+      {/* Mostrar estudiantes seleccionados */}
+      {selectedUSers &&(
+        <div className="mt-2">
+        {selectedUSers.map((est) => (
+          <div key={est.id} className="flex items-center bg-blue-100 text-blue-700 px-3 py-1 rounded-full mt-1">
+            <span className="mr-2">{est.nombre} {est.apellido}</span>
+            <button
+              onClick={() => handleChipRemove('estudiante', est)}
+              className="text-red-500 hover:text-red-700"
+              >
+              ✕
+            </button>
+          </div>
+        ))}
+      </div>
+      )}
     </div>
   );
 };
@@ -87,6 +105,7 @@ BuscarUsuario.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   setIsLoading: PropTypes.func.isRequired,
   selectedUser: PropTypes.object,
+  selectedUSers: PropTypes.array,
   setSelectedUser: PropTypes.func.isRequired,
   handleKeyDown: PropTypes.func.isRequired,
   handleChipRemove: PropTypes.func.isRequired,

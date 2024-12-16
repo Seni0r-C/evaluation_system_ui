@@ -141,7 +141,6 @@ const CrearTrabajo = () => {
 
   const handleEstudianteSelect = (user) => {
    const modalidad= modalidades.find((mod) => mod.id == selectedModalidad);
-    console.log (selectedEstudiantes.length);
     if(selectedEstudiantes.length >= parseInt(modalidad.max_participantes)) {
       alert('No puedes agregar más estudiantes a este trabajo');
       return;
@@ -264,6 +263,7 @@ const CrearTrabajo = () => {
         isLoading={isLoadingEstudiantes}
         setIsLoading={setIsLoadingEstudiantes}
         selectedUser={null} // No hay uno solo seleccionado
+        selectedUSers={selectedEstudiantes}
         setSelectedUser={handleEstudianteSelect} // No hay uno solo seleccionado
         handleKeyDown={handleKeyDown}
         handleChipRemove={handleChipRemove}
@@ -272,21 +272,6 @@ const CrearTrabajo = () => {
         highlightedIndex={highlightedIndexEstudiante}
         buscarUsuarios={(query, setResults, setLoading) => buscarUsuarios(query, setResults, setLoading, 4)} // Rol para estudiantes
       />
-
-      {/* Mostrar estudiantes seleccionados */}
-      <div className="mt-2">
-        {selectedEstudiantes.map((est) => (
-          <div key={est.id} className="flex items-center bg-blue-100 text-blue-700 px-3 py-1 rounded-full mt-1">
-            <span className="mr-2">{est.nombre} {est.apellido}</span>
-            <button
-              onClick={() => handleChipRemove('estudiante', est)}
-              className="text-red-500 hover:text-red-700"
-            >
-              ✕
-            </button>
-          </div>
-        ))}
-      </div>
     </div>
   </div>
 
