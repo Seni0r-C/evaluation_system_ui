@@ -5,7 +5,7 @@ import { obtenerCarreras } from '../services/carreraService';
 import { obtenerModalidadesPorCarrera } from '../services/modalidadService';
 import axiosInstance from '../services/axiosConfig';
 
-const CrearTrabajo = () => {
+const CrearTrabajoTitulacionFormulario = () => {
     const [carreras, setCarreras] = useState([]);
     const [modalidades, setModalidades] = useState([]);
     const [tutores, setTutores] = useState([]);
@@ -237,7 +237,7 @@ const handleKeyDown = (e, type) => {
 
       {/* Buscar Cotutor */}
       <BuscadorYSelectorDeUsuarios
-        label="Buscar Cotutor"
+        label="Buscar Co-tutor"
         optional={true}
         placeholder="Ingrese el nombre del cotutor"
         searchValue={cotutorSearch}
@@ -290,4 +290,4 @@ const handleKeyDown = (e, type) => {
   );
 };
 
-export default CrearTrabajo;
+export default CrearTrabajoTitulacionFormulario;

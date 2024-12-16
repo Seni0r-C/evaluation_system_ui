@@ -8,12 +8,9 @@ import Principal from '../pages/principal';
 import ModalidadesTitulacion from '../pages/modalidadesTitulacion';
 import ItemsRevista from '../pages/itemsRevista';
 import ItemsRubrica from '../pages/itemsRubrica';
-import RegistroTrabajosTitulacion from '../pages/registroTrabajosTitulacion';
-
-
 import { RutaRaiz } from '../utils/constants';
 import CalificacionUI from '../pages/calificar';
-import TrabajosTitulacion from '../pages/trabajosTitulacion';
+import CrearTrabajoTitulacionFormulario from '../pages/CrearTrabajoTitulacionFormulario';
 
 const routes = [
   {
@@ -57,18 +54,6 @@ const routes = [
     ),
   },
   {
-    path: '/ingresar-trabajos',
-    element: (
-      <ErrorBoundary>
-        <ProtectedRoute>
-          <Layout>
-            <TrabajosTitulacion />
-          </Layout>
-        </ProtectedRoute>
-      </ErrorBoundary>
-    ),
-  },
-  {
     path: '/items-revista',
     element: (
       <ErrorBoundary>
@@ -98,7 +83,7 @@ const routes = [
       <ErrorBoundary>
         <ProtectedRoute>
           <Layout>
-            <RegistroTrabajosTitulacion />
+            <CrearTrabajoTitulacionFormulario />
           </Layout>
         </ProtectedRoute>
       </ErrorBoundary>
