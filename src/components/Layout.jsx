@@ -4,10 +4,10 @@ import { IoMdClose, IoMdMenu, IoIosLogOut } from "react-icons/io";
 import { FaChevronDown, FaChevronUp, FaUserCircle } from "react-icons/fa";
 
 
-import logo from '../../assets/logo_bar.webp';
+import logo from '../assets/logo_bar.webp';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../domain/useAuth';
-import { RutaRaiz } from '../../utils/constants';
+import { useAuth } from '../domain/useAuth';
+import { RutaRaiz } from '../utils/constants';
 
 const menuData = [
     {

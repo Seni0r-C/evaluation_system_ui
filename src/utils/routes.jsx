@@ -1,19 +1,19 @@
 import { createBrowserRouter } from 'react-router-dom';
-import ErrorBoundary from '../presentation/components/ErrorBoundary';
-import Login from '../presentation/pages/login';
-import NotFound from '../presentation/pages/not_found';
-import Layout from '../presentation/layout/Layout';
+import ErrorBoundary from '../components/ErrorBoundary';
+import Login from '../pages/login';
+import NotFound from '../pages/not_found';
+import Layout from '../components/Layout';
 import ProtectedRoute from '../domain/ProtectedRoute';
-import Principal from '../presentation/pages/principal';
-import ModalidadesTitulacion from '../presentation/pages/modalidadesTitulacion';
-import ItemsRevista from '../presentation/pages/itemsRevista';
-import ItemsRubrica from '../presentation/pages/itemsRubrica';
-import RegistroTrabajosTitulacion from '../presentation/pages/registroTrabajosTitulacion';
+import Principal from '../pages/principal';
+import ModalidadesTitulacion from '../pages/modalidadesTitulacion';
+import ItemsRevista from '../pages/itemsRevista';
+import ItemsRubrica from '../pages/itemsRubrica';
+import RegistroTrabajosTitulacion from '../pages/registroTrabajosTitulacion';
 
 
 import { RutaRaiz } from './constants';
-import CalificacionUI from '../presentation/pages/calificar';
-import TrabajosTitulacion from '../presentation/pages/trabajosTitulacion';
+import CalificacionUI from '../pages/calificar';
+import TrabajosTitulacion from '../pages/trabajosTitulacion';
 
 const routes = [
   {

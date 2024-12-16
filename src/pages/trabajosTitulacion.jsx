@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { API_URL } from '../../utils/constants';
+import { API_URL } from '../utils/constants';
 import BuscarUsuario from '../components/BuscarTutor';
 
 const CrearTrabajo = () => {
@@ -84,10 +84,12 @@ const CrearTrabajo = () => {
   
         alert('Trabajo creado con éxito: ' + trabajoId);
       } catch (error) {
+        alert('Error al agregar estudiantes: ' + error.response?.data?.error || error);
         console.error('Error al agregar estudiantes:', error.response?.data?.error || error);
       }
   
     } catch (error) {
+        alert('Error al crear trabajo: ' + error.response?.data?.error || error);
       console.error('Error al crear trabajo:', error.response?.data?.error || error);
     }
   }; 

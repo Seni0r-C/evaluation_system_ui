@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { RutaRaiz } from '../../utils/constants';
+import { RutaRaiz } from '../utils/constants';
 
 const NotFound = () => {
     return (

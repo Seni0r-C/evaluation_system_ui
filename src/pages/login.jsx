@@ -1,12 +1,12 @@
 import { useState } from "react";
-import logo from "../../assets/logo_inicio.png";
+import logo from "../assets/logo_inicio.png";
 import { useNavigate } from "react-router-dom";
 import LoadingScreen from "../components/LoadingScreen";
 import MessageDialog from "../components/MessageDialog";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
-import background from "../../assets/utm.webp";
-import { API_URL, RutaRaiz, VERSION } from "../../utils/constants";
-import { useAuth } from "../../domain/useAuth";
+import background from "../assets/utm.webp";
+import { API_URL, RutaRaiz, VERSION } from "../utils/constants";
+import { useAuth } from "../domain/useAuth";
 import axios from "axios";
 
 const Login = () => {
