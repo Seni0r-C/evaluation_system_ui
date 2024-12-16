@@ -13,26 +13,31 @@ const menuData = [
     {
         name: 'Inicio',
         href: RutaRaiz,
+        roles: [1, 2], // Disponible para roles 1 (Administrador) y 2 (Usuario estándar)
         subOptions: [],
     },
     {
         name: 'Modalidades de Titulación',
         href: '/modalidades',
+        roles: [1], // Disponible para ambos roles
         subOptions: [],
     },
     {
         name: 'Items de revista',
         href: '/items-revista',
+        roles: [1], // Disponible solo para el rol 1 (Administrador)
         subOptions: [],
     },
     {
         name: 'Items de rúbrica',
         href: '/items-rubrica',
+        roles: [1], // Disponible solo para el rol 1 (Administrador)
         subOptions: [],
     },
     {
         name: 'Registro proyectos titulación',
         href: '/registro-proyecto-titulacion',
+        roles: [1, 2], // Disponible solo para el rol 1 (Administrador)
         subOptions: [],
     },
 ];
@@ -48,21 +53,22 @@ const Layout = ({ children }) => {
     const [nombreUsuario, setNombreUsuario] = useState('Usuario');
     const navigate = useNavigate();
     const { setIsAuthenticated } = useAuth();
+    const [filteredMenu, setFilteredMenu] = useState([]);
 
     useEffect(() => {
-        // Obtiene el nombre del usuario desde localStorage
+        // Obtiene información del usuario desde localStorage
         const userInfo = localStorage.getItem('userInfo');
         if (userInfo) {
-            const userInfoParsed = JSON.parse(userInfo);
-            const nombre = userInfoParsed.nombre;
-            const apellido = userInfoParsed.apellido;
+            const { nombre, apellido, id_rol } = JSON.parse(userInfo);
 
-            // Extraer solo el primer nombre y el primer apellido
-            const primerNombre = nombre.split(' ')[0];  // Toma la primera palabra antes del espacio
-            const primerApellido = apellido.split(' ')[0];  // Toma la primera palabra antes del espacio
+            // Configurar el nombre del usuario
+            const primerNombre = nombre.split(' ')[0];
+            const primerApellido = apellido.split(' ')[0];
+            setNombreUsuario(`${primerNombre} ${primerApellido}`);
 
-            // Solo el primer nombre y el primer apellido
-            setNombreUsuario(`${primerNombre} ${primerApellido}`);  // Pasa los valores al estado
+            // Filtrar opciones del menú basadas en el rol del usuario
+            const userMenu = menuData.filter(option => option.roles.includes(id_rol));
+            setFilteredMenu(userMenu);
         }
     }, []);
 
@@ -147,7 +153,7 @@ const Layout = ({ children }) => {
                         }`}
                 >
                     <nav className="space-y-4">
-                        {menuData.map((item, index) => (
+                        {filteredMenu.map((item, index) => (
                             <div key={index}>
                                 {/* Opción principal con el ícono dentro del <a> */}
                                 <Link
