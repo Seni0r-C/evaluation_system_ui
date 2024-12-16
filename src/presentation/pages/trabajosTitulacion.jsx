@@ -129,8 +129,12 @@ const CrearTrabajo = () => {
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Crear Trabajo de Titulación</h1>
+  <h1 className="text-2xl font-bold mb-6">Crear Trabajo de Titulación</h1>
 
+  {/* Contenedor de dos columnas */}
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    {/* Columna 1 */}
+    <div>
       {/* Seleccionar carrera */}
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700 mb-2">Carrera</label>
@@ -159,8 +163,35 @@ const CrearTrabajo = () => {
         </select>
       </div>
 
- {/* Buscar Tutor */}
- <BuscarUsuario
+      {/* Título */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-2">Título</label>
+        <input
+          type="text"
+          value={titulo}
+          onChange={(e) => setTitulo(e.target.value)}
+          placeholder="Ingrese el título del trabajo"
+          className="w-full border rounded px-3 py-2"
+        />
+      </div>
+
+      {/* Link del archivo */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-2">Link del Archivo</label>
+        <input
+          type="text"
+          value={linkArchivo}
+          onChange={(e) => setLinkArchivo(e.target.value)}
+          placeholder="Ingrese el link del archivo"
+          className="w-full border rounded px-3 py-2"
+        />
+      </div>
+    </div>
+
+    {/* Columna 2 */}
+    <div>
+      {/* Buscar Tutor */}
+      <BuscarUsuario
         label="Buscar Tutor"
         placeholder="Ingrese el nombre del tutor"
         searchValue={tutorSearch}
@@ -234,39 +265,17 @@ const CrearTrabajo = () => {
           </div>
         ))}
       </div>
-
-
-      {/* Título */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">Título</label>
-        <input
-          type="text"
-          value={titulo}
-          onChange={(e) => setTitulo(e.target.value)}
-          placeholder="Ingrese el título del trabajo"
-          className="w-full border rounded px-3 py-2"
-        />
-      </div>
-
-      {/* Link del archivo */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">Link del Archivo</label>
-        <input
-          type="text"
-          value={linkArchivo}
-          onChange={(e) => setLinkArchivo(e.target.value)}
-          placeholder="Ingrese el link del archivo"
-          className="w-full border rounded px-3 py-2"
-        />
-      </div>
-
-      {/* Botón de creación */}
-      <button
-        onClick={handleCrearTrabajo}
-        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-        Crear Trabajo
-      </button>
     </div>
+  </div>
+
+  {/* Botón de creación */}
+  <button
+    onClick={handleCrearTrabajo}
+    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mt-6">
+    Crear Trabajo
+  </button>
+</div>
+
   );
 };
 
