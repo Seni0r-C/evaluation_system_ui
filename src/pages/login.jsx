@@ -5,9 +5,9 @@ import LoadingScreen from "../components/LoadingScreen";
 import MessageDialog from "../components/MessageDialog";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import background from "../assets/utm.webp";
-import { API_URL, RutaRaiz, VERSION } from "../utils/constants";
+import { RutaRaiz, VERSION } from "../utils/constants";
 import { useAuth } from "../hooks/useAuth";
-import axios from "axios";
+import axiosInstance from "../services/axiosConfig";
 
 const Login = () => {
     const [usuario, setUsuario] = useState("");
@@ -27,7 +27,7 @@ const Login = () => {
 
         try {
             setIsLoading(true);
-            const response = await axios.post(`${API_URL}/auth/login`, {
+            const response = await axiosInstance.post(`/auth/login`, {
                 email: username,
                 password: password,
             });
@@ -41,7 +41,7 @@ const Login = () => {
                 // Guardar la fecha de creación del token en localStorage
                 localStorage.setItem('tokenCreationTime', new Date().getTime());
 
-                const info = await axios.get(`${API_URL}/auth/me`,
+                const info = await axiosInstance.get(`/auth/me`,
                     {
                         headers: {
                             Authorization: `Bearer ${data.datos}`,
