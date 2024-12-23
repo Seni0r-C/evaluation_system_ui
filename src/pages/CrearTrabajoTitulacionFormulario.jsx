@@ -12,7 +12,7 @@ const CrearTrabajoTitulacionFormulario = () => {
     const [cotutores, setCotutores] = useState([]);
     const [estudiantes, setEstudiantes] = useState([]);
 
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
   
     const [selectedCarrera, setSelectedCarrera] = useState('');
     const [selectedModalidad, setSelectedModalidad] = useState('');
