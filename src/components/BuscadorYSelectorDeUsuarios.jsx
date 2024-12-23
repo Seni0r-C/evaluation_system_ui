@@ -18,7 +18,7 @@ const BuscadorYSelectorDeUsuarios = ({
   type, // para distinguir entre tutor y cotutor
   setHighlightedIndex,
   highlightedIndex,
-   handleBuscar,
+  handleBuscar,
 }) => {
   const handleSearchChange = (e) => {
     setSearchValue(e.target.value);
@@ -75,20 +75,20 @@ const BuscadorYSelectorDeUsuarios = ({
       )}
 
       {/* Mostrar estudiantes seleccionados */}
-      {selectedUSers &&(
+      {selectedUSers && (
         <div className="mt-2">
-        {selectedUSers.map((est) => (
-          <div key={est.id} className="flex items-center bg-blue-100 text-blue-700 px-3 py-1 rounded-full mt-1">
-            <span className="mr-2">{est.nombre} {est.apellido}</span>
-            <button
-              onClick={() => handleChipRemove('estudiante', est)}
-              className="text-red-500 hover:text-red-700"
+          {selectedUSers.map((est) => (
+            <div key={est.id} className="flex items-center bg-blue-100 text-blue-700 px-3 py-1 rounded-full mt-1">
+              <span className="mr-2">{est.nombre} {est.apellido}</span>
+              <button
+                onClick={() => handleChipRemove('estudiante', est)}
+                className="text-red-500 hover:text-red-700"
               >
-              ✕
-            </button>
-          </div>
-        ))}
-      </div>
+                ✕
+              </button>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );
