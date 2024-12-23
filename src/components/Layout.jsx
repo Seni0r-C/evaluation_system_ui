@@ -13,7 +13,7 @@ const menuData = [
     {
         name: 'Inicio',
         href: RutaRaiz,
-        roles: [1, 2], // Disponible para roles 1 (Administrador) y 2 (Usuario estándar)
+        roles: [0], // Disponible para todos los roles
         subOptions: [],
     },
     {
@@ -54,12 +54,15 @@ const Layout = ({ children }) => {
     const navigate = useNavigate();
     const { setIsAuthenticated } = useAuth();
     const [filteredMenu, setFilteredMenu] = useState([]);
+    const [userPhoto, setUserPhoto] = useState(null);
 
     useEffect(() => {
         // Obtiene información del usuario desde localStorage
         const userInfo = localStorage.getItem('userInfo');
         if (userInfo) {
-            const { nombre, id_rol } = JSON.parse(userInfo);
+            const { nombre, roles, fotoBase64 } = JSON.parse(userInfo);
+
+            setUserPhoto(`data:image/jpeg;base64,${fotoBase64}`);
 
             // Dividir el nombre en partes
             const partesNombre = nombre.split(' ');
@@ -72,7 +75,9 @@ const Layout = ({ children }) => {
             setNombreUsuario(`${primerApellido} ${primerNombre}`);
 
             // Filtrar opciones del menú basadas en el rol del usuario
-            const userMenu = menuData.filter(option => option.roles.includes(id_rol));
+            const userMenu = menuData.filter(option =>
+                option.roles.some(role => roles.includes(role) || role === 0)
+            );
             setFilteredMenu(userMenu);
         }
     }, []);
@@ -121,9 +126,11 @@ const Layout = ({ children }) => {
                         className="cursor-pointer flex items-center space-x-4"
                     >
                         <span className="font-semibold text-lg">{nombreUsuario}</span>
-                        <div className="rounded-full w-10 h-10 bg-blue-500 flex justify-center items-center text-gray-800 font-semibold">
-                            {nombreUsuario.slice(0, 1)}
-                        </div>
+                        <img
+                            src={userPhoto}
+                            alt="Foto de perfil"
+                            className="rounded-full w-10 h-10 bg-blue-500 flex justify-center items-center text-gray-800 font-semibold border-2 border-green-600 object-cover"
+                        />
                     </div>
                     {isDropdownVisible && (
                         <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg py-2">

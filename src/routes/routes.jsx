@@ -12,6 +12,7 @@ import { RutaRaiz } from '../utils/constants';
 import CalificacionUI from '../pages/calificar';
 import CrearTrabajoTitulacionFormulario from '../pages/CrearTrabajoTitulacionFormulario';
 import TrabajoTitulacionList from '../pages/TrabajoTitulacionList';
+import UserProfile from '../pages/Perfil';
 
 const routes = [
   {
@@ -97,6 +98,18 @@ const routes = [
         <ProtectedRoute>
           <Layout>
             <CalificacionUI />
+          </Layout>
+        </ProtectedRoute>
+      </ErrorBoundary>
+    ),
+  },
+  {
+    path: '/profile',
+    element: (
+      <ErrorBoundary>
+        <ProtectedRoute>
+          <Layout>
+            <UserProfile />
           </Layout>
         </ProtectedRoute>
       </ErrorBoundary>
