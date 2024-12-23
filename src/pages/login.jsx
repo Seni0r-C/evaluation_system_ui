@@ -28,7 +28,7 @@ const Login = () => {
         try {
             setIsLoading(true);
             const response = await axiosInstance.post(`/auth/login`, {
-                email: username,
+                usuario: username,
                 password: password,
             });
 
@@ -122,14 +122,14 @@ const Login = () => {
                     <form onSubmit={handleSubmit} className="text-white">
                         <div className="mb-4">
                             <label
-                                htmlFor="email"
+                                htmlFor="usuario"
                                 className="block font-medium mb-2 text-white"
                             >
-                                CORREO
+                                USUARIO
                             </label>
                             <input
-                                type="email"
-                                id="email"
+                                type="text"
+                                id="usuario"
                                 value={usuario}
                                 onChange={(e) => setUsuario(e.target.value)}
                                 className="w-full px-4 py-2 border border-transparent bg-opacity-70 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-300 text-black"
