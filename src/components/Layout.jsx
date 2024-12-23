@@ -59,12 +59,17 @@ const Layout = ({ children }) => {
         // Obtiene información del usuario desde localStorage
         const userInfo = localStorage.getItem('userInfo');
         if (userInfo) {
-            const { nombre, apellido, id_rol } = JSON.parse(userInfo);
+            const { nombre, id_rol } = JSON.parse(userInfo);
+
+            // Dividir el nombre en partes
+            const partesNombre = nombre.split(' ');
+
+            // Obtener el primer apellido y el primer nombre
+            const primerApellido = partesNombre[0];
+            const primerNombre = partesNombre[2];
 
             // Configurar el nombre del usuario
-            const primerNombre = nombre.split(' ')[0];
-            const primerApellido = apellido.split(' ')[0];
-            setNombreUsuario(`${primerNombre} ${primerApellido}`);
+            setNombreUsuario(`${primerApellido} ${primerNombre}`);
 
             // Filtrar opciones del menú basadas en el rol del usuario
             const userMenu = menuData.filter(option => option.roles.includes(id_rol));
