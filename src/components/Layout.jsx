@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { IoMdClose, IoMdMenu, IoIosLogOut } from "react-icons/io";
 import { FaChevronDown, FaChevronUp, FaUserCircle } from "react-icons/fa";
@@ -56,6 +56,9 @@ const Layout = ({ children }) => {
     const [filteredMenu, setFilteredMenu] = useState([]);
     const [userPhoto, setUserPhoto] = useState(null);
 
+    const dropdownRef = useRef(null);
+
+
     useEffect(() => {
         // Obtiene información del usuario desde localStorage
         const userInfo = localStorage.getItem('userInfo');
@@ -82,6 +85,21 @@ const Layout = ({ children }) => {
         }
     }, []);
 
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsDropdownVisible(false); // Oculta el menú
+            }
+        };
+
+        // Agregar evento global de clic
+        document.addEventListener('mousedown', handleClickOutside);
+
+        // Limpieza del evento
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     const toggleSidebar = () => {
         setSidebarVisible((prevVisible) => {
@@ -101,7 +119,8 @@ const Layout = ({ children }) => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col bg-[#2a8c44] text-gray-800">
+        <div className="min-h-screen flex flex-col bg-[#2a8c44] text-gray-800"
+        >
             {/* Barra superior */}
             <header className="bg-gray-100 text-gray-800 p-2 flex justify-between items-center shadow-md z-50 fixed w-full top-0 left-0">
                 <div className="flex items-center space-x-4">
@@ -120,7 +139,7 @@ const Layout = ({ children }) => {
                     </Link>
 
                 </div>
-                <div className="relative">
+                <div className="relative" ref={dropdownRef}>
                     <div
                         onClick={toggleDropdown}
                         className="cursor-pointer flex items-center md:space-x-4"
