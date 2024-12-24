@@ -10,8 +10,8 @@ import ItemsRevista from '../pages/itemsRevista';
 import ItemsRubrica from '../pages/itemsRubrica';
 import { RutaRaiz } from '../utils/constants';
 import CalificacionUI from '../pages/calificar';
-import CrearTrabajoTitulacionFormulario from '../pages/CrearTrabajoTitulacionFormulario';
-import TrabajoTitulacionList from '../pages/TrabajoTitulacionList';
+import CrearTrabajoTitulacionFormulario from '../pages/TrabajoTitulacionCrear';
+import TrabajoTitulacionListar from '../pages/TrabajoTitulacionListar';
 import UserProfile from '../pages/Perfil';
 
 const routes = [
@@ -37,7 +37,7 @@ const routes = [
       <ErrorBoundary>
         <ProtectedRoute>
           <Layout>
-            <TrabajoTitulacionList />
+            <TrabajoTitulacionListar />
           </Layout>
         </ProtectedRoute>
       </ErrorBoundary>

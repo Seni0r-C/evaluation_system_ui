@@ -1,7 +1,7 @@
 import  { useState, useEffect } from 'react';
 import axiosInstance from '../services/axiosConfig';
 
-const TrabajoTitulacionList = () => {
+const TrabajoTitulacionListar = () => {
   const [trabajos, setTrabajos] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -156,4 +156,4 @@ const TrabajoTitulacionList = () => {
   );
 };
 
-export default TrabajoTitulacionList;
+export default TrabajoTitulacionListar;

@@ -5,7 +5,7 @@ import { obtenerCarreras } from '../services/carreraService';
 import { obtenerModalidadesPorCarrera } from '../services/modalidadService';
 import axiosInstance from '../services/axiosConfig';
 
-const CrearTrabajoTitulacionFormulario = () => {
+const TrabajoTitulacionCrear = () => {
   const [carreras, setCarreras] = useState([]);
   const [modalidades, setModalidades] = useState([]);
   const [tutores, setTutores] = useState([]);
@@ -318,4 +318,4 @@ const CrearTrabajoTitulacionFormulario = () => {
   );
 };
 
-export default CrearTrabajoTitulacionFormulario;
+export default TrabajoTitulacionCrear;
