@@ -59,6 +59,7 @@ const BuscadorYSelectorDeUsuarios = ({
           />
           <button
             onClick={handleButtonClick}
+            type='button'
             className="bg-gray-200 border border-l-0 rounded-r px-3 py-3 mb-2 flex items-center justify-center hover:bg-gray-300 h-full"
           >
             {searchResults.length > 0 ? <FaChevronUp className="text-gray-600" /> : <FaChevronDown className="text-gray-600" />}
