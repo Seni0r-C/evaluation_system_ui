@@ -177,6 +177,7 @@ const TrabajoTitulacionListar = () => {
           <tr className="bg-gray-100">
             <th className="border px-4 py-2">Título</th>
             <th className="border px-4 py-2">Carrera</th>
+            <th className="border px-4 py-2">Link</th>
             <th className="border px-4 py-2">Modalidad</th>
             <th className="border px-4 py-2">Estado</th>
           </tr>
@@ -187,6 +188,7 @@ const TrabajoTitulacionListar = () => {
               <tr key={trabajo.id}>
                 <td className="border px-4 py-2">{trabajo.titulo}</td>
                 <td className="border px-4 py-2">{trabajo.carrera}</td>
+                <td className="border px-4 py-2"><a href={trabajo.link_archivo} target="_blank" rel="noreferrer" className="text-blue-500 hover:underline">Ver</a></td>
                 <td className="border px-4 py-2">{trabajo.modalidad}</td>
                 <td className="border px-4 py-2">{trabajo.estado}</td>
               </tr>
