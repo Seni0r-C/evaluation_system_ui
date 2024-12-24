@@ -130,11 +130,11 @@ const Login = () => {
                             <input
                                 type="text"
                                 id="usuario"
+                                placeholder="Ingrese su usuario sin el '@utm.edu.ec'"
                                 value={usuario}
                                 onChange={(e) => setUsuario(e.target.value)}
-                                className="w-full px-4 py-2 border border-transparent bg-opacity-70 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-300 text-black"
+                                className="w-full px-4 py-2 border border-transparent bg-opacity-70 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-300 text-black placeholder-gray-600"
                                 required
-                                inputMode="numeric"
                                 onKeyDown={(e) => {
                                     if (e.key == 'Enter') {
                                         document.getElementById("password").focus();
@@ -153,9 +153,10 @@ const Login = () => {
                                 <input
                                     type={showPassword ? "text" : "password"}
                                     id="password"
+                                    placeholder="Ingrese su contraseña"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full px-4 py-2 pr-12 border border-transparent bg-opacity-70 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-300 text-black"
+                                    className="w-full px-4 py-2 pr-12 border border-transparent bg-opacity-70 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-300 text-black placeholder-gray-600"
                                     required
                                 />
                                 <button
