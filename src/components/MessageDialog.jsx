@@ -25,7 +25,7 @@ const MessageDialog = ({ message, onClose, isOpen, iconType }) => {
                 </div>
                 <p className="text-gray-700 mb-6">{message}</p>
                 <button
-                    className="block px-10 py-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-all transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300 mx-auto"
+                    className="block px-10 py-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-all transform focus:outline-none focus:ring-2 focus:ring-blue-300 mx-auto"
                     onClick={onClose}
                 >
                     Cerrar

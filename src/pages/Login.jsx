@@ -16,6 +16,7 @@ const Login = () => {
     const [errorMessage, setErrorMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [showMessage, setShowMessage] = useState(false);
+    const icon = useState('error');
 
     const navigate = useNavigate();
     const { isAuthenticated, setIsAuthenticated } = useAuth();
@@ -24,11 +25,11 @@ const Login = () => {
     }
 
     async function login(username, password) {
-
+        const cleanUsername = username.replace(/@utm\.edu\.ec$/, '');
         try {
             setIsLoading(true);
             const response = await axiosInstance.post(`/auth/login`, {
-                usuario: username,
+                usuario: cleanUsername,
                 password: password,
             });
 
@@ -67,11 +68,12 @@ const Login = () => {
         } catch (error) {
             setIsLoading(false);
             // Manejar errores de red u otros
-            console.error('Error de conexión:', error);
-            alert('Error de conexión. Por favor, intenta de nuevo. ' + error);
+            setErrorMessage(error.response.data.mensaje || error.message);
+            setShowMessage(true);
             setIsLoading(false);
         }
     }
+
     const handleSubmit = (e) => {
         e.preventDefault();
         login(usuario, password);
@@ -89,7 +91,7 @@ const Login = () => {
     return (
         <>
             <LoadingScreen isLoading={isLoading} />
-            <MessageDialog message={errorMessage} onClose={handleCerrar} isOpen={showMessage} />
+            <MessageDialog message={errorMessage} onClose={handleCerrar} isOpen={showMessage} iconType={icon} />
             <div className="flex flex-col md:flex-row h-screen relative items-start md:items-center md:justify-center">
                 {/* Fondo con imagen difuminada */}
                 <div
@@ -128,9 +130,9 @@ const Login = () => {
                                 USUARIO
                             </label>
                             <input
-                                type="email"
+                                type="text"
                                 id="usuario"
-                                placeholder="Ingrese su correo universitario"
+                                placeholder="Ingrese su usuario sin el '@utm.edu.ec'"
                                 value={usuario}
                                 onChange={(e) => setUsuario(e.target.value)}
                                 className="w-full px-4 py-2 border border-transparent bg-opacity-70 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-300 text-black placeholder-gray-600"
