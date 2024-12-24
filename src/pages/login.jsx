@@ -128,9 +128,9 @@ const Login = () => {
                                 USUARIO
                             </label>
                             <input
-                                type="text"
+                                type="email"
                                 id="usuario"
-                                placeholder="Ingrese su usuario sin el '@utm.edu.ec'"
+                                placeholder="Ingrese su correo universitario"
                                 value={usuario}
                                 onChange={(e) => setUsuario(e.target.value)}
                                 className="w-full px-4 py-2 border border-transparent bg-opacity-70 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-300 text-black placeholder-gray-600"
