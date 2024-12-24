@@ -24,6 +24,12 @@ const TrabajoTitulacionListar = () => {
   const [carreras, setCarreras] = useState([]);
   const [modalidades, setModalidades] = useState([]);
   const [estados, setEstados] = useState([]);
+  const colorMap = {
+    Aprobado: 'bg-green-100 text-green-800',
+    Pendiente: 'bg-yellow-100 text-yellow-800',
+    Rechazado: 'bg-red-100 text-red-800',
+    // Agrega más estados y colores aquí según sea necesario
+  };
 
   useEffect(() => {
     obtenerCarreras(setCarreras);
@@ -172,34 +178,54 @@ const TrabajoTitulacionListar = () => {
       </div>
 
       {/* Lista de trabajos */}
-      <table className="min-w-full table-auto border-collapse border border-gray-200">
+      <table className="min-w-full table-auto border-collapse border border-gray-200 shadow-md rounded-lg">
         <thead>
-          <tr className="bg-gray-100">
-            <th className="border px-4 py-2">Título</th>
-            <th className="border px-4 py-2">Carrera</th>
-            <th className="border px-4 py-2">Link</th>
-            <th className="border px-4 py-2">Modalidad</th>
-            <th className="border px-4 py-2">Estado</th>
+          <tr className="bg-blue-100 text-gray-800">
+            <th className="border-b px-6 py-3 font-bold text-left">Título</th>
+            <th className="border-b px-6 py-3 font-bold text-left">Carrera</th>
+            <th className="border-b px-6 py-3 font-bold text-left">Link</th>
+            <th className="border-b px-6 py-3 font-bold text-left">Modalidad</th>
+            <th className="border-b px-6 py-3 font-bold text-left">Estado</th>
           </tr>
         </thead>
         <tbody>
           {trabajos.length > 0 ? (
             trabajos.map((trabajo) => (
-              <tr key={trabajo.id}>
-                <td className="border px-4 py-2">{trabajo.titulo}</td>
-                <td className="border px-4 py-2">{trabajo.carrera}</td>
-                <td className="border px-4 py-2"><a href={trabajo.link_archivo} target="_blank" rel="noreferrer" className="text-blue-500 hover:underline">Ver</a></td>
-                <td className="border px-4 py-2">{trabajo.modalidad}</td>
-                <td className="border px-4 py-2">{trabajo.estado}</td>
+              <tr key={trabajo.id} className="hover:bg-gray-100 transition-colors">
+                <td className="px-6 py-4">{trabajo.titulo}</td>
+                <td className="px-6 py-4">{trabajo.carrera}</td>
+                <td className="px-6 py-4">
+                  <a
+                    href={trabajo.link_archivo}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-blue-500 hover:underline"
+                  >
+                    <i className="fas fa-link"></i> Ver archivo
+                  </a>
+                </td>
+                <td className="px-6 py-4">{trabajo.modalidad}</td>
+                <td className="px-6 py-4">
+                  <span
+                    className={`px-2 py-1 rounded-full text-sm ${colorMap[trabajo.estado] || 'bg-gray-100 text-gray-800'
+                      }`}
+                  >
+                    {trabajo.estado}
+                  </span>
+                </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="4" className="text-center p-4">No se encontraron trabajos</td>
+              <td colSpan="5" className="text-center p-6 text-gray-500">
+                <i className="fas fa-folder-open text-2xl"></i>
+                <p>No se encontraron trabajos</p>
+              </td>
             </tr>
           )}
         </tbody>
       </table>
+
 
       {/* Paginación */}
       <div className="mt-4 flex justify-between items-center">
