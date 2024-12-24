@@ -214,7 +214,7 @@ const Layout = ({ children }) => {
 
                 {/* Contenido principal */}
                 < main
-                    className={`flex-grow bg-white shadow-inner transition-all duration-300 ease-in-out ${isSidebarVisible ? 'md:ml-64' : 'md:ml-0'}`}
+                    className={`flex-grow bg-white shadow-inner transition-all duration-300 ease-in-out mt-2 ${isSidebarVisible ? 'md:ml-64' : 'md:ml-0'}`}
                 >
                     {children}
                 </main >
