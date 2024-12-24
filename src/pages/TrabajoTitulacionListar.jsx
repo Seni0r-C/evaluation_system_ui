@@ -1,17 +1,64 @@
-import  { useState, useEffect } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useEffect } from 'react';
 import axiosInstance from '../services/axiosConfig';
+import { obtenerCarreras } from '../services/carreraService';
+import { obtenerModalidadesPorCarrera } from '../services/modalidadService';
+import { obtenerEstados } from '../services/trabajosTitulacion';
 
 const TrabajoTitulacionListar = () => {
   const [trabajos, setTrabajos] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
+  const [verTodo, setVerTodo] = useState(false);
   const [filters, setFilters] = useState({
     carrera_id: '',
     modalidad_id: '',
     estado: '',
     titulo: ''
   });
+  const info = localStorage.getItem('userInfo');
+  const user = JSON.parse(info);
+
+  //datos
+  const [carreras, setCarreras] = useState([]);
+  const [modalidades, setModalidades] = useState([]);
+  const [estados, setEstados] = useState([]);
+
+  useEffect(() => {
+    obtenerCarreras(setCarreras);
+    obtenerEstados(setEstados);
+  }, []);
+
+  useEffect(() => {
+    if (info) {
+      // Lista de roles a verificar
+      const requiredRoles = [1, 2];
+
+      // Verificar si el usuario tiene al menos uno de los roles
+      const hasRole = user.roles.some(role => requiredRoles.includes(role));
+
+      if (hasRole) {
+        setVerTodo(true);
+      } else {
+        obtenerModalidadesPorCarrera(user.carreras[0], setModalidades);
+        setFilters({
+          carrera_id: user.carreras[0],
+          modalidad_id: '',
+          estado: '',
+          titulo: ''
+        });
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (filters.carrera_id) {
+      obtenerModalidadesPorCarrera(filters.carrera_id, setModalidades);
+    } else if (user.carreras.length > 0) {
+      obtenerModalidadesPorCarrera(user.carreras[0], setModalidades);
+    }
+  }, [filters.carrera_id]);
 
   // Cargar los trabajos de titulación
   useEffect(() => {
@@ -61,38 +108,67 @@ const TrabajoTitulacionListar = () => {
 
       {/* Filtros */}
       <div className="mb-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <input
-          type="text"
-          name="titulo"
-          value={filters.titulo}
-          onChange={handleFilterChange}
-          className="p-2 border rounded"
-          placeholder="Filtrar por título"
-        />
-        <input
-          type="number"
-          name="carrera_id"
-          value={filters.carrera_id}
-          onChange={handleFilterChange}
-          className="p-2 border rounded"
-          placeholder="Filtrar por carrera"
-        />
-        <input
-          type="number"
-          name="modalidad_id"
-          value={filters.modalidad_id}
-          onChange={handleFilterChange}
-          className="p-2 border rounded"
-          placeholder="Filtrar por modalidad"
-        />
-        <input
-          type="text"
-          name="estado"
-          value={filters.estado}
-          onChange={handleFilterChange}
-          className="p-2 border rounded"
-          placeholder="Filtrar por estado"
-        />
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">Título</label>
+          <input
+            type="text"
+            name="titulo"
+            value={filters.titulo}
+            onChange={handleFilterChange}
+            placeholder="Filtrar por título"
+            className="w-full border rounded px-3 py-2"
+          />
+        </div>
+
+        {verTodo && (
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Carrera</label>
+            <select
+              value={filters.carrera_id}
+              name="carrera_id"
+              onChange={handleFilterChange}
+              className="w-full border rounded px-3 py-2"
+            >
+              <option value="">Seleccione una carrera</option>
+              {carreras.filter(carrera =>
+                (user.carreras.includes(carrera.id)
+                  && !verTodo
+                ) || (verTodo)
+              ).map(carrera => (
+                <option key={carrera.id} value={carrera.id}>{carrera.nombre}</option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">Modalidad</label>
+          <select
+            value={filters.modalidad_id}
+            name="modalidad_id"
+            onChange={handleFilterChange}
+            className="w-full border rounded px-3 py-2"
+          >
+            <option value="">Seleccione una carrera</option>
+            {modalidades.map(modalidad => (
+              <option key={modalidad.id} value={modalidad.id}>{modalidad.nombre}</option>
+            ))}
+          </select>
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">Estados</label>
+          <select
+            value={filters.estado}
+            name="estado"
+            onChange={handleFilterChange}
+            className="w-full border rounded px-3 py-2"
+          >
+            <option value="">Seleccione un estado</option>
+            {estados.map((estado, index) => (
+              <option key={index} value={estado}>{estado}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {/* Lista de trabajos */}
