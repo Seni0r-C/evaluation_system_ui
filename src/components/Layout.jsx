@@ -123,9 +123,9 @@ const Layout = ({ children }) => {
                 <div className="relative">
                     <div
                         onClick={toggleDropdown}
-                        className="cursor-pointer flex items-center space-x-4"
+                        className="cursor-pointer flex items-center md:space-x-4"
                     >
-                        <span className="font-semibold text-lg">{nombreUsuario}</span>
+                        <span className="font-semibold text-xs md:text-base text-right mr-1">{nombreUsuario}</span>
                         <img
                             src={userPhoto}
                             alt="Foto de perfil"
@@ -170,7 +170,7 @@ const Layout = ({ children }) => {
                                 {/* Opción principal con el ícono dentro del <a> */}
                                 <Link
                                     to={item.href}
-                                    className="flex items-center p-2 hover:bg-blue-600 rounded-md transition-colors flex-1 justify-between"
+                                    className="flex items-center p-2 hover:bg-green-600 rounded-md transition-colors flex-1 justify-between"
                                     onClick={() => toggleSubOptions(index)} // Manejar clic para expandir/contraer
 
                                 >
@@ -199,7 +199,7 @@ const Layout = ({ children }) => {
                                                 <Link
                                                     key={subIndex}
                                                     to={subItem.href}
-                                                    className="block p-2 hover:bg-blue-500 rounded-md transition-colors"
+                                                    className="block p-2 hover:bg-green-500 rounded-md transition-colors"
                                                 >
                                                     {subItem.name}
                                                 </Link>
