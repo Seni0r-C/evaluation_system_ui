@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
-import LoadingScreen from './LoadingScreen';
+import Spinner from './LogoCarga/Spinner';
 
 const BuscadorYSelectorDeUsuarios = ({
   label,
@@ -10,8 +10,6 @@ const BuscadorYSelectorDeUsuarios = ({
   setSearchValue,
   searchResults,
   setSearchResults,
-  isLoading,
-  setIsLoading,
   selectedUser,
   selectedUSers,
   setSelectedUser,
@@ -22,11 +20,19 @@ const BuscadorYSelectorDeUsuarios = ({
   highlightedIndex,
   handleBuscar,
 }) => {
+  let showSpinner = false;
+
+  let timeoutId = null;
+
   const handleSearchChange = (e) => {
-    setSearchValue(e.target.value);
-    setIsLoading(true);
-    handleBuscar(e.target.value, setSearchResults, setIsLoading);
-    // Aquí se hace la búsqueda de usuarios
+    const searchValue = e.target.value;
+    setSearchValue(searchValue);
+    showSpinner = true;
+
+    // Limpiamos cualquier retraso previo
+    clearTimeout(timeoutId);
+
+    handleBuscar(searchValue, setSearchResults);
   };
 
   const handleButtonClick = () => {
@@ -35,14 +41,13 @@ const BuscadorYSelectorDeUsuarios = ({
       setSearchValue('');
       setHighlightedIndex(-1);
     } else {
-      setIsLoading(true);
-      handleBuscar(searchValue, setSearchResults, setIsLoading);
+      showSpinner = true;
+      handleBuscar(searchValue, setSearchResults);
     }
   };
 
   return (
     <>
-      {isLoading && <LoadingScreen isLoading={isLoading} />}
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700 mb-2">
           {label}{optional && <span className="text-gray-500 text-sm">(Opcional)</span>}
@@ -65,23 +70,27 @@ const BuscadorYSelectorDeUsuarios = ({
 
             </button>
           </div>
-          {searchResults.length > 0 && (
+          {(searchResults.length > 0 || showSpinner) && (
             <ul className="absolute border rounded bg-white w-full max-h-40 overflow-auto z-10">
-              {searchResults.map((user, index) => (
-                <li
-                  key={user.id}
-                  className={`px-3 py-2 cursor-pointer hover:bg-gray-100 ${highlightedIndex === index ? "bg-gray-100" : ""}`}
-                  onMouseEnter={() => setHighlightedIndex(index)}
-                  onClick={() => {
-                    setSelectedUser(user);
-                    setSearchValue("");
-                    setSearchResults([]);
-                    setHighlightedIndex(-1);
-                  }}
-                >
-                  {user.nombre}
-                </li>
-              ))}
+              {(searchResults.length > 0) ? (
+                searchResults.map((user, index) => (
+                  <li
+                    key={user.id}
+                    className={`px-3 py-2 cursor-pointer hover:bg-gray-100 ${highlightedIndex === index ? "bg-gray-100" : ""}`}
+                    onMouseEnter={() => setHighlightedIndex(index)}
+                    onClick={() => {
+                      setSelectedUser(user);
+                      setSearchValue("");
+                      setSearchResults([]);
+                      setHighlightedIndex(-1);
+                    }}
+                  >
+                    {user.nombre}
+                  </li>
+                ))
+              ) : <div className="p-3 text-center">
+                <Spinner />
+              </div>}
             </ul>
           )}
         </div>
@@ -126,8 +135,6 @@ BuscadorYSelectorDeUsuarios.propTypes = {
   setSearchValue: PropTypes.func.isRequired,
   searchResults: PropTypes.array.isRequired,
   setSearchResults: PropTypes.func.isRequired,
-  isLoading: PropTypes.bool.isRequired,
-  setIsLoading: PropTypes.func.isRequired,
   selectedUser: PropTypes.object,
   selectedUSers: PropTypes.array,
   setSelectedUser: PropTypes.func.isRequired,

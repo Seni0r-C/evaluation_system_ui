@@ -1,8 +1,7 @@
 .loading-spinner {
     position: relative;
     margin: 0 auto;
-    width: 75px;
-
+    /* width: 75px; */
   }
   .loading-spinner:before {
     content: '';
