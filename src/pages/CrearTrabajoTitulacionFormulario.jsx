@@ -28,6 +28,25 @@ const CrearTrabajoTitulacionFormulario = () => {
   const [highlightedIndexCotutor, setHighlightedIndexCotutor] = useState(-1);
   const [highlightedIndexEstudiante, setHighlightedIndexEstudiante] = useState(-1);
 
+  const resetForm = () => {
+    setCarreras([]);
+    setModalidades([]);
+    setTutores([]);
+    setSelectedTutor(null);
+    setSelectedCotutor(null);
+    setSelectedEstudiantes([]);
+    setCotutores([]);
+    setEstudiantes([]);
+    setTitulo('');
+    setLinkArchivo('');
+    setTutorSearch('');
+    setCotutorSearch('');
+    setEstudianteSearch('');
+    setHighlightedIndexTutor(-1);
+    setHighlightedIndexCotutor(-1);
+    setHighlightedIndexEstudiante(-1);
+  };
+
   useEffect(() => {
     obtenerCarreras(setCarreras);
   }, []);
@@ -43,7 +62,8 @@ const CrearTrabajoTitulacionFormulario = () => {
     buscarUsuarios(query, setResults, rol);
   };
 
-  const handleCrearTrabajo = async () => {
+  const handleCrearTrabajo = async (e) => {
+    e.preventDefault();
     const trabajoData = {
       carrera_id: selectedCarrera,
       modalidad_id: selectedModalidad,
@@ -79,6 +99,8 @@ const CrearTrabajoTitulacionFormulario = () => {
     } catch (error) {
       alert('Error al crear trabajo: ' + error.response?.data?.error || error);
       console.error('Error al crear trabajo:', error.response?.data?.error || error);
+    } finally {
+      resetForm();
     }
   };
 
@@ -155,128 +177,142 @@ const CrearTrabajoTitulacionFormulario = () => {
       <h1 className="text-2xl font-bold mb-6">Crear Trabajo de Titulación</h1>
 
       {/* Contenedor de dos columnas */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Columna 1 */}
-        <div>
-          {/* Seleccionar carrera */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Carrera</label>
-            <select
-              value={selectedCarrera}
-              onChange={(e) => setSelectedCarrera(e.target.value)}
-              className="w-full border rounded px-3 py-2">
-              <option value="">Seleccione una carrera</option>
-              {carreras.map(carrera => (
-                <option key={carrera.id} value={carrera.id}>{carrera.nombre}</option>
-              ))}
-            </select>
+      <form action="" onSubmit={(e) => handleCrearTrabajo(e)}>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Columna 1 */}
+          <div>
+            {/* Seleccionar carrera */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Carrera</label>
+              <select
+                value={selectedCarrera}
+                onChange={(e) => setSelectedCarrera(e.target.value)}
+                className="w-full border rounded px-3 py-2"
+                required
+              >
+                <option value="">Seleccione una carrera</option>
+                {carreras.map(carrera => (
+                  <option key={carrera.id} value={carrera.id}>{carrera.nombre}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Seleccionar modalidad */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Modalidad</label>
+              <select
+                value={selectedModalidad}
+                onChange={(e) => setSelectedModalidad(e.target.value)}
+                className="w-full border rounded px-3 py-2"
+                required
+              >
+                <option value="">Seleccione una modalidad</option>
+                {modalidades.map(modalidad => (
+                  <option key={modalidad.id} value={modalidad.id}>{modalidad.nombre}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Título */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Título</label>
+              <input
+                type="text"
+                value={titulo}
+                onChange={(e) => setTitulo(e.target.value)}
+                placeholder="Ingrese el título del trabajo"
+                className="w-full border rounded px-3 py-2"
+                required
+              />
+            </div>
+
+            {/* Link del archivo */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Link del Archivo</label>
+              <input
+                type="text"
+                value={linkArchivo}
+                onChange={(e) => setLinkArchivo(e.target.value)}
+                placeholder="Ingrese el link del archivo"
+                className="w-full border rounded px-3 py-2"
+                required
+              />
+            </div>
           </div>
 
-          {/* Seleccionar modalidad */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Modalidad</label>
-            <select
-              value={selectedModalidad}
-              onChange={(e) => setSelectedModalidad(e.target.value)}
-              className="w-full border rounded px-3 py-2">
-              <option value="">Seleccione una modalidad</option>
-              {modalidades.map(modalidad => (
-                <option key={modalidad.id} value={modalidad.id}>{modalidad.nombre}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Título */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Título</label>
-            <input
-              type="text"
-              value={titulo}
-              onChange={(e) => setTitulo(e.target.value)}
-              placeholder="Ingrese el título del trabajo"
-              className="w-full border rounded px-3 py-2"
+          {/* Columna 2 */}
+          <div >
+            {/* Buscar Tutor */}
+            <BuscadorYSelectorDeUsuarios
+              label="Buscar Tutor"
+              placeholder="Ingrese el nombre del tutor"
+              searchValue={tutorSearch}
+              setSearchValue={setTutorSearch}
+              searchResults={tutores}
+              setSearchResults={setTutores}
+              selectedUser={selectedTutor}
+              setSelectedUser={setSelectedTutor}
+              handleKeyDown={handleKeyDown}
+              handleChipRemove={handleChipRemove}
+              type="tutor"
+              setHighlightedIndex={setHighlightedIndexTutor}
+              highlightedIndex={highlightedIndexTutor}
+              handleBuscar={buscarUsuariosConRol}
+              required={true}
             />
-          </div>
 
-          {/* Link del archivo */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Link del Archivo</label>
-            <input
-              type="text"
-              value={linkArchivo}
-              onChange={(e) => setLinkArchivo(e.target.value)}
-              placeholder="Ingrese el link del archivo"
-              className="w-full border rounded px-3 py-2"
+            {/* Buscar Cotutor */}
+            <BuscadorYSelectorDeUsuarios
+              label="Buscar Co-tutor"
+              optional={true}
+              placeholder="Ingrese el nombre del cotutor"
+              searchValue={cotutorSearch}
+              setSearchValue={setCotutorSearch}
+              searchResults={cotutores}
+              setSearchResults={setCotutores}
+              selectedUser={selectedCotutor}
+              setSelectedUser={setSelectedCotutor}
+              handleKeyDown={handleKeyDown}
+              handleChipRemove={handleChipRemove}
+              type="cotutor"
+              setHighlightedIndex={setHighlightedIndexCotutor}
+              highlightedIndex={highlightedIndexCotutor}
+              handleBuscar={buscarUsuariosConRol}
+              required={true}
+            />
+
+            {/* Buscar Estudiantes */}
+            <BuscadorYSelectorDeUsuarios
+              label="Buscar Estudiante"
+              placeholder="Ingrese el nombre del estudiante"
+              searchValue={estudianteSearch}
+              setSearchValue={setEstudianteSearch}
+              searchResults={estudiantes}
+              setSearchResults={setEstudiantes}
+              selectedUser={null} // No hay uno solo seleccionado
+              selectedUSers={selectedEstudiantes}
+              setSelectedUser={handleEstudianteSelect} // No hay uno solo seleccionado
+              handleKeyDown={handleKeyDown}
+              handleChipRemove={handleChipRemove}
+              type="estudiante"
+              setHighlightedIndex={setHighlightedIndexEstudiante}
+              highlightedIndex={highlightedIndexEstudiante}
+              handleBuscar={(query, setResults) => buscarUsuariosConRol(query, setResults, 4)} // Rol para estudiantes
+              required={true}
             />
           </div>
         </div>
 
-        {/* Columna 2 */}
-        <div>
-          {/* Buscar Tutor */}
-          <BuscadorYSelectorDeUsuarios
-            label="Buscar Tutor"
-            placeholder="Ingrese el nombre del tutor"
-            searchValue={tutorSearch}
-            setSearchValue={setTutorSearch}
-            searchResults={tutores}
-            setSearchResults={setTutores}
-            selectedUser={selectedTutor}
-            setSelectedUser={setSelectedTutor}
-            handleKeyDown={handleKeyDown}
-            handleChipRemove={handleChipRemove}
-            type="tutor"
-            setHighlightedIndex={setHighlightedIndexTutor}
-            highlightedIndex={highlightedIndexTutor}
-            handleBuscar={buscarUsuariosConRol}
-          />
+        {/* Botón de creación */}
+        <button
+          type='submit'
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mt-6">
+          Crear Trabajo
+        </button>
 
-          {/* Buscar Cotutor */}
-          <BuscadorYSelectorDeUsuarios
-            label="Buscar Co-tutor"
-            optional={true}
-            placeholder="Ingrese el nombre del cotutor"
-            searchValue={cotutorSearch}
-            setSearchValue={setCotutorSearch}
-            searchResults={cotutores}
-            setSearchResults={setCotutores}
-            selectedUser={selectedCotutor}
-            setSelectedUser={setSelectedCotutor}
-            handleKeyDown={handleKeyDown}
-            handleChipRemove={handleChipRemove}
-            type="cotutor"
-            setHighlightedIndex={setHighlightedIndexCotutor}
-            highlightedIndex={highlightedIndexCotutor}
-            handleBuscar={buscarUsuariosConRol}
-          />
+      </form>
 
-          {/* Buscar Estudiantes */}
-          <BuscadorYSelectorDeUsuarios
-            label="Buscar Estudiante"
-            placeholder="Ingrese el nombre del estudiante"
-            searchValue={estudianteSearch}
-            setSearchValue={setEstudianteSearch}
-            searchResults={estudiantes}
-            setSearchResults={setEstudiantes}
-            selectedUser={null} // No hay uno solo seleccionado
-            selectedUSers={selectedEstudiantes}
-            setSelectedUser={handleEstudianteSelect} // No hay uno solo seleccionado
-            handleKeyDown={handleKeyDown}
-            handleChipRemove={handleChipRemove}
-            type="estudiante"
-            setHighlightedIndex={setHighlightedIndexEstudiante}
-            highlightedIndex={highlightedIndexEstudiante}
-            handleBuscar={(query, setResults) => buscarUsuariosConRol(query, setResults, 4)} // Rol para estudiantes
-          />
-        </div>
-      </div>
-
-      {/* Botón de creación */}
-      <button
-        onClick={handleCrearTrabajo}
-        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mt-6">
-        Crear Trabajo
-      </button>
     </div>
 
   );
