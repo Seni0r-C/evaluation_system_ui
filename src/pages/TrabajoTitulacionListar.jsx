@@ -4,6 +4,7 @@ import axiosInstance from '../services/axiosConfig';
 import { obtenerCarreras } from '../services/carreraService';
 import { obtenerModalidadesPorCarrera } from '../services/modalidadService';
 import { obtenerEstados } from '../services/trabajosTitulacion';
+import { FaCalendarDay, FaEdit } from 'react-icons/fa';
 
 const TrabajoTitulacionListar = () => {
   const [trabajos, setTrabajos] = useState([]);
@@ -108,6 +109,18 @@ const TrabajoTitulacionListar = () => {
     setPage(1); // Resetear a la primera página cuando cambie el límite
   };
 
+  const handleEdit = (trabajo) => {
+    // setEditTrabajo(trabajo);
+    // setModalEditTrabajo(true);
+    console.log(trabajo);
+  };
+
+  const handleAsignarFecha = (trabajo) => {
+    // setAsignarFecha(trabajo);
+    // setModalAsignarFecha(true);
+    console.log(trabajo);
+  };
+
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4">Trabajos de Titulación</h1>
@@ -186,6 +199,7 @@ const TrabajoTitulacionListar = () => {
             <th className="border-b px-6 py-3 font-bold text-left">Link</th>
             <th className="border-b px-6 py-3 font-bold text-left">Modalidad</th>
             <th className="border-b px-6 py-3 font-bold text-left">Estado</th>
+            <th className="border-b px-6 py-3 font-bold text-left">Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -212,6 +226,22 @@ const TrabajoTitulacionListar = () => {
                   >
                     {trabajo.estado}
                   </span>
+                </td>
+                <td className="px-6 py-4">
+                  <div className="flex justify-end gap-4">
+                    <button
+                      onClick={() => handleEdit(trabajo)}
+                      className="p-2 bg-yellow-500 text-white rounded"
+                    >
+                      <FaEdit />
+                    </button>
+                    <button
+                      onClick={() => handleAsignarFecha(trabajo)}
+                      className="p-2 bg-blue-500 text-white rounded"
+                    >
+                      <FaCalendarDay />
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))
