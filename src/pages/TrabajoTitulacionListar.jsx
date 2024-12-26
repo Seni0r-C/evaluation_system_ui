@@ -193,7 +193,7 @@ const TrabajoTitulacionListar = () => {
       {/* Lista de trabajos */}
       <table className="min-w-full table-auto border-collapse border border-gray-200 shadow-md rounded-lg">
         <thead>
-          <tr className="bg-blue-100 text-gray-800">
+          <tr className="bg-green-50 text-gray-800">
             <th className="border-b px-6 py-3 font-bold text-left">Título</th>
             <th className="border-b px-6 py-3 font-bold text-left">Carrera</th>
             <th className="border-b px-6 py-3 font-bold text-left">Link</th>
@@ -213,7 +213,7 @@ const TrabajoTitulacionListar = () => {
                     href={trabajo.link_archivo}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-blue-500 hover:underline"
+                    className="text-green-700 hover:underline font-normal"
                   >
                     <i className="fas fa-link"></i> Ver archivo
                   </a>
@@ -231,13 +231,13 @@ const TrabajoTitulacionListar = () => {
                   <div className="flex justify-end gap-4">
                     <button
                       onClick={() => handleEdit(trabajo)}
-                      className="p-2 bg-yellow-500 text-white rounded"
+                      className="p-2 bg-gray-500 text-white rounded"
                     >
                       <FaEdit />
                     </button>
                     <button
                       onClick={() => handleAsignarFecha(trabajo)}
-                      className="p-2 bg-blue-500 text-white rounded"
+                      className="p-2 bg-[#ffaf36] text-white rounded"
                     >
                       <FaCalendarDay />
                     </button>

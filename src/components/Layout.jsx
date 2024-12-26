@@ -35,7 +35,7 @@ const menuData = [
         subOptions: [],
     },
     {
-        name: 'Registro proyectos titulación',
+        name: 'Registro Trabajo',
         href: '/registro-proyecto-titulacion',
         roles: [1, 2], // Disponible solo para el rol 1 (Administrador)
         subOptions: [],
@@ -119,14 +119,13 @@ const Layout = ({ children }) => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col bg-[#2a8c44] text-gray-800"
-        >
+        <div className="min-h-screen flex flex-col bg-gray-100 text-gray-800">
             {/* Barra superior */}
-            <header className="bg-gray-100 text-gray-800 p-2 flex justify-between items-center shadow-md z-50 fixed w-full top-0 left-0">
+            <header className="bg-gray-50 text-gray-800 p-2 flex justify-between items-center shadow-md z-50 fixed w-full top-0 left-0">
                 <div className="flex items-center space-x-4">
                     <button
                         onClick={toggleSidebar}
-                        className="p-2 rounded-full hover:bg-[#2a8c44] hover:text-white transition-all"
+                        className="p-2 rounded-full hover:bg-gray-400 hover:text-white transition-all"
                     >
                         {isSidebarVisible ? (
                             <IoMdClose className="h-6 w-6" />
@@ -142,7 +141,7 @@ const Layout = ({ children }) => {
                 <div className="relative" ref={dropdownRef}>
                     <div
                         onClick={toggleDropdown}
-                        className="cursor-pointer flex items-center md:space-x-4"
+                        className="cursor-pointer flex items-center md:space-x-4 mr-8"
                     >
                         <span className="font-semibold text-xs md:text-base text-right mr-1">{nombreUsuario}</span>
                         <img
@@ -180,8 +179,8 @@ const Layout = ({ children }) => {
             >
                 {/* Barra lateral */}
                 < aside
-                    className={`bg-[#2a8c44] text-white p-6 space-y-6 w-64 h-full fixed transition-transform duration-300 ease-in-out ${isSidebarVisible ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'
-                        }`}
+                    className={`bg-gray-50 text-gray-800 py-6 px-2 space-y-6 w-52 h-full fixed transition-transform duration-300 ease-in-out ${isSidebarVisible ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'
+                        } shadow-lg`}
                 >
                     <nav className="space-y-4">
                         {filteredMenu.map((item, index) => (
@@ -189,7 +188,7 @@ const Layout = ({ children }) => {
                                 {/* Opción principal con el ícono dentro del <a> */}
                                 <Link
                                     to={item.href}
-                                    className="flex items-center p-2 hover:bg-green-600 rounded-md transition-colors flex-1 justify-between"
+                                    className="flex items-center py-2 px-4 hover:bg-gray-300 rounded-md transition-colors flex-1 justify-between"
                                     onClick={() => toggleSubOptions(index)} // Manejar clic para expandir/contraer
 
                                 >
@@ -233,7 +232,7 @@ const Layout = ({ children }) => {
 
                 {/* Contenido principal */}
                 < main
-                    className={`flex-grow bg-white shadow-inner transition-all duration-300 ease-in-out mt-2 ${isSidebarVisible ? 'md:ml-64' : 'md:ml-0'}`}
+                    className={`flex-grow bg-white shadow-inner transition-all duration-300 ease-in-out mt-2 ${isSidebarVisible ? 'md:ml-52' : 'md:ml-0'}`}
                 >
                     {children}
                 </main >
