@@ -181,7 +181,7 @@ const Layout = ({ children }) => {
             >
                 {/* Barra lateral */}
                 < aside
-                    className={`bg-gray-50 text-gray-800 py-6 px-2 space-y-6 w-52 h-full fixed transition-transform duration-300 ease-in-out ${isSidebarVisible ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'
+                    className={`bg-gray-50 text-gray-800 py-6 px-2 space-y-6 w-56 h-full fixed transition-transform duration-300 ease-in-out ${isSidebarVisible ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'
                         } shadow-lg`}
                 >
                     <nav className="space-y-4">
@@ -234,7 +234,7 @@ const Layout = ({ children }) => {
 
                 {/* Contenido principal */}
                 < main
-                    className={`flex-grow bg-white shadow-inner transition-all duration-300 ease-in-out mt-2 ${isSidebarVisible ? 'md:ml-52' : 'md:ml-0'}`}
+                    className={`flex-grow bg-white shadow-inner transition-all duration-300 ease-in-out mt-2 ${isSidebarVisible ? 'md:ml-56' : 'md:ml-0'}`}
                 >
                     {children}
                 </main >
