@@ -125,7 +125,7 @@ const Layout = ({ children }) => {
                 <div className="flex items-center space-x-4">
                     <button
                         onClick={toggleSidebar}
-                        className="p-2 rounded-full hover:bg-green-800 text-white  transition-all"
+                        className="p-2 rounded-full hover:bg-green-800 text-white transition-all"
                     >
                         {isSidebarVisible ? (
                             <IoMdClose className="h-6 w-6" />
@@ -141,7 +141,7 @@ const Layout = ({ children }) => {
                 <div className="relative" ref={dropdownRef}>
                     <div
                         onClick={toggleDropdown}
-                        className="cursor-pointer flex items-center md:space-x-4 mr-8"
+                        className="cursor-pointer flex items-center md:space-x-4 mr-8 rounded-full hover:bg-green-800 px-4 py-1 transition-all"
                     >
                         <span className="font-semibold text-xs md:text-base text-right text-white">
                             {nombreUsuario.split(' ').map(palabra => palabra.charAt(0).toUpperCase() + palabra.slice(1).toLowerCase()).join(' ')}
