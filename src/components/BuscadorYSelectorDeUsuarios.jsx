@@ -55,7 +55,7 @@ const BuscadorYSelectorDeUsuarios = ({
             onKeyDown={(e) => handleKeyDown(e, type)}
             placeholder={placeholder}
             className="w-full border rounded-l px-3 py-2 mb-2"
-            required={required ? ((type != "estudiante" && selectedUser == null) || (type == "estudiante" && selectedUSers?.length <= 0)) : false}
+            required={required ? ((type !== "estudiante" && selectedUser == null) || (type === "estudiante" && selectedUSers?.length <= 0)) : false}
           />
           <button
             onClick={handleButtonClick}
@@ -63,12 +63,15 @@ const BuscadorYSelectorDeUsuarios = ({
             className="bg-gray-200 border border-l-0 rounded-r px-3 py-3 mb-2 flex items-center justify-center hover:bg-gray-300 h-full"
           >
             {searchResults.length > 0 ? <FaChevronUp className="text-gray-600" /> : <FaChevronDown className="text-gray-600" />}
-
           </button>
         </div>
-        {(searchResults.length > 0 || showSpinner) && (
+        {(searchResults.length > 0 || showSpinner || searchValue) && (
           <ul className="absolute border rounded bg-white w-full max-h-40 overflow-auto z-10">
-            {(searchResults.length > 0) ? (
+            {showSpinner ? (
+              <div className="p-3 text-center">
+                <Spinner />
+              </div>
+            ) : searchResults.length > 0 ? (
               searchResults.map((user, index) => (
                 <li
                   key={user.id}
@@ -84,9 +87,11 @@ const BuscadorYSelectorDeUsuarios = ({
                   {user.nombre}
                 </li>
               ))
-            ) : <div className="p-3 text-center">
-              <Spinner />
-            </div>}
+            ) : searchValue && (
+              <div className="p-3 text-center text-red-500">
+                No se encontraron resultados.
+              </div>
+            )}
           </ul>
         )}
       </div>

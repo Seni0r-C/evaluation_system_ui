@@ -279,7 +279,7 @@ const TrabajoTitulacionCrear = () => {
               setHighlightedIndex={setHighlightedIndexCotutor}
               highlightedIndex={highlightedIndexCotutor}
               handleBuscar={buscarUsuariosConRol}
-              required={true}
+              required={false}
             />
 
             {/* Buscar Estudiantes */}
