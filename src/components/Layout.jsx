@@ -4,7 +4,7 @@ import { IoMdClose, IoMdMenu, IoIosLogOut } from "react-icons/io";
 import { FaChevronDown, FaChevronUp, FaUserCircle } from "react-icons/fa";
 
 
-import logo from '../assets/logo_bar.webp';
+import logo from '../assets/logo_bar_claro.webp';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { RutaRaiz } from '../utils/constants';
@@ -121,11 +121,11 @@ const Layout = ({ children }) => {
     return (
         <div className="min-h-screen flex flex-col bg-gray-100 text-gray-800">
             {/* Barra superior */}
-            <header className="bg-gray-50 text-gray-800 p-2 flex justify-between items-center shadow-md z-50 fixed w-full top-0 left-0">
+            <header className="bg-[#0e9343] text-gray-800 p-2 flex justify-between items-center shadow-md z-50 fixed w-full top-0 left-0">
                 <div className="flex items-center space-x-4">
                     <button
                         onClick={toggleSidebar}
-                        className="p-2 rounded-full hover:bg-gray-400 hover:text-white transition-all"
+                        className="p-2 rounded-full hover:bg-green-800 text-white  transition-all"
                     >
                         {isSidebarVisible ? (
                             <IoMdClose className="h-6 w-6" />
@@ -143,7 +143,9 @@ const Layout = ({ children }) => {
                         onClick={toggleDropdown}
                         className="cursor-pointer flex items-center md:space-x-4 mr-8"
                     >
-                        <span className="font-semibold text-xs md:text-base text-right mr-1">{nombreUsuario}</span>
+                        <span className="font-semibold text-xs md:text-base text-right text-white">
+                            {nombreUsuario.split(' ').map(palabra => palabra.charAt(0).toUpperCase() + palabra.slice(1).toLowerCase()).join(' ')}
+                        </span>
                         <img
                             src={userPhoto}
                             alt="Foto de perfil"
@@ -188,7 +190,7 @@ const Layout = ({ children }) => {
                                 {/* Opción principal con el ícono dentro del <a> */}
                                 <Link
                                     to={item.href}
-                                    className="flex items-center py-2 px-4 hover:bg-gray-300 rounded-md transition-colors flex-1 justify-between"
+                                    className="flex items-center py-2 px-4 hover:bg-gray-300 rounded-md transition-colors flex-1 justify-between font-medium"
                                     onClick={() => toggleSubOptions(index)} // Manejar clic para expandir/contraer
 
                                 >
