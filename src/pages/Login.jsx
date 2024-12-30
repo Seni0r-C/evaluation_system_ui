@@ -16,7 +16,7 @@ const Login = () => {
     const [errorMessage, setErrorMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [showMessage, setShowMessage] = useState(false);
-    const icon = useState('error');
+    const icon = "error";
 
     const navigate = useNavigate();
     const { isAuthenticated, setIsAuthenticated } = useAuth();
