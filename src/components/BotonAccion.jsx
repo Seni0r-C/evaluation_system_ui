@@ -1,6 +1,6 @@
 import PropsTypes from 'prop-types';
 
-const BotonAccion = ({ onClick, icono: Icono, tooltip, className = '', variant = 'primary' }) => {
+const BotonAccion = ({ onClick, icono: Icono, tooltip, className = '', variant = 'primary', disabled = false }) => {
     const baseClasses = "p-2 text-[#4c4c4a] rounded transition duration-300 transform hover:scale-110";
 
     const variants = {
@@ -13,6 +13,7 @@ const BotonAccion = ({ onClick, icono: Icono, tooltip, className = '', variant =
             <button
                 onClick={onClick}
                 className={`${baseClasses} ${variants[variant]} ${className}`}
+                disabled={disabled}
             >
                 <Icono />
             </button>
@@ -28,7 +29,8 @@ BotonAccion.propTypes = {
     icono: PropsTypes.elementType.isRequired,
     tooltip: PropsTypes.string,
     className: PropsTypes.string,
-    variant: PropsTypes.oneOf(['primary', 'secondary'])
+    variant: PropsTypes.oneOf(['primary', 'secondary']),
+    disabled: PropsTypes.bool
 };
 
 export default BotonAccion;
