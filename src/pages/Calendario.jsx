@@ -57,6 +57,10 @@ const CalendarioEventos = () => {
         setShowModal(false); // Cerrar el modal
     };
 
+    const handleNavigate = (newDate) => {
+        setDate(newDate);
+    };
+
     return (
         <div className="p-8 space-y-8 bg-gray-50 min-h-screen">
             {/* Título de la página */}
@@ -73,7 +77,7 @@ const CalendarioEventos = () => {
                     type="month"
                     value={moment(date).format('YYYY-MM')}
                     onChange={handleMonthChange}
-                    className="p-2 border rounded-lg w-36 text-center"
+                    className="p-2 border rounded-lg text-center"
                 />
             </div>
 
@@ -86,6 +90,7 @@ const CalendarioEventos = () => {
                     endAccessor="end"
                     style={{ height: 500 }}
                     date={date}
+                    onNavigate={handleNavigate} // Maneja la navegación
                     onSelectEvent={handleEventClick} // Al hacer clic en un evento
                 />
             </div>
