@@ -5,6 +5,7 @@ import { obtenerCarreras } from '../services/carreraService';
 import { obtenerModalidadesPorCarrera } from '../services/modalidadService';
 import { obtenerEstados } from '../services/trabajosTitulacion';
 import { FaCalendarDay, FaChevronLeft, FaChevronRight, FaEdit } from 'react-icons/fa';
+import { MdGrading } from 'react-icons/md';
 
 const TrabajoTitulacionListar = () => {
   const [trabajos, setTrabajos] = useState([]);
@@ -12,11 +13,13 @@ const TrabajoTitulacionListar = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [verTodo, setVerTodo] = useState(false);
+
   const [filters, setFilters] = useState({
     carrera_id: '',
     modalidad_id: '',
     estado: '',
-    titulo: ''
+    titulo: '',
+    fecha_defensa: '',
   });
   const info = localStorage.getItem('userInfo');
   const user = JSON.parse(info);
@@ -53,7 +56,8 @@ const TrabajoTitulacionListar = () => {
           carrera_id: user.carreras[0],
           modalidad_id: '',
           estado: '',
-          titulo: ''
+          titulo: '',
+          fecha_defensa: '',
         });
       }
     }
@@ -161,6 +165,19 @@ const TrabajoTitulacionListar = () => {
         )}
 
         <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Fecha defensa
+          </label>
+          <input
+            type="date"
+            className="w-full border rounded px-3 py-2"
+            name="fecha_defensa"
+            value={filters.fecha_defensa}
+            onChange={handleFilterChange}
+          />
+        </div>
+
+        <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">Modalidad</label>
           <select
             value={filters.modalidad_id}
@@ -229,18 +246,43 @@ const TrabajoTitulacionListar = () => {
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex justify-end gap-4">
-                    <button
-                      onClick={() => handleEdit(trabajo)}
-                      className="p-2 bg-gray-300 text-[#4c4c4a] rounded transition duration-300 transform hover:scale-110"
-                    >
-                      <FaEdit />
-                    </button>
-                    <button
-                      onClick={() => handleAsignarFecha(trabajo)}
-                      className="p-2 bg-[#f8cf12] text-[#4c4c4a] rounded transition duration-300 transform hover:scale-110"
-                    >
-                      <FaCalendarDay />
-                    </button>
+                    {/* Botón Editar */}
+                    <div className="relative group">
+                      <button
+                        onClick={() => handleEdit(trabajo)}
+                        className="p-2 bg-gray-300 text-[#4c4c4a] rounded transition duration-300 transform hover:scale-110"
+                      >
+                        <FaEdit />
+                      </button>
+                      <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        Editar
+                      </div>
+                    </div>
+
+                    {/* Botón Asignar Fecha */}
+                    <div className="relative group">
+                      <button
+                        onClick={() => handleAsignarFecha(trabajo)}
+                        className="p-2 bg-[#f8cf12] text-[#4c4c4a] rounded transition duration-300 transform hover:scale-110"
+                      >
+                        <FaCalendarDay />
+                      </button>
+                      <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        Asignar Fecha
+                      </div>
+                    </div>
+
+                    <div className="relative group">
+                      <button
+                        onClick={() => handleAsignarFecha(trabajo)}
+                        className="p-2 bg-[#f8cf12] text-[#4c4c4a] rounded transition duration-300 transform hover:scale-110"
+                      >
+                        <MdGrading />
+                      </button>
+                      <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        Calificar
+                      </div>
+                    </div>
                   </div>
                 </td>
               </tr>

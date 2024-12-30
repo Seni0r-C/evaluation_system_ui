@@ -1,6 +1,6 @@
 import  { useState } from "react";
 
-const CalificacionUI = () => {
+const Calificar = () => {
     const [selectedStudent, setSelectedStudent] = useState(null);
     const students = [
         { id: 1, name: "Estudiante 1" },
@@ -97,4 +97,4 @@ const CalificacionUI = () => {
     );
 };
 
-export default CalificacionUI;
+export default Calificar;

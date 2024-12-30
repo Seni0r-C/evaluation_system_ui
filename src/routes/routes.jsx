@@ -9,7 +9,7 @@ import ModalidadesTitulacion from '../pages/modalidadesTitulacion';
 import ItemsRevista from '../pages/itemsRevista';
 import ItemsRubrica from '../pages/itemsRubrica';
 import { RutaRaiz } from '../utils/constants';
-import CalificacionUI from '../pages/calificar';
+import Calificar from '../pages/calificar';
 import CrearTrabajoTitulacionFormulario from '../pages/TrabajoTitulacionCrear';
 import TrabajoTitulacionListar from '../pages/TrabajoTitulacionListar';
 import UserProfile from '../pages/Perfil';
@@ -97,7 +97,7 @@ const routes = [
       <ErrorBoundary>
         <ProtectedRoute>
           <Layout>
-            <CalificacionUI />
+            <Calificar />
           </Layout>
         </ProtectedRoute>
       </ErrorBoundary>
