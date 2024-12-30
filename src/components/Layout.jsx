@@ -148,7 +148,7 @@ const Layout = ({ children }) => {
             >
                 {/* Barra lateral */}
                 < aside
-                    className={`bg-gray-100 text-gray-800 py-6 px-2 space-y-6 w-56 h-full fixed transition-transform duration-300 ease-in-out ${isSidebarVisible ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'} border-r-2 border-gray-200`}
+                    className={`bg-gray-100 text-gray-950 py-6 px-2 space-y-6 w-56 h-full fixed transition-transform duration-300 ease-in-out ${isSidebarVisible ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'} border-r-2 border-gray-200`}
                 >
                     <nav className="space-y-4">
                         {filteredMenu.map((item, index) => (

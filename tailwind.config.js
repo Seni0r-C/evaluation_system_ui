@@ -4,7 +4,11 @@ export default {
     "./src/**/*.{js,jsx,ts,tsx}", // Apunta a tus archivos de React
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: '[#f8cf12]',
+      }
+    },
   },
   plugins: [],
 }

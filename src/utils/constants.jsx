@@ -24,7 +24,7 @@ export const menuData = [
         icon: <FaHome />
     },
     {
-        name: 'Buscar Trabajos',
+        name: 'Lista de Trabajos',
         href: '/trabajos-titulacion',
         roles: [0], // Disponible para ambos roles
         subOptions: [],

@@ -4,7 +4,7 @@ const BotonAccion = ({ onClick, icono: Icono, tooltip, className = '', variant =
     const baseClasses = "p-2 text-[#4c4c4a] rounded transition duration-300 transform hover:scale-110";
 
     const variants = {
-        primary: "bg-[#f8cf12]",
+        primary: "bg-primary",
         secondary: "bg-gray-300"
     }
 
