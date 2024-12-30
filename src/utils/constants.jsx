@@ -1,5 +1,6 @@
-import { FaEdit, FaHome } from "react-icons/fa";
+import { FaHome } from "react-icons/fa";
 import { FaListCheck } from "react-icons/fa6";
+import { GrDocumentUpload, GrDocumentVerified } from "react-icons/gr";
 import { MdOutlineChromeReaderMode } from "react-icons/md";
 
 export const API_URL = "http://localhost:3000";
@@ -49,6 +50,13 @@ export const menuData = [
         href: '/registro-proyecto-titulacion',
         roles: [1, 2], // Disponible solo para el rol 1 (Administrador)
         subOptions: [],
-        icon: <FaEdit />
+        icon: <GrDocumentUpload />
+    },
+    {
+        name: 'Calificar Trabajo',
+        href: '/calificar',
+        roles: [1, 2], // Disponible solo para el rol 1 (Administrador)
+        subOptions: [],
+        icon: <GrDocumentVerified />
     },
 ];

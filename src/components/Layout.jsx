@@ -157,7 +157,7 @@ const Layout = ({ children }) => {
                                 <Link
                                     to={item.href}
                                     className={`flex items-center py-2 px-4 rounded-md transition-colors flex-1 justify-start gap-4 ${location.pathname === item.href ? 'bg-gray-300' : 'hover:scale-105 hover:shadow-md'}
-                                    transition-transform transform`}
+                                    transition-transform transform active:scale-95`}
                                     onClick={() => toggleSubOptions(index)} // Manejar clic para expandir/contraer
 
                                 >
