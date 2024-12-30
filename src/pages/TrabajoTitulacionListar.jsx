@@ -4,7 +4,7 @@ import axiosInstance from '../services/axiosConfig';
 import { obtenerCarreras } from '../services/carreraService';
 import { obtenerModalidadesPorCarrera } from '../services/modalidadService';
 import { obtenerEstados } from '../services/trabajosTitulacion';
-import { FaCalendarDay, FaEdit } from 'react-icons/fa';
+import { FaCalendarDay, FaChevronLeft, FaChevronRight, FaEdit } from 'react-icons/fa';
 
 const TrabajoTitulacionListar = () => {
   const [trabajos, setTrabajos] = useState([]);
@@ -268,12 +268,13 @@ const TrabajoTitulacionListar = () => {
           </select>
           <span className="ml-2">trabajos por página</span>
         </div>
-        <div>
+        <div className='flex items-center gap-2'>
           <button
             disabled={page === 1}
             onClick={() => handlePageChange(page - 1)}
-            className="p-2 bg-blue-500 text-white rounded disabled:bg-gray-300"
+            className="p-2 bg-blue-500 text-white rounded disabled:bg-gray-300 transition duration-300 transform hover:scale-105 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center gap-2"
           >
+            <FaChevronLeft />
             Anterior
           </button>
           <span className="mx-4">
@@ -282,9 +283,10 @@ const TrabajoTitulacionListar = () => {
           <button
             disabled={page * limit >= total}
             onClick={() => handlePageChange(page + 1)}
-            className="p-2 bg-blue-500 text-white rounded disabled:bg-gray-300"
+            className="p-2 bg-blue-500 text-white rounded disabled:bg-gray-300 flex items-center gap-2 disabled:cursor-not-allowed transition duration-300 transform hover:scale-105 disabled:hover:scale-100"
           >
             Siguiente
+            <FaChevronRight />
           </button>
         </div>
       </div>
