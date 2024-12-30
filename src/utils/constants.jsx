@@ -55,7 +55,7 @@ export const menuData = [
     {
         name: 'Calificar Trabajo',
         href: '/calificar',
-        roles: [1, 2], // Disponible solo para el rol 1 (Administrador)
+        roles: [1, 3], // Disponible solo para el rol 1 (Administrador)
         subOptions: [],
         icon: <GrDocumentVerified />
     },

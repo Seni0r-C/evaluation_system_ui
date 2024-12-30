@@ -6,6 +6,8 @@ import { obtenerModalidadesPorCarrera } from '../services/modalidadService';
 import { obtenerEstados } from '../services/trabajosTitulacion';
 import { FaCalendarDay, FaChevronLeft, FaChevronRight, FaEdit } from 'react-icons/fa';
 import { MdGrading } from 'react-icons/md';
+import BotonAccion from '../components/BotonAccion';
+import { capitalizeWords } from '../utils/constants';
 
 const TrabajoTitulacionListar = () => {
   const [trabajos, setTrabajos] = useState([]);
@@ -125,6 +127,37 @@ const TrabajoTitulacionListar = () => {
     console.log(trabajo);
   };
 
+  const handleCalificar = (trabajo) => {
+    console.log(trabajo);
+  };
+
+  const acciones = [
+    {
+      roles: [1, 2],
+      permiso: 'editar',
+      icono: FaEdit,
+      variant: 'secondary',
+      tooltip: 'Editar',
+      onClick: handleEdit,
+    },
+    {
+      roles: [1, 2],
+      permiso: 'asignarFecha',
+      icono: FaCalendarDay,
+      variant: 'primary',
+      tooltip: 'Asignar Fecha',
+      onClick: handleAsignarFecha,
+    },
+    {
+      roles: [1, 3],
+      permiso: 'calificar',
+      icono: MdGrading,
+      variant: 'primary',
+      tooltip: 'Calificar',
+      onClick: handleCalificar,
+    },
+  ];
+
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4">Trabajos de Titulación</h1>
@@ -158,7 +191,9 @@ const TrabajoTitulacionListar = () => {
                   && !verTodo
                 ) || (verTodo)
               ).map(carrera => (
-                <option key={carrera.id} value={carrera.id}>{carrera.nombre}</option>
+                <option key={carrera.id} value={carrera.id}>
+                  {capitalizeWords(carrera.nombre)}
+                </option>
               ))}
             </select>
           </div>
@@ -187,7 +222,9 @@ const TrabajoTitulacionListar = () => {
           >
             <option value="">Seleccione una carrera</option>
             {modalidades.map(modalidad => (
-              <option key={modalidad.id} value={modalidad.id}>{modalidad.nombre}</option>
+              <option key={modalidad.id} value={modalidad.id}>
+                {modalidad.nombre}
+              </option>
             ))}
           </select>
         </div>
@@ -246,43 +283,17 @@ const TrabajoTitulacionListar = () => {
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex justify-end gap-4">
-                    {/* Botón Editar */}
-                    <div className="relative group">
-                      <button
-                        onClick={() => handleEdit(trabajo)}
-                        className="p-2 bg-gray-300 text-[#4c4c4a] rounded transition duration-300 transform hover:scale-110"
-                      >
-                        <FaEdit />
-                      </button>
-                      <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        Editar
-                      </div>
-                    </div>
-
-                    {/* Botón Asignar Fecha */}
-                    <div className="relative group">
-                      <button
-                        onClick={() => handleAsignarFecha(trabajo)}
-                        className="p-2 bg-[#f8cf12] text-[#4c4c4a] rounded transition duration-300 transform hover:scale-110"
-                      >
-                        <FaCalendarDay />
-                      </button>
-                      <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        Asignar Fecha
-                      </div>
-                    </div>
-
-                    <div className="relative group">
-                      <button
-                        onClick={() => handleAsignarFecha(trabajo)}
-                        className="p-2 bg-[#f8cf12] text-[#4c4c4a] rounded transition duration-300 transform hover:scale-110"
-                      >
-                        <MdGrading />
-                      </button>
-                      <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        Calificar
-                      </div>
-                    </div>
+                    {acciones.map(({ roles, permiso, icono, variant, tooltip, onClick }) =>
+                      roles.some(role => user.roles.includes(role)) ? (
+                        <BotonAccion
+                          key={permiso}
+                          onClick={() => onClick(trabajo)}
+                          icono={icono}
+                          variant={variant}
+                          tooltip={tooltip}
+                        />
+                      ) : null
+                    )}
                   </div>
                 </td>
               </tr>
