@@ -134,7 +134,7 @@ const Layout = ({ children }) => {
                         )}
                     </button>
                     <Link to={RutaRaiz}>
-                        <img src={logo} alt="Logo de Portocomercio" className="h-14 w-auto" />
+                        <img src={logo} alt="Logo de Portocomercio" className="h-12 w-auto" />
                     </Link>
 
                 </div>
