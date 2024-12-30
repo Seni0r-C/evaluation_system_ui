@@ -5,6 +5,7 @@ import { obtenerCarreras } from '../services/carreraService';
 import { obtenerModalidadesPorCarrera } from '../services/modalidadService';
 import axiosInstance from '../services/axiosConfig';
 import MessageDialog from '../components/MessageDialog';
+import { capitalizeWords } from '../utils/constants';
 
 const TrabajoTitulacionCrear = () => {
   const [carreras, setCarreras] = useState([]);
@@ -218,7 +219,9 @@ const TrabajoTitulacionCrear = () => {
                 >
                   <option value="">Seleccione una carrera</option>
                   {carreras.map(carrera => (
-                    <option key={carrera.id} value={carrera.id}>{carrera.nombre}</option>
+                    <option key={carrera.id} value={carrera.id}>
+                      {capitalizeWords(carrera.nombre)}
+                    </option>
                   ))}
                 </select>
               </div>

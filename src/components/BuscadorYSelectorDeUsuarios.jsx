@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import Spinner from './LogoCarga/Spinner';
+import { capitalizeWords } from '../utils/constants';
 
 const BuscadorYSelectorDeUsuarios = ({
   label,
@@ -84,7 +85,7 @@ const BuscadorYSelectorDeUsuarios = ({
                     setHighlightedIndex(-1);
                   }}
                 >
-                  {user.nombre}
+                  {capitalizeWords(user.nombre)}
                 </li>
               ))
             ) : searchValue && (
