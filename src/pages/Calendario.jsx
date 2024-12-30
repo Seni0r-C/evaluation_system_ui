@@ -6,22 +6,56 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 const localizer = momentLocalizer(moment);
 
 const CalendarioEventos = () => {
-    const [date, setDate] = useState(new Date()); // Fecha seleccionada para el calendario
+    const [date, setDate] = useState(new Date());
+    const [showModal, setShowModal] = useState(false); // Estado para mostrar/ocultar el modal
+    const [selectedEvent, setSelectedEvent] = useState(null); // Evento seleccionado
 
-    // Función para manejar el cambio de fecha desde el input tipo "month"
     const handleMonthChange = (event) => {
         const selectedMonth = event.target.value;
-        const [year, month] = selectedMonth.split('-'); // Extraer el año y mes
-        const newDate = new Date(year, month - 1, 1); // Establecer la fecha al primer día del mes seleccionado
-        setDate(newDate); // Establece la nueva fecha seleccionada
+        const [year, month] = selectedMonth.split('-');
+        const newDate = new Date(year, month - 1, 1);
+        setDate(newDate);
     };
 
     // Datos de ejemplo
     const eventos = [
-        { start: new Date(2024, 11, 10, 10, 0), end: new Date(2024, 11, 10, 11, 0), title: 'Defensa de Tesis - Juan Pérez' },
-        { start: new Date(2024, 11, 12, 14, 0), end: new Date(2024, 11, 12, 15, 0), title: 'Defensa de Tesis - María López' },
-        { start: new Date(2024, 11, 15, 11, 0), end: new Date(2024, 11, 15, 12, 0), title: 'Defensa de Tesis - Carlos González' },
+        {
+            start: new Date(2024, 11, 10, 10, 0),
+            end: new Date(2024, 11, 10, 11, 0),
+            title: 'Defensa de Tesis - Juan Pérez',
+            descripcion: 'Juan Pérez presentará su tesis sobre inteligencia artificial.',
+            lugar: 'Auditorio A, Facultad de Ingeniería',
+            fecha: '10 de diciembre de 2024',
+            hora: '10:00 AM',
+        },
+        {
+            start: new Date(2024, 11, 12, 14, 0),
+            end: new Date(2024, 11, 12, 15, 0),
+            title: 'Defensa de Tesis - María López',
+            descripcion: 'María López discutirá su investigación sobre biotecnología.',
+            lugar: 'Auditorio B, Facultad de Ciencias',
+            fecha: '12 de diciembre de 2024',
+            hora: '2:00 PM',
+        },
+        {
+            start: new Date(2024, 11, 15, 11, 0),
+            end: new Date(2024, 11, 15, 12, 0),
+            title: 'Defensa de Tesis - Carlos González',
+            descripcion: 'Carlos González presentará su trabajo sobre robótica.',
+            lugar: 'Auditorio C, Facultad de Robótica',
+            fecha: '15 de diciembre de 2024',
+            hora: '11:00 AM',
+        },
     ];
+
+    const handleEventClick = (evento) => {
+        setSelectedEvent(evento); // Establecer el evento seleccionado
+        setShowModal(true); // Mostrar el modal
+    };
+
+    const closeModal = () => {
+        setShowModal(false); // Cerrar el modal
+    };
 
     return (
         <div className="p-8 space-y-8 bg-gray-50 min-h-screen">
@@ -37,7 +71,7 @@ const CalendarioEventos = () => {
                 <input
                     id="monthSelector"
                     type="month"
-                    value={moment(date).format('YYYY-MM')} // Formato adecuado para el input de tipo "month"
+                    value={moment(date).format('YYYY-MM')}
                     onChange={handleMonthChange}
                     className="p-2 border rounded-lg w-36 text-center"
                 />
@@ -51,10 +85,26 @@ const CalendarioEventos = () => {
                     startAccessor="start"
                     endAccessor="end"
                     style={{ height: 500 }}
-                    date={date} // Configura el calendario con la fecha seleccionada
-                    onSelectEvent={(evento) => alert(`Evento: ${evento.title}`)}
+                    date={date}
+                    onSelectEvent={handleEventClick} // Al hacer clic en un evento
                 />
             </div>
+
+            {/* Modal de información del evento */}
+            {showModal && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 h-screen">
+                    <div className="bg-white p-6 rounded-lg w-96">
+                        <h2 className="text-2xl font-bold text-indigo-600">{selectedEvent.title}</h2>
+                        <p className="mt-2 text-gray-700"><strong>Descripción:</strong> {selectedEvent.descripcion}</p>
+                        <p className="mt-2 text-gray-700"><strong>Lugar:</strong> {selectedEvent.lugar}</p>
+                        <p className="mt-2 text-gray-700"><strong>Fecha:</strong> {selectedEvent.fecha}</p>
+                        <p className="mt-2 text-gray-700"><strong>Hora:</strong> {selectedEvent.hora}</p>
+                        <div className="mt-4 flex justify-end">
+                            <button onClick={closeModal} className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
