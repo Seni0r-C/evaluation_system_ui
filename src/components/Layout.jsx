@@ -125,7 +125,7 @@ const Layout = ({ children }) => {
                 <div className="flex items-center space-x-4">
                     <button
                         onClick={toggleSidebar}
-                        className="p-2 rounded-full hover:bg-green-800 text-white transition-all"
+                        className="p-2 rounded hover:bg-green-800 text-white transition-all"
                     >
                         {isSidebarVisible ? (
                             <IoMdClose className="h-6 w-6" />
@@ -134,14 +134,14 @@ const Layout = ({ children }) => {
                         )}
                     </button>
                     <Link to={RutaRaiz}>
-                        <img src={logo} alt="Logo de Portocomercio" className="h-12 w-auto" />
+                        <img src={logo} alt="Logo del Sistema" className="h-12 w-auto" />
                     </Link>
 
                 </div>
                 <div className="relative" ref={dropdownRef}>
                     <div
                         onClick={toggleDropdown}
-                        className="cursor-pointer flex items-center md:space-x-4 mr-8 rounded-full hover:bg-green-800 px-4 py-1 transition-all"
+                        className="cursor-pointer flex items-center md:space-x-4 mr-8 rounded hover:bg-green-800 px-4 py-1 transition-all"
                     >
                         <span className="font-semibold text-xs md:text-base text-right text-white">
                             {nombreUsuario.split(' ').map(palabra => palabra.charAt(0).toUpperCase() + palabra.slice(1).toLowerCase()).join(' ')}
@@ -156,7 +156,7 @@ const Layout = ({ children }) => {
                         <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg py-2">
                             <button
                                 className="w-full flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 text-gray-700"
-                                onClick={() => navigate("/profile")}
+                                onClick={() => { navigate("/profile"); setIsDropdownVisible(false); }}
                             >
                                 <FaUserCircle className="h-5 w-5" />
                                 <span>Ver Perfil</span>
@@ -181,8 +181,7 @@ const Layout = ({ children }) => {
             >
                 {/* Barra lateral */}
                 < aside
-                    className={`bg-gray-50 text-gray-800 py-6 px-2 space-y-6 w-56 h-full fixed transition-transform duration-300 ease-in-out ${isSidebarVisible ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'
-                        } shadow-lg`}
+                    className={`bg-gray-100 text-gray-800 py-6 px-2 space-y-6 w-56 h-full fixed transition-transform duration-300 ease-in-out ${isSidebarVisible ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'} border-r-2 border-gray-200`}
                 >
                     <nav className="space-y-4">
                         {filteredMenu.map((item, index) => (
