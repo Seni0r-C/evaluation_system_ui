@@ -13,6 +13,8 @@ import Calificar from '../pages/calificar';
 import CrearTrabajoTitulacionFormulario from '../pages/TrabajoTitulacionCrear';
 import TrabajoTitulacionListar from '../pages/TrabajoTitulacionListar';
 import UserProfile from '../pages/Perfil';
+import Inicio from '../pages/Inicio';
+import CalendarioEventos from '../pages/Calendario';
 
 const routes = [
   {
@@ -37,7 +39,31 @@ const routes = [
       <ErrorBoundary>
         <ProtectedRoute>
           <Layout>
+            <Inicio />
+          </Layout>
+        </ProtectedRoute>
+      </ErrorBoundary>
+    ),
+  },
+  {
+    path: '/trabajos-titulacion',
+    element: (
+      <ErrorBoundary>
+        <ProtectedRoute>
+          <Layout>
             <TrabajoTitulacionListar />
+          </Layout>
+        </ProtectedRoute>
+      </ErrorBoundary>
+    ),
+  },
+  {
+    path: '/calendario',
+    element: (
+      <ErrorBoundary>
+        <ProtectedRoute>
+          <Layout>
+            <CalendarioEventos />
           </Layout>
         </ProtectedRoute>
       </ErrorBoundary>

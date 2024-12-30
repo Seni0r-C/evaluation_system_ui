@@ -1,6 +1,7 @@
-import { FaHome } from "react-icons/fa";
+import { FaCalendarAlt, FaHome } from "react-icons/fa";
 import { FaListCheck } from "react-icons/fa6";
 import { GrDocumentUpload } from "react-icons/gr";
+import { HiDocumentSearch } from "react-icons/hi";
 import { MdOutlineChromeReaderMode } from "react-icons/md";
 
 export const API_URL = "http://localhost:3000";
@@ -21,6 +22,20 @@ export const menuData = [
         roles: [0], // Disponible para todos los roles
         subOptions: [],
         icon: <FaHome />
+    },
+    {
+        name: 'Buscar Trabajos',
+        href: '/trabajos-titulacion',
+        roles: [0], // Disponible para ambos roles
+        subOptions: [],
+        icon: <HiDocumentSearch />
+    },
+    {
+        name: 'Calenario de Eventos',
+        href: '/calendario',
+        roles: [0], // Disponible para ambos roles
+        subOptions: [],
+        icon: <FaCalendarAlt />
     },
     {
         name: 'Modalidades de Titulación',
