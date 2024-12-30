@@ -127,12 +127,12 @@ const Login = () => {
                                 htmlFor="usuario"
                                 className="block font-medium mb-2 text-white"
                             >
-                                USUARIO
+                                Usuario
                             </label>
                             <input
                                 type="text"
                                 id="usuario"
-                                placeholder="Ingrese su usuario sin el '@utm.edu.ec'"
+                                placeholder="No es necesario el ''@utm.edu.ec''"
                                 value={usuario}
                                 onChange={(e) => setUsuario(e.target.value)}
                                 className="w-full px-4 py-2 border border-transparent bg-opacity-70 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-300 text-black placeholder-gray-600"
@@ -149,7 +149,7 @@ const Login = () => {
                                 htmlFor="password"
                                 className="block font-medium mb-2 text-white"
                             >
-                                CONTRASEÑA
+                                Contraseña
                             </label>
                             <div className="relative">
                                 <input
@@ -176,7 +176,7 @@ const Login = () => {
                         </div>
                         <button
                             type="submit"
-                            className="w-full bg-gradient-to-r from-[#ffaf36] to-[#ffd659] text-[#3e3e3e] py-3 font-bold rounded-md hover:from-[#ffc163] hover:to-[#ffdf7e] transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-yellow-400"
+                            className="w-full bg-[#f8cf12] text-[#4c4c4a] py-3 font-medium rounded hover:bg-[#ffdb3d] transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-yellow-400"
                         >
                             Iniciar Sesión
                         </button>

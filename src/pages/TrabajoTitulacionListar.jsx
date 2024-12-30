@@ -221,7 +221,7 @@ const TrabajoTitulacionListar = () => {
                 <td className="px-6 py-4">{trabajo.modalidad}</td>
                 <td className="px-6 py-4">
                   <span
-                    className={`px-2 py-1 rounded-full text-sm ${colorMap[trabajo.estado] || 'bg-gray-100 text-gray-800'
+                    className={`px-2 py-1 rounded-full text-sm ${colorMap[trabajo.estado] || 'bg-gray-200 text-gray-800'
                       }`}
                   >
                     {trabajo.estado}
@@ -231,13 +231,13 @@ const TrabajoTitulacionListar = () => {
                   <div className="flex justify-end gap-4">
                     <button
                       onClick={() => handleEdit(trabajo)}
-                      className="p-2 bg-gray-500 text-white rounded"
+                      className="p-2 bg-gray-300 text-[#4c4c4a] rounded transition duration-300 transform hover:scale-110"
                     >
                       <FaEdit />
                     </button>
                     <button
                       onClick={() => handleAsignarFecha(trabajo)}
-                      className="p-2 bg-[#ffaf36] text-white rounded"
+                      className="p-2 bg-[#f8cf12] text-[#4c4c4a] rounded transition duration-300 transform hover:scale-110"
                     >
                       <FaCalendarDay />
                     </button>
