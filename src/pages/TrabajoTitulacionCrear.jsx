@@ -211,7 +211,7 @@ const TrabajoTitulacionCrear = () => {
   return (
     <>
       <MessageDialog message={message} isOpen={isOpen} onClose={() => setIsOpen(false)} iconType={iconType} />
-      <div className="p-6  mx-auto">
+      <div className="px-16 py-6 mx-auto">
         <h1 className="text-2xl font-bold mb-6">Crear Trabajo de Titulación</h1>
 
         {/* Contenedor de dos columnas */}

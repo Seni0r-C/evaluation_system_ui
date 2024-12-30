@@ -2,47 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { IoMdClose, IoMdMenu, IoIosLogOut } from "react-icons/io";
 import { FaChevronDown, FaChevronUp, FaUserCircle } from "react-icons/fa";
-
-
+import { useLocation } from 'react-router-dom';
 import logo from '../assets/logo_bar_claro.webp';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { RutaRaiz } from '../utils/constants';
-
-const menuData = [
-    {
-        name: 'Inicio',
-        href: RutaRaiz,
-        roles: [0], // Disponible para todos los roles
-        subOptions: [],
-    },
-    {
-        name: 'Modalidades de Titulación',
-        href: '/modalidades',
-        roles: [1], // Disponible para ambos roles
-        subOptions: [],
-    },
-    {
-        name: 'Items de revista',
-        href: '/items-revista',
-        roles: [1], // Disponible solo para el rol 1 (Administrador)
-        subOptions: [],
-    },
-    {
-        name: 'Items de rúbrica',
-        href: '/items-rubrica',
-        roles: [1], // Disponible solo para el rol 1 (Administrador)
-        subOptions: [],
-    },
-    {
-        name: 'Registro Trabajo',
-        href: '/registro-proyecto-titulacion',
-        roles: [1, 2], // Disponible solo para el rol 1 (Administrador)
-        subOptions: [],
-    },
-];
+import { menuData, RutaRaiz } from '../utils/constants';
 
 const Layout = ({ children }) => {
+    const location = useLocation();
     // Lee el estado inicial de localStorage
     const [isSidebarVisible, setSidebarVisible] = useState(() => {
         const savedState = localStorage.getItem('isSidebarVisible');
@@ -189,11 +156,12 @@ const Layout = ({ children }) => {
                                 {/* Opción principal con el ícono dentro del <a> */}
                                 <Link
                                     to={item.href}
-                                    className="flex items-center py-2 px-4 hover:bg-gray-300 rounded-md transition-colors flex-1 justify-between font-medium"
+                                    className={`flex items-center py-2 px-4 rounded-md transition-colors flex-1 justify-start gap-4 ${location.pathname === item.href ? 'bg-gray-300' : 'hover:scale-105 hover:shadow-md'}
+                                    transition-transform transform`}
                                     onClick={() => toggleSubOptions(index)} // Manejar clic para expandir/contraer
 
                                 >
-                                    {item.name}
+                                    {item.icon}{item.name}
 
                                     {/* Indicador de subopciones */}
                                     {item.subOptions.length > 0 && (

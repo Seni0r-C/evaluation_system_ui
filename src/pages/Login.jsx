@@ -176,7 +176,7 @@ const Login = () => {
                         </div>
                         <button
                             type="submit"
-                            className="w-full bg-[#f8cf12] text-[#4c4c4a] py-3 font-medium rounded hover:bg-[#ffdb3d] transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-yellow-400"
+                            className="w-full bg-[#f8cf12] text-[#4c4c4a] py-3 font-medium rounded hover:bg-[#f7d22d] transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-yellow-400"
                         >
                             Iniciar Sesión
                         </button>
