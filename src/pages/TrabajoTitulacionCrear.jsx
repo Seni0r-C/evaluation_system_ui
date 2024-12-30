@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
 import BuscadorYSelectorDeUsuarios from '../components/BuscadorYSelectorDeUsuarios';
 import { buscarUsuarios } from '../services/usuarioService';
@@ -5,7 +6,7 @@ import { obtenerCarreras } from '../services/carreraService';
 import { obtenerModalidadesPorCarrera } from '../services/modalidadService';
 import axiosInstance from '../services/axiosConfig';
 import MessageDialog from '../components/MessageDialog';
-import { capitalizeWords } from '../utils/constants';
+import InputField from '../components/InputField';
 
 const TrabajoTitulacionCrear = () => {
   // Datos de la base de datos
@@ -70,8 +71,30 @@ const TrabajoTitulacionCrear = () => {
   useEffect(() => {
     if (selectedCarrera) {
       obtenerModalidadesPorCarrera(selectedCarrera, setModalidades);
+    } else {
+      setModalidades([]);
+      setSelectedModalidad('');
+      setSelectedEstudiantes([]);
     }
   }, [selectedCarrera]);
+
+  useEffect(() => {
+    if (selectedModalidad) {
+      const modalidad = modalidades.find((mod) => mod.id === parseInt(selectedModalidad));
+      if (selectedEstudiantes.length > parseInt(modalidad.max_participantes)) {
+        setSelectedModalidad((prev) => {
+          setSelectedEstudiantes((prevSelectedEstudiantes) => prevSelectedEstudiantes.slice(0, parseInt(modalidad.max_participantes)));
+          return prev;
+        })
+        setMessage('No puedes seleccionar más estudiantes de los permitidos para esta modalidad');
+        setIconType('warning');
+        setIsOpen(true);
+        return;
+      }
+    } else {
+      setSelectedEstudiantes([]);
+    }
+  }, [selectedModalidad]);
 
   // Fetch usuarios
   const buscarUsuariosConRol = (query, setResults, rol) => {
@@ -221,65 +244,53 @@ const TrabajoTitulacionCrear = () => {
             {/* Columna 1 */}
             <div>
               {/* Seleccionar carrera */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Carrera</label>
-                <select
-                  value={selectedCarrera}
-                  onChange={(e) => setSelectedCarrera(e.target.value)}
-                  className="w-full border rounded px-3 py-2"
-                  required
-                >
-                  <option value="">Seleccione una carrera</option>
-                  {carreras.map(carrera => (
-                    <option key={carrera.id} value={carrera.id}>
-                      {capitalizeWords(carrera.nombre)}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <InputField
+                label="Carrera"
+                type="select"
+                value={selectedCarrera}
+                name="carrera"
+                onChange={(e) => setSelectedCarrera(e.target.value)}
+                placeholder="Seleccione una carrera"
+                options={carreras}
+                required
+                capitalize
+              />
 
               {/* Seleccionar modalidad */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Modalidad</label>
-                <select
-                  value={selectedModalidad}
-                  onChange={(e) => setSelectedModalidad(e.target.value)}
-                  className="w-full border rounded px-3 py-2"
-                  required
-                >
-                  <option value="">Seleccione una modalidad</option>
-                  {modalidades.map(modalidad => (
-                    <option key={modalidad.id} value={modalidad.id}>{modalidad.nombre}</option>
-                  ))}
-                </select>
-              </div>
+              <InputField
+                label="Modalidad"
+                type="select"
+                value={selectedModalidad}
+                name="modalidad"
+                onChange={(e) => setSelectedModalidad(e.target.value)}
+                placeholder="Seleccione una modalidad"
+                options={modalidades}
+                required
+              />
 
               {/* Título */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Título</label>
-                <input
-                  type="text"
-                  value={titulo}
-                  onChange={(e) => setTitulo(e.target.value)}
-                  placeholder="Ingrese el título del trabajo"
-                  className="w-full border rounded px-3 py-2"
-                  required
-                />
-              </div>
+              <InputField
+                label="Título"
+                type="text"
+                value={titulo}
+                name="titulo"
+                onChange={(e) => setTitulo(e.target.value)}
+                placeholder="Ingrese el título del trabajo"
+                required
+              />
 
               {/* Link del archivo */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Link del Archivo</label>
-                <input
-                  type="text"
-                  value={linkArchivo}
-                  onChange={(e) => setLinkArchivo(e.target.value)}
-                  placeholder="Ingrese el link del archivo"
-                  className="w-full border rounded px-3 py-2"
-                  required
-                />
-              </div>
+              <InputField
+                label="Link del Archivo"
+                type="text"
+                value={linkArchivo}
+                name="linkArchivo"
+                onChange={(e) => setLinkArchivo(e.target.value)}
+                placeholder="Ingrese el link del archivo"
+                required
+              />
             </div>
+
 
             {/* Columna 2 */}
             <div >

@@ -7,7 +7,7 @@ import { obtenerEstados } from '../services/trabajosTitulacion';
 import { FaCalendarDay, FaChevronLeft, FaChevronRight, FaEdit } from 'react-icons/fa';
 import { MdGrading } from 'react-icons/md';
 import BotonAccion from '../components/BotonAccion';
-import { capitalizeWords } from '../utils/constants';
+import InputField from '../components/InputField';
 
 const TrabajoTitulacionListar = () => {
   const [trabajos, setTrabajos] = useState([]);
@@ -164,149 +164,133 @@ const TrabajoTitulacionListar = () => {
 
       {/* Filtros */}
       <div className="mb-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Título</label>
-          <input
-            type="text"
-            name="titulo"
-            value={filters.titulo}
-            onChange={handleFilterChange}
-            placeholder="Filtrar por título"
-            className="w-full border rounded px-3 py-2"
-          />
-        </div>
+        <InputField
+          label="Título"
+          name="titulo"
+          value={filters.titulo}
+          onChange={handleFilterChange}
+          placeholder="Filtrar por título"
+        />
 
         {verTodo && (
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Carrera</label>
-            <select
-              value={filters.carrera_id}
-              name="carrera_id"
-              onChange={handleFilterChange}
-              className="w-full border rounded px-3 py-2"
-            >
-              <option value="">Seleccione una carrera</option>
-              {carreras.filter(carrera =>
-                (user.carreras.includes(carrera.id)
-                  && !verTodo
-                ) || (verTodo)
-              ).map(carrera => (
-                <option key={carrera.id} value={carrera.id}>
-                  {capitalizeWords(carrera.nombre)}
-                </option>
-              ))}
-            </select>
-          </div>
+          <InputField
+            label="Carrera"
+            type="select"
+            name="carrera_id"
+            value={filters.carrera_id}
+            onChange={handleFilterChange}
+            options={carreras.filter(carrera =>
+              user.carreras.includes(carrera.id) || verTodo
+            )}
+            placeholder="Seleccione una carrera"
+            capitalize
+          />
         )}
 
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Fecha defensa
-          </label>
-          <input
-            type="date"
-            className="w-full border rounded px-3 py-2"
-            name="fecha_defensa"
-            value={filters.fecha_defensa}
-            onChange={handleFilterChange}
-          />
-        </div>
+        <InputField
+          label="Fecha defensa"
+          type="date"
+          name="fecha_defensa"
+          value={filters.fecha_defensa}
+          onChange={handleFilterChange}
+        />
 
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Modalidad</label>
-          <select
-            value={filters.modalidad_id}
-            name="modalidad_id"
-            onChange={handleFilterChange}
-            className="w-full border rounded px-3 py-2"
-          >
-            <option value="">Seleccione una carrera</option>
-            {modalidades.map(modalidad => (
-              <option key={modalidad.id} value={modalidad.id}>
-                {modalidad.nombre}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Estados</label>
-          <select
-            value={filters.estado}
-            name="estado"
-            onChange={handleFilterChange}
-            className="w-full border rounded px-3 py-2"
-          >
-            <option value="">Seleccione un estado</option>
-            {estados.map((estado, index) => (
-              <option key={index} value={estado}>{estado}</option>
-            ))}
-          </select>
-        </div>
+        <InputField
+          label="Modalidad"
+          type="select"
+          name="modalidad_id"
+          value={filters.modalidad_id}
+          onChange={handleFilterChange}
+          options={modalidades}
+          placeholder="Seleccione una modalidad"
+        />
+
+        <InputField
+          label="Estados"
+          type="select"
+          name="estado"
+          value={filters.estado}
+          onChange={handleFilterChange}
+          options={estados}
+          placeholder="Seleccione un estado"
+        />
       </div>
 
       {/* Lista de trabajos */}
       <table className="min-w-full table-auto border-collapse border border-gray-200 shadow-md rounded-lg">
         <thead>
           <tr className="bg-gray-300 text-gray-800">
-            <th className="border-b px-6 py-3 font-bold text-left">Título</th>
-            <th className="border-b px-6 py-3 font-bold text-left">Carrera</th>
-            <th className="border-b px-6 py-3 font-bold text-left">Link</th>
-            <th className="border-b px-6 py-3 font-bold text-left">Modalidad</th>
-            <th className="border-b px-6 py-3 font-bold text-left">Estado</th>
-            <th className="border-b px-6 py-3 font-bold text-left">Acciones</th>
+            {['Título', 'Carrera', 'Link', 'Modalidad', 'Estado', 'Acciones'].map((header) => (
+              <th key={header} className="border-b px-6 py-3 font-bold text-left">
+                {header}
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>
           {trabajos.length > 0 ? (
             trabajos.map((trabajo) => (
               <tr key={trabajo.id} className="hover:bg-gray-100 transition-colors">
-                <td className="px-6 py-4">{trabajo.titulo}</td>
-                <td className="px-6 py-4">{trabajo.carrera}</td>
-                <td className="px-6 py-4">
-                  <a
-                    href={trabajo.link_archivo}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-green-700 hover:underline font-normal"
-                  >
-                    <i className="fas fa-link"></i> Ver archivo
-                  </a>
-                </td>
-                <td className="px-6 py-4">{trabajo.modalidad}</td>
-                <td className="px-6 py-4">
-                  <span
-                    className={`px-2 py-1 rounded-full text-sm ${colorMap[trabajo.estado] || 'bg-gray-200 text-gray-800'
-                      }`}
-                  >
-                    {trabajo.estado}
-                  </span>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex justify-end gap-4">
-                    {acciones.map(({ roles, permiso, icono, variant, tooltip, onClick }) =>
-                      roles.some(role => user.roles.includes(role)) ? (
-                        <BotonAccion
-                          key={permiso}
-                          onClick={() => onClick(trabajo)}
-                          icono={icono}
-                          variant={variant}
-                          tooltip={tooltip}
-                        />
-                      ) : null
-                    )}
-                  </div>
-                </td>
+                {[
+                  { content: trabajo.titulo },
+                  { content: trabajo.carrera },
+                  {
+                    content: (
+                      <a
+                        href={trabajo.link_archivo}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-green-700 hover:underline font-normal"
+                      >
+                        <i className="fas fa-link"></i> Ver archivo
+                      </a>
+                    ),
+                  },
+                  { content: trabajo.modalidad },
+                  {
+                    content: (
+                      <span
+                        className={`px-2 py-1 rounded-full text-sm ${colorMap[trabajo.estado] || 'bg-gray-200 text-gray-800'
+                          }`}
+                      >
+                        {trabajo.estado}
+                      </span>
+                    ),
+                  },
+                  {
+                    content: (
+                      <div className="flex justify-end gap-4">
+                        {acciones.map(({ roles, permiso, icono, variant, tooltip, onClick }) =>
+                          roles.some((role) => user.roles.includes(role)) ? (
+                            <BotonAccion
+                              key={permiso}
+                              onClick={() => onClick(trabajo)}
+                              icono={icono}
+                              variant={variant}
+                              tooltip={tooltip}
+                            />
+                          ) : null
+                        )}
+                      </div>
+                    ),
+                  },
+                ].map((column, index) => (
+                  <td key={index} className="px-6 py-4">
+                    {column.content}
+                  </td>
+                ))}
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="5" className="text-center p-6 text-gray-500">
+              <td colSpan="6" className="text-center p-6 text-gray-500">
                 <i className="fas fa-folder-open text-2xl"></i>
                 <p>No se encontraron trabajos</p>
               </td>
             </tr>
           )}
         </tbody>
+
       </table>
 
 
