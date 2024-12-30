@@ -193,7 +193,7 @@ const TrabajoTitulacionListar = () => {
       {/* Lista de trabajos */}
       <table className="min-w-full table-auto border-collapse border border-gray-200 shadow-md rounded-lg">
         <thead>
-          <tr className="bg-green-50 text-gray-800">
+          <tr className="bg-gray-300 text-gray-800">
             <th className="border-b px-6 py-3 font-bold text-left">Título</th>
             <th className="border-b px-6 py-3 font-bold text-left">Carrera</th>
             <th className="border-b px-6 py-3 font-bold text-left">Link</th>
@@ -272,15 +272,17 @@ const TrabajoTitulacionListar = () => {
           <button
             disabled={page === 1}
             onClick={() => handlePageChange(page - 1)}
-            className="p-2 bg-blue-500 text-white rounded disabled:bg-gray-400"
+            className="p-2 bg-blue-500 text-white rounded disabled:bg-gray-300"
           >
             Anterior
           </button>
-          <span className="mx-4">{page}</span>
+          <span className="mx-4">
+            Pag. {page} de {Math.ceil(total / limit)}
+          </span>
           <button
             disabled={page * limit >= total}
             onClick={() => handlePageChange(page + 1)}
-            className="p-2 bg-blue-500 text-white rounded disabled:bg-gray-400"
+            className="p-2 bg-blue-500 text-white rounded disabled:bg-gray-300"
           >
             Siguiente
           </button>
