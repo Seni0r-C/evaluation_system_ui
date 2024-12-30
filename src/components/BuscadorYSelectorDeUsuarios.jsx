@@ -96,11 +96,11 @@ const BuscadorYSelectorDeUsuarios = ({
         )}
       </div>
       {selectedUser && (
-        <div className="flex items-center bg-blue-100 text-blue-700 px-3 py-1 rounded-full mt-2">
+        <div className="flex items-center bg-green-100 text-gray-700 px-3 py-1 rounded-full mt-2 w-fit">
           <span className="mr-2">{selectedUser.nombre} {selectedUser.apellido}</span>
           <button
             onClick={() => handleChipRemove(type)}
-            className="text-red-500 hover:text-red-700"
+            className="text-red-500 hover:text-red-700 font-bold"
           >
             ✕
           </button>
@@ -111,11 +111,11 @@ const BuscadorYSelectorDeUsuarios = ({
       {selectedUSers && (
         <div className="mt-2">
           {selectedUSers.map((est) => (
-            <div key={est.id} className="flex items-center bg-blue-100 text-blue-700 px-3 py-1 rounded-full mt-1">
+            <div key={est.id} className="flex items-center bg-green-100 text-gray-700 px-3 py-1 rounded-full mt-1 w-fit">
               <span className="mr-2">{est.nombre} {est.apellido}</span>
               <button
                 onClick={() => handleChipRemove('estudiante', est)}
-                className="text-red-500 hover:text-red-700"
+                className="text-red-500 hover:text-red-700 font-bold"
               >
                 ✕
               </button>
