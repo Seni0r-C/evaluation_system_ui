@@ -16,15 +16,16 @@ const TrabajoTitulacionListar = () => {
   const [limit, setLimit] = useState(10);
   const [verTodo, setVerTodo] = useState(false);
 
+  const info = localStorage.getItem('userInfo');
+  const user = JSON.parse(info);
+
   const [filters, setFilters] = useState({
     carrera_id: '',
     modalidad_id: '',
     estado: '',
     titulo: '',
-    fecha_defensa: '',
+    fecha_defensa: user.roles.includes(3) ? new Date().toISOString().split('T')[0] : '',
   });
-  const info = localStorage.getItem('userInfo');
-  const user = JSON.parse(info);
 
   //datos
   const [carreras, setCarreras] = useState([]);
@@ -55,11 +56,7 @@ const TrabajoTitulacionListar = () => {
       } else {
         obtenerModalidadesPorCarrera(user.carreras[0], setModalidades);
         setFilters({
-          carrera_id: user.carreras[0],
-          modalidad_id: '',
-          estado: '',
-          titulo: '',
-          fecha_defensa: '',
+          ...filters, carrera_id: user.carreras[0],
         });
       }
     }
