@@ -8,12 +8,14 @@ import MessageDialog from '../components/MessageDialog';
 import { capitalizeWords } from '../utils/constants';
 
 const TrabajoTitulacionCrear = () => {
+  // Datos de la base de datos
   const [carreras, setCarreras] = useState([]);
   const [modalidades, setModalidades] = useState([]);
   const [tutores, setTutores] = useState([]);
   const [cotutores, setCotutores] = useState([]);
   const [estudiantes, setEstudiantes] = useState([]);
 
+  // Datos del formulario
   const [selectedCarrera, setSelectedCarrera] = useState('');
   const [selectedModalidad, setSelectedModalidad] = useState('');
   const [selectedTutor, setSelectedTutor] = useState(null);
@@ -22,18 +24,24 @@ const TrabajoTitulacionCrear = () => {
   const [titulo, setTitulo] = useState('');
   const [linkArchivo, setLinkArchivo] = useState('');
 
+  // Búsqueda de usuarios
   const [tutorSearch, setTutorSearch] = useState('');
   const [cotutorSearch, setCotutorSearch] = useState('');
   const [estudianteSearch, setEstudianteSearch] = useState('');
 
+  // Indices de búsqueda
   const [highlightedIndexTutor, setHighlightedIndexTutor] = useState(-1);
   const [highlightedIndexCotutor, setHighlightedIndexCotutor] = useState(-1);
   const [highlightedIndexEstudiante, setHighlightedIndexEstudiante] = useState(-1);
 
+  // Mensajes
   const [message, setMessage] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [iconType, setIconType] = useState(null);
 
+  // Funciones
+
+  // Resetear formulario
   const resetForm = () => {
     setCarreras([]);
     setModalidades([]);
@@ -53,10 +61,12 @@ const TrabajoTitulacionCrear = () => {
     setHighlightedIndexEstudiante(-1);
   };
 
+  // Obtener carreras
   useEffect(() => {
     obtenerCarreras(setCarreras);
   }, []);
 
+  // Obtener modalidades por carrera
   useEffect(() => {
     if (selectedCarrera) {
       obtenerModalidadesPorCarrera(selectedCarrera, setModalidades);
@@ -68,6 +78,7 @@ const TrabajoTitulacionCrear = () => {
     buscarUsuarios(query, setResults, rol);
   };
 
+  // Crear trabajo
   const handleCrearTrabajo = async (e) => {
     e.preventDefault();
     const trabajoData = {
@@ -112,6 +123,7 @@ const TrabajoTitulacionCrear = () => {
     }
   };
 
+  // Manejar teclas de flecha y enter
   const handleKeyDown = (e, type) => {
     const setHighlightedIndex = {
       tutor: setHighlightedIndexTutor,
@@ -149,7 +161,7 @@ const TrabajoTitulacionCrear = () => {
     }
   };
 
-
+  // Eliminar usuario de búsqueda
   const handleChipRemove = (type, user) => {
     if (type === 'tutor') {
       setSelectedTutor(null);
@@ -160,6 +172,7 @@ const TrabajoTitulacionCrear = () => {
     }
   };
 
+  // Agregar estudiante a la lista de estudiantes
   const handleEstudianteSelect = (user) => {
     if (!selectedCarrera) {
       setMessage('Debes seleccionar una carrera y modalidad antes de agregar estudiantes');
@@ -194,7 +207,6 @@ const TrabajoTitulacionCrear = () => {
       console.log(error)
     }
   };
-
 
   return (
     <>
@@ -290,7 +302,7 @@ const TrabajoTitulacionCrear = () => {
                 required={true}
               />
 
-              {/* Buscar Cotutor */}
+              {/* Buscar Co-tutor */}
               <BuscadorYSelectorDeUsuarios
                 label="Buscar Co-tutor"
                 optional={true}
