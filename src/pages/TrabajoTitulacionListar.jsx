@@ -5,9 +5,11 @@ import { obtenerCarreras } from '../services/carreraService';
 import { obtenerModalidadesPorCarrera } from '../services/modalidadService';
 import { obtenerEstados } from '../services/trabajosTitulacion';
 import { FaCalendarDay, FaChevronLeft, FaChevronRight, FaEdit } from 'react-icons/fa';
-import { MdGrading } from 'react-icons/md';
+import { MdChecklist } from 'react-icons/md';
 import BotonAccion from '../components/BotonAccion';
 import InputField from '../components/InputField';
+import { useNavigate } from 'react-router-dom';
+import { capitalizeWords } from '../utils/constants';
 
 const TrabajoTitulacionListar = () => {
   const [trabajos, setTrabajos] = useState([]);
@@ -18,6 +20,8 @@ const TrabajoTitulacionListar = () => {
 
   const info = localStorage.getItem('userInfo');
   const user = JSON.parse(info);
+
+  const navigate = useNavigate();
 
   const [filters, setFilters] = useState({
     carrera_id: '',
@@ -125,7 +129,7 @@ const TrabajoTitulacionListar = () => {
   };
 
   const handleCalificar = (trabajo) => {
-    console.log(trabajo);
+    navigate("/calificar", { state: { trabajo } });
   };
 
   const acciones = [
@@ -148,7 +152,7 @@ const TrabajoTitulacionListar = () => {
     {
       roles: [1, 3],
       permiso: 'calificar',
-      icono: MdGrading,
+      icono: MdChecklist,
       variant: 'primary',
       tooltip: 'Calificar',
       onClick: handleCalificar,
@@ -230,7 +234,7 @@ const TrabajoTitulacionListar = () => {
               <tr key={trabajo.id} className="hover:bg-gray-100 transition-colors">
                 {[
                   { content: trabajo.titulo },
-                  { content: trabajo.carrera },
+                  { content: capitalizeWords(trabajo.carrera) },
                   {
                     content: (
                       <a

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FaExclamationTriangle } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 class ErrorBoundary extends React.Component {
     constructor(props) {
@@ -30,12 +31,13 @@ class ErrorBoundary extends React.Component {
                             <p className="text-base sm:text-lg text-gray-700 mb-6">
                                 Ocurrió un error inesperado. Intenta recargar la página o contacta al soporte técnico.
                             </p>
-                            <button
+                            <Link
                                 className="w-full sm:w-auto px-4 py-2 bg-green-700 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-700 focus:ring-opacity-75 transition duration-300 ease-in-out"
-                                onClick={() => window.location.reload()}
+                                onClick={() => { this.setState({ hasError: false }); }}
+                                to={"/"}
                             >
-                                Recargar Página
-                            </button>
+                                Regresar al inicio
+                            </Link>
                         </div>
 
                         {/* Información del desarrollador */}
