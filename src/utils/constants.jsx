@@ -1,4 +1,4 @@
-import { FaCalendarAlt, FaHome } from "react-icons/fa";
+import { FaCalendarAlt, FaHome, FaUsers, FaFileAlt } from "react-icons/fa";
 import { FaListCheck } from "react-icons/fa6";
 import { GrDocumentUpload } from "react-icons/gr";
 import { HiDocumentSearch } from "react-icons/hi";
@@ -17,11 +17,18 @@ export function capitalizeWords(str) {
 
 export const menuData = [
     {
-        name: 'Asignar Tribunal',
-        href: '/asignar-tribunal',
+        name: 'Asignación Tribunal',
+        href: '/asignacion-de-tribunal',
         roles: [1, 2], // Disponible solo para el rol 1 (Administrador)
         subOptions: [],
-        icon: <GrDocumentUpload />
+        icon: <FaUsers />
+    },
+    {
+        name: 'Documento calificación',
+        href: '/generacion-de-documento',
+        roles: [1], // Disponible solo para el rol 1 (Administrador)
+        subOptions: [],
+        icon: <FaFileAlt />
     },
     {
         name: 'Inicio',
@@ -75,13 +82,12 @@ export const menuData = [
         icon: <GrDocumentUpload />
     },
     {
-        name: 'Calificar',
-        href: '/calificar',
+        name: 'Calificación Trabajos',
+        href: '/calificacion-de-trabajo-titulacion',
         roles: [1, 2], // Disponible solo para el rol 1 (Administrador)
         subOptions: [],
         icon: <GrDocumentUpload />
-    },
-  
+    },  
 ];
 
 // export const menuData = [

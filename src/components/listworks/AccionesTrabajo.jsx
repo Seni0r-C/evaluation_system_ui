@@ -1,26 +1,55 @@
-import React from 'react';
+// import React, { useEffect } from 'react';
 import BotonAccion from '../common/BotonAccion';
-import { FaCalendarDay, FaEdit } from 'react-icons/fa';
-import { MdChecklist } from 'react-icons/md';
+import { FaCalendarDay, FaEdit, FaFilePdf } from 'react-icons/fa';
+import { MdChecklist, MdGroupAdd } from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
 
-const handleEdit = (trabajo) => {
-  // setEditTrabajo(trabajo);
-  // setModalEditTrabajo(true);
-  alert(JSON.stringify(trabajo, null, 2));
-};
+const AccionesTrabajo = ({ trabajo, acciones, user, setEditTrabajo, setModalEditTrabajo, setAsignarFecha, setModalAsignarFecha }) => {
+  const navigate = useNavigate();
 
-const handleAsignarFecha = (trabajo) => {
-  // setAsignarFecha(trabajo);
-  // setModalAsignarFecha(true);
-  alert(JSON.stringify(trabajo, null, 2));
-};
+  // Handlers
+  const handleEdit = (trabajo) => {
+    setEditTrabajo(trabajo);
+    setModalEditTrabajo(true);
+  };
 
-const handleCalificar = (trabajo) => {
-  alert(JSON.stringify(trabajo, null, 2));
-  // navigate("/calificar", { state: { trabajo } });
-};
+  const handleAsignarFecha = (trabajo) => {
+    setAsignarFecha(trabajo);
+    setModalAsignarFecha(true);
+  };
 
-const accionesObjs = [
+  const handleCalificar = (trabajo) => {
+    navigate('/calificar', { state: { trabajo } });
+  };
+
+  const handleAsignarTribunal = (trabajo) => {
+    alert(JSON.stringify(trabajo, null, 2));
+    // navigate('/asignar-tribunal', { state: { trabajo } });
+  };
+
+  const handleGenerarReporte = (trabajo) => {
+    alert(JSON.stringify(trabajo, null, 2));
+    // navigate('/asignar-tribunal', { state: { trabajo } });
+  };
+
+  // Definición de acciones
+  const accionesObjs = [
+    {
+      roles: [1, 2],
+      permiso: 'asignarTribunal',
+      icono: MdGroupAdd,      
+      variant: 'purple',
+      tooltip: 'Asignar Tribunal',
+      onClick: handleAsignarTribunal,
+    },
+    {
+      roles: [1],
+      permiso: 'generarReporte',
+      icono: FaFilePdf,      
+      variant: 'red',
+      tooltip: 'Generar Reporte',
+      onClick: handleGenerarReporte,
+    },
     {
       roles: [1, 2],
       permiso: 'editar',
@@ -47,20 +76,21 @@ const accionesObjs = [
     },
   ];
 
-const AccionesTrabajo = ({ trabajo, acciones, user }) => (
-  <div className="flex justify-end gap-4">
-    {accionesObjs.map(({ roles, permiso, icono, variant, tooltip, onClick }) =>
-      roles.some((role) => user.roles.includes(role)) && acciones.includes(permiso) ? (
-        <BotonAccion
-          key={permiso}
-          onClick={() => onClick(trabajo)}
-          icono={icono}
-          variant={variant}
-          tooltip={tooltip}
-        />
-      ) : null
-    )}
-  </div>
-);
+  return (
+    <div className="flex justify-end gap-4">
+      {accionesObjs.map(({ roles, permiso, icono, variant, tooltip, onClick }) =>
+        roles.some((role) => user.roles.includes(role)) && acciones.includes(permiso) ? (
+          <BotonAccion
+            key={permiso}
+            onClick={() => onClick(trabajo)}
+            icono={icono}
+            variant={variant}
+            tooltip={tooltip}
+          />
+        ) : null
+      )}
+    </div>
+  );
+};
 
 export default AccionesTrabajo;

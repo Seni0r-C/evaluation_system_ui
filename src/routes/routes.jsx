@@ -119,6 +119,18 @@ const routes = [
     ),
   },
   {
+    path: '/calificacion-de-trabajo-titulacion',
+    element: (
+      <ErrorBoundary>
+        <ProtectedRoute>
+          <Layout>
+            <CustomTrabajoTitulacionListar permisosAcciones={['calificar']} />
+          </Layout>
+        </ProtectedRoute>
+      </ErrorBoundary>
+    ),
+  },
+  {
     path: '/calificar',
     element: (
       <ErrorBoundary>
@@ -131,12 +143,24 @@ const routes = [
     ),
   },
   {
-    path: '/asignar-tribunal',
+    path: '/asignacion-de-tribunal',
     element: (
       <ErrorBoundary>
         <ProtectedRoute>
           <Layout>
-            <CustomTrabajoTitulacionListar />
+            <CustomTrabajoTitulacionListar permisosAcciones={['asignarTribunal']} />
+          </Layout>
+        </ProtectedRoute>
+      </ErrorBoundary>
+    ),
+  },
+  {
+    path: '/generacion-de-documento',
+    element: (
+      <ErrorBoundary>
+        <ProtectedRoute>
+          <Layout>
+            <CustomTrabajoTitulacionListar permisosAcciones={['generarReporte']} />
           </Layout>
         </ProtectedRoute>
       </ErrorBoundary>
