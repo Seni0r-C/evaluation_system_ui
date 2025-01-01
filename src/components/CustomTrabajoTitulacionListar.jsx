@@ -31,22 +31,44 @@ const CustomTrabajoTitulacionListar = () => {
   const [estados, setEstados] = useState([]);
 
   useEffect(() => {
-    obtenerCarreras(setCarreras);
-    obtenerEstados(setEstados);
+    if (info) {
+      // Lista de roles a verificar
+      const requiredRoles = [1, 2];
+
+      // Verificar si el usuario tiene al menos uno de los roles
+      const hasRole = user.roles.some(role => requiredRoles.includes(role));
+
+      if (hasRole) {
+        setVerTodo(true);
+      } else {
+        obtenerModalidadesPorCarrera(user.carreras[0], setModalidades);
+        setFilters({
+          ...filters, carrera_id: user.carreras[0],
+        });
+      }
+    }
   }, []);
 
   useEffect(() => {
     if (filters.carrera_id) {
       obtenerModalidadesPorCarrera(filters.carrera_id, setModalidades);
+    } else if (user.carreras.length > 0) {
+      obtenerModalidadesPorCarrera(user.carreras[0], setModalidades);
     }
   }, [filters.carrera_id]);
 
+  // Cargar los trabajos de titulación
   useEffect(() => {
     const fetchTrabajos = async () => {
       try {
         const response = await axiosInstance.get('/trabajo-titulacion/listar', {
-          params: { ...filters, page, limit },
+          params: {
+            ...filters,
+            page,
+            limit,
+          },
         });
+
         setTrabajos(response.data.data);
         setTotal(response.data.total);
       } catch (error) {
