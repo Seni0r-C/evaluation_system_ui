@@ -5,7 +5,7 @@ import { capitalizeWords } from '../../utils/constants';
 
 const ListaTrabajosTitulacion = ({ trabajos, acciones, user }) => {
     const colnBase = ['Título', 'Carrera', 'Archivo', 'Modalidad', 'Estado'];
-    const colnames = acciones?.length > 0 ? [...colnBase, ...acciones] : colnBase;
+    const colnames = acciones?.length > 0 ? [...colnBase, 'Acciones'] : colnBase;
     return (
         <table className="min-w-full table-auto border-collapse border border-gray-200 shadow-md rounded-lg">
             <thead>

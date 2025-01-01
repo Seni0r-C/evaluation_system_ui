@@ -6,7 +6,6 @@ import { obtenerEstados } from '../services/trabajosTitulacion';
 import FiltroTrabajoTitulacion from './listworks/FiltroTrabajoTitulacion';
 import ListaTrabajosTitulacion from './listworks/ListaTrabajosTitulacion';
 import Paginacion from './listworks/Paginacion';
-// import BotonAccion from '../common/BotonAccion';
 
 const CustomTrabajoTitulacionListar = () => {
   const [trabajos, setTrabajos] = useState([]);
@@ -90,7 +89,7 @@ const CustomTrabajoTitulacionListar = () => {
     <div className="container mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4">Trabajos de Titulación</h1>
       <FiltroTrabajoTitulacion {...{ filters, onFilterChange: handleFilterChange, carreras, modalidades, verTodo, user }} />
-      <ListaTrabajosTitulacion trabajos={trabajos} user={user} acciones={[]} />
+      <ListaTrabajosTitulacion trabajos={trabajos} user={user} acciones={['editar', 'calificar']} />
       <Paginacion {...{ page, total, limit, onPageChange: setPage, onLimitChange: (e) => setLimit(e.target.value) }} />
     </div>
   );
