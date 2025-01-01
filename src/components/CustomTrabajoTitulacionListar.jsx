@@ -31,6 +31,11 @@ const CustomTrabajoTitulacionListar = () => {
   const [estados, setEstados] = useState([]);
 
   useEffect(() => {
+    obtenerCarreras(setCarreras);
+    obtenerEstados(setEstados);
+  }, []);
+
+  useEffect(() => {
     if (info) {
       // Lista de roles a verificar
       const requiredRoles = [1, 2];
@@ -84,7 +89,7 @@ const CustomTrabajoTitulacionListar = () => {
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4">Trabajos de Titulación</h1>
-      <FiltroTrabajoTitulacion {...{ filters, onFilterChange: handleFilterChange, carreras, modalidades, estados, verTodo, user }} />
+      <FiltroTrabajoTitulacion {...{ filters, onFilterChange: handleFilterChange, carreras, modalidades, verTodo, user }} />
       <ListaTrabajosTitulacion trabajos={trabajos} user={user} acciones={[]} />
       <Paginacion {...{ page, total, limit, onPageChange: setPage, onLimitChange: (e) => setLimit(e.target.value) }} />
     </div>

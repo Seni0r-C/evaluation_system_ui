@@ -40,17 +40,18 @@ const FiltroTrabajoTitulacion = ({ filters, onFilterChange, carreras, modalidade
       onChange={onFilterChange}
       options={modalidades}
       placeholder="Seleccione una modalidad"
-    />
-
-    <InputField
-      label="Estados"
-      type="select"
-      name="estado"
-      value={filters.estado}
-      onChange={onFilterChange}
-      options={estados}
-      placeholder="Seleccione un estado"
-    />
+    />    
+    
+    {estados && (
+        <InputField
+        label="Estados"
+        type="select"
+        name="estado"
+        value={filters.estado}
+        onChange={onFilterChange}
+        options={estados}
+        placeholder="Seleccione un estado"
+    />)}
   </div>
 );
 
