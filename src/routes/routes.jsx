@@ -15,6 +15,7 @@ import TrabajoTitulacionListar from '../pages/TrabajoTitulacionListar';
 import UserProfile from '../pages/Perfil';
 import Inicio from '../pages/Inicio';
 import CalendarioEventos from '../pages/Calendario';
+import CustomTrabajoTitulacionListar from '../components/CustomTrabajoTitulacionListar';
 
 const routes = [
   {
@@ -124,6 +125,18 @@ const routes = [
         <ProtectedRoute>
           <Layout>
             <Calificar />
+          </Layout>
+        </ProtectedRoute>
+      </ErrorBoundary>
+    ),
+  },
+  {
+    path: '/asignar-tribunal',
+    element: (
+      <ErrorBoundary>
+        <ProtectedRoute>
+          <Layout>
+            <CustomTrabajoTitulacionListar />
           </Layout>
         </ProtectedRoute>
       </ErrorBoundary>

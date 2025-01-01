@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { capitalizeWords } from '../utils/constants';
+import { capitalizeWords } from '../../utils/constants';
 
 const InputField = ({
     label,

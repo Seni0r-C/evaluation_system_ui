@@ -7,7 +7,7 @@ import { obtenerEstados } from '../services/trabajosTitulacion';
 import { FaCalendarDay, FaChevronLeft, FaChevronRight, FaEdit } from 'react-icons/fa';
 import { MdChecklist } from 'react-icons/md';
 import BotonAccion from '../components/BotonAccion';
-import InputField from '../components/InputField';
+import InputField from '../components/common/InputField';
 import { useNavigate } from 'react-router-dom';
 import { capitalizeWords } from '../utils/constants';
 
@@ -39,6 +39,8 @@ const TrabajoTitulacionListar = () => {
     Aprobado: 'bg-green-100 text-green-800',
     Pendiente: 'bg-yellow-100 text-yellow-800',
     Rechazado: 'bg-red-100 text-red-800',
+    Registrado: 'bg-blue-100 text-blue-800',
+
     // Agrega más estados y colores aquí según sea necesario
   };
 

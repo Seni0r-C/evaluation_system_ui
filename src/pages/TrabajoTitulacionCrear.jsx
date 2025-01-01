@@ -6,7 +6,7 @@ import { obtenerCarreras } from '../services/carreraService';
 import { obtenerModalidadesPorCarrera } from '../services/modalidadService';
 import axiosInstance from '../services/axiosConfig';
 import MessageDialog from '../components/MessageDialog';
-import InputField from '../components/InputField';
+import InputField from '../components/common/InputField';
 
 const TrabajoTitulacionCrear = () => {
   // Datos de la base de datos
