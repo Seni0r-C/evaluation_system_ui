@@ -4,7 +4,6 @@ import Login from '../pages/Login';
 import NotFound from '../pages/NotFound';
 import Layout from '../components/Layout';
 import ProtectedRoute from '../components/ProtectedRoute';
-// import Principal from '../pages/principal';
 import ModalidadesTitulacion from '../pages/modalidadesTitulacion';
 import ItemsRevista from '../pages/itemsRevista';
 import ItemsRubrica from '../pages/itemsRubrica';
@@ -13,10 +12,10 @@ import Calificar from '../pages/calificar';
 import CrearTrabajoTitulacionFormulario from '../pages/TrabajoTitulacionCrear';
 import TrabajoTitulacionListar from '../pages/TrabajoTitulacionListar';
 import UserProfile from '../pages/Perfil';
-import Inicio from '../pages/Inicio';
 import Home from '../pages/Home';
 import CalendarioEventos from '../pages/Calendario';
 import CustomTrabajoTitulacionListar from '../components/CustomTrabajoTitulacionListar';
+import { estadosTrabajos } from '../utils/estados_trabajos'; 
 
 const routes = [
   {
@@ -125,7 +124,10 @@ const routes = [
       <ErrorBoundary>
         <ProtectedRoute>
           <Layout>
-            <CustomTrabajoTitulacionListar permisosAcciones={['calificar']} />
+            <CustomTrabajoTitulacionListar 
+              permisosAcciones={['calificar']} 
+              firstState={estadosTrabajos.FINALIZADO} 
+            />
           </Layout>
         </ProtectedRoute>
       </ErrorBoundary>
@@ -137,7 +139,10 @@ const routes = [
       <ErrorBoundary>
         <ProtectedRoute>
           <Layout>
-            <CustomTrabajoTitulacionListar permisosAcciones={[]} />
+            <CustomTrabajoTitulacionListar 
+              permisosAcciones={[]} 
+              firstState={estadosTrabajos.FINALIZADO} 
+            />
           </Layout>
         </ProtectedRoute>
       </ErrorBoundary>
@@ -161,7 +166,10 @@ const routes = [
       <ErrorBoundary>
         <ProtectedRoute>
           <Layout>
-            <CustomTrabajoTitulacionListar permisosAcciones={['asignarTribunal']} />
+            <CustomTrabajoTitulacionListar 
+              permisosAcciones={['asignarTribunal']} 
+              firstState={estadosTrabajos.REGISTRADO} 
+            />
           </Layout>
         </ProtectedRoute>
       </ErrorBoundary>
@@ -173,7 +181,10 @@ const routes = [
       <ErrorBoundary>
         <ProtectedRoute>
           <Layout>
-            <CustomTrabajoTitulacionListar permisosAcciones={['generarReporte']} />
+            <CustomTrabajoTitulacionListar 
+                permisosAcciones={['generarReporte']} 
+                firstState={estadosTrabajos.CALIFICADO} 
+            />
           </Layout>
         </ProtectedRoute>
       </ErrorBoundary>

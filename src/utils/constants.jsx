@@ -38,7 +38,6 @@ export const menuData = [
         roles: permisos.ROLES_EDICION_ITEMS_REVISTA,
         subOptions: [],
         icon: <FaListCheck />
-
     },
     {
         name: 'Items de rúbrica',
@@ -46,7 +45,13 @@ export const menuData = [
         roles: permisos.ROLES_EDICION_ITEMS_RUBRICA,
         subOptions: [],
         icon: <FaListCheck />
-
+    },
+    {
+        name: 'Registro Trabajo',
+        href: '/registro-proyecto-titulacion',
+        roles: permisos.ROLES_REGISTRO_TRABAJO, // Disponible solo para el rol 1 (Administrador)
+        subOptions: [],
+        icon: <GrDocumentUpload />
     },
     {
         name: 'Asignación Tribunal',
@@ -61,13 +66,6 @@ export const menuData = [
         roles: permisos.ROLES_GENERACION_DOCUMENTO_CALIFICACION, // Disponible solo para el rol 1 (Administrador)
         subOptions: [],
         icon: <FaFileAlt />
-    },
-    {
-        name: 'Registro Trabajo',
-        href: '/registro-proyecto-titulacion',
-        roles: permisos.ROLES_REGISTRO_TRABAJO, // Disponible solo para el rol 1 (Administrador)
-        subOptions: [],
-        icon: <GrDocumentUpload />
     },
     {
         name: 'Calificación Trabajos',

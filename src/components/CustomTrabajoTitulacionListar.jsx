@@ -8,7 +8,7 @@ import FiltroTrabajoTitulacion from './listworks/FiltroTrabajoTitulacion';
 import ListaTrabajosTitulacion from './listworks/ListaTrabajosTitulacion';
 import Paginacion from './listworks/Paginacion';
 
-const CustomTrabajoTitulacionListar = ({permisosAcciones, includeState=false}) => {
+const CustomTrabajoTitulacionListar = ({ permisosAcciones, includeState: includeStateFiltter = false, firstState = '' }) => {
   const [trabajos, setTrabajos] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -21,7 +21,7 @@ const CustomTrabajoTitulacionListar = ({permisosAcciones, includeState=false}) =
   const [filters, setFilters] = useState({
     carrera_id: '',
     modalidad_id: '',
-    estado: '',
+    estado: firstState || '',
     titulo: '',
     fecha_defensa: user.roles.includes(3) ? new Date().toISOString().split('T')[0] : '',
   });
@@ -29,6 +29,13 @@ const CustomTrabajoTitulacionListar = ({permisosAcciones, includeState=false}) =
   const [carreras, setCarreras] = useState([]);
   const [modalidades, setModalidades] = useState([]);
   const [estados, setEstados] = useState([]);
+
+  useEffect(() => {
+    if (firstState) {
+      setFilters((prevFilters) => ({ ...prevFilters, estado: firstState }));
+    }
+  }, [firstState]);
+  
 
   useEffect(() => {
     obtenerCarreras(setCarreras);
@@ -62,25 +69,26 @@ const CustomTrabajoTitulacionListar = ({permisosAcciones, includeState=false}) =
     }
   }, [filters.carrera_id]);
 
+  
+  const fetchTrabajos = async () => {
+    try {
+      const response = await axiosInstance.get('/trabajo-titulacion/listar', {
+        params: {
+          ...filters,
+          page,
+          limit,
+        },
+      });
+
+      setTrabajos(response.data.data);
+      setTotal(response.data.total);
+    } catch (error) {
+      console.error("Error fetching trabajos:", error);
+    }
+  };
+
   // Cargar los trabajos de titulación
   useEffect(() => {
-    const fetchTrabajos = async () => {
-      try {
-        const response = await axiosInstance.get('/trabajo-titulacion/listar', {
-          params: {
-            ...filters,
-            page,
-            limit,
-          },
-        });
-
-        setTrabajos(response.data.data);
-        setTotal(response.data.total);
-      } catch (error) {
-        console.error("Error fetching trabajos:", error);
-      }
-    };
-
     fetchTrabajos();
   }, [filters, page, limit]);
 
@@ -89,12 +97,12 @@ const CustomTrabajoTitulacionListar = ({permisosAcciones, includeState=false}) =
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4">Trabajos de Titulación</h1>
-      {includeState?
-      (<FiltroTrabajoTitulacion {...{ filters, onFilterChange: handleFilterChange, carreras, estados, modalidades, verTodo, user }} />)
-      :
-      (<FiltroTrabajoTitulacion {...{ filters, onFilterChange: handleFilterChange, carreras, modalidades, verTodo, user }} />)
+      {includeStateFiltter ?
+        (<FiltroTrabajoTitulacion {...{ filters, onFilterChange: handleFilterChange, carreras, estados, modalidades, verTodo, user }} />)
+        :
+        (<FiltroTrabajoTitulacion {...{ filters, onFilterChange: handleFilterChange, carreras, modalidades, verTodo, user }} />)
       }
-      <ListaTrabajosTitulacion trabajos={trabajos} user={user} permisosAcciones={permisosAcciones} />
+      <ListaTrabajosTitulacion trabajos={trabajos} user={user} permisosAcciones={ permisosAcciones } />
       <Paginacion {...{ page, total, limit, onPageChange: setPage, onLimitChange: (e) => setLimit(e.target.value) }} />
     </div>
   );

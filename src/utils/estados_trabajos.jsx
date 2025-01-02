@@ -1,0 +1,26 @@
+const REGISTRADO = 'REGISTRADO';
+const ASIGNADO = 'ASIGNADO';
+const CALIFICADO = 'CALIFICADO';
+const INFORME_GENERADO = 'INFORME GENERADO';
+const FINALIZADO = 'FINALIZADO';
+const RECHAZADO = 'RECHAZADO';
+
+const estadosTrabajos = {
+    REGISTRADO,
+    ASIGNADO,
+    CALIFICADO,
+    INFORME_GENERADO,
+    FINALIZADO,
+    RECHAZADO
+}
+
+export {
+    REGISTRADO,
+    ASIGNADO,
+    CALIFICADO,
+    INFORME_GENERADO,
+    FINALIZADO,
+    RECHAZADO
+}
+
+export { estadosTrabajos };
