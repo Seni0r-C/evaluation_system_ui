@@ -7,7 +7,7 @@ import FiltroTrabajoTitulacion from './listworks/FiltroTrabajoTitulacion';
 import ListaTrabajosTitulacion from './listworks/ListaTrabajosTitulacion';
 import Paginacion from './listworks/Paginacion';
 
-const CustomTrabajoTitulacionListar = ({permisosAcciones}) => {
+const CustomTrabajoTitulacionListar = ({permisosAcciones, includeState=false}) => {
   const [trabajos, setTrabajos] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -88,8 +88,12 @@ const CustomTrabajoTitulacionListar = ({permisosAcciones}) => {
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4">Trabajos de Titulación</h1>
-      <FiltroTrabajoTitulacion {...{ filters, onFilterChange: handleFilterChange, carreras, modalidades, verTodo, user }} />
-      <ListaTrabajosTitulacion trabajos={trabajos} user={user} acciones={permisosAcciones} />
+      {includeState?
+      (<FiltroTrabajoTitulacion {...{ filters, onFilterChange: handleFilterChange, carreras, estados, modalidades, verTodo, user }} />)
+      :
+      (<FiltroTrabajoTitulacion {...{ filters, onFilterChange: handleFilterChange, carreras, modalidades, verTodo, user }} />)
+      }
+      <ListaTrabajosTitulacion trabajos={trabajos} user={user} permisosAcciones={permisosAcciones} />
       <Paginacion {...{ page, total, limit, onPageChange: setPage, onLimitChange: (e) => setLimit(e.target.value) }} />
     </div>
   );

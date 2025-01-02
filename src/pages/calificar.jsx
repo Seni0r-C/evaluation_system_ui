@@ -1,6 +1,6 @@
 import { useState } from "react";
 import {  FaFilePdf, FaWindowMinimize } from "react-icons/fa"; // Importamos los íconos de react-icons
-import BotonAccion from "../components/BotonAccion";
+import BotonAccion from "../components/common/BotonAccion";
 import { TbPinFilled, TbPinnedOff } from "react-icons/tb";
 import { RiSpeakFill } from "react-icons/ri";
 import { IoDocumentText } from "react-icons/io5";

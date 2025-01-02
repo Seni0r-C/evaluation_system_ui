@@ -3,8 +3,9 @@ import BotonAccion from '../common/BotonAccion';
 import { FaCalendarDay, FaEdit, FaFilePdf } from 'react-icons/fa';
 import { MdChecklist, MdGroupAdd } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
+import { permisos } from '../../utils/permisos';
 
-const AccionesTrabajo = ({ trabajo, acciones, user, setEditTrabajo, setModalEditTrabajo, setAsignarFecha, setModalAsignarFecha }) => {
+const AccionesTrabajo = ({ trabajo, permisosAcciones, user, setEditTrabajo, setModalEditTrabajo, setAsignarFecha, setModalAsignarFecha }) => {
   const navigate = useNavigate();
 
   // Handlers
@@ -35,7 +36,7 @@ const AccionesTrabajo = ({ trabajo, acciones, user, setEditTrabajo, setModalEdit
   // Definición de acciones
   const accionesObjs = [
     {
-      roles: [1, 2],
+      roles: permisos.ROLES_ASIGNACION_TRIBUNAL,
       permiso: 'asignarTribunal',
       icono: MdGroupAdd,      
       variant: 'purple',
@@ -43,7 +44,7 @@ const AccionesTrabajo = ({ trabajo, acciones, user, setEditTrabajo, setModalEdit
       onClick: handleAsignarTribunal,
     },
     {
-      roles: [1],
+      roles: permisos.ROLES_GENERACION_DOCUMENTO_CALIFICACION,
       permiso: 'generarReporte',
       icono: FaFilePdf,      
       variant: 'red',
@@ -51,7 +52,7 @@ const AccionesTrabajo = ({ trabajo, acciones, user, setEditTrabajo, setModalEdit
       onClick: handleGenerarReporte,
     },
     {
-      roles: [1, 2],
+      roles: permisos.ROLES_EDICION_TRABAJOS,
       permiso: 'editar',
       icono: FaEdit,
       variant: 'secondary',
@@ -59,7 +60,7 @@ const AccionesTrabajo = ({ trabajo, acciones, user, setEditTrabajo, setModalEdit
       onClick: handleEdit,
     },
     {
-      roles: [1, 2],
+      roles: permisos.ROLES_ASIGNACION_FECHA_SUSTENTO_TRABAJOS,
       permiso: 'asignarFecha',
       icono: FaCalendarDay,
       variant: 'primary',
@@ -67,7 +68,7 @@ const AccionesTrabajo = ({ trabajo, acciones, user, setEditTrabajo, setModalEdit
       onClick: handleAsignarFecha,
     },
     {
-      roles: [1, 3],
+      roles: permisos.ROLES_CALIFICACION_TRABAJOS,
       permiso: 'calificar',
       icono: MdChecklist,
       variant: 'primary',
@@ -76,10 +77,11 @@ const AccionesTrabajo = ({ trabajo, acciones, user, setEditTrabajo, setModalEdit
     },
   ];
 
+
   return (
     <div className="flex justify-end gap-4">
       {accionesObjs.map(({ roles, permiso, icono, variant, tooltip, onClick }) =>
-        roles.some((role) => user.roles.includes(role)) && acciones.includes(permiso) ? (
+        roles.some((role) => user.roles.includes(role)) && permisosAcciones.includes(permiso) ? (
           <BotonAccion
             key={permiso}
             onClick={() => onClick(trabajo)}

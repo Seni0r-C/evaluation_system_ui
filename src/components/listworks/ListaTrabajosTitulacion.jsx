@@ -3,9 +3,9 @@ import EstadoTrabajo from './EstadoTrabajo';
 import AccionesTrabajo from './AccionesTrabajo';
 import { capitalizeWords } from '../../utils/constants';
 
-const ListaTrabajosTitulacion = ({ trabajos, acciones, user }) => {
+const ListaTrabajosTitulacion = ({ trabajos,  permisosAcciones, user }) => {
     const colnBase = ['Título', 'Carrera', 'Archivo', 'Modalidad', 'Estado'];
-    const colnames = acciones?.length > 0 ? [...colnBase, 'Acciones'] : colnBase;
+    const colnames = permisosAcciones?.length > 0 ? [...colnBase, 'Acciones'] : colnBase;
     return (
         <table className="min-w-full table-auto border-collapse border border-gray-200 shadow-md rounded-lg">
             <thead>
@@ -37,9 +37,9 @@ const ListaTrabajosTitulacion = ({ trabajos, acciones, user }) => {
                             <td className="px-6 py-4">
                                 <EstadoTrabajo estado={trabajo.estado} />
                             </td>
-                            {acciones?.length > 0 && (
+                            {permisosAcciones?.length > 0 && (
                                 <td className="px-6 py-4">
-                                    <AccionesTrabajo trabajo={trabajo} acciones={acciones} user={user} />
+                                    <AccionesTrabajo trabajo={trabajo} permisosAcciones={permisosAcciones} user={user} />
                                 </td>
                             )}
                         </tr>

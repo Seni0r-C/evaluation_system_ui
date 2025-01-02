@@ -3,7 +3,8 @@ import { FaListCheck } from "react-icons/fa6";
 import { GrDocumentUpload } from "react-icons/gr";
 import { HiDocumentSearch } from "react-icons/hi";
 import { MdOutlineChromeReaderMode } from "react-icons/md";
-import { TODOS, ADMIN, VICEDECANO, TRIBUNAL, TUTOR, SECRETARIA, ESTUDIANTE, TODOS_MENOS_ESTUDIANTE } from "../utils/roles";
+import { TODOS } from "../utils/roles";
+import { permisos } from "../utils/permisos";
 
 export const API_URL = "http://localhost:3000";
 
@@ -16,33 +17,25 @@ export function capitalizeWords(str) {
     return str.replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
-export const menuData = [    
+export const menuData = [
     {
         name: 'Inicio',
         href: RutaRaiz,
         roles: [TODOS], // Disponible para todos los roles
         subOptions: [],
         icon: <FaHome />
-    },    
+    },
     {
         name: 'Modalidades de Titulación',
         href: '/modalidades',
-        roles: [
-            ADMIN,
-            VICEDECANO,
-            SECRETARIA
-        ], 
+        roles: permisos.ROLES_EDICION_MODALIDADES,
         subOptions: [],
         icon: <MdOutlineChromeReaderMode />
     },
     {
         name: 'Items de revista',
         href: '/items-revista',
-        roles: [
-            ADMIN,
-            VICEDECANO,
-            SECRETARIA
-        ], 
+        roles: permisos.ROLES_EDICION_ITEMS_REVISTA,
         subOptions: [],
         icon: <FaListCheck />
 
@@ -50,11 +43,7 @@ export const menuData = [
     {
         name: 'Items de rúbrica',
         href: '/items-rubrica',
-        roles: [
-            ADMIN,
-            VICEDECANO,
-            SECRETARIA
-        ], 
+        roles: permisos.ROLES_EDICION_ITEMS_RUBRICA,
         subOptions: [],
         icon: <FaListCheck />
 
@@ -62,31 +51,31 @@ export const menuData = [
     {
         name: 'Asignación Tribunal',
         href: '/asignacion-de-tribunal',
-        roles: [ADMIN, VICEDECANO], // Disponible solo para el rol 1 (Administrador)
+        roles: permisos.ROLES_ASIGNACION_TRIBUNAL, // Disponible solo para el rol 1 (Administrador)
         subOptions: [],
         icon: <FaUsers />
     },
     {
         name: 'Documento calificación',
         href: '/generacion-de-documento',
-        roles: [ADMIN, VICEDECANO, SECRETARIA], // Disponible solo para el rol 1 (Administrador)
+        roles: permisos.ROLES_GENERACION_DOCUMENTO_CALIFICACION, // Disponible solo para el rol 1 (Administrador)
         subOptions: [],
         icon: <FaFileAlt />
     },
     {
         name: 'Registro Trabajo',
         href: '/registro-proyecto-titulacion',
-        roles: [ADMIN, VICEDECANO, TUTOR], // Disponible solo para el rol 1 (Administrador)
+        roles: permisos.ROLES_REGISTRO_TRABAJO, // Disponible solo para el rol 1 (Administrador)
         subOptions: [],
         icon: <GrDocumentUpload />
     },
     {
         name: 'Calificación Trabajos',
         href: '/calificacion-de-trabajo-titulacion',
-        roles: [ADMIN, VICEDECANO], // Disponible solo para el rol 1 (Administrador)
+        roles: permisos.ROLES_CALIFICACION_TRABAJOS, // Disponible solo para el rol 1 (Administrador)
         subOptions: [],
         icon: <GrDocumentUpload />
-    },  
+    },
 ];
 // export const menuData = [
 //     {
@@ -160,7 +149,7 @@ export const menuData = [
 //         roles: [1, 2], // Disponible solo para el rol 1 (Administrador)
 //         subOptions: [],
 //         icon: <GrDocumentUpload />
-//     },  
+//     },
 // ];
 
 // export const menuData = [
