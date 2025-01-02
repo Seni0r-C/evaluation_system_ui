@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-const InicioNormal = () => {
+const InicioAdmin = () => {
     return (
         <div className="p-6 space-y-6">
             {/* Título de bienvenida */}
@@ -35,4 +35,4 @@ const InicioNormal = () => {
     );
 };
 
-export default InicioNormal;
+export default InicioAdmin;

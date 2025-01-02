@@ -3,7 +3,7 @@ import { FaListCheck } from "react-icons/fa6";
 import { GrDocumentUpload } from "react-icons/gr";
 import { HiDocumentSearch } from "react-icons/hi";
 import { MdOutlineChromeReaderMode } from "react-icons/md";
-import { ADMIN, VICEDECANO, TRIBUNAL, SECRETARIA, ESTUDIANTE, TODOS_MENOS_ESTUDIANTE } from "../utils/roles";
+import { TODOS, ADMIN, VICEDECANO, TRIBUNAL, TUTOR, SECRETARIA, ESTUDIANTE, TODOS_MENOS_ESTUDIANTE } from "../utils/roles";
 
 export const API_URL = "http://localhost:3000";
 
@@ -20,17 +20,10 @@ export const menuData = [
     {
         name: 'Inicio',
         href: RutaRaiz,
-        roles: TODOS_MENOS_ESTUDIANTE, // Disponible para todos los roles
+        roles: [TODOS], // Disponible para todos los roles
         subOptions: [],
         icon: <FaHome />
-    },
-    {
-        name: 'Inicio',
-        href: RutaRaiz,
-        roles: [ESTUDIANTE], // Disponible para todos los roles
-        subOptions: [],
-        icon: <FaHome />
-    },
+    },    
     {
         name: 'Modalidades de Titulación',
         href: '/modalidades',
@@ -69,28 +62,28 @@ export const menuData = [
     {
         name: 'Asignación Tribunal',
         href: '/asignacion-de-tribunal',
-        roles: [1, VICEDECANO], // Disponible solo para el rol 1 (Administrador)
+        roles: [ADMIN, VICEDECANO], // Disponible solo para el rol 1 (Administrador)
         subOptions: [],
         icon: <FaUsers />
     },
     {
         name: 'Documento calificación',
         href: '/generacion-de-documento',
-        roles: [1, VICEDECANO, SECRETARIA], // Disponible solo para el rol 1 (Administrador)
+        roles: [ADMIN, VICEDECANO, SECRETARIA], // Disponible solo para el rol 1 (Administrador)
         subOptions: [],
         icon: <FaFileAlt />
     },
     {
         name: 'Registro Trabajo',
         href: '/registro-proyecto-titulacion',
-        roles: [1, 2], // Disponible solo para el rol 1 (Administrador)
+        roles: [ADMIN, VICEDECANO, TUTOR], // Disponible solo para el rol 1 (Administrador)
         subOptions: [],
         icon: <GrDocumentUpload />
     },
     {
         name: 'Calificación Trabajos',
         href: '/calificacion-de-trabajo-titulacion',
-        roles: [1, 2], // Disponible solo para el rol 1 (Administrador)
+        roles: [ADMIN, VICEDECANO], // Disponible solo para el rol 1 (Administrador)
         subOptions: [],
         icon: <GrDocumentUpload />
     },  

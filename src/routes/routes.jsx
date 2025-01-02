@@ -14,7 +14,7 @@ import CrearTrabajoTitulacionFormulario from '../pages/TrabajoTitulacionCrear';
 import TrabajoTitulacionListar from '../pages/TrabajoTitulacionListar';
 import UserProfile from '../pages/Perfil';
 import Inicio from '../pages/Inicio';
-import Inicios from '../pages/Inicios';
+import Home from '../pages/Home';
 import CalendarioEventos from '../pages/Calendario';
 import CustomTrabajoTitulacionListar from '../components/CustomTrabajoTitulacionListar';
 
@@ -41,7 +41,7 @@ const routes = [
       <ErrorBoundary>
         <ProtectedRoute>
           <Layout>
-            <Inicios />
+            <Home />
           </Layout>
         </ProtectedRoute>
       </ErrorBoundary>
