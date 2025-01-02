@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import UserContext from "../context/UserContext";
 import logo from "../assets/logo_inicio.png";
 import { useNavigate } from "react-router-dom";
 import LoadingScreen from "../components/LoadingScreen";
@@ -16,6 +17,7 @@ const Login = () => {
     const [errorMessage, setErrorMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [showMessage, setShowMessage] = useState(false);
+    const { updateUser } = useContext(UserContext);
     const icon = "error";
 
     const navigate = useNavigate();
@@ -51,14 +53,16 @@ const Login = () => {
                 );
 
                 if (info.data.exito == true) {
+                    // Marcar como autenticado
+                    setIsAuthenticated(true);
                     // Guardar el nombre del usuario en localStorage
-                    localStorage.setItem('userInfo', JSON.stringify(info.data.datos));
+                    updateUser(info.data.datos);
+                    // Navegar a la página principal
+                    navigate(RutaRaiz);
+                } else {
+                    const msg = info?.data?.mensaje;
+                    alert('Error al iniciar sesión'+(msg??false?": "+msg:''));
                 }
-
-                // Marcar como autenticado
-                setIsAuthenticated(true);
-                // Navegar a la página principal
-                navigate(RutaRaiz);
             } else {
                 // Manejar errores del servidor
                 console.error(data.mensaje);

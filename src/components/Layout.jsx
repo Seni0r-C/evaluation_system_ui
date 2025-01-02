@@ -28,6 +28,7 @@ const Layout = ({ children }) => {
 
     // Filtrar opciones del menú basadas en el rol del usuario
     useEffect(() => {
+        // alert(roles);
         if (roles) {
             const userMenu = menuData.filter(option =>
                 option.roles.some(role => roles.includes(role) || role === 0)
@@ -72,7 +73,7 @@ const Layout = ({ children }) => {
     return (
         <div className="min-h-screen flex flex-col bg-gray-100 text-gray-800">
             {/* Barra superior */}
-            <header className="bg-[#0e9343] text-gray-800 p-2 flex justify-between items-center shadow-md z-50 fixed w-full top-0 left-0">
+            <header className="bg-[#0e9343] text-gray-800 flex justify-between items-center shadow-md z-50 fixed w-full top-0 left-0">
                 <div className="flex items-center space-x-4">
                     <button
                         onClick={toggleSidebar}
@@ -90,22 +91,43 @@ const Layout = ({ children }) => {
 
                 </div>
                 <div className="relative" ref={dropdownRef}>
-                    <div
+                {rolesAsStr?(<div
                         onClick={toggleDropdown}
                         className="cursor-pointer flex items-center md:space-x-4 mr-8 rounded hover:bg-green-800 px-4 py-1 transition-all"
                     >
-                        <span className="font-semibold text-xs md:text-base text-right text-white">
-                            {userName}
-                        </span>
-                        <span className="font-semibold text-xs md:text-base text-right text-gray-200">
-                            {rolesAsStr}
-                        </span>
+                        <div className="text-right">
+                            <span className="block font-semibold text-xs md:text-base text-white">
+                                {userName}
+                            </span>
+                            <span className="block font-semibold text-xs md:text-sm text-gray-200">
+                                {rolesAsStr}
+                            </span>
+                        </div>
                         <img
                             src={userPhoto}
                             alt="Foto de perfil"
-                            className="rounded-full w-10 h-10 bg-blue-500 flex justify-center items-center text-gray-800 font-semibold border-2 border-green-600 object-cover"
+                            className="rounded-full w-16 h-16 bg-blue-500 flex justify-center items-center text-gray-800 font-semibold border-2 border-green-600 object-cover"
                         />
-                    </div>
+                    </div>):
+                    (
+                        <div
+                            onClick={toggleDropdown}
+                            className="cursor-pointer flex items-center md:space-x-4 mr-8 rounded hover:bg-green-800 px-4 py-1 transition-all"
+                        >
+                            <span className="font-semibold text-xs md:text-base text-right text-white">
+                                {userName}
+                            </span>
+                            <span className="font-semibold text-xs md:text-base text-right text-gray-200">
+                                {rolesAsStr}
+                            </span>
+                            <img
+                                src={userPhoto}
+                                alt="Foto de perfil"
+                                className="rounded-full w-10 h-10 bg-blue-500 flex justify-center items-center text-gray-800 font-semibold border-2 border-green-600 object-cover"
+                            />
+                        </div>
+                    )}
+
                     {isDropdownVisible && (
                         <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg py-2">
                             <button
