@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { permisos } from '../utils/permisos';
 import axiosInstance from '../services/axiosConfig';
 import { obtenerCarreras } from '../services/carreraService';
 import { obtenerModalidadesPorCarrera } from '../services/modalidadService';
@@ -37,7 +38,7 @@ const CustomTrabajoTitulacionListar = ({permisosAcciones, includeState=false}) =
   useEffect(() => {
     if (info) {
       // Lista de roles a verificar
-      const requiredRoles = [1, 2];
+      const requiredRoles = permisos.ROLES_VER_TODOS_LOS_REGISTROS_DE_TRABAJOS;
 
       // Verificar si el usuario tiene al menos uno de los roles
       const hasRole = user.roles.some(role => requiredRoles.includes(role));
