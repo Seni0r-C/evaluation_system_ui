@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { IoMdClose, IoMdMenu, IoIosLogOut } from "react-icons/io";
 import { FaChevronDown, FaChevronUp, FaUserCircle } from "react-icons/fa";
@@ -7,9 +7,12 @@ import logo from '../assets/logo_bar_claro.webp';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { menuData, RutaRaiz } from '../utils/constants';
+import UserContext from '../context/UserContext';
+
 
 const Layout = ({ children }) => {
     const location = useLocation();
+    const { userName, userPhoto, rolesAsStr, roles } = useContext(UserContext);
     // Lee el estado inicial de localStorage
     const [isSidebarVisible, setSidebarVisible] = useState(() => {
         const savedState = localStorage.getItem('isSidebarVisible');
@@ -17,34 +20,15 @@ const Layout = ({ children }) => {
     });
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
     const [openMenuIndex, setOpenMenuIndex] = useState(null);
-    const [nombreUsuario, setNombreUsuario] = useState('Usuario');
     const navigate = useNavigate();
     const { setIsAuthenticated } = useAuth();
     const [filteredMenu, setFilteredMenu] = useState([]);
-    const [userPhoto, setUserPhoto] = useState(null);
 
     const dropdownRef = useRef(null);
 
-
+    // Filtrar opciones del menú basadas en el rol del usuario
     useEffect(() => {
-        // Obtiene información del usuario desde localStorage
-        const userInfo = localStorage.getItem('userInfo');
-        if (userInfo) {
-            const { nombre, roles, fotoBase64 } = JSON.parse(userInfo);
-
-            setUserPhoto(`data:image/jpeg;base64,${fotoBase64}`);
-
-            // Dividir el nombre en partes
-            const partesNombre = nombre.split(' ');
-
-            // Obtener el primer apellido y el primer nombre
-            const primerApellido = partesNombre[0];
-            const primerNombre = partesNombre[2];
-
-            // Configurar el nombre del usuario
-            setNombreUsuario(`${primerApellido} ${primerNombre}`);
-
-            // Filtrar opciones del menú basadas en el rol del usuario
+        if (roles) {
             const userMenu = menuData.filter(option =>
                 option.roles.some(role => roles.includes(role) || role === 0)
             );
@@ -111,7 +95,10 @@ const Layout = ({ children }) => {
                         className="cursor-pointer flex items-center md:space-x-4 mr-8 rounded hover:bg-green-800 px-4 py-1 transition-all"
                     >
                         <span className="font-semibold text-xs md:text-base text-right text-white">
-                            {nombreUsuario.split(' ').map(palabra => palabra.charAt(0).toUpperCase() + palabra.slice(1).toLowerCase()).join(' ')}
+                            {userName}
+                        </span>
+                        <span className="font-semibold text-xs md:text-base text-right text-gray-200">
+                            {rolesAsStr}
                         </span>
                         <img
                             src={userPhoto}

@@ -12,23 +12,14 @@ const InicioNormal = () => {
             {/* Panel de acciones */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {/* Tesis por calificar */}
-                <div className="bg-white shadow-md rounded-lg p-4">
+                <div className="bg-blue-200 shadow-md rounded-lg p-4">
                     <h2 className="text-xl font-semibold text-gray-700">Tesis por calificar</h2>
                     <p className="text-gray-600 mt-2">Actualmente tienes <span className="font-bold text-blue-500">3 tesis</span> asignadas para calificar.</p>
                     <Link to="/trabajos-titulacion" className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 inline-block">Ver detalles</Link>
                 </div>
 
-                {/* Calendario de eventos */}
-                <div className="bg-white shadow-md rounded-lg p-4">
-                    <h2 className="text-xl font-semibold text-gray-700">Calendario de eventos</h2>
-                    <p className="text-gray-600 mt-2">Consulta las fechas importantes relacionadas con tus asignaciones.</p>
-                    <Link to="/calendario" className="mt-4 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 text-center inline-block">
-                        Ir al calendario
-                    </Link>
-                </div>
-
                 {/* Buscador de trabajos */}
-                <div className="bg-white shadow-md rounded-lg p-4">
+                <div className="bg-yellow-200 shadow-md rounded-lg p-4">
                     <h2 className="text-xl font-semibold text-gray-700">Buscador de trabajos</h2>
                     <p className="text-gray-600 mt-2">Busca y consulta detalles de trabajos de titulación.</p>
                     <Link to="/trabajos-titulacion" className="mt-4 bg-yellow-500 text-white py-2 px-4 rounded hover:bg-yellow-600 inline-block">Buscar trabajos</Link>
