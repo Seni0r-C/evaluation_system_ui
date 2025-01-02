@@ -14,6 +14,7 @@ import CrearTrabajoTitulacionFormulario from '../pages/TrabajoTitulacionCrear';
 import TrabajoTitulacionListar from '../pages/TrabajoTitulacionListar';
 import UserProfile from '../pages/Perfil';
 import Inicio from '../pages/Inicio';
+import Inicios from '../pages/Inicios';
 import CalendarioEventos from '../pages/Calendario';
 import CustomTrabajoTitulacionListar from '../components/CustomTrabajoTitulacionListar';
 
@@ -40,7 +41,7 @@ const routes = [
       <ErrorBoundary>
         <ProtectedRoute>
           <Layout>
-            <Inicio />
+            <Inicios />
           </Layout>
         </ProtectedRoute>
       </ErrorBoundary>
@@ -125,6 +126,18 @@ const routes = [
         <ProtectedRoute>
           <Layout>
             <CustomTrabajoTitulacionListar permisosAcciones={['calificar']} />
+          </Layout>
+        </ProtectedRoute>
+      </ErrorBoundary>
+    ),
+  },
+  {
+    path: '/trabajos-titulacion-realizados',
+    element: (
+      <ErrorBoundary>
+        <ProtectedRoute>
+          <Layout>
+            <CustomTrabajoTitulacionListar permisosAcciones={[]} />
           </Layout>
         </ProtectedRoute>
       </ErrorBoundary>
