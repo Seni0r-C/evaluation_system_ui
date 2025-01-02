@@ -12,10 +12,10 @@ const InicioEstudiante = () => {
             {/* Panel de acciones */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {/* Buscador de trabajos */}
-                <div className="bg-white shadow-md rounded-lg p-4">
-                    <h2 className="text-xl font-semibold text-gray-700">Buscar trabajos de titulación</h2>
+                <div className="bg-yellow-200 shadow-lg rounded-md p-5">
+                    <h2 className="text-xl font-semibold text-gray-700">Ver trabajos de titulación</h2>
                     <p className="text-gray-600 mt-2">Busca y consulta detalles de trabajos de titulación realizados.</p>
-                    <Link to="/trabajos-titulacion-realizados" className="mt-4 bg-yellow-500 text-white py-2 px-4 rounded hover:bg-yellow-600 inline-block">Buscar</Link>
+                    <Link to="/trabajos-titulacion-realizados" className="mt-4 bg-yellow-500 text-white py-2 px-4 rounded hover:bg-yellow-600 inline-block">Explorar</Link>
                 </div>
             </div>
         </div>
