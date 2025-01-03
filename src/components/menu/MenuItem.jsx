@@ -15,8 +15,8 @@ const MenuItem = ({ item, isOpen, toggle }) => {
                 // Opción principal con href
                 <Link
                     to={item.href}
-                    className={`flex items-center py-2 px-4 rounded-md transition-colors flex-1 justify-start gap-4 hover:scale-105 hover:shadow-md ${
-                        isSelected ? 'bg-gray-500 text-white' : ''
+                    className={`flex items-center py-2 px-4 rounded-md transition-colors flex-1 justify-start gap-4 hover:scale-105 hover:shadow-md hover:bg-gray-200 ${
+                        isSelected ? 'hover:bg-gray-700 bg-gray-700 text-white' : ''
                     }`}
                 >
                     {item.icon}{item.name}
@@ -24,8 +24,8 @@ const MenuItem = ({ item, isOpen, toggle }) => {
             ) : (
                 // Opción principal sin href (con subopciones)
                 <div
-                    className={`flex items-center py-2 px-4 rounded-md cursor-pointer justify-start gap-4 hover:scale-105 hover:shadow-md transition-transform ${
-                        isOpen ? 'bg-gray-100' : ''
+                    className={`flex items-center py-2 px-4 rounded-md cursor-pointer justify-start gap-4 hover:scale-105 hover:shadow-md hover:bg-gray-200 transition-transform ${
+                        isOpen ? 'bg-gray-200' : ''
                     }`}
                     onClick={toggle}
                 >

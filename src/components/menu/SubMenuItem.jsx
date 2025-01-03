@@ -10,8 +10,8 @@ const SubMenuItem = ({ subItem }) => {
     return (
         <Link
             to={subItem.href}
-            className={`block p-2 rounded-md transition-colors  hover:scale-105 hover:shadow-md ${
-                isSelected ? 'bg-gray-500 text-white' : ''
+            className={`mt-2 text-sm block p-2 rounded-md transition-colors  hover:scale-105 hover:shadow-md hover:bg-gray-200 ${
+                isSelected ? 'hover:bg-gray-700 bg-gray-700 text-white' : ''
             }`}
         >
             {subItem.name}
