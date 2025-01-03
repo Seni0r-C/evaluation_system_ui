@@ -8,7 +8,7 @@ const VALIDADOR_DE_CONGRESO = 5;
 const VICEDECANO = 6;
 const TRIBUNAL = 7;
 // const TUTOR = 8;
-const TUTOR = 3;
+const TUTOR = DOCENTE;
 const COTUTOR = 9;
 const TODOS_MENOS_ESTUDIANTE = [ADMINISTRADOR, VICEDECANO, TRIBUNAL, SECRETARIA, TUTOR, COTUTOR];
 
@@ -18,7 +18,7 @@ const MAP_ROLE_STR = {
   [DOCENTE]: 'Docente',
   [ESTUDIANTE]: 'Estudiante',
   [VALIDADOR_DE_CONGRESO]: 'Validador de Congreso',
-  [VICEDECANO]: 'Vicedecano',
+  [VICEDECANO]: 'Vicedecano/a',
   [TRIBUNAL]: 'Tribunal',
   [TUTOR]: 'Tutor',
   [COTUTOR]: 'Cotutor',
