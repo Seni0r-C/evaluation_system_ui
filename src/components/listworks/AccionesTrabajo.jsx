@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import BotonAccion from '../common/BotonAccion';
 import { FaCalendarDay, FaEdit, FaFilePdf, FaEye } from 'react-icons/fa';
 import { MdChecklist, MdGroupAdd } from 'react-icons/md';
