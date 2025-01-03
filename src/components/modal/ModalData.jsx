@@ -1,7 +1,7 @@
 import { useState } from "react";
 import ModalContent from "./ModalContent";
 import { ModalHeader, ModalFooter } from "./ModalTopHeader";
-import { transformData } from "../../utils/render";
+import { transformData, filterKeys } from "../../utils/render";
 
 
 const DynamicModal = ({ isOpen, onClose, data, title }) => {
@@ -9,7 +9,7 @@ const DynamicModal = ({ isOpen, onClose, data, title }) => {
 
     if (!isOpen) return null;
     
-    const newData = transformData(data);
+    const newData = transformData(filterKeys(data));
 
     return (
         <div className="fixed inset-0 z-50 bg-gray-800 bg-opacity-75 flex items-center justify-center">
