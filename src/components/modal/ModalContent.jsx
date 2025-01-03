@@ -19,7 +19,7 @@ const ModalContent = ({ data, nestedData, onViewNestedData }) => {
         }
     };
 
-    const currentData = nestedData || data;
+    const currentData = nestedData || data || [];
 
     return (
         <div className="p-6 space-y-4 overflow-y-auto max-h-[70vh]">

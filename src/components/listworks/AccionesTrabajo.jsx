@@ -1,15 +1,24 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import BotonAccion from '../common/BotonAccion';
 import { FaCalendarDay, FaEdit, FaFilePdf, FaEye } from 'react-icons/fa';
 import { MdChecklist, MdGroupAdd } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { permisos } from '../../utils/permisos';
 import DynamicModal from '../modal/ModalData';
+import {obtenerUnTrabajo} from '../../services/trabajosTitulacion';
 
 const AccionesTrabajo = ({ trabajo, permisosAcciones, user, setEditTrabajo, setModalEditTrabajo, setAsignarFecha, setModalAsignarFecha }) => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(null);
   const [trabajoSelected, setTrabajoSelected] = useState(null);
+
+  const fectchTrabajoFull = (trabajo) => {
+    if(trabajo?.id??false){
+      // alert(JSON.stringify(trabajo, null, 2));
+      obtenerUnTrabajo(setTrabajoSelected, trabajo.id);
+    }
+  };
+  
   // Handlers
   const handleEdit = (trabajo) => {
     setEditTrabajo(trabajo);
@@ -26,7 +35,7 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user, setEditTrabajo, setM
   };
 
   const handleAsignarTribunal = (trabajo) => {
-    alert(JSON.stringify(trabajo, null, 2));
+    alert(JSON.stringify(trabajo, null, 2));    
     // navigate('/asignar-tribunal', { state: { trabajo } });
   };
 
@@ -36,10 +45,8 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user, setEditTrabajo, setM
   };
 
   const handleVerDetalles = (trabajo) => {
-    // alert(JSON.stringify(trabajo, null, 2));
-    setTrabajoSelected(trabajo);
+    fectchTrabajoFull(trabajo);
     setIsOpen(true);
-    // navigate('/asignar-tribunal', { state: { trabajo } });
   };
 
   // Definición de acciones
