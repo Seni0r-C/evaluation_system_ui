@@ -1,13 +1,15 @@
-// import React, { useEffect } from 'react';
+import { useState } from 'react';
 import BotonAccion from '../common/BotonAccion';
-import { FaCalendarDay, FaEdit, FaFilePdf } from 'react-icons/fa';
+import { FaCalendarDay, FaEdit, FaFilePdf, FaEye } from 'react-icons/fa';
 import { MdChecklist, MdGroupAdd } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { permisos } from '../../utils/permisos';
+import DynamicModal from '../modal/ModalData';
 
 const AccionesTrabajo = ({ trabajo, permisosAcciones, user, setEditTrabajo, setModalEditTrabajo, setAsignarFecha, setModalAsignarFecha }) => {
   const navigate = useNavigate();
-
+  const [isOpen, setIsOpen] = useState(null);
+  const [trabajoSelected, setTrabajoSelected] = useState(null);
   // Handlers
   const handleEdit = (trabajo) => {
     setEditTrabajo(trabajo);
@@ -33,8 +35,23 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user, setEditTrabajo, setM
     // navigate('/asignar-tribunal', { state: { trabajo } });
   };
 
+  const handleVerDetalles = (trabajo) => {
+    // alert(JSON.stringify(trabajo, null, 2));
+    setTrabajoSelected(trabajo);
+    setIsOpen(true);
+    // navigate('/asignar-tribunal', { state: { trabajo } });
+  };
+
   // Definición de acciones
   const accionesObjs = [
+    {
+      roles: permisos.VER_DETALLES_TRABAJO_TITULACION,
+      permiso: 'detallesTrabajo',
+      icono: FaEye,      
+      variant: 'teal',
+      tooltip: 'Ver Detalles',
+      onClick: handleVerDetalles,
+    },
     {
       roles: permisos.ROLES_ASIGNACION_TRIBUNAL,
       permiso: 'asignarTribunal',
@@ -75,8 +92,7 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user, setEditTrabajo, setM
       tooltip: 'Calificar',
       onClick: handleCalificar,
     },
-  ];
-
+  ];  
 
   return (
     <div className="flex justify-end gap-4">
@@ -91,7 +107,14 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user, setEditTrabajo, setM
           />
         ) : null
       )}
+      <DynamicModal 
+      isOpen={isOpen} 
+      onClose={() => setIsOpen(false)} 
+      data={trabajoSelected}
+      title={"Detalles del Trabajo de Titulación"}
+        />
     </div>
+    
   );
 };
 

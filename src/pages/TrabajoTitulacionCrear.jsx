@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import BuscadorYSelectorDeUsuarios from '../components/BuscadorYSelectorDeUsuarios';
 import { buscarUsuarios } from '../services/usuarioService';
 import { obtenerCarreras } from '../services/carreraService';
@@ -7,9 +7,11 @@ import { obtenerModalidadesPorCarrera } from '../services/modalidadService';
 import axiosInstance from '../services/axiosConfig';
 import MessageDialog from '../components/MessageDialog';
 import InputField from '../components/common/InputField';
+import UserContext from '../context/UserContext';
 
-const TrabajoTitulacionCrear = () => {
+const TrabajoTitulacionCrear = ({ iamTutor = true }) => {
   // Datos de la base de datos
+  const { user } = useContext(UserContext);
   const [carreras, setCarreras] = useState([]);
   const [modalidades, setModalidades] = useState([]);
   const [tutores, setTutores] = useState([]);
@@ -19,7 +21,7 @@ const TrabajoTitulacionCrear = () => {
   // Datos del formulario
   const [selectedCarrera, setSelectedCarrera] = useState('');
   const [selectedModalidad, setSelectedModalidad] = useState('');
-  const [selectedTutor, setSelectedTutor] = useState(null);
+  const [selectedTutor, setSelectedTutor] = useState(iamTutor ? user : null);
   const [selectedCotutor, setSelectedCotutor] = useState(null);
   const [selectedEstudiantes, setSelectedEstudiantes] = useState([]);
   const [titulo, setTitulo] = useState('');
@@ -295,7 +297,7 @@ const TrabajoTitulacionCrear = () => {
             {/* Columna 2 */}
             <div >
               {/* Buscar Tutor */}
-              <BuscadorYSelectorDeUsuarios
+              {!iamTutor && (<BuscadorYSelectorDeUsuarios
                 label="Buscar Tutor"
                 placeholder="Ingrese el nombre del tutor"
                 searchValue={tutorSearch}
@@ -311,7 +313,7 @@ const TrabajoTitulacionCrear = () => {
                 highlightedIndex={highlightedIndexTutor}
                 handleBuscar={buscarUsuariosConRol}
                 required={true}
-              />
+              />)}
 
               {/* Buscar Co-tutor */}
               <BuscadorYSelectorDeUsuarios
