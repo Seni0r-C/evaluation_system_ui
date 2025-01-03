@@ -17,6 +17,28 @@ export function capitalizeWords(str) {
     return str.replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
+// {
+//     name: 'Modalidades de Titulación',
+//     href: '/modalidades',
+//     roles: permisos.ROLES_EDICION_MODALIDADES,
+//     subOptions: [],
+//     icon: <MdOutlineChromeReaderMode />
+// },
+// {
+//     name: 'Items de revista',
+//     href: '/items-revista',
+//     roles: permisos.ROLES_EDICION_ITEMS_REVISTA,
+//     subOptions: [],
+//     icon: <FaListCheck />
+// },
+// {
+//     name: 'Items de rúbrica',
+//     href: '/items-rubrica',
+//     roles: permisos.ROLES_EDICION_ITEMS_RUBRICA,
+//     subOptions: [],
+//     icon: <FaListCheck />
+// },
+
 export const menuData = [
     {
         name: 'Inicio',
@@ -26,25 +48,25 @@ export const menuData = [
         icon: <FaHome />
     },
     {
-        name: 'Modalidades de Titulación',
-        href: '/modalidades',
-        roles: permisos.ROLES_EDICION_MODALIDADES,
-        subOptions: [],
+        name: 'Items y Modalidades',
+        roles: [TODOS], // Disponible para todos los roles
+        subOptions: [
+            {
+                name: 'Modalidades de Titulación',
+                href: '/modalidades',
+                roles: permisos.ROLES_EDICION_MODALIDADES,
+                subOptions: [],
+                icon: <MdOutlineChromeReaderMode />
+            },
+            {
+                name: 'Items de revista',
+                href: '/items-revista',
+                roles: permisos.ROLES_EDICION_ITEMS_REVISTA,
+                subOptions: [],
+                icon: <FaListCheck />
+            },
+        ],
         icon: <MdOutlineChromeReaderMode />
-    },
-    {
-        name: 'Items de revista',
-        href: '/items-revista',
-        roles: permisos.ROLES_EDICION_ITEMS_REVISTA,
-        subOptions: [],
-        icon: <FaListCheck />
-    },
-    {
-        name: 'Items de rúbrica',
-        href: '/items-rubrica',
-        roles: permisos.ROLES_EDICION_ITEMS_RUBRICA,
-        subOptions: [],
-        icon: <FaListCheck />
     },
     {
         name: 'Registro Trabajo',
