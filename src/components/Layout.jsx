@@ -9,6 +9,7 @@ import { useAuth } from '../hooks/useAuth';
 import { menuData, RutaRaiz } from '../utils/constants';
 import { TODOS } from '../utils/roles';
 import UserContext from '../context/UserContext';
+import SidebarMenu from './menu/SidebarMenu';
 
 
 const Layout = ({ children }) => {
@@ -27,16 +28,6 @@ const Layout = ({ children }) => {
 
     const dropdownRef = useRef(null);
 
-    // Filtrar opciones del menú basadas en el rol del usuario
-    // useEffect(() => {
-    //     if (roles) {
-    //         const userMenu = menuData.filter(option =>
-    //             option.roles.some(role => roles.includes(role) || role === 0)
-    //         );
-    //         setFilteredMenu(userMenu);
-    //     }
-    // }, []);
-
     useEffect(() => {
         if (roles) {
             const userMenu = menuData
@@ -51,12 +42,12 @@ const Layout = ({ children }) => {
                     ),
                 }))
                 .filter(option => option.href || option.subOptions.length > 0); // Omitir opciones sin href ni subOptions
-    
+
             setFilteredMenu(userMenu);
         }
     }, [roles]);
-    
-    
+
+
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -112,7 +103,7 @@ const Layout = ({ children }) => {
 
                 </div>
                 <div className="relative" ref={dropdownRef}>
-                {rolesAsStr?(<div
+                    {rolesAsStr ? (<div
                         onClick={toggleDropdown}
                         className="cursor-pointer flex items-center md:space-x-4 mr-8 rounded hover:bg-green-800 px-4 py-1 transition-all"
                     >
@@ -129,25 +120,25 @@ const Layout = ({ children }) => {
                             alt="Foto de perfil"
                             className="rounded-full w-16 h-16 bg-blue-500 flex justify-center items-center text-gray-800 font-semibold border-2 border-green-600 object-cover"
                         />
-                    </div>):
-                    (
-                        <div
-                            onClick={toggleDropdown}
-                            className="cursor-pointer flex items-center md:space-x-4 mr-8 rounded hover:bg-green-800 px-4 py-1 transition-all"
-                        >
-                            <span className="font-semibold text-xs md:text-base text-right text-white">
-                                {userName}
-                            </span>
-                            <span className="font-semibold text-xs md:text-base text-right text-gray-200">
-                                {rolesAsStr}
-                            </span>
-                            <img
-                                src={userPhoto}
-                                alt="Foto de perfil"
-                                className="rounded-full w-10 h-10 bg-blue-500 flex justify-center items-center text-gray-800 font-semibold border-2 border-green-600 object-cover"
-                            />
-                        </div>
-                    )}
+                    </div>) :
+                        (
+                            <div
+                                onClick={toggleDropdown}
+                                className="cursor-pointer flex items-center md:space-x-4 mr-8 rounded hover:bg-green-800 px-4 py-1 transition-all"
+                            >
+                                <span className="font-semibold text-xs md:text-base text-right text-white">
+                                    {userName}
+                                </span>
+                                <span className="font-semibold text-xs md:text-base text-right text-gray-200">
+                                    {rolesAsStr}
+                                </span>
+                                <img
+                                    src={userPhoto}
+                                    alt="Foto de perfil"
+                                    className="rounded-full w-10 h-10 bg-blue-500 flex justify-center items-center text-gray-800 font-semibold border-2 border-green-600 object-cover"
+                                />
+                            </div>
+                        )}
 
                     {isDropdownVisible && (
                         <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg py-2">
@@ -177,53 +168,11 @@ const Layout = ({ children }) => {
                 className={`flex flex-grow overflow-hidden transition-all duration-300 ease-in-out pt-16`}
             >
                 {/* Barra lateral */}
-                < aside
+                <aside
                     className={`bg-gray-100 text-gray-950 py-6 px-2 space-y-6 w-56 h-full fixed transition-transform duration-300 ease-in-out ${isSidebarVisible ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'} border-r-2 border-gray-200`}
                 >
-                   <nav className="space-y-4">
-    {filteredMenu.map((item, index) => (
-        <div key={index}>
-            <Link
-                to={item.href}
-                className={`flex items-center py-2 px-4 rounded-md transition-colors flex-1 justify-start gap-4 ${location.pathname === item.href ? 'bg-gray-300' : 'hover:scale-105 hover:shadow-md'}
-                transition-transform transform active:scale-95`}
-                onClick={() => toggleSubOptions(index)}
-            >
-                {item.icon}{item.name}
-
-                {item.subOptions.length > 0 && (
-                    <span className="ml-2">
-                        {openMenuIndex === index ? (
-                            <FaChevronUp className="h-4 w-4 text-white" />
-                        ) : (
-                            <FaChevronDown className="h-4 w-4 text-white" />
-                        )}
-                    </span>
-                )}
-            </Link>
-
-            {item.subOptions.length > 0 && (
-                <div
-                    className={`ml-4 overflow-hidden transition-all duration-300 ease-in-out ${openMenuIndex === index ? 'max-h-[1000px]' : 'max-h-0'}`}
-                >
-                    <div className="space-y-2">
-                        {item.subOptions.map((subItem, subIndex) => (
-                            <Link
-                                key={subIndex}
-                                to={subItem.href}
-                                className="block p-2 hover:bg-green-500 rounded-md transition-colors"
-                            >
-                                {subItem.name}
-                            </Link>
-                        ))}
-                    </div>
-                </div>
-            )}
-        </div>
-    ))}
-</nav>
-
-                </aside >
+                    <SidebarMenu menuData={menuData} roles={roles} />
+                </aside>
 
                 {/* Contenido principal */}
                 < main
