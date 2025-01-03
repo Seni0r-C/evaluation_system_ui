@@ -3,7 +3,6 @@ const isObject = (variable) => variable && typeof variable === 'object' && !Arra
 const ArrayTable = ({ label, data }) => {
     // Verificamos si los datos son un array
     const isArray = Array.isArray(data);
-
     // Verificamos si los elementos en el array son objetos simples (no array, no funciones, etc.)
     const isSimpleArray = isArray && data.length > 0 && !isObject(data[0]);
 
