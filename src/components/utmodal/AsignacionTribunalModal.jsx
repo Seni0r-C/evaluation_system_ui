@@ -1,68 +1,45 @@
 import { useEffect, useState } from "react";
 import { ModalHeader, ModalFooter } from "../modal/ModalTopHeader";
 import BuscadorDocentes from "../utmcomps/BuscadorDocentes";
-import MessageDialog from "../MessageDialog";
 import { asignarTribunalService, reasignarTribunalService, obtenerTribunalService } from "../../services/tribunalService";
+import { useMessage } from "../../hooks/hooks";
 
 const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
-    if (!isOpen) return null;
-
-    // Mensajes dialog
-    const [message, setMessage] = useState('');
-    const [isOpenDialog, setIsOpenDialog] = useState(false);
-    const [iconType, setIconType] = useState(null);
-
+    const { showWarning, showIfErrorOrWarning, showIfError } = useMessage();
     // Modal
     const [nestedData, setNestedData] = useState(null);
     // Selector
     const [selectedDocentes, setSelectedDocentes] = useState([]);
-
-    
-    const show = (msgData) => {
-        setMessage(msgData.message);
-        setIconType(msgData.typeMsg);
-        setIsOpenDialog(true);
-    };
-
-    const showIfError = (msgData) => {
-        if (msgData.typeMsg === 'error') {
-            showError(msgData.message);
-        }
-    };
-
-    const showWarning = (msg) => {
-        setMessage(msg);
-        setIconType('warning');
-        setIsOpenDialog(true);
-    };
-
-    const showSuccess = (msg) => {
-        setMessage(msg);
-        setIconType('succes');
-        setIsOpenDialog(true);
-    };
-
-    const showError = (msg) => {
-        setMessage(msg);
-        setIconType('error');
-        setIsOpenDialog(true);
-    };
+    const [initialSelectedItems, setInitialSelectedItems] = useState([]);
 
     useEffect(() => {
-        if (isOpen) {
-            const msgData = obtenerTribunalService(setSelectedDocentes, trabajoData?.id);
+        if (trabajoData?.id) {
+            const msgData = obtenerTribunalService((miembros) => {
+                setSelectedDocentes(miembros);
+                setInitialSelectedItems(miembros);
+            }, trabajoData.id);
             showIfError(msgData);
         }
-    }, [isOpen]);
+    }, [isOpen, trabajoData?.id]);
+
+    if (!isOpen) return null;
 
     const onCloseWrapper = () => {
-        if (!selectedDocentes || selectedDocentes.length < 3) {
+        const changeLess = JSON.stringify(selectedDocentes) === JSON.stringify(initialSelectedItems);
+        if (changeLess) {
+            showWarning(`No se ha realizado ningun cambio. \nselectedDocentes:\n${JSON.stringify(selectedDocentes)} \r\ninitialSelectedItems:\n${JSON.stringify(initialSelectedItems)} ${changeLess}`);
+            return;
+        }
+        else if (!selectedDocentes || selectedDocentes.length < 3) {
             showWarning(
                 "Debe seleccionar 3 docentes para asignar el tribunal."
             );
             return;
         }
-        asignarTribunalService(null, trabajoData?.id, selectedDocentes);
+        const msgData = asignarTribunalService(null, trabajoData?.id, selectedDocentes);
+        if (showIfErrorOrWarning(msgData)) {
+            return;
+        }
         onClose();
     };
 
@@ -84,7 +61,6 @@ const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
                     buttonLabel="Asignar"
                 />
             </div>
-            <MessageDialog message={message} isOpen={isOpenDialog} onClose={() => setIsOpenDialog(false)} iconType={iconType} />
         </div>
     );
 };
