@@ -5,20 +5,22 @@ import { MdChecklist, MdGroupAdd } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { permisos } from '../../utils/permisos';
 import DynamicModal from '../modal/ModalData';
-import {obtenerUnTrabajo} from '../../services/trabajosTitulacion';
+import { obtenerUnTrabajo } from '../../services/trabajosTitulacion';
+import AsignacionTribunalModal from '../../pages/asignacionTribunal';
 
 const AccionesTrabajo = ({ trabajo, permisosAcciones, user, setEditTrabajo, setModalEditTrabajo, setAsignarFecha, setModalAsignarFecha }) => {
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(null);
+  const [isOpenVerDetalle, setIsOpenVerDetalle] = useState(false);
+  const [isOpenAsignarTutor, setIsOpenAsignarTutor] = useState(false);
   const [trabajoSelected, setTrabajoSelected] = useState(null);
 
   const fectchTrabajoFull = (trabajo) => {
-    if(trabajo?.id??false){
+    if (trabajo?.id ?? false) {
       // alert(JSON.stringify(trabajo, null, 2));
       obtenerUnTrabajo(setTrabajoSelected, trabajo.id);
     }
   };
-  
+
   // Handlers
   const handleEdit = (trabajo) => {
     setEditTrabajo(trabajo);
@@ -35,18 +37,17 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user, setEditTrabajo, setM
   };
 
   const handleAsignarTribunal = (trabajo) => {
-    alert(JSON.stringify(trabajo, null, 2));    
-    // navigate('/asignar-tribunal', { state: { trabajo } });
+    fectchTrabajoFull(trabajo);
+    setIsOpenAsignarTutor(true);
   };
 
   const handleGenerarReporte = (trabajo) => {
     alert(JSON.stringify(trabajo, null, 2));
-    // navigate('/asignar-tribunal', { state: { trabajo } });
   };
 
   const handleVerDetalles = (trabajo) => {
     fectchTrabajoFull(trabajo);
-    setIsOpen(true);
+    setIsOpenVerDetalle(true);
   };
 
   // Definición de acciones
@@ -54,7 +55,7 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user, setEditTrabajo, setM
     {
       roles: permisos.VER_DETALLES_TRABAJO_TITULACION,
       permiso: 'detallesTrabajo',
-      icono: FaEye,      
+      icono: FaEye,
       variant: 'teal',
       tooltip: 'Ver Detalles',
       onClick: handleVerDetalles,
@@ -62,7 +63,7 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user, setEditTrabajo, setM
     {
       roles: permisos.ROLES_ASIGNACION_TRIBUNAL,
       permiso: 'asignarTribunal',
-      icono: MdGroupAdd,      
+      icono: MdGroupAdd,
       variant: 'purple',
       tooltip: 'Asignar Tribunal',
       onClick: handleAsignarTribunal,
@@ -70,7 +71,7 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user, setEditTrabajo, setM
     {
       roles: permisos.ROLES_GENERACION_DOCUMENTO_CALIFICACION,
       permiso: 'generarReporte',
-      icono: FaFilePdf,      
+      icono: FaFilePdf,
       variant: 'red',
       tooltip: 'Generar Reporte',
       onClick: handleGenerarReporte,
@@ -99,7 +100,7 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user, setEditTrabajo, setM
       tooltip: 'Calificar',
       onClick: handleCalificar,
     },
-  ];  
+  ];
 
   return (
     <div className="flex justify-end gap-4">
@@ -114,14 +115,22 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user, setEditTrabajo, setM
           />
         ) : null
       )}
-      <DynamicModal 
-      isOpen={isOpen} 
-      onClose={() => setIsOpen(false)} 
-      data={trabajoSelected}
-      title={"Detalles del Trabajo de Titulación"}
-        />
+      <DynamicModal
+        isOpen={isOpenVerDetalle}
+        onClose={() => setIsOpenVerDetalle(false)}
+        data={trabajoSelected}
+        title={"Detalles del Trabajo de Titulación"}
+      />
+
+      <AsignacionTribunalModal
+        isOpen={isOpenAsignarTutor}
+        onClose={() => setIsOpenAsignarTutor(false)}
+        // data={trabajoSelected}
+        title={"Asignación de tribunal"}
+      />
+
     </div>
-    
+
   );
 };
 
