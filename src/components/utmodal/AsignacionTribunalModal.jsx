@@ -2,12 +2,14 @@ import { useState } from "react";
 import { ModalHeader, ModalFooter } from "../modal/ModalTopHeader";
 import BuscadorDocentes from "../utmcomps/BuscadorDocentes";
 import MessageDialog from "../MessageDialog";
+import { asignarTribunalService } from "../../services/tribunalService";
 
-const AsignacionTribunalModal = ({ isOpen, onClose, data, title }) => {
+const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
     if (!isOpen) return null;
 
     const [nestedData, setNestedData] = useState(null);
     const [selectedDocentes, setSelectedDocentes] = useState([]);
+
     // Mensajes dialog
     const [message, setMessage] = useState('');
     const [isOpenDialog, setIsOpenDialog] = useState(false);
@@ -32,7 +34,8 @@ const AsignacionTribunalModal = ({ isOpen, onClose, data, title }) => {
             );
             return;
         }
-
+        alert(JSON.stringify(trabajoData));
+        asignarTribunalService(null, trabajoData?.id, selectedDocentes);      
         onClose();
     };
 

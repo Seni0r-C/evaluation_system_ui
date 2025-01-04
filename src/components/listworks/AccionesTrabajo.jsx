@@ -125,7 +125,7 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user, setEditTrabajo, setM
       <AsignacionTribunalModal
         isOpen={isOpenAsignarTutor}
         onClose={() => setIsOpenAsignarTutor(false)}
-        // data={trabajoSelected}
+        trabajoData={trabajoSelected}
         title={"Asignación de tribunal"}
       />
 
