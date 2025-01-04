@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useContext, useEffect, useState } from 'react';
-import BuscadorYSelectorDeUsuarios from '../components/BuscadorYSelectorDeUsuarios';
+import BuscadorYSelectorDeUsuarios from '../components/utmcomps/BuscadorYSelectorDeUsuarios';
 import { buscarUsuarios } from '../services/usuarioService';
 import { obtenerCarreras } from '../services/carreraService';
 import { obtenerModalidadesPorCarrera } from '../services/modalidadService';

@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { permisos } from '../../utils/permisos';
 import DynamicModal from '../modal/ModalData';
 import { obtenerUnTrabajo } from '../../services/trabajosTitulacion';
-import AsignacionTribunalModal from '../../pages/asignacionTribunal';
+import AsignacionTribunalModal from '../utmodal/AsignacionTribunalModal';
 
 const AccionesTrabajo = ({ trabajo, permisosAcciones, user, setEditTrabajo, setModalEditTrabajo, setAsignarFecha, setModalAsignarFecha }) => {
   const navigate = useNavigate();

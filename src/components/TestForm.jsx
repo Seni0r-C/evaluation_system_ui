@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import BuscadorGenerico from './BuscadorGenerico';  // Asegúrate de ajustar la ruta al componente
+import BuscadorGenerico from './common/BuscadorGenerico';  // Asegúrate de ajustar la ruta al componente
 // import { buscarUsuariosConRol } from '../services/usuarioService'; // Puedes omitir esta parte si no tienes un servicio real
 const estudiantesData = [
     { id: 1, nombre: 'Juan Pérez', carrera: 'Ingeniería', cedula: '1351337603' },
@@ -32,16 +32,16 @@ const TestForm = () => {
         }, 500);  // Simulamos un retraso en la búsqueda
     };
 
-    const handleBuscarNombre2 = (query, setResults, setShowSpinner) => {
-        setShowSpinner(true);  // Mostrar el spinner
-        setTimeout(() => {
-            const results = estudiantesData.filter(est =>
-                est.nombre.toLowerCase().includes(query.toLowerCase())
-            );
-            setResults(results);
-            setShowSpinner(false);  // Ocultar el spinner cuando se obtienen los resultados
-        }, 500);  // Simulamos un retraso en la búsqueda
-    };
+    // const handleBuscarNombre2 = (query, setResults, setShowSpinner) => {
+    //     setShowSpinner(true);  // Mostrar el spinner
+    //     setTimeout(() => {
+    //         const results = estudiantesData.filter(est =>
+    //             est.nombre.toLowerCase().includes(query.toLowerCase())
+    //         );
+    //         setResults(results);
+    //         setShowSpinner(false);  // Ocultar el spinner cuando se obtienen los resultados
+    //     }, 500);  // Simulamos un retraso en la búsqueda
+    // };
 
     const handleBuscarCarrera = (query, setResults, setShowSpinner) => {
         setShowSpinner(true);  // Mostrar el spinner
@@ -74,13 +74,35 @@ const TestForm = () => {
                 key="estudiante1"
                 label="Buscar Estudiante"
                 placeholder="Ingrese el nombre del estudiante"
-                handlerBuscar={handleBuscarNombre2}
+                handlerBuscar={handleBuscarNombre}
                 onSelectionChange={(items) => setSelectedEstudiantes(items)}
                 allowDuplicates={false}  // No permitir duplicados
                 maxSelections={-1}       // Selección múltiple ilimitada
                 required={true}
             />
-          
+
+              <BuscadorGenerico
+                key="estudiante2"
+                label="Buscar Estudiante"
+                placeholder="Ingrese el nombre del estudiante"
+                handlerBuscar={handleBuscarNombre}
+                subSearchHandlers={[
+                    {
+                        label: "Carrera",
+                        handler: handleBuscarCarrera,
+                        layout: "stacked"
+                    },
+                    {
+                        label: "Cedula",
+                        handler: handleBuscarCedula,
+                        layout: "stacked"
+                    }
+                ]}
+                onSelectionChange={(items) => setSelectedEstudiantes(items)}
+                allowDuplicates={false}
+                maxSelections={-1}
+                required={true}
+            />          
 
 
             {/* Mostrar estudiantes seleccionados */}

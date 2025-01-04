@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { FaChevronDown, FaChevronUp, FaSearchPlus } from 'react-icons/fa';
-import Spinner from './LogoCarga/Spinner';
+import Spinner from '../LogoCarga/Spinner';
 
 const BuscadorGenerico = ({
   label,

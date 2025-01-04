@@ -6,3 +6,4 @@ export const buscarUsuarios = (query, setResults, rol = 3) => {
     .then(response => setResults(response.data))
     .catch(error => console.error('Error al buscar usuarios:', error))
 };
+

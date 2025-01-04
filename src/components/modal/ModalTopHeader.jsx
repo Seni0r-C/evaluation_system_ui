@@ -13,7 +13,7 @@ const ModalHeader = ({ onClose, title }) => (
     </div>
 );
 
-const ModalFooter = ({ onClose, hasNestedData, onBack }) => (
+const ModalFooter = ({ onClose, hasNestedData, onBack, buttonLabel = "Aceptar" }) => (
     <div className="sticky bottom-0 bg-white p-4 flex justify-end space-x-4 border-t">
         {hasNestedData && (
             <button
@@ -27,7 +27,7 @@ const ModalFooter = ({ onClose, hasNestedData, onBack }) => (
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             onClick={onClose}
         >
-            Aceptar
+            {buttonLabel}
         </button>
     </div>
 );
