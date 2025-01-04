@@ -1,19 +1,34 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ModalHeader, ModalFooter } from "../modal/ModalTopHeader";
 import BuscadorDocentes from "../utmcomps/BuscadorDocentes";
 import MessageDialog from "../MessageDialog";
-import { asignarTribunalService } from "../../services/tribunalService";
+import { asignarTribunalService, reasignarTribunalService, obtenerTribunalService } from "../../services/tribunalService";
 
 const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
     if (!isOpen) return null;
-
-    const [nestedData, setNestedData] = useState(null);
-    const [selectedDocentes, setSelectedDocentes] = useState([]);
 
     // Mensajes dialog
     const [message, setMessage] = useState('');
     const [isOpenDialog, setIsOpenDialog] = useState(false);
     const [iconType, setIconType] = useState(null);
+
+    // Modal
+    const [nestedData, setNestedData] = useState(null);
+    // Selector
+    const [selectedDocentes, setSelectedDocentes] = useState([]);
+
+    
+    const show = (msgData) => {
+        setMessage(msgData.message);
+        setIconType(msgData.typeMsg);
+        setIsOpenDialog(true);
+    };
+
+    const showIfError = (msgData) => {
+        if (msgData.typeMsg === 'error') {
+            showError(msgData.message);
+        }
+    };
 
     const showWarning = (msg) => {
         setMessage(msg);
@@ -27,6 +42,19 @@ const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
         setIsOpenDialog(true);
     };
 
+    const showError = (msg) => {
+        setMessage(msg);
+        setIconType('error');
+        setIsOpenDialog(true);
+    };
+
+    useEffect(() => {
+        if (isOpen) {
+            const msgData = obtenerTribunalService(setSelectedDocentes, trabajoData?.id);
+            showIfError(msgData);
+        }
+    }, [isOpen]);
+
     const onCloseWrapper = () => {
         if (!selectedDocentes || selectedDocentes.length < 3) {
             showWarning(
@@ -34,8 +62,7 @@ const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
             );
             return;
         }
-        alert(JSON.stringify(trabajoData));
-        asignarTribunalService(null, trabajoData?.id, selectedDocentes);      
+        asignarTribunalService(null, trabajoData?.id, selectedDocentes);
         onClose();
     };
 
@@ -45,8 +72,10 @@ const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
                 <ModalHeader onClose={onClose} title={title} />
                 <BuscadorDocentes
                     setSelectedDocentes={setSelectedDocentes}
+                    initialSelectedItems={selectedDocentes}
                     allowDuplicates={false}
                     maxSelections={3}
+                    required={true}
                 />
                 <ModalFooter
                     onClose={onCloseWrapper}

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaChevronDown, FaChevronUp, FaSearchPlus } from 'react-icons/fa';
 import Spinner from '../LogoCarga/Spinner';
 
@@ -12,6 +12,7 @@ const BuscadorGenerico = ({
   allowDuplicates = false,
   maxSelections = 1,
   required = false,
+  initialSelectedItems = [],
 }) => {
   const [searchValue, setSearchValue] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -27,6 +28,10 @@ const BuscadorGenerico = ({
       return acc;
     }, {})
   );
+
+  useEffect(() => {
+    setSelectedItems(initialSelectedItems);
+  }, [initialSelectedItems]);
 
   const resetTextBoxs = () => {
       setSearchValue('');
