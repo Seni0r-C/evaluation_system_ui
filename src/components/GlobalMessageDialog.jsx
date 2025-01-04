@@ -2,29 +2,14 @@ import { useEffect } from 'react';
 import { useMessage } from '../hooks/hooks';
 import { FaInfoCircle } from 'react-icons/fa';
 
-const GlobalMessageDialog = ({ message = '', onClose = null, isOpen = false, iconType = null }) => {
+const GlobalMessageDialog = () => {
     const {
         messageDialog,
         isOpenDialog,
         iconTypeDialog,
         onCloseDialog,
-        setMessageDialog,
-        setIconTypeDialog,
         setIsOpenDialog,
-        setOnCloseDialog
     } = useMessage();
-
-    // Usamos useEffect para actualizar el estado solo cuando las props cambien
-    useEffect(() => {
-        setMessageDialog(message);
-        setIconTypeDialog(iconType);
-        setIsOpenDialog(isOpen);
-        // Asegurarse de que onCloseDialog sea una función válida (si no, asignar una función por defecto)
-        setOnCloseDialog(onClose);
-    }, [
-        message, iconType, isOpen, onClose,
-        setMessageDialog, setIconTypeDialog, setIsOpenDialog, setOnCloseDialog
-    ]);
 
     if (!isOpenDialog) return null;  // Si isOpen es false, no se renderiza nada
 

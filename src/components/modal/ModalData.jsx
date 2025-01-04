@@ -3,12 +3,11 @@ import ModalContent from "./ModalContent";
 import { ModalHeader, ModalFooter } from "./ModalTopHeader";
 import { transformData, filterKeys } from "../../utils/render";
 
-
 const DynamicModal = ({ isOpen, onClose, data, title }) => {
     const [nestedData, setNestedData] = useState(null);
 
     if (!isOpen) return null;
-    
+
     const newData = transformData(filterKeys(data));
 
     return (
@@ -21,9 +20,9 @@ const DynamicModal = ({ isOpen, onClose, data, title }) => {
                     onViewNestedData={(value) => setNestedData(value)}
                 />
                 <ModalFooter
-                    onClose={onClose}
                     hasNestedData={!!nestedData}
                     onBack={() => setNestedData(null)}
+                    btnActions={[{ label: "Aceptar", color: "blue", onClick: onClose } ]}
                 />
             </div>
         </div>

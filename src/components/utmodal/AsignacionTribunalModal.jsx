@@ -27,7 +27,8 @@ const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
     const onCloseWrapper = () => {
         const changeLess = JSON.stringify(selectedDocentes) === JSON.stringify(initialSelectedItems);
         if (changeLess) {
-            showWarning(`No se ha realizado ningun cambio. \nselectedDocentes:\n${JSON.stringify(selectedDocentes)} \r\ninitialSelectedItems:\n${JSON.stringify(initialSelectedItems)} ${changeLess}`);
+            // showWarning(`No se ha realizado ningun cambio. \nselectedDocentes:\n${JSON.stringify(selectedDocentes)} \r\ninitialSelectedItems:\n${JSON.stringify(initialSelectedItems)} ${changeLess}`);
+            onClose();
             return;
         }
         else if (!selectedDocentes || selectedDocentes.length < 3) {
@@ -55,10 +56,13 @@ const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
                     required={true}
                 />
                 <ModalFooter
-                    onClose={onCloseWrapper}
                     hasNestedData={!!nestedData}
                     onBack={() => setNestedData(null)}
-                    buttonLabel="Asignar"
+                    btnActions={[
+                        { label: "Reasignar", color:"blue", onClick: onCloseWrapper },
+                        { label: "Asignar", color:"green", onClick: onCloseWrapper },
+                        { label: "Cancelar", color:"gray", onClick: onClose },
+                    ]}
                 />
             </div>
         </div>
