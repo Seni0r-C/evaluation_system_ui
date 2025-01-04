@@ -5,7 +5,7 @@ import { asignarTribunalService, reasignarTribunalService, obtenerTribunalServic
 import { useMessage } from "../../hooks/hooks";
 
 const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
-    const { showWarning, showIfErrorOrWarning, showIfError } = useMessage();
+    const { showIfSuccess, showWarning, showIfErrorOrWarning, showIfError } = useMessage();
     // Modal
     const [nestedData, setNestedData] = useState(null);
     // Selector
@@ -24,9 +24,18 @@ const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
 
     if (!isOpen) return null;
 
-    const onCloseWrapper = () => {
+    const onCloseAsignarTribunal = () => {
         const changeLess = JSON.stringify(selectedDocentes) === JSON.stringify(initialSelectedItems);
+        if(changeLess && selectedDocentes.length === 0){
+            showWarning(
+                "No hay docentes selecionados para asignar el tribunal."
+            );
+            return;
+        }
         if (changeLess) {
+            showWarning(
+                "No se ha realizado ningun cambio para asignar el tribunal."
+            );
             // showWarning(`No se ha realizado ningun cambio. \nselectedDocentes:\n${JSON.stringify(selectedDocentes)} \r\ninitialSelectedItems:\n${JSON.stringify(initialSelectedItems)} ${changeLess}`);
             onClose();
             return;
@@ -44,6 +53,36 @@ const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
         onClose();
     };
 
+    const onCloseReasignarTribunal = async () => {
+        const changeLess = JSON.stringify(selectedDocentes) === JSON.stringify(initialSelectedItems);
+        if(changeLess && selectedDocentes.length === 0){
+            showWarning(
+                "No hay docentes selecionados para reasignar el tribunal."
+            );
+            return;
+        }
+        if (changeLess) {
+            showWarning(
+                "No se ha realizado ningun cambio para reasignar el tribunal."
+            );
+            onClose();
+            return;
+        }
+        else if (!selectedDocentes || selectedDocentes.length < 3) {
+            showWarning(
+                "Debe seleccionar 3 docentes para reasignar el tribunal."
+            );
+            return;
+        }
+        const msgData = await reasignarTribunalService(null, trabajoData?.id, selectedDocentes);
+        if (showIfErrorOrWarning(msgData)) {
+            return;
+        }
+        if(showIfSuccess(msgData)){
+            onClose();
+        }
+    };
+
     return (
         <div className="fixed inset-0 z-50 bg-gray-800 bg-opacity-75 flex items-center justify-center">
             <div className="relative bg-white w-full max-w-lg rounded shadow-lg">
@@ -58,11 +97,17 @@ const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
                 <ModalFooter
                     hasNestedData={!!nestedData}
                     onBack={() => setNestedData(null)}
-                    btnActions={[
-                        { label: "Reasignar", color:"blue", onClick: onCloseWrapper },
-                        { label: "Asignar", color:"green", onClick: onCloseWrapper },
+                    btnActions={
+                        initialSelectedItems.length > 0 ? [
+                        { label: "Reasignar", color:"blue", onClick: onCloseReasignarTribunal },
                         { label: "Cancelar", color:"gray", onClick: onClose },
-                    ]}
+                        ]
+                        :
+                        [
+                        { label: "Asignar", color:"green", onClick: onCloseAsignarTribunal },
+                        { label: "Cancelar", color:"gray", onClick: onClose },
+                        ]
+                    }
                 />
             </div>
         </div>

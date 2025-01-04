@@ -43,6 +43,14 @@ export const MessageProvider = ({ children }) => {
         return false;
     };
 
+    const showIfSuccess = (msgData) => {
+        if (msgData.typeMsg === 'success') {
+            showSuccess(msgData.message);
+            return true;
+        }
+        return false;
+    };
+
     const showIfErrorOrWarning = (msgData) => {
         if (msgData.typeMsg === 'error') {
             showError(msgData.message);
@@ -72,6 +80,7 @@ export const MessageProvider = ({ children }) => {
                 showError,
                 showIfError,
                 showIfErrorOrWarning,
+                showIfSuccess,
             }}
         >
             {children}
