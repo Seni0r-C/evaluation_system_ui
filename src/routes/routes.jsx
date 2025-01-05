@@ -176,6 +176,7 @@ const routes = [
                 'detallesTrabajo',
                 'asignarTribunal',
               ]}
+              includeState={true}
               firstState={[estadosTrabajos.REGISTRADO, estadosTrabajos.ASIGNADO]}
             />
           </Layout>

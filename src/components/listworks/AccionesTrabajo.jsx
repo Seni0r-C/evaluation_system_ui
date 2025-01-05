@@ -16,7 +16,6 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user, setEditTrabajo, setM
 
   const fectchTrabajoFull = (trabajo) => {
     if (trabajo?.id ?? false) {
-      // alert(JSON.stringify(trabajo, null, 2));
       obtenerUnTrabajo(setTrabajoSelected, trabajo.id);
     }
   };

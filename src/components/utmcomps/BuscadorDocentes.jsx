@@ -14,9 +14,7 @@ const BuscadorDocentes = ({setSelectedDocentes, initialSelectedItems=[], allowDu
     };
     return (
         <div className="p-4">
-            <h1 className="text-xl font-bold mb-4"></h1>
-
-            {/* Buscador de Estudiantes */}
+            {/* Buscador de Docentes */}
             <BuscadorGenerico
                 label="Buscar Docentes"
                 placeholder="Ingrese el nombre del docente"

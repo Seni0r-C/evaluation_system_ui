@@ -16,6 +16,14 @@ export function capitalizeWords(str) {
     str = str.toLowerCase();
     return str.replace(/\b\w/g, (char) => char.toUpperCase());
 }
+/**
+ * Convierte una fecha MySQL a formato "dd/MM/yyyy, HH:mm"
+ * @param {string} date - Fecha en formato ISO de MySQL (ej. "2025-01-15T05:00:00.000Z")
+ * @returns {string} Fecha formateada como "15/01/2025, 05:00"
+ */
+export const hourAndDateFromDateTimeMySQL = (date) => {
+    return new Date(date).toISOString().slice(0, 16);
+};
 
 export const menuData = [
     {
@@ -50,7 +58,7 @@ export const menuData = [
                 roles: permisos.ROLES_EDICION_ITEMS_RUBRICA,
                 subOptions: [],
                 icon: <FaListCheck />
-            },            
+            },
         ],
         icon: <MdOutlineChromeReaderMode />
     },
