@@ -3,7 +3,9 @@ import { ModalHeader, ModalFooter } from "../modal/ModalTopHeader";
 import BuscadorDocentes from "../utmcomps/BuscadorDocentes";
 import SelectorFecha from "../common/SelectorFecha";
 import { asignarTribunalService, reasignarTribunalService, obtenerTribunalService } from "../../services/tribunalService";
+import { obtenerUnTrabajo } from "../../services/trabajosTitulacion";
 import { useMessage } from "../../hooks/hooks";
+import { estadosTrabajosIds } from "../../utils/estados_trabajos";
 
 const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
     const { showIfSuccess, showWarning, showIfErrorOrWarning, showIfError } = useMessage();
@@ -25,12 +27,12 @@ const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
     };
 
     useEffect(() => {
-        if (trabajoData?.id && trabajoData?.fecha_defensa) {
-            setInitialDateDefensa(trabajoData.fecha_defensa)
-        } else if(trabajoData?.id && !trabajoData?.fecha_defensa) {
+        if (trabajoData?.id) {
             fectchTrabajoFull(trabajoData);
             setInitialDateDefensa(trabajoSelected?.fecha_defensa);
-        }
+            setSelectedDate(trabajoSelected?.fecha_defensa);
+            trabajoData.fecha_defensa = trabajoSelected?.fecha_defensa;
+        } 
     }, [isOpen, trabajoData?.id]);
 
     useEffect(() => {
@@ -74,7 +76,7 @@ const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
             );
             return;
         }
-        const msgData = asignarTribunalService(null, trabajoData?.id, selectedDocentes, selectedDate);
+        const msgData = asignarTribunalService(null, trabajoData?.id, selectedDocentes, selectedDate,  estadosTrabajosIds.ASIGNADO);
         if (showIfErrorOrWarning(msgData)) {
             return;
         }
@@ -110,59 +112,59 @@ const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
             );
             return;
         }
-        const msgData = await reasignarTribunalService(null, trabajoData?.id, selectedDocentes, selectedDate);
-        if (showIfErrorOrWarning(msgData)) {
-            return;
-        }
-        if (showIfSuccess(msgData)) {
-            trabajoData.fecha_defensa = selectedDate;
-            onClose();
-        }
-    };
+        const msgData = await reasignarTribunalService(null, trabajoData?.id, selectedDocentes, selectedDate, estadosTrabajosIds.ASIGNADO);
+            if (showIfErrorOrWarning(msgData)) {
+                return;
+            }
+            if (showIfSuccess(msgData)) {
+                trabajoData.fecha_defensa = selectedDate;
+                onClose();
+            }
+        };
 
-    return (
-        <div className="fixed inset-0 z-50 bg-gray-800 bg-opacity-75 flex items-center justify-center">
-            <div className="relative bg-white w-full max-w-lg rounded shadow-lg">
-                <ModalHeader onClose={onClose} title={title} />
-                <div className="p-4">
-                    <div className="relative">
-                        {/* Etiqueta del campo */}
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Fecha defensa
-                            <span className="text-red-500"> *</span>
-                        </label>
+        return (
+            <div className="fixed inset-0 z-50 bg-gray-800 bg-opacity-75 flex items-center justify-center">
+                <div className="relative bg-white w-full max-w-lg rounded shadow-lg">
+                    <ModalHeader onClose={onClose} title={title} />
+                    <div className="p-4">
+                        <div className="relative">
+                            {/* Etiqueta del campo */}
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Fecha defensa
+                                <span className="text-red-500"> *</span>
+                            </label>
 
-                        {/* Campo principal con botón más grande */}
-                        <div className="relative flex items-center  rounded-md overflow-hidden">
-                            <SelectorFecha onDateChange={setSelectedDate} required={true} initialDate={initialDateDefensa} />
+                            {/* Campo principal con botón más grande */}
+                            <div className="relative flex items-center  rounded-md overflow-hidden">
+                                <SelectorFecha onDateChange={setSelectedDate} required={true} initialDate={initialDateDefensa} />
+                            </div>
                         </div>
                     </div>
-                </div>
-                <BuscadorDocentes
-                    setSelectedDocentes={setSelectedDocentes}
-                    initialSelectedItems={selectedDocentes}
-                    allowDuplicates={false}
-                    maxSelections={3}
-                    required={true}
-                />
-                <ModalFooter
-                    hasNestedData={!!nestedData}
-                    onBack={() => setNestedData(null)}
-                    btnActions={
-                        initialSelectedItems.length > 0 ? [
-                            { label: "Reasignar", color: "blue", onClick: onCloseReasignarTribunal },
-                            { label: "Cancelar", color: "gray", onClick: onClose },
-                        ]
-                            :
-                            [
-                                { label: "Asignar", color: "green", onClick: onCloseAsignarTribunal },
+                    <BuscadorDocentes
+                        setSelectedDocentes={setSelectedDocentes}
+                        initialSelectedItems={selectedDocentes}
+                        allowDuplicates={false}
+                        maxSelections={3}
+                        required={true}
+                    />
+                    <ModalFooter
+                        hasNestedData={!!nestedData}
+                        onBack={() => setNestedData(null)}
+                        btnActions={
+                            initialSelectedItems.length > 0 ? [
+                                { label: "Reasignar", color: "blue", onClick: onCloseReasignarTribunal },
                                 { label: "Cancelar", color: "gray", onClick: onClose },
                             ]
-                    }
-                />
+                                :
+                                [
+                                    { label: "Asignar", color: "green", onClick: onCloseAsignarTribunal },
+                                    { label: "Cancelar", color: "gray", onClick: onClose },
+                                ]
+                        }
+                    />
+                </div>
             </div>
-        </div>
-    );
-};
+        );
+    };
 
-export default AsignacionTribunalModal;
+    export default AsignacionTribunalModal;

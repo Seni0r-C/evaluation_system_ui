@@ -1,11 +1,11 @@
 import axiosInstance from './axiosConfig';
 
 // Refactored version of asignarTribunalService using async/await
-export const asignarTribunalService = async (setResults, trabajo_id, docente_ids, fecha_defensa) => {
+export const asignarTribunalService = async (setResults, trabajo_id, docente_ids, fecha_defensa, estado_id) => {
     let message = '';
     let typeMsg = 'info';
     try {
-        const response = await axiosInstance.post(`/trabajo-titulacion/asignarTribunal`, { trabajo_id, docente_ids, fecha_defensa });
+        const response = await axiosInstance.post(`/trabajo-titulacion/asignarTribunal`, { trabajo_id, docente_ids, fecha_defensa, estado_id });
         if (response.data) {
             return response.data;
         } else {
@@ -18,9 +18,9 @@ export const asignarTribunalService = async (setResults, trabajo_id, docente_ids
 };
 
 // Refactored version of reasignarTribunalService using async/await
-export const reasignarTribunalService = async (setResults, trabajo_id, docente_ids, fecha_defensa) => {
+export const reasignarTribunalService = async (setResults, trabajo_id, docente_ids, fecha_defensa, estado_id) => {
     try {
-        const response = await axiosInstance.post(`/trabajo-titulacion/reasignarTribunal`, { trabajo_id, docente_ids, fecha_defensa });
+        const response = await axiosInstance.post(`/trabajo-titulacion/reasignarTribunal`, { trabajo_id, docente_ids, fecha_defensa, estado_id });
 
         if (response.data) {
             return response.data;
