@@ -10,7 +10,7 @@ import ListaTrabajosTitulacion from './listworks/ListaTrabajosTitulacion';
 import Paginacion from './listworks/Paginacion';
 import PropTypes from 'prop-types';
 
-const CustomTrabajoTitulacionListar = ({ permisosAcciones, includeState: includeStateFiltter = false, firstState = '' }) => {
+const CustomTrabajoTitulacionListar = ({ permisosAcciones, includeStateFiltter = false, firstStates = [] }) => {
   const [trabajos, setTrabajos] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -23,7 +23,7 @@ const CustomTrabajoTitulacionListar = ({ permisosAcciones, includeState: include
   const [filters, setFilters] = useState({
     carrera_id: '',
     modalidad_id: '',
-    estado: firstState || '',
+    estado: firstStates || '',
     titulo: '',
     fecha_defensa: user.roles.includes(3) ? new Date().toISOString().split('T')[0] : '',
   });
@@ -36,17 +36,19 @@ const CustomTrabajoTitulacionListar = ({ permisosAcciones, includeState: include
 
   useEffect(() => {
     obtenerCarreras(setCarreras);
-    obtenerEstados(setEstados);
+    if (firstStates && includeStateFiltter) {
+      setEstados(Array.isArray(firstStates) ? firstStates : [firstStates]);
+    } else if(firstStates==='' && includeStateFiltter) {
+      obtenerEstados(setEstados);
+    }
+
   }, []);
 
   useEffect(() => {
-    if (firstState) {
-      setFilters((prevFilters) => ({ ...prevFilters, estado: firstState }));
+    if (firstStates) {
+      setFilters((prevFilters) => ({ ...prevFilters, estado: firstStates }));
     }
-    if (firstState && includeStateFiltter) {
-      setEstados(Array.isArray(firstState) ? firstState : [firstState]);
-    }
-  }, [firstState]);
+  }, [firstStates]);
 
   useEffect(() => {
     if (info) {
@@ -116,8 +118,8 @@ const CustomTrabajoTitulacionListar = ({ permisosAcciones, includeState: include
 
 CustomTrabajoTitulacionListar.propTypes = {
   permisosAcciones: PropTypes.array,
-  includeState: PropTypes.bool,
-  firstState: PropTypes.string,
+  includeStateFiltter: PropTypes.bool,
+  firstState: PropTypes.array,
 };
 
 export default CustomTrabajoTitulacionListar;

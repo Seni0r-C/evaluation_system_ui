@@ -7,9 +7,11 @@ const SelectorFecha = ({ onDateChange, required = false, initialDate = '' }) => 
     const [error, setError] = useState('');
 
     useEffect(() => {
+        const formattedDate = hourAndDateFromDateTimeMySQL(initialDate);
+        alert("SelectorFecha----------"+JSON.stringify(formattedDate, null, 2));
         if (initialDate && !selectedDate) {
             try {
-                const formattedDate = hourAndDateFromDateTimeMySQL(initialDate);
+                // const formattedDate = initialDate;
                 setSelectedDate(formattedDate);
             } catch (error) {
                 console.error('Error al formatear la fecha:', error);
@@ -19,6 +21,7 @@ const SelectorFecha = ({ onDateChange, required = false, initialDate = '' }) => 
     
     const handleDateChange = (e) => {
         const newDate = e.target.value;
+        // alert("handleDateChange: "+JSON.stringify(newDate, null, 2));
         setSelectedDate(newDate);
         setError(''); // Limpiar error al cambiar la fecha
 

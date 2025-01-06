@@ -30,7 +30,7 @@ const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
 
     useEffect(() => {
         if (trabajoData?.id) {
-            fectchTrabajoFull(trabajoData);
+            fectchTrabajoFull(trabajoData);            
             setInitialDateDefensa(trabajoSelected?.fecha_defensa);
             setSelectedDate(trabajoSelected?.fecha_defensa);
             trabajoData.fecha_defensa = trabajoSelected?.fecha_defensa;

@@ -129,7 +129,7 @@ const routes = [
                 'detallesTrabajo',
                 'calificar',
               ]}
-              firstState={estadosTrabajos.ASIGNADO}
+              firstStates={[estadosTrabajos.ASIGNADO]}
             />
           </Layout>
         </ProtectedRoute>
@@ -146,7 +146,7 @@ const routes = [
               permisosAcciones={[
                 'detallesTrabajo',
               ]}
-              firstState={estadosTrabajos.FINALIZADO}
+              firstStates={[estadosTrabajos.FINALIZADO]}
             />
           </Layout>
         </ProtectedRoute>
@@ -176,8 +176,8 @@ const routes = [
                 'detallesTrabajo',
                 'asignarTribunal',
               ]}
-              includeState={true}
-              firstState={estadosTrabajos.REGISTRADO}
+              includeStateFiltter={true}
+              firstStates={[estadosTrabajos.REGISTRADO, estadosTrabajos.ASIGNADO]}
             />
           </Layout>
         </ProtectedRoute>
@@ -195,7 +195,7 @@ const routes = [
                 'detallesTrabajo',
                 'generarReporte',
               ]}
-              firstState={estadosTrabajos.CALIFICADO}
+              firstStates={[estadosTrabajos.CALIFICADO]}
             />
           </Layout>
         </ProtectedRoute>

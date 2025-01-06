@@ -22,7 +22,11 @@ export function capitalizeWords(str) {
  * @returns {string} Fecha formateada como "15/01/2025, 05:00"
  */
 export const hourAndDateFromDateTimeMySQL = (date) => {
-    return new Date(date).toISOString().slice(0, 16);
+    try{
+        return new Date(date).toISOString().slice(0, 16);
+    }catch(Exception){
+        return '';
+    }
 };
 
 export const menuData = [
