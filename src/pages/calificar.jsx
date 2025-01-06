@@ -17,6 +17,8 @@ const Calificar = () => {
     const [estudiantes, setEstudiantes] = useState([]);
     const [photos, setPhotos] = useState({}); // Estado para las fotos, { [id]: fotoBase64 }
 
+    const [calificaciones, setCalificaciones] = useState(null);
+
     useEffect(() => {
         if (trabajo) {
             getEstudiantesByTrabajoId(trabajo.id, setEstudiantes);
@@ -40,6 +42,15 @@ const Calificar = () => {
         };
 
         fetchPhotos();
+        setCalificaciones(
+            estudiantes.reduce((acc, student) => {
+                acc[student.id] = {
+                    oral: rubricas.oral.map(() => null),
+                    escrita: rubricas.escrita.map(() => null),
+                };
+                return acc;
+            }, {})
+        );
     }, [estudiantes]);
 
     const rubricas = {
@@ -89,15 +100,6 @@ const Calificar = () => {
         ],
     };
 
-    const [calificaciones, setCalificaciones] = useState(
-        estudiantes.reduce((acc, student) => {
-            acc[student.id] = {
-                oral: rubricas.oral.map(() => null),
-                escrita: rubricas.escrita.map(() => null),
-            };
-            return acc;
-        }, {})
-    );
 
     const handleNivelChange = (studentId, rubricaType, criterioIndex, nivelIndex) => {
         setCalificaciones((prev) => ({
