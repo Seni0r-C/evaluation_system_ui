@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 import { permisos } from '../utils/permisos';
 import axiosInstance from '../services/axiosConfig';
@@ -7,6 +8,7 @@ import { obtenerEstados } from '../services/trabajosTitulacion';
 import FiltroTrabajoTitulacion from './listworks/FiltroTrabajoTitulacion';
 import ListaTrabajosTitulacion from './listworks/ListaTrabajosTitulacion';
 import Paginacion from './listworks/Paginacion';
+import PropTypes from 'prop-types';
 
 const CustomTrabajoTitulacionListar = ({ permisosAcciones, includeState: includeStateFiltter = false, firstState = '' }) => {
   const [trabajos, setTrabajos] = useState([]);
@@ -110,6 +112,12 @@ const CustomTrabajoTitulacionListar = ({ permisosAcciones, includeState: include
       <Paginacion {...{ page, total, limit, onPageChange: setPage, onLimitChange: (e) => setLimit(e.target.value) }} />
     </div>
   );
+};
+
+CustomTrabajoTitulacionListar.propTypes = {
+  permisosAcciones: PropTypes.array,
+  includeState: PropTypes.bool,
+  firstState: PropTypes.string,
 };
 
 export default CustomTrabajoTitulacionListar;

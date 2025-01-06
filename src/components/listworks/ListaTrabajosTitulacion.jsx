@@ -1,9 +1,9 @@
-import React from 'react';
 import EstadoTrabajo from './EstadoTrabajo';
 import AccionesTrabajo from './AccionesTrabajo';
 import { capitalizeWords } from '../../utils/constants';
+import PropTypes from 'prop-types';
 
-const ListaTrabajosTitulacion = ({ trabajos,  permisosAcciones, user }) => {
+const ListaTrabajosTitulacion = ({ trabajos, permisosAcciones, user }) => {
     const colnBase = ['Título', 'Carrera', 'Archivo', 'Modalidad', 'Estado'];
     const colnames = permisosAcciones?.length > 0 ? [...colnBase, 'Acciones'] : colnBase;
     return (
@@ -19,31 +19,43 @@ const ListaTrabajosTitulacion = ({ trabajos,  permisosAcciones, user }) => {
             </thead>
             <tbody>
                 {trabajos.length > 0 ? (
-                    trabajos.map((trabajo) => (
-                        <tr key={trabajo.id} className="hover:bg-gray-100 transition-colors">
-                            <td className="px-6 py-4">{trabajo.titulo}</td>
-                            <td className="px-6 py-4">{capitalizeWords(trabajo.carrera)}</td>
-                            <td className="px-6 py-4">
-                                <a
-                                    href={trabajo.link_archivo}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="text-green-700 hover:underline font-normal"
-                                >
-                                    Ver archivo
-                                </a>
-                            </td>
-                            <td className="px-6 py-4">{trabajo.modalidad}</td>
-                            <td className="px-6 py-4">
-                                <EstadoTrabajo estado={trabajo.estado} />
-                            </td>
-                            {permisosAcciones?.length > 0 && (
-                                <td className="px-6 py-4">
-                                    <AccionesTrabajo trabajo={trabajo} permisosAcciones={permisosAcciones} user={user} />
-                                </td>
-                            )}
-                        </tr>
-                    ))
+                    trabajos.map((trabajo) => {
+                        const columns = [
+                            trabajo.titulo,
+                            capitalizeWords(trabajo.carrera),
+                            <a
+                                key={trabajo.id}
+                                href={trabajo.link_archivo}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-green-700 hover:underline font-normal"
+                            >
+                                Ver archivo
+                            </a>,
+                            trabajo.modalidad,
+                            <EstadoTrabajo estado={trabajo.estado} key={trabajo.id} />,
+                        ];
+
+                        if (permisosAcciones?.length > 0) {
+                            columns.push(
+                                <AccionesTrabajo
+                                    trabajo={trabajo}
+                                    permisosAcciones={permisosAcciones}
+                                    user={user}
+                                />
+                            );
+                        }
+
+                        return (
+                            <tr key={trabajo.id} className="hover:bg-gray-100 transition-colors">
+                                {columns.map((content, index) => (
+                                    <td key={index} className="px-6 py-4">
+                                        {content}
+                                    </td>
+                                ))}
+                            </tr>
+                        );
+                    })
                 ) : (
                     <tr>
                         <td colSpan="6" className="text-center p-6 text-gray-500">
@@ -52,8 +64,15 @@ const ListaTrabajosTitulacion = ({ trabajos,  permisosAcciones, user }) => {
                     </tr>
                 )}
             </tbody>
+
         </table>
     );
 }
+
+ListaTrabajosTitulacion.propTypes = {
+    trabajos: PropTypes.array.isRequired,
+    permisosAcciones: PropTypes.array,
+    user: PropTypes.object,
+};
 
 export default ListaTrabajosTitulacion;
