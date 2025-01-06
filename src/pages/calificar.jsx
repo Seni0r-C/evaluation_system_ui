@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { FaFilePdf, FaWindowMinimize } from "react-icons/fa"; // Importamos los íconos de react-icons
 import BotonAccion from "../components/common/BotonAccion";
@@ -213,31 +214,22 @@ const Calificar = () => {
                                     <span className="text-left font-medium">{student.nombre}</span>
                                 </button>
                             ))}
+                            <button
+                                className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg shadow-md transition-all duration-200 bg-red-600 hover:bg-red-700 text-white`}
+                                onClick={() => setIsPdfVisible(true)}
+                            >
+                                <FaFilePdf className="w-12 h-12" />
+                                <span className="text-left font-medium">Ver Documento</span>
+
+                            </button>
                         </div>
                     </div>
-                </div>
-                <div
-                    className="fixed right-0 top-1/2 transform -translate-y-1/2 z-20 cursor-pointer text-4xl text-black transition-all duration-300 ease-in-out hover:scale-110 hover:text-yellow-500"
-                    onMouseEnter={() => setIsPdfVisible(true)}
-                    onMouseLeave={() => !isPinned && setIsPdfVisible(false)}
-                >
-                    {/* Icono representativo de abrir PDF (usa el icono adecuado para representar el PDF) */}
-                    {/* <FaFilePdf className="transition-all duration-300 ease-in-out" /> */}
-
-                    {/* Óvalo detrás del icono con animación */}
-                    <div className="absolute -left-4 top-1/2 transform z-10 -translate-y-1/2 w-32 h-16 bg-red-600 opacity-60 rounded-full scale-100 hover:scale-110 transition-transform duration-300 border-4 border-red-900"></div>
-
-                    <FaFilePdf className="transition-all duration-300 ease-in-out z-50" />
-
                 </div>
 
                 {/* PDF viewer */}
                 <div
-                    className={`fixed top-0 right-0 z-50 h-full bg-white transition-transform transform ${isPdfVisible ? "translate-x-0" : "translate-x-full"} duration-500 w-2/5`}
-                    // style={{ height: "calc(100vh - 70px)" }}
-                    onMouseEnter={() => setIsPdfVisible(true)}
-                    onMouseLeave={() => !isPinned && setIsPdfVisible(false)}
-
+                    className={`fixed top-0 right-0 z-50 h-full bg-white transition-transform transform ${isPdfVisible ? "translate-x-0" : "translate-x-full"} duration-500`}
+                    style={{ width: "23%" }}
                 >
                     <div className="relative h-full">
                         <BotonAccion
