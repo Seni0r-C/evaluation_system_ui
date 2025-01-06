@@ -177,7 +177,7 @@ const routes = [
                 'asignarTribunal',
               ]}
               includeState={true}
-              firstState={[estadosTrabajos.REGISTRADO, estadosTrabajos.ASIGNADO]}
+              firstState={estadosTrabajos.REGISTRADO}
             />
           </Layout>
         </ProtectedRoute>

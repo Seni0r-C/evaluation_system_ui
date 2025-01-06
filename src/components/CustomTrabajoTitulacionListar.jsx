@@ -32,21 +32,21 @@ const CustomTrabajoTitulacionListar = ({ permisosAcciones, includeState: include
   const [modalidades, setModalidades] = useState([]);
   const [estados, setEstados] = useState([]);
 
-  
-  
+
+
   useEffect(() => {
     obtenerCarreras(setCarreras);
     obtenerEstados(setEstados);
   }, []);
-  
+
   useEffect(() => {
     if (firstState) {
       setFilters((prevFilters) => ({ ...prevFilters, estado: firstState }));
     }
-    if(firstState && includeStateFiltter){
-      setEstados(Array.isArray(firstState)?firstState:[firstState]);
+    if (firstState && includeStateFiltter) {
+      setEstados(Array.isArray(firstState) ? firstState : [firstState]);
     }
-  }, [firstState, estados]);
+  }, [firstState]);
 
   useEffect(() => {
     if (info) {
@@ -75,7 +75,7 @@ const CustomTrabajoTitulacionListar = ({ permisosAcciones, includeState: include
     }
   }, [filters.carrera_id]);
 
-  
+
   const fetchTrabajos = async () => {
     try {
       const response = await axiosInstance.get('/trabajo-titulacion/listar', {
@@ -108,7 +108,7 @@ const CustomTrabajoTitulacionListar = ({ permisosAcciones, includeState: include
         :
         (<FiltroTrabajoTitulacion {...{ filters, onFilterChange: handleFilterChange, carreras, modalidades, verTodo, user }} />)
       }
-      <ListaTrabajosTitulacion trabajos={trabajos} user={user} permisosAcciones={ permisosAcciones } />
+      <ListaTrabajosTitulacion trabajos={trabajos} user={user} permisosAcciones={permisosAcciones} />
       <Paginacion {...{ page, total, limit, onPageChange: setPage, onLimitChange: (e) => setLimit(e.target.value) }} />
     </div>
   );
