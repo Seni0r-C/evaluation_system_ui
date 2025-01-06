@@ -1,20 +1,46 @@
-import { useState } from "react";
-import {  FaFilePdf, FaWindowMinimize } from "react-icons/fa"; // Importamos los íconos de react-icons
+import { useEffect, useState } from "react";
+import { FaFilePdf, FaWindowMinimize } from "react-icons/fa"; // Importamos los íconos de react-icons
 import BotonAccion from "../components/common/BotonAccion";
 import { TbPinFilled, TbPinnedOff } from "react-icons/tb";
 import { RiSpeakFill } from "react-icons/ri";
 import { IoDocumentText } from "react-icons/io5";
+import { useLocation } from 'react-router-dom';
+import { getEstudiantesByTrabajoId, getUserPhoto } from "../services/usuarioService";
 
 const Calificar = () => {
+    const location = useLocation();
+    const trabajo = location.state.trabajo ?? null;
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [selectedRubricaType, setSelectedRubricaType] = useState("oral");
     const [isPdfVisible, setIsPdfVisible] = useState(false);
     const [isPinned, setIsPinned] = useState(false);
+    const [estudiantes, setEstudiantes] = useState([]);
+    const [photos, setPhotos] = useState({}); // Estado para las fotos, { [id]: fotoBase64 }
 
-    const students = [
-        { id: 1, name: "Estudiante 1", photo: "https://via.placeholder.com/100" },
-        { id: 2, name: "Estudiante 2", photo: "https://via.placeholder.com/100" },
-    ];
+    useEffect(() => {
+        if (trabajo) {
+            getEstudiantesByTrabajoId(trabajo.id, setEstudiantes);
+        }
+    }, [trabajo]);
+
+    useEffect(() => {
+        const fetchPhotos = async () => {
+            const photoPromises = estudiantes.map(async (student) => {
+                const photo = await getUserPhoto(student.id_personal);
+                return { id: student.id_personal, photo };
+            });
+
+            const photosArray = await Promise.all(photoPromises); // Espera todas las fotos
+            const photosObject = photosArray.reduce((acc, { id, photo }) => {
+                acc[id] = photo; // Crea un objeto con el id como clave y la foto como valor
+                return acc;
+            }, {});
+
+            setPhotos(photosObject);
+        };
+
+        fetchPhotos();
+    }, [estudiantes]);
 
     const rubricas = {
         oral: [
@@ -64,7 +90,7 @@ const Calificar = () => {
     };
 
     const [calificaciones, setCalificaciones] = useState(
-        students.reduce((acc, student) => {
+        estudiantes.reduce((acc, student) => {
             acc[student.id] = {
                 oral: rubricas.oral.map(() => null),
                 escrita: rubricas.escrita.map(() => null),
@@ -164,7 +190,7 @@ const Calificar = () => {
                     <div className="col-span-1 lg:col-span-1 lg:col-start-4">
                         <h2 className="text-2xl font-semibold mb-4 text-blue-600">Estudiantes</h2>
                         <div className="space-y-4">
-                            {students.map((student) => (
+                            {estudiantes.map((student) => (
                                 <button
                                     key={student.id}
                                     onClick={() => setSelectedStudent(student.id)}
@@ -174,11 +200,15 @@ const Calificar = () => {
                                         }`}
                                 >
                                     <img
-                                        src={student.photo}
-                                        alt={`Foto de ${student.name}`}
+                                        src={
+                                            photos[student.id_personal]
+                                                ? `data:image/jpeg;base64,${photos[student.id_personal]}`
+                                                : 'https://i.pinimg.com/474x/31/ec/2c/31ec2ce212492e600b8de27f38846ed7.jpg' // Foto por defecto si no está cargada
+                                        }
+                                        alt={`Foto de ${student.nombre}`}
                                         className="w-12 h-12 rounded-full object-cover border border-gray-300"
                                     />
-                                    <span className="text-left font-medium">{student.name}</span>
+                                    <span className="text-left font-medium">{student.nombre}</span>
                                 </button>
                             ))}
                         </div>

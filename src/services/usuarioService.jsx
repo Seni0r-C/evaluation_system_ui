@@ -7,3 +7,18 @@ export const buscarUsuarios = (query, setResults, rol = 3) => {
     .catch(error => console.error('Error al buscar usuarios:', error))
 };
 
+export const getEstudiantesByTrabajoId = (idTrabajo, setEstudiantes) => {
+  axiosInstance.get(`/usuarios/estudiantes/${idTrabajo}`)
+    .then(response => setEstudiantes(response.data))
+    .catch(error => console.error('Error al buscar estudiantes:', error))
+}
+
+export const getUserPhoto = async (id) => {
+  try {
+    const response = await axiosInstance.get(`/usuarios/foto/${id}`);
+    return response.data; // Esto debe ser un string base64
+  } catch (error) {
+    console.error('Error al buscar foto:', error);
+    return null; // Maneja errores devolviendo un valor por defecto
+  }
+};
