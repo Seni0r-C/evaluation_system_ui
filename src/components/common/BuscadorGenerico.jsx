@@ -215,6 +215,7 @@ BuscadorGenerico.propTypes = {
   allowDuplicates: PropTypes.bool,
   maxSelections: PropTypes.number,
   required: PropTypes.bool,
+  initialSelectedItems: PropTypes.array,
 };
 
 export default BuscadorGenerico;
