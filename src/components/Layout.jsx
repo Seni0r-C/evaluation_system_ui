@@ -1,19 +1,16 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { IoMdClose, IoMdMenu, IoIosLogOut } from "react-icons/io";
-import { FaChevronDown, FaChevronUp, FaUserCircle } from "react-icons/fa";
-import { useLocation } from 'react-router-dom';
+import { FaUserCircle } from "react-icons/fa";
 import logo from '../assets/logo_bar_claro.webp';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { menuData, RutaRaiz } from '../utils/constants';
-import { TODOS } from '../utils/roles';
 import UserContext from '../context/UserContext';
 import SidebarMenu from './menu/SidebarMenu';
 
 
 const Layout = ({ children }) => {
-    const location = useLocation();
     const { userName, userPhoto, rolesAsStr, roles } = useContext(UserContext);
     // Lee el estado inicial de localStorage
     const [isSidebarVisible, setSidebarVisible] = useState(() => {
@@ -21,33 +18,9 @@ const Layout = ({ children }) => {
         return savedState !== null ? JSON.parse(savedState) : true;
     });
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-    const [openMenuIndex, setOpenMenuIndex] = useState(null);
     const navigate = useNavigate();
     const { setIsAuthenticated } = useAuth();
-    const [filteredMenu, setFilteredMenu] = useState([]);
-
     const dropdownRef = useRef(null);
-
-    useEffect(() => {
-        if (roles) {
-            const userMenu = menuData
-                .filter(option =>
-                    option.roles.some(role => roles.includes(role) || role === TODOS) // Filtrar opciones principales
-                )
-                .map(option => ({
-                    ...option,
-                    href: option.subOptions.length > 0 ? null : option.href, // Quitar href si tiene subOptions
-                    subOptions: option.subOptions.filter(subOption =>
-                        subOption.roles.some(role => roles.includes(role) || role === TODOS) // Filtrar subopciones
-                    ),
-                }))
-                .filter(option => option.href || option.subOptions.length > 0); // Omitir opciones sin href ni subOptions
-
-            setFilteredMenu(userMenu);
-        }
-    }, [roles]);
-
-
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -77,11 +50,6 @@ const Layout = ({ children }) => {
         setIsDropdownVisible(!isDropdownVisible);
     };
 
-    // Función para manejar el clic y alternar la visibilidad
-    const toggleSubOptions = (index) => {
-        setOpenMenuIndex(openMenuIndex === index ? null : index);
-    };
-
     return (
         <div className="min-h-screen flex flex-col bg-gray-100 text-gray-800">
             {/* Barra superior */}
@@ -89,7 +57,7 @@ const Layout = ({ children }) => {
                 <div className="flex items-center space-x-4">
                     <button
                         onClick={toggleSidebar}
-                        className="p-2 rounded hover:bg-green-800 text-white transition-all"
+                        className="p-2 rounded hover:bg-green-800 text-white transition-all ml-4"
                     >
                         {isSidebarVisible ? (
                             <IoMdClose className="h-6 w-6" />
