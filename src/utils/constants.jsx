@@ -77,18 +77,18 @@ export const menuData = [
         icon: <FaUsers />
     },
     {
-        name: 'Documento calificación',
-        href: '/generacion-de-documento',
-        roles: permisos.ROLES_GENERACION_DOCUMENTO_CALIFICACION, // Disponible solo para el rol 1 (Administrador)
-        subOptions: [],
-        icon: <FaFileAlt />
-    },
-    {
         name: 'Calificación Trabajos',
         href: '/calificacion-de-trabajo-titulacion',
         roles: permisos.ROLES_CALIFICACION_TRABAJOS, // Disponible solo para el rol 1 (Administrador)
         subOptions: [],
         icon: <GrDocumentUpload />
+    },
+    {
+        name: 'Documento calificación',
+        href: '/generacion-de-documento',
+        roles: permisos.ROLES_GENERACION_DOCUMENTO_CALIFICACION, // Disponible solo para el rol 1 (Administrador)
+        subOptions: [],
+        icon: <FaFileAlt />
     },
 ];
 // export const menuData = [
