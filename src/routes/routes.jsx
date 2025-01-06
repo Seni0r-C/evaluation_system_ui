@@ -129,7 +129,7 @@ const routes = [
                 'detallesTrabajo',
                 'calificar',
               ]}
-              firstState={estadosTrabajos.FINALIZADO}
+              firstState={estadosTrabajos.ASIGNADO}
             />
           </Layout>
         </ProtectedRoute>
