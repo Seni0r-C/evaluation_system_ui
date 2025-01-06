@@ -3,14 +3,14 @@ import AccionesTrabajo from './AccionesTrabajo';
 import { capitalizeWords } from '../../utils/constants';
 import PropTypes from 'prop-types';
 
-const ListaTrabajosTitulacion = ({ trabajos, permisosAcciones, user }) => {
-    const colnBase = ['Título', 'Carrera', 'Archivo', 'Modalidad', 'Estado'];
-    const colnames = permisosAcciones?.length > 0 ? [...colnBase, 'Acciones'] : colnBase;
+const TrabajosTable = ({ trabajos, permisosAcciones, user }) => {
+    const titleColumn = ['Título', 'Carrera', 'Archivo', 'Modalidad', 'Estado'];
+    const updatedColumnNames = permisosAcciones?.length > 0 ? [...titleColumn, 'Acciones'] : titleColumn;
     return (
         <table className="min-w-full table-auto border-collapse border border-gray-200 shadow-md rounded-lg">
             <thead>
                 <tr className="bg-gray-300 text-gray-800">
-                    {colnames?.map((header) => (
+                    {updatedColumnNames?.map((header) => (
                         <th key={header} className="border-b px-6 py-3 font-bold text-left">
                             {header}
                         </th>
@@ -69,10 +69,10 @@ const ListaTrabajosTitulacion = ({ trabajos, permisosAcciones, user }) => {
     );
 }
 
-ListaTrabajosTitulacion.propTypes = {
+TrabajosTable.propTypes = {
     trabajos: PropTypes.array.isRequired,
     permisosAcciones: PropTypes.array,
     user: PropTypes.object,
 };
 
-export default ListaTrabajosTitulacion;
+export default TrabajosTable;
