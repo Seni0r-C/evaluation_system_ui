@@ -7,8 +7,9 @@ import { permisos } from '../../utils/permisos';
 import DynamicModal from '../modal/ModalData';
 import { obtenerUnTrabajo } from '../../services/trabajosTitulacion';
 import AsignacionTribunalModal from '../utmodal/AsignacionTribunalModal';
+import PropTypes from 'prop-types';
 
-const AccionesTrabajo = ({ trabajo, permisosAcciones, user, setEditTrabajo, setModalEditTrabajo, setAsignarFecha, setModalAsignarFecha }) => {
+const AccionesTrabajo = ({ trabajo, permisosAcciones, user }) => {
   const navigate = useNavigate();
   const [isOpenVerDetalle, setIsOpenVerDetalle] = useState(false);
   const [isOpenAsignarTutor, setIsOpenAsignarTutor] = useState(false);
@@ -21,16 +22,6 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user, setEditTrabajo, setM
   };
 
   // Handlers
-  const handleEdit = (trabajo) => {
-    setEditTrabajo(trabajo);
-    setModalEditTrabajo(true);
-  };
-
-  const handleAsignarFecha = (trabajo) => {
-    setAsignarFecha(trabajo);
-    setModalAsignarFecha(true);
-  };
-
   const handleCalificar = (trabajo) => {
     navigate('/calificar', { state: { trabajo } });
   };
@@ -81,7 +72,7 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user, setEditTrabajo, setM
       icono: FaEdit,
       variant: 'secondary',
       tooltip: 'Editar',
-      onClick: handleEdit,
+      onClick: () => alert('Editar'),
     },
     {
       roles: permisos.ROLES_ASIGNACION_FECHA_SUSTENTO_TRABAJOS,
@@ -89,7 +80,7 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user, setEditTrabajo, setM
       icono: FaCalendarDay,
       variant: 'primary',
       tooltip: 'Asignar Fecha',
-      onClick: handleAsignarFecha,
+      onClick: () => alert('Asignar Fecha'),
     },
     {
       roles: permisos.ROLES_CALIFICACION_TRABAJOS,
@@ -131,6 +122,12 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user, setEditTrabajo, setM
     </div>
 
   );
+};
+
+AccionesTrabajo.propTypes = {
+  trabajo: PropTypes.object.isRequired,
+  permisosAcciones: PropTypes.array.isRequired,
+  user: PropTypes.object.isRequired,
 };
 
 export default AccionesTrabajo;
