@@ -119,7 +119,7 @@ const CustomTrabajoTitulacionListar = ({ permisosAcciones, includeStateFiltter =
 CustomTrabajoTitulacionListar.propTypes = {
   permisosAcciones: PropTypes.array,
   includeStateFiltter: PropTypes.bool,
-  firstState: PropTypes.array,
+  firstStates: PropTypes.array,
 };
 
 export default CustomTrabajoTitulacionListar;
