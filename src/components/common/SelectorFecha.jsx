@@ -9,13 +9,14 @@ const SelectorFecha = ({ onDateChange, required = false, trabajoData}) => {
     useEffect(() => {
         if (trabajoData?.fecha_defensa && !selectedDate) {
             try {
-                const formattedDate = hourAndDateFromDateTimeMySQL(trabajoData?.fecha_defensa);
-                setSelectedDate(formattedDate);
+                const formattedDate = hourAndDateFromDateTimeMySQL(trabajoData.fecha_defensa);
+                setSelectedDate(formattedDate); 
             } catch (error) {
                 console.error('Error al formatear la fecha:', error);
             }
         }
     }, [trabajoData?.fecha_defensa]);
+    
     
     const handleDateChange = (e) => {
         const newDate = e.target.value;
@@ -34,7 +35,7 @@ const SelectorFecha = ({ onDateChange, required = false, trabajoData}) => {
     return (
         <div className="">
             
-            {/* Selector de Fecha */}
+            {/* Selector de Fecha */}            
             <input
                 // type="text"
                 type="datetime-local"
@@ -52,9 +53,9 @@ const SelectorFecha = ({ onDateChange, required = false, trabajoData}) => {
     );
 };
 
-SelectorFecha.propTypes = {
-    onDateChange: PropTypes.func.isRequired,
-    required: PropTypes.bool,
-};
+// SelectorFecha.propTypes = {
+//     onDateChange: PropTypes.func.isRequired,
+//     required: PropTypes.bool,
+// };
 
 export default SelectorFecha;
