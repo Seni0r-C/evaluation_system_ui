@@ -2,26 +2,23 @@ import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {hourAndDateFromDateTimeMySQL} from '../../utils/constants';
 
-const SelectorFecha = ({ onDateChange, required = false, initialDate = '' }) => {
+const SelectorFecha = ({ onDateChange, required = false, trabajoData}) => {
     const [selectedDate, setSelectedDate] = useState(null);
     const [error, setError] = useState('');
 
     useEffect(() => {
-        const formattedDate = hourAndDateFromDateTimeMySQL(initialDate);
-        alert("SelectorFecha----------"+JSON.stringify(formattedDate, null, 2));
-        if (initialDate && !selectedDate) {
+        if (trabajoData?.fecha_defensa && !selectedDate) {
             try {
-                // const formattedDate = initialDate;
+                const formattedDate = hourAndDateFromDateTimeMySQL(trabajoData?.fecha_defensa);
                 setSelectedDate(formattedDate);
             } catch (error) {
                 console.error('Error al formatear la fecha:', error);
             }
         }
-    }, [initialDate]);
+    }, [trabajoData?.fecha_defensa]);
     
     const handleDateChange = (e) => {
         const newDate = e.target.value;
-        // alert("handleDateChange: "+JSON.stringify(newDate, null, 2));
         setSelectedDate(newDate);
         setError(''); // Limpiar error al cambiar la fecha
 
@@ -39,6 +36,7 @@ const SelectorFecha = ({ onDateChange, required = false, initialDate = '' }) => 
             
             {/* Selector de Fecha */}
             <input
+                // type="text"
                 type="datetime-local"
                 value={selectedDate}
                 onChange={handleDateChange}
@@ -57,7 +55,6 @@ const SelectorFecha = ({ onDateChange, required = false, initialDate = '' }) => 
 SelectorFecha.propTypes = {
     onDateChange: PropTypes.func.isRequired,
     required: PropTypes.bool,
-    initialDate: PropTypes.string
 };
 
 export default SelectorFecha;

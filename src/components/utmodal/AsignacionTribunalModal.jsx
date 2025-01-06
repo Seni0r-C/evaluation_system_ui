@@ -30,10 +30,9 @@ const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
 
     useEffect(() => {
         if (trabajoData?.id) {
-            fectchTrabajoFull(trabajoData);            
+            fectchTrabajoFull(trabajoData);
             setInitialDateDefensa(trabajoSelected?.fecha_defensa);
             setSelectedDate(trabajoSelected?.fecha_defensa);
-            trabajoData.fecha_defensa = trabajoSelected?.fecha_defensa;
         }
     }, [isOpen, trabajoData?.id]);
 
@@ -138,7 +137,7 @@ const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
 
                         {/* Campo principal con botón más grande */}
                         <div className="relative flex items-center  rounded-md overflow-hidden">
-                            <SelectorFecha onDateChange={setSelectedDate} required={true} initialDate={initialDateDefensa} />
+                            <SelectorFecha onDateChange={setSelectedDate} required={true} trabajoData={trabajoData} />
                         </div>
                     </div>
                 </div>
