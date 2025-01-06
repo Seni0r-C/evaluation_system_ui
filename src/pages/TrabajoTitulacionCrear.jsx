@@ -8,6 +8,7 @@ import axiosInstance from '../services/axiosConfig';
 import MessageDialog from '../components/MessageDialog';
 import InputField from '../components/common/InputField';
 import UserContext from '../context/UserContext';
+import PropTypes from 'prop-types';
 
 const TrabajoTitulacionCrear = ({ iamTutor = true }) => {
   // Datos de la base de datos
@@ -369,6 +370,10 @@ const TrabajoTitulacionCrear = ({ iamTutor = true }) => {
       </div>
     </>
   );
+};
+
+TrabajoTitulacionCrear.propTypes = {
+  iamTutor: PropTypes.bool,
 };
 
 export default TrabajoTitulacionCrear;
