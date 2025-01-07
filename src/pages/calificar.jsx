@@ -21,6 +21,7 @@ const Calificar = () => {
     const [tipoEvaluacion, setTipoEvaluacion] = useState([]);
     const [currentRubrica, setCurrentRubrica] = useState(null);
     const [calificacionesSeleccionadas, setCalificacionesSeleccionadas] = useState({});
+    const [calificaciones, setCalificaciones] = useState({});
 
 
     useEffect(() => {
@@ -114,28 +115,62 @@ const Calificar = () => {
         const criterio = currentRubrica.rubrica.criterios[criterioIndex];
         const nivel = criterio.niveles[nivelIndex];
 
-        // Asumimos que `trabajo_id` y `docente_id` se obtienen de algún lugar, por ejemplo:
         const trabajo_id = trabajo.id;
         const info = localStorage.getItem('userInfo');
         const parsedUser = JSON.parse(info);
         const docente_id = parsedUser.id;
 
+        const estudiante_id = estudiantes[(selectedStudent - 1)].estudiante_id;
+
         const calificacionData = {
-            trabajo_id,               // ID del trabajo
+            trabajo_id,
             rubrica_id: currentRubrica.rubrica_id,
-            rubrica_criterio_id: criterio.id,  // ID del criterio
-            rubrica_nivel_id: nivel.id,        // ID del nivel
-            docente_id,               // ID del docente
-            estudiante_id: estudiantes[(selectedStudent - 1)].estudiante_id,  // ID del estudiante
-            puntaje_obtenido: (nivel.porcentaje * criterio.puntaje_maximo),  // Convertir el porcentaje a puntaje obtenido
+            rubrica_criterio_id: criterio.id,
+            rubrica_nivel_id: nivel.id,
+            docente_id,
+            estudiante_id,
+            puntaje_obtenido: (nivel.porcentaje * criterio.puntaje_maximo),
         };
 
         try {
-            // Llamada al endpoint para guardar la calificación
-            const response = await axios.post("http://localhost:3000/calificacion/rubrica-evaluacion", calificacionData);
+            // Si ya existe un ID en calificacionesSeleccionadas, significa que ya hemos insertado previamente esta calificación
+            const calificacionId = calificaciones[criterioIndex]?.id;
 
-            if (response.status !== 201) {
-                throw new Error("Error al guardar la calificación.");
+            if (calificacionId) {
+                // Si existe un ID, realizamos el GET para obtener la calificación
+                const getResponse = await axios.get(`http://localhost:3000/calificacion/rubrica-evaluacion/${calificacionId}`);
+
+                if (getResponse.status !== 200) {
+                    throw new Error("Error al obtener la calificación.");
+                }
+
+                if (!getResponse.data.id) {
+                    throw new Error("La calificación no existe.");
+                }
+                // Si la calificación existe, actualizamos
+                const updateResponse = await axios.put(`http://localhost:3000/calificacion/rubrica-evaluacion/${calificacionId}`, calificacionData);
+
+                if (updateResponse.status === 200) {
+                    setCalificaciones((prev) => ({
+                        ...prev,
+                        [criterioIndex]: { id: calificacionId, nivelIndex },
+                    }));
+                } else {
+                    throw new Error("Error al actualizar la calificación.");
+                }
+            } else {
+                // Si no existe un ID, hacemos un POST para crear una nueva calificación
+                const createResponse = await axios.post("http://localhost:3000/calificacion/rubrica-evaluacion", calificacionData);
+
+                if (createResponse.status === 201) {
+                    // Guardamos el ID de la calificación creada en el estado
+                    setCalificaciones((prev) => ({
+                        ...prev,
+                        [criterioIndex]: { id: createResponse.data.id, nivelIndex },
+                    }));
+                } else {
+                    throw new Error("Error al guardar la calificación.");
+                }
             }
 
             // Actualizar el estado de calificaciones seleccionadas
@@ -144,10 +179,10 @@ const Calificar = () => {
                 [criterioIndex]: nivelIndex,
             }));
 
-            alert("Calificación guardada exitosamente.");
+
         } catch (error) {
-            console.error("Error al guardar la calificación:", error);
-            alert("Ocurrió un error al guardar la calificación.");
+            console.error("Error al guardar o actualizar la calificación:", error);
+            alert("Ocurrió un error al guardar o actualizar la calificación.");
         }
     };
 
