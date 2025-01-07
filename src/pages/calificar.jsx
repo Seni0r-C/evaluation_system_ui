@@ -18,6 +18,12 @@ const Calificar = () => {
     const [currentRubrica, setCurrentRubrica] = useState(null);
     const [calificacionesSeleccionadas, setCalificacionesSeleccionadas] = useState({});
     const [calificaciones, setCalificaciones] = useState({});
+    const [showFinalizar, setShowFinalizar] = useState(false);
+
+    useEffect(() => {
+        setShowFinalizar(isCalificacionCompleta());
+    }, [calificacionesSeleccionadas]);
+
 
     useEffect(() => {
         if (trabajo) {
@@ -124,7 +130,12 @@ const Calificar = () => {
         const parsedUser = JSON.parse(info);
         const docente_id = parsedUser.id;
 
-        const estudiante_id = estudiantes[(selectedStudent - 1)].estudiante_id;
+        const estudiante_id = estudiantes.find((student) => student.id === selectedStudent)?.estudiante_id;
+
+        if (!estudiante_id) {
+            alert("No se encontró el ID del estudiante seleccionado.");
+            return;
+        }
 
         const calificacionData = {
             trabajo_id,
@@ -133,51 +144,50 @@ const Calificar = () => {
             rubrica_nivel_id: nivel.id,
             docente_id,
             estudiante_id,
-            puntaje_obtenido: (nivel.porcentaje * criterio.puntaje_maximo),
+            puntaje_obtenido: nivel.porcentaje * criterio.puntaje_maximo,
         };
 
         try {
-            // Si ya existe un ID en calificacionesSeleccionadas, significa que ya hemos insertado previamente esta calificación
-            const calificacionId = calificaciones[criterioIndex]?.id;
+            // Verificar si ya existe una calificación para este estudiante, criterio y rúbrica
+            const existingCalificacion = Object.values(calificaciones[estudiante_id]?.[currentRubrica.rubrica_id] || {}).find(
+                (cal) => cal.rubrica_criterio_id === criterio.id
+            );
 
-            if (calificacionId) {
-                // Si existe un ID, realizamos el GET para obtener la calificación
-                const getResponse = await axios.get(`http://localhost:3000/calificacion/rubrica-evaluacion/${calificacionId}`);
-
-                if (getResponse.status !== 200) {
-                    throw new Error("Error al obtener la calificación.");
-                }
-
-                if (!getResponse.data.id) {
-                    throw new Error("La calificación no existe.");
-                }
-                // Si la calificación existe, actualizamos
-                const updateResponse = await axios.put(`http://localhost:3000/calificacion/rubrica-evaluacion/${calificacionId}`, calificacionData);
+            if (existingCalificacion) {
+                // Si existe, actualizar
+                const updateResponse = await axios.put(
+                    `http://localhost:3000/calificacion/rubrica-evaluacion/${existingCalificacion.id}`,
+                    calificacionData
+                );
 
                 if (updateResponse.status === 200) {
-                    setCalificaciones((prev) => ({
-                        ...prev,
-                        [criterioIndex]: { id: calificacionId, nivelIndex },
-                    }));
+                    console.log("Calificación actualizada correctamente.");
                 } else {
                     throw new Error("Error al actualizar la calificación.");
                 }
             } else {
-                // Si no existe un ID, hacemos un POST para crear una nueva calificación
+                // Si no existe, crear una nueva
                 const createResponse = await axios.post("http://localhost:3000/calificacion/rubrica-evaluacion", calificacionData);
 
                 if (createResponse.status === 201) {
-                    // Guardamos el ID de la calificación creada en el estado
+                    console.log("Calificación creada correctamente.");
+                    // Agregar al estado local
                     setCalificaciones((prev) => ({
                         ...prev,
-                        [criterioIndex]: { id: createResponse.data.id, nivelIndex },
+                        [estudiante_id]: {
+                            ...prev[estudiante_id],
+                            [currentRubrica.rubrica_id]: {
+                                ...(prev[estudiante_id]?.[currentRubrica.rubrica_id] || {}),
+                                [criterio.id]: { id: createResponse.data.id, nivelIndex },
+                            },
+                        },
                     }));
                 } else {
-                    throw new Error("Error al guardar la calificación.");
+                    throw new Error("Error al crear la calificación.");
                 }
             }
 
-            // Actualizar el estado local
+            // Actualizar el estado local de calificaciones seleccionadas
             setCalificacionesSeleccionadas((prev) => ({
                 ...prev,
                 [selectedStudent]: {
@@ -188,24 +198,63 @@ const Calificar = () => {
                     },
                 },
             }));
-
         } catch (error) {
             console.error("Error al guardar o actualizar la calificación:", error);
             alert("Ocurrió un error al guardar o actualizar la calificación.");
         }
     };
 
+    const isCalificacionCompleta = () => {
+        if (selectedStudent === null)
+            return false;
+
+        return estudiantes.every((student) => {
+            return tipoEvaluacion.every((tipo) => {
+                const rubrica = rubricas[tipo.tipo_evaluacion_nombre];
+                if (!rubrica) return false; // Verifica que la rúbrica exista
+
+                return rubrica.rubrica.criterios.every((criterio, criterioIndex) => {
+                    return (
+                        calificacionesSeleccionadas[student.id]?.[tipo.tipo_evaluacion_nombre]?.[criterioIndex] !== undefined
+                    );
+                });
+            });
+        });
+    };
+
+    const handleFinalizar = async () => {
+        try {
+            // Lógica para finalizar la calificación (ejemplo: enviar al backend)
+            alert("Calificaciones finalizadas y guardadas correctamente.");
+        } catch (error) {
+            console.error("Error al finalizar las calificaciones:", error);
+            alert("Ocurrió un error al finalizar las calificaciones.");
+        }
+    };
+
+
     return (
         <div className="w-full overflow-hidden relative h-full">
             <div className="bg-white rounded-xl p-8 pr-14 mx-auto">
                 <h1 className="text-2xl font-extrabold mb-6 text-center text-blue-700">Calificación de Titulación</h1>
+
+                {showFinalizar && (
+                    <div className="flex justify-center mt-6">
+                        <button
+                            onClick={handleFinalizar}
+                            className="px-6 py-3 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition-all"
+                        >
+                            Finalizar Calificación
+                        </button>
+                    </div>
+                )}
 
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-5">
                     {selectedStudent && (
                         <div className="lg:col-span-3 mt-6 lg:mt-0">
                             <div className="flex justify-center mb-4">
                                 {tipoEvaluacion.map((tipo) => {
-                                    const isSelected = selectedRubricaType === tipo.tipo_evaluacion_id;
+                                    const isSelected = selectedRubricaType === tipo.tipo_evaluacion_nombre;
                                     const Icon = tipo.tipo_evaluacion_nombre === "Defensa" ? RiSpeakFill : IoDocumentText;
 
                                     return (
