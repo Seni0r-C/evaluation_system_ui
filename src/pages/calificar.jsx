@@ -101,6 +101,15 @@ const Calificar = () => {
         fetchRubricas();
     }, [trabajo]);
 
+    useEffect(() => {
+        // Aquí puedes cargar los datos guardados desde el backend para el estudiante y rúbrica seleccionados.
+        // Si no hay datos, simplemente asegura que se inicialicen correctamente.
+        setCalificacionesSeleccionadas((prev) => ({
+            ...prev,
+            [selectedStudent]: prev[selectedStudent] || {},
+        }));
+    }, [selectedStudent, selectedRubricaType]);
+
     const handleNivelChange = async (criterioIndex, nivelIndex) => {
         if (!currentRubrica.rubrica || !selectedStudent) {
             alert("Por favor, seleccione un estudiante y una rúbrica.");
@@ -168,12 +177,17 @@ const Calificar = () => {
                 }
             }
 
-            // Actualizar el estado de calificaciones seleccionadas
+            // Actualizar el estado local
             setCalificacionesSeleccionadas((prev) => ({
                 ...prev,
-                [criterioIndex]: nivelIndex,
+                [selectedStudent]: {
+                    ...prev[selectedStudent],
+                    [selectedRubricaType]: {
+                        ...prev[selectedStudent]?.[selectedRubricaType],
+                        [criterioIndex]: nivelIndex,
+                    },
+                },
             }));
-
 
         } catch (error) {
             console.error("Error al guardar o actualizar la calificación:", error);
@@ -244,7 +258,7 @@ const Calificar = () => {
                                                         {criterio.nombre}
                                                     </td>
                                                     {criterio.niveles.map((nivel, nivelIndex) => {
-                                                        const isSelected = calificacionesSeleccionadas[criterioIndex] === nivelIndex;
+                                                        const isSelected = calificacionesSeleccionadas[selectedStudent]?.[selectedRubricaType]?.[criterioIndex] === nivelIndex;
 
                                                         return (
                                                             <td
