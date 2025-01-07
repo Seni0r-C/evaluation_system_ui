@@ -6,6 +6,7 @@ import { IoDocumentText } from "react-icons/io5";
 import { useLocation } from 'react-router-dom';
 import { getEstudiantesByTrabajoId, getUserPhoto } from "../services/usuarioService";
 import axios from "axios";
+import { MdDoneOutline } from "react-icons/md";
 
 const Calificar = () => {
     const location = useLocation();
@@ -242,8 +243,9 @@ const Calificar = () => {
                     <div className="flex justify-center mt-6">
                         <button
                             onClick={handleFinalizar}
-                            className="px-6 py-3 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition-all"
+                            className="px-6 py-3 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 mb-10 text-xl flex gap-4 items-center hover:scale-105 transition-all duration-300 ease-in-out"
                         >
+                            <MdDoneOutline />
                             Finalizar Calificación
                         </button>
                     </div>
