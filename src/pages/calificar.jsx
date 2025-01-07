@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { FaFilePdf } from "react-icons/fa"; // Importamos los íconos de react-icons
 import { RiSpeakFill } from "react-icons/ri";
@@ -74,7 +75,6 @@ const Calificar = () => {
                                 id_modalidad: trabajo?.modalidad_id,
                             },
                         });
-                        console.log("Rubrica para", tipo.tipo_evaluacion_nombre, ":", response.data);
                         return {
                             tipo: tipo.tipo_evaluacion_nombre,
                             rubrica: response.data,
