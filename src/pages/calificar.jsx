@@ -126,7 +126,7 @@ const Calificar = () => {
             rubrica_criterio_id: criterio.id,  // ID del criterio
             rubrica_nivel_id: nivel.id,        // ID del nivel
             docente_id,               // ID del docente
-            estudiante_id: selectedStudent,  // ID del estudiante
+            estudiante_id: estudiantes[(selectedStudent - 1)].estudiante_id,  // ID del estudiante
             puntaje_obtenido: (nivel.porcentaje * criterio.puntaje_maximo),  // Convertir el porcentaje a puntaje obtenido
         };
 
@@ -216,7 +216,7 @@ const Calificar = () => {
                                                         return (
                                                             <td
                                                                 key={nivelIndex}
-                                                                className={`border border-gray-300 px-4 py-3 text-center cursor-pointer transition-colors duration-200 hover:bg-blue-100 ${isSelected ? "bg-blue-600 text-white" : ""}`}
+                                                                className={`border border-gray-300 px-4 py-3 text-center cursor-pointer transition-colors duration-200 ${isSelected ? "bg-green-200 text-white" : "hover:bg-green-50"}`}
                                                                 onClick={() => handleNivelChange(criterioIndex, nivelIndex)}
                                                             >
                                                                 <p className="text-sm font-semibold text-blue-700">{nivel.porcentaje * 100}%</p>
