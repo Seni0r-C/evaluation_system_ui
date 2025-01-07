@@ -19,7 +19,7 @@ const Calificar = () => {
     const [estudiantes, setEstudiantes] = useState([]);
     const [photos, setPhotos] = useState({}); // Estado para las fotos, { [id]: fotoBase64 }
     const [rubricas, setRubricas] = useState(null);
-    const [tipoEvaluacion, setTipoEvaluacion] = useState(null);
+    const [tipoEvaluacion, setTipoEvaluacion] = useState([]);
     const [currentRubrica, setCurrentRubrica] = useState(null);
     const [calificaciones, setCalificaciones] = useState(null);
 
@@ -124,20 +124,25 @@ const Calificar = () => {
                     {selectedStudent && (
                         <div className="lg:col-span-3 mt-6 lg:mt-0">
                             <div className="flex justify-center mb-4">
-                                <button
-                                    onClick={() => setSelectedRubricaType("oral")}
-                                    className={`px-6 py-2 rounded-l-lg font-semibold ${selectedRubricaType === "oral" ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-800 hover:bg-gray-300"} flex justify-between items-center`}
-                                >
-                                    Defensa
-                                    <RiSpeakFill className="ml-2" /> {/* Agregar un margen izquierdo al ícono */}
-                                </button>
-                                <button
-                                    onClick={() => setSelectedRubricaType("escrita")}
-                                    className={`px-6 py-2 rounded-r-lg font-semibold ${selectedRubricaType === "escrita" ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-800 hover:bg-gray-300"} flex justify-between items-center`}
-                                >
-                                    Documento
-                                    <IoDocumentText className="ml-2" /> {/* Agregar un margen izquierdo al ícono */}
-                                </button>
+                                {tipoEvaluacion.map((tipo) => {
+                                    const isSelected = selectedRubricaType === tipo.tipo_evaluacion_id;
+                                    const Icon = tipo.tipo_evaluacion_nombre === "Defensa" ? RiSpeakFill : IoDocumentText;
+
+                                    return (
+                                        <button
+                                            key={tipo.tipo_evaluacion_id}
+                                            onClick={() => setSelectedRubricaType(tipo.tipo_evaluacion_id)}
+                                            className={`px-6 py-2 font-semibold flex items-center ${isSelected
+                                                ? "bg-blue-600 text-white"
+                                                : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                                                } ${tipo.tipo_evaluacion_id === 1 ? "rounded-l-lg" : ""} ${tipo.tipo_evaluacion_id === tipoEvaluacion.length ? "rounded-r-lg" : ""
+                                                }`}
+                                        >
+                                            {tipo.tipo_evaluacion_nombre}
+                                            <Icon className="ml-2" />
+                                        </button>
+                                    );
+                                })}
                             </div>
 
                             <h3 className="text-2xl font-semibold mb-6 text-blue-600">
