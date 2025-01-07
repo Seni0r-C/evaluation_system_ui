@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { FaFilePdf, FaWindowMinimize } from "react-icons/fa"; // Importamos los íconos de react-icons
 import BotonAccion from "../components/common/BotonAccion";
@@ -21,7 +20,8 @@ const Calificar = () => {
     const [rubricas, setRubricas] = useState(null);
     const [tipoEvaluacion, setTipoEvaluacion] = useState([]);
     const [currentRubrica, setCurrentRubrica] = useState(null);
-    const [calificaciones, setCalificaciones] = useState(null);
+    const [calificacionesSeleccionadas, setCalificacionesSeleccionadas] = useState({});
+
 
     useEffect(() => {
         if (trabajo) {
@@ -72,6 +72,7 @@ const Calificar = () => {
                                 id_modalidad: trabajo?.modalidad_id,
                             },
                         });
+                        console.log("Rubrica para", tipo.tipo_evaluacion_nombre, ":", response.data);
                         return {
                             tipo: tipo.tipo_evaluacion_nombre,
                             rubrica: response.data,
@@ -84,7 +85,14 @@ const Calificar = () => {
 
                 const rubricasData = await Promise.all(rubricasPromises);
                 const rubricasFormatted = rubricasData.reduce((acc, item) => {
-                    if (item.rubrica) acc[item.tipo] = item.rubrica;
+                    if (item.rubrica) {
+                        // Asegúrate de incluir el id de la rubrica junto con la rubrica misma
+                        const { id } = item.rubrica.rubrica;  // Extraer el id de la rubrica
+                        acc[item.tipo] = {
+                            rubrica: item.rubrica,  // La información completa de la rubrica
+                            rubrica_id: id          // El id de la rubrica
+                        };
+                    }
                     return acc;
                 }, {});
 
@@ -97,22 +105,50 @@ const Calificar = () => {
         fetchRubricas();
     }, [trabajo]);
 
-    const handleNivelChange = (studentId, rubricaType, criterioIndex, nivelIndex) => {
-        setCalificaciones((prev) => {
-            const previousStudent = prev[studentId] ?? {};
-            const previousRubrica = previousStudent[rubricaType] ?? [];
-            const updatedRubrica = previousRubrica.map((cal, idx) =>
-                idx === criterioIndex ? nivelIndex : cal
-            );
+    const handleNivelChange = async (criterioIndex, nivelIndex) => {
+        if (!currentRubrica.rubrica || !selectedStudent) {
+            alert("Por favor, seleccione un estudiante y una rúbrica.");
+            return;
+        }
 
-            return {
+        const criterio = currentRubrica.rubrica.criterios[criterioIndex];
+        const nivel = criterio.niveles[nivelIndex];
+
+        // Asumimos que `trabajo_id` y `docente_id` se obtienen de algún lugar, por ejemplo:
+        const trabajo_id = trabajo.id;
+        const info = localStorage.getItem('userInfo');
+        const parsedUser = JSON.parse(info);
+        const docente_id = parsedUser.id;
+
+        const calificacionData = {
+            trabajo_id,               // ID del trabajo
+            rubrica_id: currentRubrica.rubrica_id,
+            rubrica_criterio_id: criterio.id,  // ID del criterio
+            rubrica_nivel_id: nivel.id,        // ID del nivel
+            docente_id,               // ID del docente
+            estudiante_id: selectedStudent,  // ID del estudiante
+            puntaje_obtenido: (nivel.porcentaje * criterio.puntaje_maximo),  // Convertir el porcentaje a puntaje obtenido
+        };
+
+        try {
+            // Llamada al endpoint para guardar la calificación
+            const response = await axios.post("http://localhost:3000/calificacion/rubrica-evaluacion", calificacionData);
+
+            if (response.status !== 201) {
+                throw new Error("Error al guardar la calificación.");
+            }
+
+            // Actualizar el estado de calificaciones seleccionadas
+            setCalificacionesSeleccionadas((prev) => ({
                 ...prev,
-                [studentId]: {
-                    ...previousStudent,
-                    [rubricaType]: updatedRubrica,
-                },
-            };
-        });
+                [criterioIndex]: nivelIndex,
+            }));
+
+            alert("Calificación guardada exitosamente.");
+        } catch (error) {
+            console.error("Error al guardar la calificación:", error);
+            alert("Ocurrió un error al guardar la calificación.");
+        }
     };
 
     return (
@@ -131,7 +167,7 @@ const Calificar = () => {
                                     return (
                                         <button
                                             key={tipo.tipo_evaluacion_id}
-                                            onClick={() => setSelectedRubricaType(tipo.tipo_evaluacion_id)}
+                                            onClick={() => setSelectedRubricaType(tipo.tipo_evaluacion_nombre)}
                                             className={`px-6 py-2 font-semibold flex items-center ${isSelected
                                                 ? "bg-blue-600 text-white"
                                                 : "bg-gray-200 text-gray-800 hover:bg-gray-300"
@@ -155,49 +191,48 @@ const Calificar = () => {
                                         <thead className="bg-blue-50 text-blue-700">
                                             <tr>
                                                 <th className="border border-gray-300 px-4 py-3 text-left">Criterio</th>
-                                                {currentRubrica[0].niveles.map((_, index) => (
+                                                {currentRubrica.rubrica.criterios[0]?.niveles.map((nivel, index) => (
                                                     <th
                                                         key={index}
                                                         className="border border-gray-300 px-4 py-3 text-center font-semibold"
                                                     >
-                                                        Nivel {index + 1}
+                                                        {nivel.nombre}
                                                     </th>
                                                 ))}
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {
-                                                currentRubrica.map((item, criterioIndex) => (
-                                                    <tr
-                                                        key={criterioIndex}
-                                                        className="odd:bg-white even:bg-gray-50"
-                                                    >
-                                                        <td className="border border-gray-300 px-4 py-3 font-medium">
-                                                            {item.criterio}
-                                                        </td>
-                                                        {item.niveles.map((nivel, nivelIndex) => (
+                                            {currentRubrica.rubrica.criterios.map((criterio, criterioIndex) => (
+                                                <tr
+                                                    key={criterioIndex}
+                                                    className="odd:bg-white even:bg-gray-50"
+                                                >
+                                                    <td className="border border-gray-300 px-4 py-3 font-medium">
+                                                        {criterio.nombre}
+                                                    </td>
+                                                    {criterio.niveles.map((nivel, nivelIndex) => {
+                                                        const isSelected = calificacionesSeleccionadas[criterioIndex] === nivelIndex;
+
+                                                        return (
                                                             <td
                                                                 key={nivelIndex}
-                                                                className={`border border-gray-300 px-4 py-3 text-center cursor-pointer transition-colors duration-200 ${calificaciones[selectedStudent][selectedRubricaType][criterioIndex] === nivelIndex
-                                                                    ? "bg-green-200"
-                                                                    : "hover:bg-green-100"
-                                                                    }`}
-                                                                onClick={() =>
-                                                                    handleNivelChange(selectedStudent, selectedRubricaType, criterioIndex, nivelIndex)
-                                                                }
+                                                                className={`border border-gray-300 px-4 py-3 text-center cursor-pointer transition-colors duration-200 hover:bg-blue-100 ${isSelected ? "bg-blue-600 text-white" : ""}`}
+                                                                onClick={() => handleNivelChange(criterioIndex, nivelIndex)}
                                                             >
-                                                                <p className="text-sm font-semibold text-green-700">{nivel.porcentaje}%</p>
+                                                                <p className="text-sm font-semibold text-blue-700">{nivel.porcentaje * 100}%</p>
                                                                 <p className="text-xs text-gray-500">{nivel.descripcion}</p>
                                                             </td>
-                                                        ))}
-                                                    </tr>
-                                                ))
-                                            }
+                                                        );
+                                                    })}
+
+                                                </tr>
+                                            ))}
                                         </tbody>
                                     </table>
                                 ) : (
-                                    <p>Seleccione un estudiante para calificar.</p>
+                                    <p>Seleccione una rúbrica para visualizarla.</p>
                                 )}
+
                             </div>
                         </div>
                     )}
