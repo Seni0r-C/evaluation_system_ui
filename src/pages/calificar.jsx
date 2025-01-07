@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaFilePdf, FaWindowMinimize } from "react-icons/fa"; // Importamos los íconos de react-icons
-import BotonAccion from "../components/common/BotonAccion";
-import { TbPinFilled, TbPinnedOff } from "react-icons/tb";
+import { FaFilePdf } from "react-icons/fa"; // Importamos los íconos de react-icons
 import { RiSpeakFill } from "react-icons/ri";
 import { IoDocumentText } from "react-icons/io5";
 import { useLocation } from 'react-router-dom';
@@ -13,8 +11,6 @@ const Calificar = () => {
     const trabajo = location.state.trabajo ?? null;
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [selectedRubricaType, setSelectedRubricaType] = useState(null);
-    const [isPdfVisible, setIsPdfVisible] = useState(false);
-    const [isPinned, setIsPinned] = useState(false);
     const [estudiantes, setEstudiantes] = useState([]);
     const [photos, setPhotos] = useState({}); // Estado para las fotos, { [id]: fotoBase64 }
     const [rubricas, setRubricas] = useState(null);
@@ -22,7 +18,6 @@ const Calificar = () => {
     const [currentRubrica, setCurrentRubrica] = useState(null);
     const [calificacionesSeleccionadas, setCalificacionesSeleccionadas] = useState({});
     const [calificaciones, setCalificaciones] = useState({});
-
 
     useEffect(() => {
         if (trabajo) {
@@ -189,7 +184,7 @@ const Calificar = () => {
     return (
         <div className="w-full overflow-hidden relative h-full">
             <div className="bg-white rounded-xl p-8 pr-14 mx-auto">
-                <h1 className="text-4xl font-extrabold mb-6 text-center text-blue-700">Calificación de Tesis</h1>
+                <h1 className="text-2xl font-extrabold mb-6 text-center text-blue-700">Calificación de Titulación</h1>
 
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-5">
                     {selectedStudent && (
@@ -217,7 +212,7 @@ const Calificar = () => {
                             </div>
 
                             <h3 className="text-2xl font-semibold mb-6 text-blue-600">
-                                Rúbrica de Calificación - {selectedRubricaType === "oral" ? "Parte Oral" : "Parte Escrita"}
+                                Rúbrica de Calificación - {selectedRubricaType}
                             </h3>
                             <div className="overflow-x-auto">
                                 {/* Validaciones para evitar errores */}
@@ -234,6 +229,9 @@ const Calificar = () => {
                                                         {nivel.nombre}
                                                     </th>
                                                 ))}
+                                                <th className="border border-gray-300 px-4 py-3 text-center font-semibold">
+                                                    Nota Máxima
+                                                </th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -259,7 +257,9 @@ const Calificar = () => {
                                                             </td>
                                                         );
                                                     })}
-
+                                                    <td className="text-sm font-semibold text-blue-700 text-center border border-gray-300" >
+                                                        {criterio.puntaje_maximo}
+                                                    </td>
                                                 </tr>
                                             ))}
                                         </tbody>
@@ -295,46 +295,16 @@ const Calificar = () => {
                                     <span className="text-left font-medium">{student.nombre}</span>
                                 </button>
                             ))}
-                            <button
-                                className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg shadow-md transition-all duration-200 bg-red-600 hover:bg-red-700 text-white`}
-                                onClick={() => setIsPdfVisible(true)}
+                            <a
+                                href={trabajo.link_archivo}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="w-full flex items-center gap-4 px-4 py-3 rounded-lg shadow-md transition-all duration-200 bg-red-500 hover:bg-red-600 text-white"
                             >
                                 <FaFilePdf className="w-12 h-12" />
                                 <span className="text-left font-medium">Ver Documento</span>
-
-                            </button>
+                            </a>
                         </div>
-                    </div>
-                </div>
-
-                {/* PDF viewer */}
-                <div
-                    className={`fixed top-0 right-0 z-50 h-full bg-white transition-transform transform ${isPdfVisible ? "translate-x-0" : "translate-x-full"} duration-500`}
-                    style={{ width: "23%" }}
-                >
-                    <div className="relative h-full">
-                        <BotonAccion
-                            icono={isPinned ? TbPinnedOff :
-                                TbPinFilled}
-                            onClick={() => setIsPinned(!isPinned)}
-                            className="absolute top-3 left-3"
-                            tooltip="Anclar"
-                            variant="primary"
-                        />
-
-                        <BotonAccion
-                            icono={FaWindowMinimize}
-                            onClick={() => setIsPdfVisible(false)}
-                            className="absolute top-3 left-14 disabled:opacity-50 disabled:bg-slate-500"
-                            disabled={!isPinned}
-                            tooltip={"Minimizar"}
-                            variant="secondary"
-                        />
-                        <iframe
-                            src="https://drive.google.com/file/d/17O9N2Q9NRs6L-LgJnTYpD-sjzAqvyEfB/preview"
-                            title="PDF Viewer"
-                            className="w-full h-full"
-                        ></iframe>
                     </div>
                 </div>
             </div>
