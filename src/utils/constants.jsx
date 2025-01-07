@@ -5,7 +5,8 @@ import { MdOutlineChromeReaderMode } from "react-icons/md";
 import { TODOS } from "../utils/roles";
 import { permisos } from "../utils/permisos";
 
-export const API_URL = "http://localhost:3000";
+// export const API_URL = "http://localhost:3000";
+export const API_URL = "https://utm.portocomercio.gob.ec";
 
 export const RutaRaiz = "/";
 
