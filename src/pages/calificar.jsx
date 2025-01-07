@@ -7,17 +7,20 @@ import { RiSpeakFill } from "react-icons/ri";
 import { IoDocumentText } from "react-icons/io5";
 import { useLocation } from 'react-router-dom';
 import { getEstudiantesByTrabajoId, getUserPhoto } from "../services/usuarioService";
+import axios from "axios";
 
 const Calificar = () => {
     const location = useLocation();
     const trabajo = location.state.trabajo ?? null;
     const [selectedStudent, setSelectedStudent] = useState(null);
-    const [selectedRubricaType, setSelectedRubricaType] = useState("oral");
+    const [selectedRubricaType, setSelectedRubricaType] = useState(null);
     const [isPdfVisible, setIsPdfVisible] = useState(false);
     const [isPinned, setIsPinned] = useState(false);
     const [estudiantes, setEstudiantes] = useState([]);
     const [photos, setPhotos] = useState({}); // Estado para las fotos, { [id]: fotoBase64 }
-
+    const [rubricas, setRubricas] = useState(null);
+    const [tipoEvaluacion, setTipoEvaluacion] = useState(null);
+    const [currentRubrica, setCurrentRubrica] = useState(null);
     const [calificaciones, setCalificaciones] = useState(null);
 
     useEffect(() => {
@@ -25,6 +28,13 @@ const Calificar = () => {
             getEstudiantesByTrabajoId(trabajo.id, setEstudiantes);
         }
     }, [trabajo]);
+
+    useEffect(() => {
+        if (selectedRubricaType && rubricas) {
+            const rubricaSeleccionada = rubricas[selectedRubricaType] ?? null;
+            setCurrentRubrica(rubricaSeleccionada);
+        }
+    }, [selectedRubricaType, rubricas]);
 
     useEffect(() => {
         const fetchPhotos = async () => {
@@ -43,78 +53,67 @@ const Calificar = () => {
         };
 
         fetchPhotos();
-        setCalificaciones(
-            estudiantes.reduce((acc, student) => {
-                acc[student.id] = {
-                    oral: rubricas.oral.map(() => null),
-                    escrita: rubricas.escrita.map(() => null),
-                };
-                return acc;
-            }, {})
-        );
     }, [estudiantes]);
 
-    const rubricas = {
-        oral: [
-            {
-                criterio: "Claridad en la Presentación",
-                niveles: [
-                    { descripcion: "Presenta ideas confusas y desorganizadas.", porcentaje: 25 },
-                    { descripcion: "Presenta ideas parcialmente claras y ordenadas.", porcentaje: 50 },
-                    { descripcion: "Presenta ideas claras, pero con algunos detalles faltantes.", porcentaje: 75 },
-                    { descripcion: "Presenta ideas muy claras, bien estructuradas y organizadas.", porcentaje: 100 },
-                ],
-                maxPuntaje: 10,
-            },
-            {
-                criterio: "Dominio del Tema",
-                niveles: [
-                    { descripcion: "Muestra un conocimiento muy limitado del tema.", porcentaje: 25 },
-                    { descripcion: "Demuestra un conocimiento básico del tema.", porcentaje: 50 },
-                    { descripcion: "Domina el tema con seguridad, aunque con pocos errores menores.", porcentaje: 75 },
-                    { descripcion: "Domina el tema completamente y responde a todas las preguntas con precisión.", porcentaje: 100 },
-                ],
-                maxPuntaje: 15,
-            },
-        ],
-        escrita: [
-            {
-                criterio: "Estructura del Documento",
-                niveles: [
-                    { descripcion: "Documento desorganizado y difícil de seguir.", porcentaje: 25 },
-                    { descripcion: "Estructura parcialmente clara pero inconsistente.", porcentaje: 50 },
-                    { descripcion: "Buena estructura, con pequeños problemas de organización.", porcentaje: 75 },
-                    { descripcion: "Estructura excelente, coherente y lógica.", porcentaje: 100 },
-                ],
-                maxPuntaje: 20,
-            },
-            {
-                criterio: "Gramática y Ortografía",
-                niveles: [
-                    { descripcion: "Errores frecuentes y graves en gramática y ortografía.", porcentaje: 25 },
-                    { descripcion: "Algunos errores, pero no interfieren significativamente con la comprensión.", porcentaje: 50 },
-                    { descripcion: "Pocos errores menores que no afectan la calidad general.", porcentaje: 75 },
-                    { descripcion: "Excelente gramática y ortografía, sin errores notables.", porcentaje: 100 },
-                ],
-                maxPuntaje: 10,
-            },
-        ],
-    };
+    useEffect(() => {
+        const fetchRubricas = async () => {
+            try {
+                const tiposResponse = await axios.get(
+                    `http://localhost:3000/calificacion/tipo-evaluacion/${trabajo?.modalidad_id}`
+                );
+                const tiposEvaluacion = tiposResponse.data ?? [];
+                setTipoEvaluacion(tiposEvaluacion);
 
+                const rubricasPromises = tiposEvaluacion.map(async (tipo) => {
+                    try {
+                        const response = await axios.get("http://localhost:3000/calificacion/rubrica", {
+                            params: {
+                                id_tipo_evaluacion: tipo.tipo_evaluacion_id,
+                                id_modalidad: trabajo?.modalidad_id,
+                            },
+                        });
+                        return {
+                            tipo: tipo.tipo_evaluacion_nombre,
+                            rubrica: response.data,
+                        };
+                    } catch (error) {
+                        console.error(`Error fetching rubrica for ${tipo.tipo_evaluacion_nombre}:`, error);
+                        return { tipo: tipo.tipo_evaluacion_nombre, rubrica: null };
+                    }
+                });
+
+                const rubricasData = await Promise.all(rubricasPromises);
+                const rubricasFormatted = rubricasData.reduce((acc, item) => {
+                    if (item.rubrica) acc[item.tipo] = item.rubrica;
+                    return acc;
+                }, {});
+
+                setRubricas(rubricasFormatted);
+            } catch (error) {
+                console.error("Error al obtener las rúbricas:", error);
+            }
+        };
+
+        fetchRubricas();
+    }, [trabajo]);
 
     const handleNivelChange = (studentId, rubricaType, criterioIndex, nivelIndex) => {
-        setCalificaciones((prev) => ({
-            ...prev,
-            [studentId]: {
-                ...prev[studentId],
-                [rubricaType]: prev[studentId][rubricaType].map((cal, idx) =>
-                    idx === criterioIndex ? nivelIndex : cal
-                ),
-            },
-        }));
-    };
+        setCalificaciones((prev) => {
+            const previousStudent = prev[studentId] ?? {};
+            const previousRubrica = previousStudent[rubricaType] ?? [];
+            const updatedRubrica = previousRubrica.map((cal, idx) =>
+                idx === criterioIndex ? nivelIndex : cal
+            );
 
-    const currentRubrica = rubricas[selectedRubricaType];
+            return {
+                ...prev,
+                [studentId]: {
+                    ...previousStudent,
+                    [rubricaType]: updatedRubrica,
+                },
+            };
+        });
+    };
 
     return (
         <div className="w-full overflow-hidden relative h-full">
@@ -145,48 +144,55 @@ const Calificar = () => {
                                 Rúbrica de Calificación - {selectedRubricaType === "oral" ? "Parte Oral" : "Parte Escrita"}
                             </h3>
                             <div className="overflow-x-auto">
-                                <table className="min-w-full border border-gray-300 rounded-lg shadow-sm">
-                                    <thead className="bg-blue-50 text-blue-700">
-                                        <tr>
-                                            <th className="border border-gray-300 px-4 py-3 text-left">Criterio</th>
-                                            {currentRubrica[0].niveles.map((_, index) => (
-                                                <th
-                                                    key={index}
-                                                    className="border border-gray-300 px-4 py-3 text-center font-semibold"
-                                                >
-                                                    Nivel {index + 1}
-                                                </th>
-                                            ))}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {currentRubrica.map((item, criterioIndex) => (
-                                            <tr
-                                                key={criterioIndex}
-                                                className="odd:bg-white even:bg-gray-50"
-                                            >
-                                                <td className="border border-gray-300 px-4 py-3 font-medium">
-                                                    {item.criterio}
-                                                </td>
-                                                {item.niveles.map((nivel, nivelIndex) => (
-                                                    <td
-                                                        key={nivelIndex}
-                                                        className={`border border-gray-300 px-4 py-3 text-center cursor-pointer transition-colors duration-200 ${calificaciones[selectedStudent][selectedRubricaType][criterioIndex] === nivelIndex
-                                                            ? "bg-green-200"
-                                                            : "hover:bg-green-100"
-                                                            }`}
-                                                        onClick={() =>
-                                                            handleNivelChange(selectedStudent, selectedRubricaType, criterioIndex, nivelIndex)
-                                                        }
+                                {/* Validaciones para evitar errores */}
+                                {currentRubrica ? (
+                                    <table className="min-w-full border border-gray-300 rounded-lg shadow-sm">
+                                        <thead className="bg-blue-50 text-blue-700">
+                                            <tr>
+                                                <th className="border border-gray-300 px-4 py-3 text-left">Criterio</th>
+                                                {currentRubrica[0].niveles.map((_, index) => (
+                                                    <th
+                                                        key={index}
+                                                        className="border border-gray-300 px-4 py-3 text-center font-semibold"
                                                     >
-                                                        <p className="text-sm font-semibold text-green-700">{nivel.porcentaje}%</p>
-                                                        <p className="text-xs text-gray-500">{nivel.descripcion}</p>
-                                                    </td>
+                                                        Nivel {index + 1}
+                                                    </th>
                                                 ))}
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                currentRubrica.map((item, criterioIndex) => (
+                                                    <tr
+                                                        key={criterioIndex}
+                                                        className="odd:bg-white even:bg-gray-50"
+                                                    >
+                                                        <td className="border border-gray-300 px-4 py-3 font-medium">
+                                                            {item.criterio}
+                                                        </td>
+                                                        {item.niveles.map((nivel, nivelIndex) => (
+                                                            <td
+                                                                key={nivelIndex}
+                                                                className={`border border-gray-300 px-4 py-3 text-center cursor-pointer transition-colors duration-200 ${calificaciones[selectedStudent][selectedRubricaType][criterioIndex] === nivelIndex
+                                                                    ? "bg-green-200"
+                                                                    : "hover:bg-green-100"
+                                                                    }`}
+                                                                onClick={() =>
+                                                                    handleNivelChange(selectedStudent, selectedRubricaType, criterioIndex, nivelIndex)
+                                                                }
+                                                            >
+                                                                <p className="text-sm font-semibold text-green-700">{nivel.porcentaje}%</p>
+                                                                <p className="text-xs text-gray-500">{nivel.descripcion}</p>
+                                                            </td>
+                                                        ))}
+                                                    </tr>
+                                                ))
+                                            }
+                                        </tbody>
+                                    </table>
+                                ) : (
+                                    <p>Seleccione un estudiante para calificar.</p>
+                                )}
                             </div>
                         </div>
                     )}
