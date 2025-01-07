@@ -7,6 +7,7 @@ import { useLocation } from 'react-router-dom';
 import { getEstudiantesByTrabajoId, getUserPhoto } from "../services/usuarioService";
 import axios from "axios";
 import { MdDoneOutline } from "react-icons/md";
+import { API_URL } from "../utils/constants";
 
 const Calificar = () => {
     const location = useLocation();
@@ -63,14 +64,14 @@ const Calificar = () => {
         const fetchRubricas = async () => {
             try {
                 const tiposResponse = await axios.get(
-                    `http://localhost:3000/calificacion/tipo-evaluacion/${trabajo?.modalidad_id}`
+                    `${API_URL}/calificacion/tipo-evaluacion/${trabajo?.modalidad_id}`
                 );
                 const tiposEvaluacion = tiposResponse.data ?? [];
                 setTipoEvaluacion(tiposEvaluacion);
 
                 const rubricasPromises = tiposEvaluacion.map(async (tipo) => {
                     try {
-                        const response = await axios.get("http://localhost:3000/calificacion/rubrica", {
+                        const response = await axios.get(API_URL + "/calificacion/rubrica", {
                             params: {
                                 id_tipo_evaluacion: tipo.tipo_evaluacion_id,
                                 id_modalidad: trabajo?.modalidad_id,
@@ -157,7 +158,7 @@ const Calificar = () => {
             if (existingCalificacion) {
                 // Si existe, actualizar
                 const updateResponse = await axios.put(
-                    `http://localhost:3000/calificacion/rubrica-evaluacion/${existingCalificacion.id}`,
+                    `${API_URL}/calificacion/rubrica-evaluacion/${existingCalificacion.id}`,
                     calificacionData
                 );
 
@@ -168,7 +169,7 @@ const Calificar = () => {
                 }
             } else {
                 // Si no existe, crear una nueva
-                const createResponse = await axios.post("http://localhost:3000/calificacion/rubrica-evaluacion", calificacionData);
+                const createResponse = await axios.post(API_URL + "/calificacion/rubrica-evaluacion", calificacionData);
 
                 if (createResponse.status === 201) {
                     console.log("Calificación creada correctamente.");

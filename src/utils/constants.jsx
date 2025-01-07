@@ -1,7 +1,6 @@
-import { FaCalendarAlt, FaHome, FaUsers, FaFileAlt } from "react-icons/fa";
+import { FaHome, FaUsers, FaFileAlt } from "react-icons/fa";
 import { FaListCheck } from "react-icons/fa6";
 import { GrDocumentUpload } from "react-icons/gr";
-import { HiDocumentSearch } from "react-icons/hi";
 import { MdOutlineChromeReaderMode } from "react-icons/md";
 import { TODOS } from "../utils/roles";
 import { permisos } from "../utils/permisos";
@@ -23,15 +22,15 @@ export function capitalizeWords(str) {
  * @returns {string} Fecha formateada como "15/01/2025, 05:00"
  */
 export const hourAndDateFromDateTimeMySQL = (date) => {
-    try{
+    try {
         const parts = date.split(",");
         const dtparts = parts[0].trim().split("/");
         const day = dtparts[0];
         const month = dtparts[1];
         const year = dtparts[2];
-        const time = parts[1].trim();        
+        const time = parts[1].trim();
         return `${year}-${month}-${day}T${time}`;
-    }catch(Exception){
+    } catch (Exception) {
         return '';
     }
 };
