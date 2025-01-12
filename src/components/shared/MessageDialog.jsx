@@ -1,7 +1,9 @@
+// MessageDialog.js
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
 const MessageDialog = ({ message, onClose, isOpen, iconType }) => {
-    if (!isOpen) return null;  // Si isOpen es false, no se renderiza nada
+    if (!isOpen) return null;
 
     const renderIcon = () => {
         switch (iconType) {
@@ -12,11 +14,11 @@ const MessageDialog = ({ message, onClose, isOpen, iconType }) => {
             case 'success':
                 return <span className="text-green-500">✅</span>;
             default:
-                return null;  // Si no hay icono, no se renderiza nada
+                return null;
         }
     };
 
-    return (
+    return ReactDOM.createPortal(
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50">
             <div className="bg-white p-8 rounded-md shadow-2xl max-w-lg w-full transition-all transform hover:scale-105">
                 <div className="flex items-center mb-5">
@@ -31,7 +33,8 @@ const MessageDialog = ({ message, onClose, isOpen, iconType }) => {
                     Cerrar
                 </button>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 };
 
@@ -39,8 +42,7 @@ MessageDialog.propTypes = {
     message: PropTypes.string.isRequired,
     onClose: PropTypes.func.isRequired,
     isOpen: PropTypes.bool.isRequired,
-    iconType: PropTypes.oneOf(['error', 'warning', 'success', null]),  // Nueva prop opcional
+    iconType: PropTypes.oneOf(['error', 'warning', 'success', null]),
 };
 
 export default MessageDialog;
-

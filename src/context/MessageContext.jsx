@@ -1,91 +1,58 @@
-import { createContext, useState } from 'react';
+// MessageContext.js
+import { createContext, useState, useCallback } from 'react';
+import MessageDialog from '../components/shared/MessageDialog';
+import PropTypes from 'prop-types';
 
-// Crear el contexto
 const MessageContext = createContext();
 
-// Proveedor del contexto
 export const MessageProvider = ({ children }) => {
-    const [messageDialog, setMessageDialog] = useState('');
-    const [isOpenDialog, setIsOpenDialog] = useState(false);
-    const [iconTypeDialog, setIconTypeDialog] = useState(null);
-    const [onCloseDialog, setOnCloseDialog] = useState(() => {});
+    const [messageState, setMessageState] = useState({
+        message: '',
+        isOpen: false,
+        iconType: null,
+    });
 
-    // Métodos para mostrar los mensajes
-    const show = (msgData) => {
-        setMessageDialog(msgData.message);
-        setIconTypeDialog(msgData.typeMsg);
-        setIsOpenDialog(true);
-    };
+    const showMessage = useCallback((message, iconType = null) => {
+        setMessageState({ message, isOpen: true, iconType });
+    }, []);
 
-    const showWarning = (msg) => {
-        setMessageDialog(msg);
-        setIconTypeDialog('warning');
-        setIsOpenDialog(true);
-    };
+    const closeMessage = useCallback(() => {
+        setMessageState({ ...messageState, isOpen: false });
+    }, [messageState]);
 
-    const showSuccess = (msg) => {
-        setMessageDialog(msg);
-        setIconTypeDialog('success');
-        setIsOpenDialog(true);
-    };
+    // Métodos más específicos para cada tipo de mensaje
+    const showSuccess = useCallback(
+        (message) => showMessage(message, 'success'),
+        [showMessage]
+    );
 
-    const showError = (msg) => {
-        setMessageDialog(msg);
-        setIconTypeDialog('error');
-        setIsOpenDialog(true);
-    };
+    const showError = useCallback(
+        (message) => showMessage(message, 'error'),
+        [showMessage]
+    );
 
-    const showIfError = (msgData) => {
-        if (msgData.typeMsg === 'error') {
-            showError(msgData.message);
-            return true;
-        }
-        return false;
-    };
-
-    const showIfSuccess = (msgData) => {
-        if (msgData.typeMsg === 'success') {
-            showSuccess(msgData.message);
-            return true;
-        }
-        return false;
-    };
-
-    const showIfErrorOrWarning = (msgData) => {
-        if (msgData.typeMsg === 'error') {
-            showError(msgData.message);
-            return true;
-        }
-        if (msgData.typeMsg === 'warning') {
-            showWarning(msgData.message);
-            return true;
-        }
-        return false;
-    };
+    const showWarning = useCallback(
+        (message) => showMessage(message, 'warning'),
+        [showMessage]
+    );
 
     return (
         <MessageContext.Provider
-            value={{
-                messageDialog,
-                isOpenDialog,
-                iconTypeDialog,
-                onCloseDialog,
-                setMessageDialog,
-                setIconTypeDialog,
-                setIsOpenDialog,
-                setOnCloseDialog,
-                show,
-                showWarning,
-                showSuccess,
-                showError,
-                showIfError,
-                showIfErrorOrWarning,
-                showIfSuccess,
-            }}
+            value={{ showMessage, showSuccess, showError, showWarning, closeMessage }}
         >
             {children}
+            <MessageDialog
+                message={messageState.message}
+                isOpen={messageState.isOpen}
+                onClose={closeMessage}
+                iconType={messageState.iconType}
+            />
         </MessageContext.Provider>
     );
+};
+
+MessageProvider.propTypes = {
+    children: PropTypes.node.isRequired,
 };
 
 export default MessageContext;

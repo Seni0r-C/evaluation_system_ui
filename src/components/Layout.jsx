@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { IoMdClose, IoMdMenu, IoIosLogOut } from "react-icons/io";
 import { FaUserCircle } from "react-icons/fa";
-import logo from '../assets/logo_bar_claro.webp';
+import logo from '../assets/logo_claro.webp';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { menuData, RutaRaiz } from '../utils/constants';
