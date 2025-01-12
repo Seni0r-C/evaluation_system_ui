@@ -5,7 +5,7 @@ import { buscarUsuarios } from '../services/usuarioService';
 import { obtenerCarreras } from '../services/carreraService';
 import { obtenerModalidadesPorCarrera } from '../services/modalidadService';
 import axiosInstance from '../services/axiosConfig';
-import MessageDialog from '../components/MessageDialog';
+import MessageDialog from '../components/shared/MessageDialog';
 import InputField from '../components/common/InputField';
 import UserContext from '../context/UserContext';
 import PropTypes from 'prop-types';

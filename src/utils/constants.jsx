@@ -5,8 +5,8 @@ import { MdOutlineChromeReaderMode } from "react-icons/md";
 import { TODOS } from "../utils/roles";
 import { permisos } from "../utils/permisos";
 
-// export const API_URL = "http://localhost:3000";
-export const API_URL = "https://utm.portocomercio.gob.ec";
+export const API_URL = "http://localhost:3000";
+// export const API_URL = "https://utm.portocomercio.gob.ec";
 
 export const RutaRaiz = "/";
 
@@ -74,9 +74,16 @@ export const menuData = [
         icon: <MdOutlineChromeReaderMode />
     },
     {
-        name: 'Registro Trabajo',
+        name: 'Registro Anteproyecto',
         href: '/registro-proyecto-titulacion',
         roles: permisos.ROLES_REGISTRO_TRABAJO, // Disponible solo para el rol 1 (Administrador)
+        subOptions: [],
+        icon: <GrDocumentUpload />
+    },
+    {
+        name: 'Registro Trabajo Final',
+        href: '/registro-proyecto-titulacion',
+        roles: permisos.ROLES_REGISTRO_TRABAJO,
         subOptions: [],
         icon: <GrDocumentUpload />
     },

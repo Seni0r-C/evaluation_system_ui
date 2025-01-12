@@ -258,7 +258,7 @@ const Calificar = () => {
                             <div className="flex justify-center mb-4">
                                 {tipoEvaluacion.map((tipo) => {
                                     const isSelected = selectedRubricaType === tipo.tipo_evaluacion_nombre;
-                                    const Icon = tipo.tipo_evaluacion_nombre === "Defensa" ? RiSpeakFill : IoDocumentText;
+                                    // const Icon = tipo.tipo_evaluacion_nombre === "Defensa" ? RiSpeakFill : IoDocumentText;
 
                                     return (
                                         <button
@@ -271,7 +271,7 @@ const Calificar = () => {
                                                 }`}
                                         >
                                             {tipo.tipo_evaluacion_nombre}
-                                            <Icon className="ml-2" />
+                                            {/* <Icon className="ml-2" /> */}
                                         </button>
                                     );
                                 })}
@@ -287,16 +287,12 @@ const Calificar = () => {
                                         <thead className="bg-blue-50 text-blue-700">
                                             <tr>
                                                 <th className="border border-gray-300 px-4 py-3 text-left">Criterio</th>
-                                                {currentRubrica.rubrica.criterios[0]?.niveles.map((nivel, index) => (
-                                                    <th
-                                                        key={index}
-                                                        className="border border-gray-300 px-4 py-3 text-center font-semibold"
-                                                    >
-                                                        {nivel.nombre}
-                                                    </th>
-                                                ))}
+                                             
                                                 <th className="border border-gray-300 px-4 py-3 text-center font-semibold">
                                                     Nota Máxima
+                                                </th>
+                                                <th className="border border-gray-300 px-4 py-3 text-center font-semibold">
+                                                    Calificacion
                                                 </th>
                                             </tr>
                                         </thead>
@@ -309,22 +305,12 @@ const Calificar = () => {
                                                     <td className="border border-gray-300 px-4 py-3 font-medium">
                                                         {criterio.nombre}
                                                     </td>
-                                                    {criterio.niveles.map((nivel, nivelIndex) => {
-                                                        const isSelected = calificacionesSeleccionadas[selectedStudent]?.[selectedRubricaType]?.[criterioIndex] === nivelIndex;
-
-                                                        return (
-                                                            <td
-                                                                key={nivelIndex}
-                                                                className={`border border-gray-300 px-4 py-3 text-center cursor-pointer transition-colors duration-200 ${isSelected ? "bg-green-200 text-white" : "hover:bg-green-50"}`}
-                                                                onClick={() => handleNivelChange(criterioIndex, nivelIndex)}
-                                                            >
-                                                                <p className="text-sm font-semibold text-blue-700">{nivel.porcentaje * 100}%</p>
-                                                                <p className="text-xs text-gray-500">{nivel.descripcion}</p>
-                                                            </td>
-                                                        );
-                                                    })}
+                                                    
                                                     <td className="text-sm font-semibold text-blue-700 text-center border border-gray-300" >
                                                         {criterio.puntaje_maximo}
+                                                    </td>
+                                                    <td className="text-sm font-semibold text-blue-700 text-center border border-gray-300" >
+                                                       <input type="number" />
                                                     </td>
                                                 </tr>
                                             ))}

@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from 'react';
+import { createContext, useState } from 'react';
 
 // Crear el contexto
 const MessageContext = createContext();

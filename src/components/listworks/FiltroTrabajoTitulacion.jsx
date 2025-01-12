@@ -3,13 +3,6 @@ import InputField from '../common/InputField';
 
 const FiltroTrabajoTitulacion = ({ filters, onFilterChange, carreras, modalidades, estados, verTodo, user }) => (
   <div className="mb-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-    <InputField
-      label="Título"
-      name="titulo"
-      value={filters.titulo}
-      onChange={onFilterChange}
-      placeholder="Filtrar por título"
-    />
 
     {verTodo && (
       <InputField
@@ -23,6 +16,14 @@ const FiltroTrabajoTitulacion = ({ filters, onFilterChange, carreras, modalidade
         capitalize
       />
     )}
+
+    <InputField
+      label="Título"
+      name="titulo"
+      value={filters.titulo}
+      onChange={onFilterChange}
+      placeholder="Filtrar por título"
+    />
 
     <InputField
       label="Fecha defensa"
@@ -40,10 +41,10 @@ const FiltroTrabajoTitulacion = ({ filters, onFilterChange, carreras, modalidade
       onChange={onFilterChange}
       options={modalidades}
       placeholder="Seleccione una modalidad"
-    />    
-    
+    />
+
     {estados && (
-        <InputField
+      <InputField
         label="Estados"
         type="select"
         name="estado"
@@ -51,7 +52,7 @@ const FiltroTrabajoTitulacion = ({ filters, onFilterChange, carreras, modalidade
         onChange={onFilterChange}
         options={estados}
         placeholder="Seleccione un estado"
-    />)}
+      />)}
   </div>
 );
 

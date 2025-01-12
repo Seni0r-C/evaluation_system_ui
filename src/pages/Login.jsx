@@ -3,7 +3,7 @@ import UserContext from "../context/UserContext";
 import logo from "../assets/logo_inicio.png";
 import { useNavigate } from "react-router-dom";
 import LoadingScreen from "../components/LoadingScreen";
-import MessageDialog from "../components/MessageDialog";
+import MessageDialog from "../components/shared/MessageDialog";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import background from "../assets/utm.webp";
 import { RutaRaiz, VERSION } from "../utils/constants";

@@ -1,5 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom';
-import ErrorBoundary from '../components/ErrorBoundary';
+import ErrorBoundary from '../components/shared/ErrorBoundary';
 import Login from '../pages/Login';
 import NotFound from '../pages/NotFound';
 import Layout from '../components/Layout';

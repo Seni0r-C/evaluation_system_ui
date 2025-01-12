@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom/client';
 import { AuthProvider } from './context/AuthContext';
 import { UserProvider } from './context/UserContext';
 import { MessageProvider } from './context/MessageContext';
-import GlobalMessageDialog from './components/GlobalMessageDialog';
+import GlobalMessageDialog from './components/shared/GlobalMessageDialog';
 import router from './routes/routes';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

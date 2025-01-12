@@ -1,5 +1,4 @@
-import { useEffect } from 'react';
-import { useMessage } from '../hooks/hooks';
+import { useMessage } from '../../hooks/hooks';
 import { FaInfoCircle } from 'react-icons/fa';
 
 const GlobalMessageDialog = () => {
