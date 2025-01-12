@@ -3,16 +3,13 @@ import PropTypes from 'prop-types';
 import { MAP_ROLE_STR } from '../utils/roles';
 
 const getUserName = (userData) => {
-  // Dividir el nombre en partes  
   const partesNombre = userData?.nombre?.split(' ');
-  if (partesNombre) {
-    const primerApellido = partesNombre[0];
-    const primerNombre = partesNombre[2];
-    // Configurar el nombre del usuario    
-    return [primerNombre, primerApellido].map(palabra => palabra.charAt(0).toUpperCase() + palabra.slice(1).toLowerCase()).join(' ');
-  } else {
-    return 'Usuario';
-  }
+  if (!partesNombre || partesNombre.length < 2) return 'Usuario';
+
+  const [primerApellido, , primerNombre] = partesNombre;
+  return [primerNombre, primerApellido]
+    .map(palabra => palabra.charAt(0).toUpperCase() + palabra.slice(1).toLowerCase())
+    .join(' ');
 };
 
 const getRolesText = (roles) => {

@@ -1,5 +1,4 @@
-import { useState, useContext } from "react";
-import UserContext from "../context/UserContext";
+import { useState} from "react";
 import { useNavigate } from "react-router-dom";
 import LoadingScreen from "../components/LoadingScreen";
 import background from "../assets/utm.webp";
@@ -15,8 +14,7 @@ const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const { isAuthenticated } = useAuth();
-    const { updateUser } = useContext(UserContext);
-    const { handleLogin, isLoading } = useAuthActions(updateUser, navigate);
+    const { handleLogin, isLoading } = useAuthActions(navigate);
 
     if (isAuthenticated) {
         navigate(RutaRaiz);

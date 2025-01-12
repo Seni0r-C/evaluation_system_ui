@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import UserContext from '../context/UserContext';
 import InicioAdmin from './inicio/InicioAdmin';
 import InicioEstudiante from './inicio/InicioEstudiante';
@@ -8,14 +8,14 @@ import { ESTUDIANTE, ADMIN, VICEDECANO, TRIBUNAL, SECRETARIA } from '../utils/ro
 const Home = () => {
     const { hasRole } = useContext(UserContext);
     return (
-        <div className="p-6 space-y-6">             
+        <div className="p-6 space-y-6">
             {
-            hasRole([ESTUDIANTE])? 
-            <InicioEstudiante />: 
-            hasRole([ADMIN, VICEDECANO, TRIBUNAL, SECRETARIA])? 
-            <InicioAdmin />: 
-            <InicioDefault /> 
-            } 
+                hasRole([ESTUDIANTE]) ?
+                    <InicioEstudiante /> :
+                    hasRole([ADMIN, VICEDECANO, TRIBUNAL, SECRETARIA]) ?
+                        <InicioAdmin /> :
+                        <InicioDefault />
+            }
         </div>
     )
 };

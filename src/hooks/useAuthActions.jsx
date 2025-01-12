@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { login, fetchUserData } from "../services/authService";
 import { useAuth } from "./useAuth";
 import { useMessage } from "./useMessage";
+import UserContext from "../context/UserContext";
 
-export const useAuthActions = (updateUser, navigate) => {
+export const useAuthActions = (navigate) => {
+    const { updateUser } = useContext(UserContext);
     const [isLoading, setIsLoading] = useState(false);
     const { setIsAuthenticated } = useAuth();
     const { showError } = useMessage();
@@ -14,12 +16,12 @@ export const useAuthActions = (updateUser, navigate) => {
             const response = await login(username, password);
             const data = response.data;
 
-            if (data.exito) {
+            if (data.exito == true) {
                 localStorage.setItem("token", data.datos);
                 localStorage.setItem("tokenCreationTime", new Date().getTime());
 
                 const userInfo = await fetchUserData(data.datos);
-                if (userInfo.data.exito) {
+                if (userInfo.data.exito == true) {
                     setIsAuthenticated(true);
                     updateUser(userInfo.data.datos);
                     navigate("/");

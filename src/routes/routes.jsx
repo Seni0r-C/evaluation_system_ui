@@ -1,21 +1,25 @@
 import { createBrowserRouter } from 'react-router-dom';
+import { RutaRaiz } from '../utils/constants';
+import { estadosTrabajos } from '../utils/estados_trabajos';
+
+// Componentes compartidos
 import ErrorBoundary from '../components/shared/ErrorBoundary';
-import Login from '../pages/Login';
-import NotFound from '../pages/NotFound';
 import Layout from '../components/Layout';
 import ProtectedRoute from '../components/ProtectedRoute';
+import CustomTrabajoTitulacionListar from '../components/CustomTrabajoTitulacionListar';
+
+// Páginas
+import Login from '../pages/Login';
+import NotFound from '../pages/NotFound';
 import ModalidadesTitulacion from '../pages/modalidadesTitulacion';
 import ItemsRevista from '../pages/itemsRevista';
 import ItemsRubrica from '../pages/itemsRubrica';
-import { RutaRaiz } from '../utils/constants';
 import Calificar from '../pages/calificar';
 import VistaCrearTrabajoTitulacionFormulario from '../pages/VistaCrearTrabajoTitulacionFormulario';
 import TrabajoTitulacionListar from '../pages/TrabajoTitulacionListar';
 import UserProfile from '../pages/Perfil';
 import Home from '../pages/Home';
 import CalendarioEventos from '../pages/Calendario';
-import CustomTrabajoTitulacionListar from '../components/CustomTrabajoTitulacionListar';
-import { estadosTrabajos } from '../utils/estados_trabajos';
 
 const routes = [
   {
