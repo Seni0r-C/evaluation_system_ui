@@ -345,7 +345,7 @@ const TrabajoTitulacionCrear = ({ iamTutor = true }) => {
                 searchResults={estudiantes}
                 setSearchResults={setEstudiantes}
                 selectedUser={null} // No hay uno solo seleccionado
-                selectedUSers={selectedEstudiantes}
+                selectedUsers={selectedEstudiantes}
                 setSelectedUser={handleEstudianteSelect} // No hay uno solo seleccionado
                 handleKeyDown={handleKeyDown}
                 handleChipRemove={handleChipRemove}

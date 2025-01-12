@@ -12,7 +12,7 @@ const BuscadorYSelectorDeUsuarios = ({
   searchResults,
   setSearchResults,
   selectedUser,
-  selectedUSers,
+  selectedUsers,
   setSelectedUser,
   handleKeyDown,
   handleChipRemove,
@@ -56,7 +56,7 @@ const BuscadorYSelectorDeUsuarios = ({
             onKeyDown={(e) => handleKeyDown(e, type)}
             placeholder={placeholder}
             className="w-full border rounded-l px-3 py-2 mb-2"
-            required={required ? ((type !== "estudiante" && selectedUser == null) || (type === "estudiante" && selectedUSers?.length <= 0)) : false}
+            required={required ? ((type !== "estudiante" && selectedUser == null) || (type === "estudiante" && selectedUsers?.length <= 0)) : false}
           />
           <button
             onClick={handleButtonClick}
@@ -109,9 +109,9 @@ const BuscadorYSelectorDeUsuarios = ({
       )}
 
       {/* Mostrar estudiantes seleccionados */}
-      {selectedUSers && (
+      {selectedUsers && (
         <div className="mt-2">
-          {selectedUSers.map((est) => (
+          {selectedUsers.map((est) => (
             <div key={est.id} className="flex items-center bg-green-100 text-gray-700 px-3 py-1 rounded-full mt-1 w-fit">
               <span className="mr-2">{capitalizeWords(est.nombre)}</span>
               <button
@@ -137,7 +137,7 @@ BuscadorYSelectorDeUsuarios.propTypes = {
   searchResults: PropTypes.array.isRequired,
   setSearchResults: PropTypes.func.isRequired,
   selectedUser: PropTypes.object,
-  selectedUSers: PropTypes.array,
+  selectedUsers: PropTypes.array,
   setSelectedUser: PropTypes.func.isRequired,
   handleKeyDown: PropTypes.func.isRequired,
   handleChipRemove: PropTypes.func.isRequired,
