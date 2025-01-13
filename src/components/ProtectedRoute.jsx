@@ -51,9 +51,9 @@ const ProtectedRoute = ({ children, route }) => {
     }
 
     // Si no tiene permiso, redirige a una página de "No autorizado"
-    if (!isAllowed) {
-        return <Unauthorized />;
-    }
+    // if (!isAllowed) {
+    //     return <Unauthorized />;
+    // }
 
     // Si está autenticado y tiene permiso, renderiza el contenido
     return children;

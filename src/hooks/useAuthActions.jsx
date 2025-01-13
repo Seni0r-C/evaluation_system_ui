@@ -32,7 +32,8 @@ export const useAuthActions = (navigate) => {
                 throw new Error(data.mensaje || "Error en la autenticación.");
             }
         } catch (error) {
-            showError(error.message);
+            const errorMsg = error.response?.data?.mensaje || error.message;
+            showError(errorMsg);
         } finally {
             setIsLoading(false);
         }

@@ -9,7 +9,7 @@ export const login = async (username, password) => {
 };
 
 export const fetchUserData = async (token) => {
-    return await axiosInstance.get(`/auth/me`, {
+    return await axiosInstance.get(`/auth/info`, {
         headers: { Authorization: `Bearer ${token}` },
     });
 };
