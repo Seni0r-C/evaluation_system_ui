@@ -1,6 +1,5 @@
 import { createContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { MAP_ROLE_STR } from '../utils/roles';
 
 const getUserName = (userData) => {
   const partesNombre = userData?.nombre?.split(' ');
@@ -12,17 +11,11 @@ const getUserName = (userData) => {
     .join(' ');
 };
 
-const getRolesText = (roles) => {
-  if (!roles) return '';
-  return roles.map(role => MAP_ROLE_STR[role] || `${role?.toUpperCase()}`).join(', ');
-}
-
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null); // Guarda la información del usuario
   const [roles, setRoles] = useState([]); // Roles del usuario
-  const [rolesAsStr, setRolesAsStr] = useState(null); // Roles del usuario
   const [loading, setLoading] = useState(true);
   const [userName, setUserName] = useState(null);
   const [userPhoto, setUserPhoto] = useState(null);
@@ -32,7 +25,6 @@ export const UserProvider = ({ children }) => {
     setUserPhoto(`data:image/jpeg;base64,${newUserData.fotoBase64}`);
     setRoles(newUserData.roles || []);
     setUserName(getUserName(newUserData));
-    setRolesAsStr(getRolesText(newUserData?.roles));
   };
 
   const updateUser = (newUserData) => {
@@ -59,13 +51,12 @@ export const UserProvider = ({ children }) => {
     return roles.some(role => requiredRoles.includes(role));
   };
 
-
   if (loading) {
     return <div>Loading...</div>; // Indicador de carga
   }
 
   return (
-    <UserContext.Provider value={{ updateUser, userName, userPhoto, rolesAsStr, hasRole, user, roles }}>
+    <UserContext.Provider value={{ updateUser, userName, userPhoto, hasRole, user, roles }}>
       {children}
     </UserContext.Provider>
   );

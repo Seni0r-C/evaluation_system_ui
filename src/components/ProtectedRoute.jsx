@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import AuthContext from '../context/AuthContext';
 import { useContext, useState, useEffect } from 'react';
 import axios from 'axios';
-import Unauthorized from '../pages/Unauthorized';
+// import Unauthorized from '../pages/Unauthorized';
 
 const ProtectedRoute = ({ children, route }) => {
     const { isAuthenticated } = useContext(AuthContext);

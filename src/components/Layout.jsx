@@ -5,13 +5,15 @@ import { FaUserCircle } from "react-icons/fa";
 import logo from '../assets/logo_claro.webp';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { menuData, RutaRaiz } from '../utils/constants';
+import { capitalizeWords, RutaRaiz } from '../utils/constants';
 import UserContext from '../context/UserContext';
 import SidebarMenu from './menu/SidebarMenu';
+import axiosInstance from '../services/axiosConfig';
+import { transformMenuData } from '../utils/menuUtils';
 
 
 const Layout = ({ children }) => {
-    const { userName, userPhoto, rolesAsStr, roles } = useContext(UserContext);
+    const { userName, userPhoto, roles } = useContext(UserContext);
     // Lee el estado inicial de localStorage
     const [isSidebarVisible, setSidebarVisible] = useState(() => {
         const savedState = localStorage.getItem('isSidebarVisible');
@@ -21,6 +23,7 @@ const Layout = ({ children }) => {
     const navigate = useNavigate();
     const { setIsAuthenticated } = useAuth();
     const dropdownRef = useRef(null);
+    const [menuData, setMenuData] = useState([]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -37,6 +40,28 @@ const Layout = ({ children }) => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
+
+    useEffect(() => {
+        const fetchMenuData = async () => {
+            try {
+                // Hacer múltiples solicitudes para cada rol
+                const rolePromises = roles.map(role => axiosInstance.get(`/rutas/menu/${role.id}`));
+                const responses = await Promise.all(rolePromises);
+
+                // Fusionar los menús
+                const allMenuItems = responses.flatMap(response => response.data);
+                // const uniqueMenuItems = mergeMenuItems(allMenuItems);
+
+                // Transformar los datos para el componente
+                const transformedData = transformMenuData(allMenuItems);
+                setMenuData(transformedData);
+            } catch (error) {
+                console.error('Error fetching menu data:', error);
+            }
+        };
+
+        fetchMenuData();
+    }, [roles]);
 
     const toggleSidebar = () => {
         setSidebarVisible((prevVisible) => {
@@ -71,42 +96,26 @@ const Layout = ({ children }) => {
 
                 </div>
                 <div className="relative" ref={dropdownRef}>
-                    {rolesAsStr ? (<div
-                        onClick={toggleDropdown}
-                        className="cursor-pointer flex items-center md:space-x-4 mr-8 rounded hover:bg-green-800 px-4 py-1 transition-all"
-                    >
-                        <div className="text-right">
-                            <span className="block font-semibold text-xs md:text-base text-white">
-                                {userName}
-                            </span>
-                            <span className="block font-semibold text-xs md:text-sm text-gray-200">
-                                {rolesAsStr}
-                            </span>
-                        </div>
-                        <img
-                            src={userPhoto}
-                            alt="Foto de perfil"
-                            className="rounded-full w-16 h-16 bg-blue-500 flex justify-center items-center text-gray-800 font-semibold border-2 border-green-600 object-cover"
-                        />
-                    </div>) :
-                        (
-                            <div
-                                onClick={toggleDropdown}
-                                className="cursor-pointer flex items-center md:space-x-4 mr-8 rounded hover:bg-green-800 px-4 py-1 transition-all"
-                            >
-                                <span className="font-semibold text-xs md:text-base text-right text-white">
+                    {roles.length > 0 && (
+                        <div
+                            onClick={toggleDropdown}
+                            className="cursor-pointer flex items-center md:space-x-4 mr-8 rounded hover:bg-green-800 px-4 py-1 transition-all"
+                        >
+                            <div className="text-right">
+                                <span className="block font-semibold text-xs md:text-base text-white">
                                     {userName}
                                 </span>
-                                <span className="font-semibold text-xs md:text-base text-right text-gray-200">
-                                    {rolesAsStr}
+                                <span className="block font-semibold text-xs md:text-sm text-gray-200">
+                                    {roles.map(role => `${capitalizeWords(role.nombre)}`).join(', ')}
                                 </span>
-                                <img
-                                    src={userPhoto}
-                                    alt="Foto de perfil"
-                                    className="rounded-full w-10 h-10 bg-blue-500 flex justify-center items-center text-gray-800 font-semibold border-2 border-green-600 object-cover"
-                                />
                             </div>
-                        )}
+                            <img
+                                src={userPhoto}
+                                alt="Foto de perfil"
+                                className="rounded-full w-16 h-16 bg-blue-500 flex justify-center items-center text-gray-800 font-semibold border-2 border-green-600 object-cover"
+                            />
+                        </div>
+                    )}
 
                     {isDropdownVisible && (
                         <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg py-2">
@@ -139,7 +148,7 @@ const Layout = ({ children }) => {
                 <aside
                     className={`bg-gray-100 text-gray-950 py-6 px-2 space-y-6 w-56 h-full fixed transition-transform duration-300 ease-in-out ${isSidebarVisible ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'} border-r-2 border-gray-200`}
                 >
-                    <SidebarMenu menuData={menuData} roles={roles} />
+                    <SidebarMenu menuData={menuData} />
                 </aside>
 
                 {/* Contenido principal */}

@@ -111,7 +111,7 @@ const routes = [
     ),
   },
   {
-    path: '/registro-proyecto-titulacion',
+    path: '/registro-anteproyecto',
     element: (
       <ErrorBoundary>
         <ProtectedRoute>
@@ -133,7 +133,7 @@ const routes = [
                 'detallesTrabajo',
                 'calificar',
               ]}
-              firstStates={[estadosTrabajos.ASIGNADO]}
+              // firstStates={[estadosTrabajos.ASIGNADO]}
             />
           </Layout>
         </ProtectedRoute>
@@ -150,7 +150,7 @@ const routes = [
               permisosAcciones={[
                 'detallesTrabajo',
               ]}
-              firstStates={[estadosTrabajos.FINALIZADO]}
+              // firstStates={[estadosTrabajos.FINALIZADO]}
             />
           </Layout>
         </ProtectedRoute>
@@ -181,7 +181,7 @@ const routes = [
                 'asignarTribunal',
               ]}
               includeStateFiltter={true}
-              firstStates={[estadosTrabajos.REGISTRADO, estadosTrabajos.ASIGNADO]}
+              // firstStates={[estadosTrabajos.REGISTRADO, estadosTrabajos.ASIGNADO]}
             />
           </Layout>
         </ProtectedRoute>
