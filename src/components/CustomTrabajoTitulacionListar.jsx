@@ -56,7 +56,7 @@ const CustomTrabajoTitulacionListar = ({ permisosAcciones, includeStateFiltter =
       const requiredRoles = permisos.ROLES_VER_TODOS_LOS_REGISTROS_DE_TRABAJOS;
 
       // Verificar si el usuario tiene al menos uno de los roles
-      const hasRole = user.roles.some(role => requiredRoles.includes(role));
+      const hasRole = user.roles.some(role => requiredRoles.includes(role.nombre));
 
       if (hasRole) {
         setVerTodo(true);

@@ -8,6 +8,9 @@ const useAccessControl = () => {
 
     // Función para verificar acceso a una ruta
     const hasAccessToRoute = async (ruta) => {
+        if (roles.length === 0) {
+            return
+        }
         try {
             const response = await axiosInstance.post('/rutas/hasAccess', {
                 rol: roles, // Suponiendo que el primer rol del usuario es el rol principal

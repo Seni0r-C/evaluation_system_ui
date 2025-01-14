@@ -28,7 +28,7 @@ const TrabajoTitulacionListar = () => {
     modalidad_id: '',
     estado: '',
     titulo: '',
-    fecha_defensa: user.roles.includes(3) ? new Date().toISOString().split('T')[0] : '',
+    fecha_defensa: user.roles.some(r => r.id == 3) ? new Date().toISOString().split('T')[0] : '',
   });
 
   //datos

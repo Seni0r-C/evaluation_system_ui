@@ -3,16 +3,15 @@ import UserContext from '../context/UserContext';
 import InicioAdmin from './inicio/InicioAdmin';
 import InicioEstudiante from './inicio/InicioEstudiante';
 import InicioDefault from './inicio/InicioDefault';
-import { ESTUDIANTE, ADMIN, VICEDECANO, TRIBUNAL, SECRETARIA } from '../utils/roles';
 
 const Home = () => {
     const { hasRole } = useContext(UserContext);
     return (
         <div className="p-6 space-y-6">
             {
-                hasRole([ESTUDIANTE]) ?
+                hasRole(["ESTUDIANTE"]) ?
                     <InicioEstudiante /> :
-                    hasRole([ADMIN, VICEDECANO, TRIBUNAL, SECRETARIA]) ?
+                    hasRole(["ADMINISTRACIÓN", "VICEDECANATO", "SECRETARíA"]) ?
                         <InicioAdmin /> :
                         <InicioDefault />
             }

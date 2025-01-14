@@ -46,7 +46,7 @@ export const UserProvider = ({ children }) => {
    * @returns {boolean} - Returns true if the user has at least one of the required roles, otherwise false.
    */
   const hasRole = (requiredRoles) => {
-    return roles.some(role => requiredRoles.includes(role));
+    return roles.some(role => requiredRoles.includes(role.nombre));
   };
 
   return (
