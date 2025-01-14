@@ -15,11 +15,11 @@ import ModalidadesTitulacion from '../pages/modalidadesTitulacion';
 import ItemsRevista from '../pages/itemsRevista';
 import ItemsRubrica from '../pages/itemsRubrica';
 import Calificar from '../pages/calificar';
-import VistaCrearTrabajoTitulacionFormulario from '../pages/VistaCrearTrabajoTitulacionFormulario';
 import TrabajoTitulacionListar from '../pages/TrabajoTitulacionListar';
 import UserProfile from '../pages/Perfil';
 import Home from '../pages/Home';
 import CalendarioEventos from '../pages/Calendario';
+import TrabajoTitulacionCrear from '../pages/TrabajoTitulacionCrear';
 
 const routes = [
   {
@@ -42,11 +42,11 @@ const routes = [
     path: RutaRaiz,
     element: (
       <ErrorBoundary>
-        <ProtectedRoute>
-          <Layout>
+        <Layout>
+          <ProtectedRoute>
             <Home />
-          </Layout>
-        </ProtectedRoute>
+          </ProtectedRoute>
+        </Layout>
       </ErrorBoundary>
     ),
   },
@@ -54,11 +54,11 @@ const routes = [
     path: '/trabajos-titulacion',
     element: (
       <ErrorBoundary>
-        <ProtectedRoute>
-          <Layout>
+        <Layout>
+          <ProtectedRoute>
             <TrabajoTitulacionListar />
-          </Layout>
-        </ProtectedRoute>
+          </ProtectedRoute>
+        </Layout>
       </ErrorBoundary>
     ),
   },
@@ -66,11 +66,11 @@ const routes = [
     path: '/calendario',
     element: (
       <ErrorBoundary>
-        <ProtectedRoute>
-          <Layout>
+        <Layout>
+          <ProtectedRoute>
             <CalendarioEventos />
-          </Layout>
-        </ProtectedRoute>
+          </ProtectedRoute>
+        </Layout>
       </ErrorBoundary>
     ),
   },
@@ -78,11 +78,11 @@ const routes = [
     path: '/modalidades',
     element: (
       <ErrorBoundary>
-        <ProtectedRoute>
-          <Layout>
+        <Layout>
+          <ProtectedRoute>
             <ModalidadesTitulacion />
-          </Layout>
-        </ProtectedRoute>
+          </ProtectedRoute>
+        </Layout>
       </ErrorBoundary>
     ),
   },
@@ -90,11 +90,11 @@ const routes = [
     path: '/items-revista',
     element: (
       <ErrorBoundary>
-        <ProtectedRoute>
-          <Layout>
+        <Layout>
+          <ProtectedRoute>
             <ItemsRevista />
-          </Layout>
-        </ProtectedRoute>
+          </ProtectedRoute>
+        </Layout>
       </ErrorBoundary>
     ),
   },
@@ -102,11 +102,11 @@ const routes = [
     path: '/items-rubrica',
     element: (
       <ErrorBoundary>
-        <ProtectedRoute>
-          <Layout>
+        <Layout>
+          <ProtectedRoute>
             <ItemsRubrica />
-          </Layout>
-        </ProtectedRoute>
+          </ProtectedRoute>
+        </Layout>
       </ErrorBoundary>
     ),
   },
@@ -114,11 +114,11 @@ const routes = [
     path: '/registro-anteproyecto',
     element: (
       <ErrorBoundary>
-        <ProtectedRoute>
-          <Layout>
-            <VistaCrearTrabajoTitulacionFormulario />
-          </Layout>
-        </ProtectedRoute>
+        <Layout>
+          <ProtectedRoute>
+            <TrabajoTitulacionCrear />
+          </ProtectedRoute>
+        </Layout>
       </ErrorBoundary>
     ),
   },
@@ -126,17 +126,17 @@ const routes = [
     path: '/calificacion-de-trabajo-titulacion',
     element: (
       <ErrorBoundary>
-        <ProtectedRoute>
-          <Layout>
+        <Layout>
+          <ProtectedRoute>
             <CustomTrabajoTitulacionListar
               permisosAcciones={[
                 'detallesTrabajo',
                 'calificar',
               ]}
-              // firstStates={[estadosTrabajos.ASIGNADO]}
+            // firstStates={[estadosTrabajos.ASIGNADO]}
             />
-          </Layout>
-        </ProtectedRoute>
+          </ProtectedRoute>
+        </Layout>
       </ErrorBoundary>
     ),
   },
@@ -144,16 +144,16 @@ const routes = [
     path: '/trabajos-titulacion-realizados',
     element: (
       <ErrorBoundary>
-        <ProtectedRoute>
-          <Layout>
+        <Layout>
+          <ProtectedRoute>
             <CustomTrabajoTitulacionListar
               permisosAcciones={[
                 'detallesTrabajo',
               ]}
-              // firstStates={[estadosTrabajos.FINALIZADO]}
+            // firstStates={[estadosTrabajos.FINALIZADO]}
             />
-          </Layout>
-        </ProtectedRoute>
+          </ProtectedRoute>
+        </Layout>
       </ErrorBoundary>
     ),
   },
@@ -161,11 +161,11 @@ const routes = [
     path: '/calificar',
     element: (
       <ErrorBoundary>
-        <ProtectedRoute>
-          <Layout>
+        <Layout>
+          <ProtectedRoute>
             <Calificar />
-          </Layout>
-        </ProtectedRoute>
+          </ProtectedRoute>
+        </Layout>
       </ErrorBoundary>
     ),
   },
@@ -173,18 +173,18 @@ const routes = [
     path: '/asignacion-de-tribunal',
     element: (
       <ErrorBoundary>
-        <ProtectedRoute>
-          <Layout>
+        <Layout>
+          <ProtectedRoute>
             <CustomTrabajoTitulacionListar
               permisosAcciones={[
                 'detallesTrabajo',
                 'asignarTribunal',
               ]}
               includeStateFiltter={true}
-              // firstStates={[estadosTrabajos.REGISTRADO, estadosTrabajos.ASIGNADO]}
+            // firstStates={[estadosTrabajos.REGISTRADO, estadosTrabajos.ASIGNADO]}
             />
-          </Layout>
-        </ProtectedRoute>
+          </ProtectedRoute>
+        </Layout>
       </ErrorBoundary>
     ),
   },
@@ -192,8 +192,8 @@ const routes = [
     path: '/generacion-de-documento',
     element: (
       <ErrorBoundary>
-        <ProtectedRoute>
-          <Layout>
+        <Layout>
+          <ProtectedRoute>
             <CustomTrabajoTitulacionListar
               permisosAcciones={[
                 'detallesTrabajo',
@@ -201,8 +201,8 @@ const routes = [
               ]}
               firstStates={[estadosTrabajos.CALIFICADO]}
             />
-          </Layout>
-        </ProtectedRoute>
+          </ProtectedRoute>
+        </Layout>
       </ErrorBoundary>
     ),
   },
@@ -210,11 +210,11 @@ const routes = [
     path: '/profile',
     element: (
       <ErrorBoundary>
-        <ProtectedRoute>
-          <Layout>
+        <Layout>
+          <ProtectedRoute>
             <UserProfile />
-          </Layout>
-        </ProtectedRoute>
+          </ProtectedRoute>
+        </Layout>
       </ErrorBoundary>
     ),
   },

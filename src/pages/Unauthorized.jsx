@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 const Unauthorized = () => {
     return (
-        <div className="flex items-center justify-center h-screen bg-gray-100">
+        <div className="flex items-center justify-center h-full bg-gray-100">
             <div className="text-center">
                 <div className="flex justify-center">
                     {/* Icono o Ilustración */}

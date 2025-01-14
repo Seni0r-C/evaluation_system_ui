@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import LoadingScreen from '../components/LoadingScreen';
 
 const AuthContext = createContext();
 
@@ -26,7 +27,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>; // Puedes reemplazar esto por un spinner u otro indicador de carga
+    return <LoadingScreen isLoading={true} />;
   }
 
   return (

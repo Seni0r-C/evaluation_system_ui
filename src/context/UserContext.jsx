@@ -16,7 +16,6 @@ const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null); // Guarda la información del usuario
   const [roles, setRoles] = useState([]); // Roles del usuario
-  const [loading, setLoading] = useState(true);
   const [userName, setUserName] = useState(null);
   const [userPhoto, setUserPhoto] = useState(null);
 
@@ -38,7 +37,6 @@ export const UserProvider = ({ children }) => {
       const parsedUser = JSON.parse(info);
       initUser(parsedUser);
     }
-    setLoading(false);
   }, []);
 
   /**
@@ -50,10 +48,6 @@ export const UserProvider = ({ children }) => {
   const hasRole = (requiredRoles) => {
     return roles.some(role => requiredRoles.includes(role));
   };
-
-  if (loading) {
-    return <div>Loading...</div>; // Indicador de carga
-  }
 
   return (
     <UserContext.Provider value={{ updateUser, userName, userPhoto, hasRole, user, roles }}>
