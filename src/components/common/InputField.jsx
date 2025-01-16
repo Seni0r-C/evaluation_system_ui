@@ -26,11 +26,12 @@ const InputField = ({
                 {options.map((option) => (
                     <option key={option.id || option} value={option.id || option}>
                         {capitalize
-                            ? (capitalizeWords(option.nombre || option))
-                            : (option.nombre || option)}
+                            ? capitalizeWords(option.nombre || option)
+                            : option.nombre || option}
                     </option>
                 ))}
             </select>
+
         ) : (
             <input
                 type={type}
@@ -42,7 +43,7 @@ const InputField = ({
                 required={required}
             />
         )}
-    </div>
+    </div >
 );
 
 InputField.propTypes = {

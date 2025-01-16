@@ -133,7 +133,7 @@ const routes = [
                 'detallesTrabajo',
                 'calificar',
               ]}
-            // firstStates={[estadosTrabajos.ASIGNADO]}
+              firstStates={["CON TRIBUNAL"]}
             />
           </ProtectedRoute>
         </Layout>
@@ -150,7 +150,7 @@ const routes = [
               permisosAcciones={[
                 'detallesTrabajo',
               ]}
-            // firstStates={[estadosTrabajos.FINALIZADO]}
+              firstStates={["DEFENDIDO"]}
             />
           </ProtectedRoute>
         </Layout>
@@ -181,7 +181,7 @@ const routes = [
                 'asignarTribunal',
               ]}
               includeStateFiltter={true}
-            // firstStates={[estadosTrabajos.REGISTRADO, estadosTrabajos.ASIGNADO]}
+              firstStates={["SIN TRIBUNAL"]}
             />
           </ProtectedRoute>
         </Layout>
@@ -229,6 +229,15 @@ const routes = [
 ];
 
 
-const router = createBrowserRouter(routes);
+const router = createBrowserRouter(routes, {
+  future: {
+    v7_startTransition: true,
+    v7_relativeSplatPath: true,
+    v7_fetcherPersist: true,
+    v7_normalizeFormMethod: true,
+    v7_partialHydration: true,
+    v7_skipActionErrorRevalidation: true,
+  },
+});
 
 export default router;

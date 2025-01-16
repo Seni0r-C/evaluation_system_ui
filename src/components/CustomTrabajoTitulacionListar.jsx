@@ -10,7 +10,7 @@ import ListaTrabajosTitulacion from './listworks/ListaTrabajosTitulacion';
 import Paginacion from './listworks/Paginacion';
 import PropTypes from 'prop-types';
 
-const CustomTrabajoTitulacionListar = ({ permisosAcciones, includeStateFiltter = false, firstStates = [] }) => {
+const CustomTrabajoTitulacionListar = ({ permisosAcciones, includeStateFiltter = false, firstStates = [], titulo = "Trabajos de Titulación" }) => {
   const [trabajos, setTrabajos] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -32,8 +32,6 @@ const CustomTrabajoTitulacionListar = ({ permisosAcciones, includeStateFiltter =
   const [modalidades, setModalidades] = useState([]);
   const [estados, setEstados] = useState([]);
 
-
-
   useEffect(() => {
     obtenerCarreras(setCarreras);
     if (firstStates && includeStateFiltter) {
@@ -48,7 +46,7 @@ const CustomTrabajoTitulacionListar = ({ permisosAcciones, includeStateFiltter =
     if (firstStates) {
       setFilters((prevFilters) => ({ ...prevFilters, estado: firstStates }));
     }
-  }, []);
+  }, [firstStates]);
 
   useEffect(() => {
     if (info) {
@@ -104,7 +102,7 @@ const CustomTrabajoTitulacionListar = ({ permisosAcciones, includeStateFiltter =
 
   return (
     <div className="container mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Trabajos de Titulación</h1>
+      <h1 className="text-2xl font-bold mb-4">{titulo}</h1>
       {includeStateFiltter ?
         (<FiltroTrabajoTitulacion {...{ filters, onFilterChange: handleFilterChange, carreras, estados, modalidades, verTodo, user }} />)
         :
@@ -120,6 +118,7 @@ CustomTrabajoTitulacionListar.propTypes = {
   permisosAcciones: PropTypes.array,
   includeStateFiltter: PropTypes.bool,
   firstStates: PropTypes.array,
+  titulo: PropTypes.string,
 };
 
 export default CustomTrabajoTitulacionListar;

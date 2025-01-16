@@ -1,5 +1,5 @@
-import React from 'react';
 import InputField from '../common/InputField';
+import PropTypes from 'prop-types';
 
 const FiltroTrabajoTitulacion = ({ filters, onFilterChange, carreras, modalidades, estados, verTodo, user }) => (
   <div className="mb-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -48,12 +48,22 @@ const FiltroTrabajoTitulacion = ({ filters, onFilterChange, carreras, modalidade
         label="Estados"
         type="select"
         name="estado"
-        value={filters.estado}
+        value={filters.estado[0]}
         onChange={onFilterChange}
         options={estados}
         placeholder="Seleccione un estado"
       />)}
   </div>
 );
+
+FiltroTrabajoTitulacion.propTypes = {
+  filters: PropTypes.object,
+  onFilterChange: PropTypes.func,
+  carreras: PropTypes.array,
+  modalidades: PropTypes.array,
+  estados: PropTypes.array,
+  verTodo: PropTypes.bool,
+  user: PropTypes.object
+};
 
 export default FiltroTrabajoTitulacion;
