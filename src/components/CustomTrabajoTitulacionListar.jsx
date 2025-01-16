@@ -38,7 +38,7 @@ const CustomTrabajoTitulacionListar = ({ permisosAcciones, includeStateFiltter =
     obtenerCarreras(setCarreras);
     if (firstStates && includeStateFiltter) {
       setEstados(Array.isArray(firstStates) ? firstStates : [firstStates]);
-    } else if(firstStates==='' && includeStateFiltter) {
+    } else if (firstStates === '' && includeStateFiltter) {
       obtenerEstados(setEstados);
     }
 
@@ -48,7 +48,7 @@ const CustomTrabajoTitulacionListar = ({ permisosAcciones, includeStateFiltter =
     if (firstStates) {
       setFilters((prevFilters) => ({ ...prevFilters, estado: firstStates }));
     }
-  }, [firstStates]);
+  }, []);
 
   useEffect(() => {
     if (info) {
