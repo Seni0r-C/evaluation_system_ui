@@ -78,7 +78,7 @@ const Layout = ({ children }) => {
     return (
         <div className="min-h-screen flex flex-col bg-gray-100 text-gray-800">
             {/* Barra superior */}
-            <header className="bg-[#0e9343] text-gray-800 flex justify-between items-center shadow-md z-50 fixed w-full top-0 left-0">
+            <header className="bg-[#0e9343] text-gray-800 flex justify-between items-center shadow-md z-40 fixed w-full top-0 left-0">
                 <div className="flex items-center space-x-4">
                     <button
                         onClick={toggleSidebar}
@@ -140,24 +140,35 @@ const Layout = ({ children }) => {
                 </div >
             </header >
 
-            {/* Contenedor principal que incluye la barra lateral y el contenido */}
-            < div
-                className={`flex flex-grow overflow-hidden transition-all duration-300 ease-in-out pt-16`}
-            >
-                {/* Barra lateral */}
-                <aside
-                    className={`bg-gray-100 text-gray-950 py-6 px-2 space-y-6 w-56 h-full fixed transition-transform duration-300 ease-in-out ${isSidebarVisible ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'} border-r-2 border-gray-200`}
+            <div className="relative">
+                {/* Contenedor principal que incluye la barra lateral y el contenido */}
+                <div
+                    className={`flex flex-grow overflow-hidden transition-all duration-300 ease-in-out pt-16`}
                 >
-                    <SidebarMenu menuData={menuData} />
-                </aside>
+                    <div
+                        onClick={() => setSidebarVisible(false)} // Cierra el menú al hacer clic
+                        className={`md:hidden fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300 ease-in-out z-10 ${isSidebarVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                            }`}
+                    ></div>
 
-                {/* Contenido principal */}
-                < main
-                    className={`flex-grow bg-white shadow-inner transition-all duration-300 ease-in-out mt-2 ${isSidebarVisible ? 'md:ml-56' : 'md:ml-0'}`}
-                >
-                    {children}
-                </main >
-            </div >
+                    {/* Barra lateral */}
+                    <aside
+                        className={`bg-gray-100 text-gray-950 py-6 px-2 z-30 space-y-6 w-56 h-full fixed transition-transform duration-300 ease-in-out ${isSidebarVisible ? 'translate-x-0 opacity-100' : '-translate-x-full'
+                            } border-r-2 border-gray-200`}
+                    >
+                        <SidebarMenu menuData={menuData} />
+                    </aside>
+
+                    {/* Contenido principal */}
+                    <main
+                        className={`flex-grow bg-white shadow-inner transition-all duration-300 ease-in-out mt-2 ${isSidebarVisible ? 'md:ml-56' : 'md:ml-0'
+                            }`}
+                    >
+                        {children}
+                    </main>
+                </div>
+            </div>
+
         </div >
 
     );
