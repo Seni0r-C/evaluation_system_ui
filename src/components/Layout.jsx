@@ -78,7 +78,7 @@ const Layout = ({ children }) => {
     return (
         <div className="min-h-screen flex flex-col bg-gray-100 text-gray-800">
             {/* Barra superior */}
-            <header className="bg-[#0e9343] text-gray-800 flex justify-between items-center shadow-md z-40 fixed w-full top-0 left-0">
+            <header className="bg-[#0e9343] text-gray-800 flex justify-between items-center shadow-md z-50 fixed w-full top-0 left-0">
                 <div className="flex items-center space-x-4">
                     <button
                         onClick={toggleSidebar}
@@ -163,12 +163,14 @@ const Layout = ({ children }) => {
                     <main
                         className={`flex-grow bg-white shadow-inner transition-all duration-300 ease-in-out mt-2 ${isSidebarVisible ? 'md:ml-56' : 'md:ml-0'
                             }`}
+                        style={{
+                            minHeight: `calc(100vh - 4rem)`, // Altura mínima dinámica (100% del viewport menos el header)
+                        }}
                     >
                         {children}
                     </main>
                 </div>
             </div>
-
         </div >
 
     );

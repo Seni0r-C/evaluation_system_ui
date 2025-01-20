@@ -10,7 +10,7 @@ import InputField from '../components/common/InputField';
 import UserContext from '../context/UserContext';
 import PropTypes from 'prop-types';
 
-const TrabajoTitulacionCrear = ({ iamTutor = true }) => {
+const TrabajoTitulacionCrear = () => {
   // Datos de la base de datos
   const { user } = useContext(UserContext);
   const [carreras, setCarreras] = useState([]);
@@ -18,11 +18,12 @@ const TrabajoTitulacionCrear = ({ iamTutor = true }) => {
   const [tutores, setTutores] = useState([]);
   const [cotutores, setCotutores] = useState([]);
   const [estudiantes, setEstudiantes] = useState([]);
+  const [iamDocente, setIamDocente] = useState(false);
 
   // Datos del formulario
   const [selectedCarrera, setSelectedCarrera] = useState('');
   const [selectedModalidad, setSelectedModalidad] = useState('');
-  const [selectedTutor, setSelectedTutor] = useState(iamTutor ? user : null);
+  const [selectedTutor, setSelectedTutor] = useState(null);
   const [selectedCotutor, setSelectedCotutor] = useState(null);
   const [selectedEstudiantes, setSelectedEstudiantes] = useState([]);
   const [titulo, setTitulo] = useState('');
@@ -65,9 +66,19 @@ const TrabajoTitulacionCrear = ({ iamTutor = true }) => {
     setHighlightedIndexEstudiante(-1);
   };
 
+  const isDocente = () => {
+    // Verificar si el usuario es tutor
+    const istutor = user.roles.some(r => r.id == 3);
+    setIamDocente(istutor);
+    if (istutor) {
+      setSelectedTutor(user);
+    }
+  };
+
   // Obtener carreras
   useEffect(() => {
     obtenerCarreras(setCarreras);
+    isDocente();
   }, []);
 
   // Obtener modalidades por carrera
@@ -237,7 +248,7 @@ const TrabajoTitulacionCrear = ({ iamTutor = true }) => {
   return (
     <>
       <MessageDialog message={message} isOpen={isOpen} onClose={() => setIsOpen(false)} iconType={iconType} />
-      <div className="px-16 py-6 mx-auto">
+      <div className="px-16 py-6 mx-auto min-h-max">
         <h1 className="text-2xl font-bold mb-6">Crear Trabajo de Titulación</h1>
 
         {/* Contenedor de dos columnas */}
@@ -298,7 +309,7 @@ const TrabajoTitulacionCrear = ({ iamTutor = true }) => {
             {/* Columna 2 */}
             <div >
               {/* Buscar Tutor */}
-              {!iamTutor && (<BuscadorYSelectorDeUsuarios
+              {!iamDocente && (<BuscadorYSelectorDeUsuarios
                 label="Buscar Tutor"
                 placeholder="Ingrese el nombre del tutor"
                 searchValue={tutorSearch}

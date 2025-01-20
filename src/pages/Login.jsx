@@ -1,4 +1,4 @@
-import { useState} from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import LoadingScreen from "../components/LoadingScreen";
 import background from "../assets/utm.webp";
@@ -16,9 +16,12 @@ const Login = () => {
     const { isAuthenticated } = useAuth();
     const { handleLogin, isLoading } = useAuthActions(navigate);
 
-    if (isAuthenticated) {
-        navigate(RutaRaiz);
-    }
+    // Mover la lógica de navegación a un efecto secundario
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate(RutaRaiz);
+        }
+    }, [isAuthenticated, navigate]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -50,7 +53,7 @@ const Login = () => {
                 <div className="mx-8 flex md:w-1/3 justify-center items-center mr-5 md:mt-0 mt-10">
                     <img
                         src={logo}
-                        alt="Logo de al Universidad Técnica de Manabí"
+                        alt="Logo de la Universidad Técnica de Manabí"
                         className="w-full h-auto object-contain"
                     />
                 </div>
