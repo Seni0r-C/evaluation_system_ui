@@ -1,6 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { RutaRaiz } from '../utils/constants';
-import { estadosTrabajos } from '../utils/estados_trabajos';
 
 // Componentes compartidos
 import ErrorBoundary from '../components/shared/ErrorBoundary';
@@ -199,7 +198,7 @@ const routes = [
                 'detallesTrabajo',
                 'generarReporte',
               ]}
-              firstStates={[estadosTrabajos.CALIFICADO]}
+              firstStates={["DEFENDIDO"]}
             />
           </ProtectedRoute>
         </Layout>

@@ -1,19 +1,14 @@
-const REGISTRADO = 'REGISTRADO';
-const ASIGNADO = 'ASIGNADO';
-const CALIFICADO = 'CALIFICADO';
-const INFORME_GENERADO = 'INFORME GENERADO';
-const FINALIZADO = 'FINALIZADO';
-const RECHAZADO = 'RECHAZADO';
+// Definir los estados y sus IDs en un solo lugar
+export const estadosTrabajos = {
+    REGISTRADO: "REGISTRADO",
+    ASIGNADO: "ASIGNADO",
+    CALIFICADO: "CALIFICADO",
+    INFORME_GENERADO: "INFORME GENERADO",
+    FINALIZADO: "FINALIZADO",
+    RECHAZADO: "RECHAZADO"
+};
 
-const estadosTrabajos = {
-    REGISTRADO: REGISTRADO,
-    ASIGNADO: ASIGNADO,
-    CALIFICADO: CALIFICADO,
-    INFORME_GENERADO: INFORME_GENERADO,
-    FINALIZADO: FINALIZADO,
-    RECHAZADO: RECHAZADO
-}
-
+// Asociar IDs directamente a los estados
 export const estadosTrabajosIds = {
     REGISTRADO: 1,
     ASIGNADO: 2,
@@ -21,15 +16,14 @@ export const estadosTrabajosIds = {
     INFORME_GENERADO: 4,
     FINALIZADO: 5,
     RECHAZADO: 6
-}
+};
 
-export {
-    REGISTRADO,
-    ASIGNADO,
-    CALIFICADO,
-    INFORME_GENERADO,
-    FINALIZADO,
-    RECHAZADO
-}
-
-export { estadosTrabajos };
+// Exportar los estados como valores individuales si es necesario
+export const { 
+    REGISTRADO, 
+    ASIGNADO, 
+    CALIFICADO, 
+    INFORME_GENERADO, 
+    FINALIZADO, 
+    RECHAZADO 
+} = estadosTrabajos;
