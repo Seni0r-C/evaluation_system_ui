@@ -48,7 +48,7 @@ const UserProfile = () => {
             <FaCircle className="text-gray-50" size={20} key={2} />,
         ]
         return (
-            <div className="flex items-center space-x-1">
+            <div className="flex items-center space-x-1 whitespace-nowrap">
                 {allSteps.map((step, index) => {
                     const isCompleted = steps.includes(step);
                     return (
@@ -74,11 +74,11 @@ const UserProfile = () => {
 
     return (
         <div className="min-h-full">
-            <div className="max-w-7xl mx-auto py-8 px-4">
+            <div className="max-w-fit md:max-w-7xl mx-auto py-8 px-2">
                 {/* Header */}
                 <div className="border-b pb-4 mb-6">
                     <h1 className="text-2xl font-bold text-gray-800">Perfil de Usuario</h1>
-                    <p className="text-sm text-gray-500">Sistema de Validación - Universidad</p>
+                    <p className="text-sm text-gray-500">Sistema de calificación de trabajos de titulación - FCI</p>
                 </div>
 
                 {/* Content */}
@@ -113,7 +113,7 @@ const UserProfile = () => {
                 </div>
 
                 {/* Lista de trabajos de titulación */}
-                <div className="mt-8 overflow-x-auto">
+                <div className="mt-8">
                     <h3 className="text-xl font-semibold text-gray-800 mb-4">Trabajos de Titulación</h3>
                     <ul className="space-y-6">
                         {thesisList.map((thesis, index) => (
@@ -124,7 +124,7 @@ const UserProfile = () => {
                                 <h4 className="text-lg font-medium text-gray-700">{thesis.title}</h4>
                                 <p className="text-sm text-gray-600">Año: {thesis.year}</p>
                                 <p className="text-sm text-gray-600">Asesor: {thesis.advisor}</p>
-                                <div className="mt-4">{renderProgress(thesis.progress)}</div>
+                                <div className="mt-4 max-w-xs md:max-w-4xl overflow-x-auto">{renderProgress(thesis.progress)}</div>
                             </li>
                         ))}
                     </ul>
