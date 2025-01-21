@@ -134,8 +134,41 @@ const Calificar = () => {
     };
 
     const handleFinalizar = async () => {
+        const info = localStorage.getItem('userInfo');
+        const user = JSON.parse(info);
+      
         try {
-            // Lógica para finalizar la calificación (ejemplo: enviar al backend)
+            // Recorremos los estudiantes
+            for (const studentId in calificacionesSeleccionadas) {
+                // Recorremos los tipos de evaluación
+                for (const tipoEvaluacion in calificacionesSeleccionadas[studentId]) {
+                    const rubrica = rubricas[tipoEvaluacion];
+
+                    if (!rubrica) continue; // Saltar si no hay rúbrica disponible
+
+                    const rubricaId = rubrica.rubrica_id;
+                    const criterios = rubrica.rubrica.criterios;
+
+                    // Recorremos los criterios de la rúbrica
+                    for (const [criterioIndex, puntajeObtenido] of Object.entries(calificacionesSeleccionadas[studentId][tipoEvaluacion])) {
+                        const criterio = criterios[criterioIndex];
+
+                        // Crear payload para el endpoint
+                        const payload = {
+                            trabajo_id: trabajo.id,
+                            rubrica_id: rubricaId,
+                            rubrica_criterio_id: criterio.id, // Asegúrate de que cada criterio tenga un identificador único
+                            docente_id: user.id, // Reemplaza con el ID del docente autenticado
+                            estudiante_id: studentId,
+                            puntaje_obtenido: puntajeObtenido,
+                        };
+
+                        // Realizar petición al backend
+                        await axios.post(`${API_URL}/calificacion/rubrica-evaluacion`, payload);
+                    }
+                }
+            }
+
             alert("Calificaciones finalizadas y guardadas correctamente.");
         } catch (error) {
             console.error("Error al finalizar las calificaciones:", error);
