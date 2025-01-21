@@ -95,7 +95,8 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user }) => {
   return (
     <div className="flex justify-end gap-4">
       {accionesObjs.map(({ roles, permiso, icono, variant, tooltip, onClick }) =>
-        roles.some((role) => user.roles.includes(role)) && permisosAcciones.includes(permiso) ? (
+        roles.some((role) => user.roles.some(r => r.nombre === role)) &&
+          permisosAcciones.includes(permiso) ? (
           <BotonAccion
             key={permiso}
             onClick={() => onClick(trabajo)}
@@ -112,12 +113,13 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user }) => {
         title={"Detalles del Trabajo de Titulación"}
       />
 
-      <AsignacionTribunalModal
+      {/* <AsignacionTribunalModal
+      //TODO hay problemas al mostrar mensajes de error de la nueva forma
         isOpen={isOpenAsignarTutor}
         onClose={() => setIsOpenAsignarTutor(false)}
         trabajoData={trabajoSelected}
         title={"Asignación de tribunal"}
-      />
+      /> */}
 
     </div>
 

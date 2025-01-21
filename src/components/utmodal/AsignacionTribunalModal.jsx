@@ -5,12 +5,16 @@ import BuscadorDocentes from "../utmcomps/BuscadorDocentes";
 import SelectorFecha from "../common/SelectorFecha";
 import { asignarTribunalService, reasignarTribunalService, obtenerTribunalService } from "../../services/tribunalService";
 import { obtenerUnTrabajo } from "../../services/trabajosTitulacion";
-import { useMessage } from "../../hooks/hooks";
+// import { useMessage } from "../../hooks/hooks";
 import { estadosTrabajosIds } from "../../utils/estados_trabajos";
 import PropTypes from "prop-types";
+import { useMessage } from "../../hooks/useMessage";
+
+//TODO aqui tengo que cambiar la forma en que muestran los mensajes a la nueva
 
 const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
-    const { showIfSuccess, showWarning, showIfErrorOrWarning, showIfError } = useMessage();
+    // const { showSuccess, showWarning, showIfErrorOrWarning, showIfError } = useMessage();
+    const { showError, showWarning, showSuccess } = useMessage();
     // Modal
     const [nestedData, setNestedData] = useState(null);
     // Selector Docentes
@@ -42,7 +46,7 @@ const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
                 setSelectedDocentes(miembros);
                 setInitialSelectedItems(miembros);
             }, trabajoData.id);
-            showIfError(msgData);
+            showError(msgData);
         }
     }, [isOpen, trabajoData?.id]);
 
@@ -78,10 +82,8 @@ const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
             return;
         }
         const msgData = asignarTribunalService(null, trabajoData?.id, selectedDocentes, selectedDate, estadosTrabajosIds.ASIGNADO);
-        if (showIfErrorOrWarning(msgData)) {
-            return;
-        }
-        if (showIfSuccess(msgData)) {
+
+        if (showSuccess(msgData)) {
             onClose();
         }
     };
@@ -114,10 +116,8 @@ const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
             return;
         }
         const msgData = await reasignarTribunalService(null, trabajoData?.id, selectedDocentes, selectedDate, estadosTrabajosIds.ASIGNADO);
-        if (showIfErrorOrWarning(msgData)) {
-            return;
-        }
-        if (showIfSuccess(msgData)) {
+
+        if (showSuccess(msgData)) {
             trabajoData.fecha_defensa = selectedDate;
             onClose();
         }
