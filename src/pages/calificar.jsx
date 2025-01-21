@@ -1,8 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { FaFilePdf } from "react-icons/fa"; // Importamos los íconos de react-icons
-import { RiSpeakFill } from "react-icons/ri";
-import { IoDocumentText } from "react-icons/io5";
 import { useLocation } from 'react-router-dom';
 import { getEstudiantesByTrabajoId, getUserPhoto } from "../services/usuarioService";
 import axios from "axios";
@@ -20,7 +18,6 @@ const Calificar = () => {
     const [tipoEvaluacion, setTipoEvaluacion] = useState([]);
     const [currentRubrica, setCurrentRubrica] = useState(null);
     const [calificacionesSeleccionadas, setCalificacionesSeleccionadas] = useState({});
-    const [calificaciones, setCalificaciones] = useState({});
     const [showFinalizar, setShowFinalizar] = useState(false);
 
     useEffect(() => {
@@ -118,94 +115,6 @@ const Calificar = () => {
         }));
     }, [selectedStudent, selectedRubricaType]);
 
-    const handleNivelChange = async (criterioIndex, nivelIndex) => {
-        if (!currentRubrica.rubrica || !selectedStudent) {
-            alert("Por favor, seleccione un estudiante y una rúbrica.");
-            return;
-        }
-
-        const criterio = currentRubrica.rubrica.criterios[criterioIndex];
-        const nivel = criterio.niveles[nivelIndex];
-
-        const trabajo_id = trabajo.id;
-        const info = localStorage.getItem('userInfo');
-        const parsedUser = JSON.parse(info);
-        const docente_id = parsedUser.id;
-
-        const estudiante_id = estudiantes.find((student) => student.id === selectedStudent)?.estudiante_id;
-
-        if (!estudiante_id) {
-            alert("No se encontró el ID del estudiante seleccionado.");
-            return;
-        }
-
-        const calificacionData = {
-            trabajo_id,
-            rubrica_id: currentRubrica.rubrica_id,
-            rubrica_criterio_id: criterio.id,
-            rubrica_nivel_id: nivel.id,
-            docente_id,
-            estudiante_id,
-            puntaje_obtenido: nivel.porcentaje * criterio.puntaje_maximo,
-        };
-
-        try {
-            // Verificar si ya existe una calificación para este estudiante, criterio y rúbrica
-            const existingCalificacion = Object.values(calificaciones[estudiante_id]?.[currentRubrica.rubrica_id] || {}).find(
-                (cal) => cal.rubrica_criterio_id === criterio.id
-            );
-
-            if (existingCalificacion) {
-                // Si existe, actualizar
-                const updateResponse = await axios.put(
-                    `${API_URL}/calificacion/rubrica-evaluacion/${existingCalificacion.id}`,
-                    calificacionData
-                );
-
-                if (updateResponse.status === 200) {
-                    console.log("Calificación actualizada correctamente.");
-                } else {
-                    throw new Error("Error al actualizar la calificación.");
-                }
-            } else {
-                // Si no existe, crear una nueva
-                const createResponse = await axios.post(API_URL + "/calificacion/rubrica-evaluacion", calificacionData);
-
-                if (createResponse.status === 201) {
-                    console.log("Calificación creada correctamente.");
-                    // Agregar al estado local
-                    setCalificaciones((prev) => ({
-                        ...prev,
-                        [estudiante_id]: {
-                            ...prev[estudiante_id],
-                            [currentRubrica.rubrica_id]: {
-                                ...(prev[estudiante_id]?.[currentRubrica.rubrica_id] || {}),
-                                [criterio.id]: { id: createResponse.data.id, nivelIndex },
-                            },
-                        },
-                    }));
-                } else {
-                    throw new Error("Error al crear la calificación.");
-                }
-            }
-
-            // Actualizar el estado local de calificaciones seleccionadas
-            setCalificacionesSeleccionadas((prev) => ({
-                ...prev,
-                [selectedStudent]: {
-                    ...prev[selectedStudent],
-                    [selectedRubricaType]: {
-                        ...prev[selectedStudent]?.[selectedRubricaType],
-                        [criterioIndex]: nivelIndex,
-                    },
-                },
-            }));
-        } catch (error) {
-            console.error("Error al guardar o actualizar la calificación:", error);
-            alert("Ocurrió un error al guardar o actualizar la calificación.");
-        }
-    };
-
     const isCalificacionCompleta = () => {
         if (selectedStudent === null)
             return false;
@@ -234,6 +143,24 @@ const Calificar = () => {
         }
     };
 
+    const hendelCalificacion = (e, criterioIndex, criterio) => {
+        const value = Math.min(criterio.puntaje_maximo, Math.max(0, e.target.value));
+        setCalificacionesSeleccionadas((prev) => ({
+            ...prev,
+            [selectedStudent]: {
+                ...prev[selectedStudent],
+                [selectedRubricaType]: {
+                    ...prev[selectedStudent]?.[selectedRubricaType],
+                    [criterioIndex]: value,
+                },
+            },
+        }));
+    };
+
+    const calificacionValue = (criterioIndex) => {
+        const value = calificacionesSeleccionadas[selectedStudent]?.[selectedRubricaType]?.[criterioIndex];
+        return value ? value : 0;
+    };
 
     return (
         <div className="w-full overflow-hidden relative h-full">
@@ -287,12 +214,12 @@ const Calificar = () => {
                                         <thead className="bg-blue-50 text-blue-700">
                                             <tr>
                                                 <th className="border border-gray-300 px-4 py-3 text-left">Criterio</th>
-                                             
+
                                                 <th className="border border-gray-300 px-4 py-3 text-center font-semibold">
                                                     Nota Máxima
                                                 </th>
                                                 <th className="border border-gray-300 px-4 py-3 text-center font-semibold">
-                                                    Calificacion
+                                                    Calificación
                                                 </th>
                                             </tr>
                                         </thead>
@@ -305,12 +232,25 @@ const Calificar = () => {
                                                     <td className="border border-gray-300 px-4 py-3 font-medium">
                                                         {criterio.nombre}
                                                     </td>
-                                                    
+
                                                     <td className="text-sm font-semibold text-blue-700 text-center border border-gray-300" >
                                                         {criterio.puntaje_maximo}
                                                     </td>
                                                     <td className="text-sm font-semibold text-blue-700 text-center border border-gray-300" >
-                                                       <input type="number" />
+                                                        <input
+                                                            type="number"
+                                                            className="w-full border border-gray-300 rounded-md px-2 py-1 text-center focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                                            max={criterio.puntaje_maximo}
+                                                            min="0"
+                                                            onKeyPress={(e) => {
+                                                                if (!/[0-9.]/.test(e.key)) {
+                                                                    e.preventDefault();
+                                                                }
+                                                            }}
+                                                            placeholder={`0 - ${criterio.puntaje_maximo}`}
+                                                            value={calificacionValue(criterioIndex)}
+                                                            onChange={(e) => hendelCalificacion(e, criterioIndex, criterio)}
+                                                        />
                                                     </td>
                                                 </tr>
                                             ))}
