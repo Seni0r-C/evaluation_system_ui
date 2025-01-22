@@ -136,7 +136,7 @@ const Calificar = () => {
     const handleFinalizar = async () => {
         const info = localStorage.getItem('userInfo');
         const user = JSON.parse(info);
-      
+
         try {
             // Recorremos los estudiantes
             for (const studentId in calificacionesSeleccionadas) {
@@ -321,7 +321,7 @@ const Calificar = () => {
                                 </button>
                             ))}
                             <a
-                                href={trabajo.link_archivo}
+                                href={trabajo.link_final}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="w-full flex items-center gap-4 px-4 py-3 rounded-lg shadow-md transition-all duration-200 bg-red-500 hover:bg-red-600 text-white"
