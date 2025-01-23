@@ -5,13 +5,11 @@ import BuscadorDocentes from "../utmcomps/BuscadorDocentes";
 import SelectorFecha from "../common/SelectorFecha";
 import { asignarTribunalService, reasignarTribunalService, obtenerTribunalService } from "../../services/tribunalService";
 import { obtenerUnTrabajo } from "../../services/trabajosTitulacion";
-// import { useMessage } from "../../hooks/hooks";
 import { estadosTrabajosIds } from "../../utils/estados_trabajos";
 import PropTypes from "prop-types";
 import { useMessage } from "../../hooks/useMessage";
 
 const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
-    // const { showSuccess, showWarning, showIfErrorOrWarning, showIfError } = useMessage();
     const { showError, showWarning, showSuccess } = useMessage();
     // Modal
     const [nestedData, setNestedData] = useState("");
