@@ -9,6 +9,7 @@ import PropTypes from "prop-types";
  * @prop {string} title - El título que va arriba en el modal.
  * @returns {ReactElement} - Devuelve algo que es la parte de arriba del modal.
  */
+
 const ModalHeader = ({ onClose, title }) => (
     <div className="sticky top-0 bg-white p-4 flex justify-between items-center border-b">
         <h2 className="text-xl font-bold">{title}</h2>
@@ -51,6 +52,7 @@ const colorOption = {
  *    blue, gray, green, red, yellow, indigo, slate o teal.
  * @returns {ReactElement} - Devuelve algo que es el pie del modal.
  */
+
 const ModalFooter = ({ hasNestedData, onBack, btnActions }) => (
     <div className="sticky bottom-0 bg-white p-4 flex justify-end space-x-2 border-t">
         {hasNestedData && (

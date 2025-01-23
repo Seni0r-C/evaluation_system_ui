@@ -14,22 +14,22 @@ const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
     // const { showSuccess, showWarning, showIfErrorOrWarning, showIfError } = useMessage();
     const { showError, showWarning, showSuccess } = useMessage();
     // Modal
-    const [nestedData, setNestedData] = useState(null);
+    const [nestedData, setNestedData] = useState("");
     // Selector Docentes
     const [selectedDocentes, setSelectedDocentes] = useState([]);
     const [initialSelectedItems, setInitialSelectedItems] = useState([]);
     // Date Selector
-    const [selectedDate, setSelectedDate] = useState(null); // [setSelectedDate]
+    const [selectedDate, setSelectedDate] = useState("");
 
-    const [initialDateDefensa, setInitialDateDefensa] = useState(null);
+    const [initialDateDefensa, setInitialDateDefensa] = useState("");
     const [trabajoSelected, setTrabajoSelected] = useState(null);
 
     const fectchTrabajoFull = async (trabajo) => {
         if (trabajo?.id) {
             const fetchedTrabajo = await obtenerUnTrabajo(trabajo.id);
             setTrabajoSelected(fetchedTrabajo);
-            setInitialDateDefensa(fetchedTrabajo?.fecha_defensa);
-            setSelectedDate(fetchedTrabajo?.fecha_defensa);
+            setInitialDateDefensa(fetchedTrabajo?.fecha_defensa || "");
+            setSelectedDate(fetchedTrabajo?.fecha_defensa || "");
         }
     };
 
@@ -41,8 +41,8 @@ const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
 
     useEffect(() => {
         if (trabajoSelected) {
-            setInitialDateDefensa(trabajoSelected?.fecha_defensa);
-            setSelectedDate(trabajoSelected?.fecha_defensa);
+            setInitialDateDefensa(trabajoSelected?.fecha_defensa || "");
+            setSelectedDate(trabajoSelected?.fecha_defensa || "");
         }
     }, [trabajoSelected]);
 
