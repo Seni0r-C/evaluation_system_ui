@@ -10,8 +10,6 @@ import { estadosTrabajosIds } from "../../utils/estados_trabajos";
 import PropTypes from "prop-types";
 import { useMessage } from "../../hooks/useMessage";
 
-//TODO aqui tengo que cambiar la forma en que muestran los mensajes a la nueva
-
 const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
     // const { showSuccess, showWarning, showIfErrorOrWarning, showIfError } = useMessage();
     const { showError, showWarning, showSuccess } = useMessage();
@@ -73,15 +71,15 @@ const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
         const changeLess = JSON.stringify(selectedDocentes) === JSON.stringify(initialSelectedItems);
         if (changeLess && selectedDocentes.length === 0) {
             showWarning(
-                "No hay docentes selecionados para asignar el tribunal."
+                "No hay docentes seleccionados para asignar el tribunal."
             );
             return;
         }
         if (changeLess && selectedDate === initialDateDefensa) {
             showWarning(
-                "No se ha realizado ningun cambio para asignar el tribunal."
+                "No se ha realizado ningún cambio para asignar el tribunal."
             );
-            // showWarning(`No se ha realizado ningun cambio. \nselectedDocentes:\n${JSON.stringify(selectedDocentes)} \r\ninitialSelectedItems:\n${JSON.stringify(initialSelectedItems)} ${changeLess}`);
+            // showWarning(`No se ha realizado ningún cambio. \nselectedDocentes:\n${JSON.stringify(selectedDocentes)} \r\ninitialSelectedItems:\n${JSON.stringify(initialSelectedItems)} ${changeLess}`);
             onClose();
             return;
         }
@@ -108,13 +106,13 @@ const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
         const changeLess = JSON.stringify(selectedDocentes) === JSON.stringify(initialSelectedItems);
         if (changeLess && selectedDocentes.length === 0) {
             showWarning(
-                "No hay docentes selecionados para reasignar el tribunal."
+                "No hay docentes seleccionados para reasignar el tribunal."
             );
             return;
         }
         if (changeLess && selectedDate === initialDateDefensa) {
             showWarning(
-                "No se ha realizado ningun cambio para reasignar el tribunal."
+                "No se ha realizado ningún cambio para reasignar el tribunal."
             );
             onClose();
             return;
