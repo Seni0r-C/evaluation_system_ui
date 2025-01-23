@@ -26,19 +26,27 @@ const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
     const [initialDateDefensa, setInitialDateDefensa] = useState(null);
     const [trabajoSelected, setTrabajoSelected] = useState(null);
 
-    const fectchTrabajoFull = (trabajo) => {
-        if (trabajo?.id ?? false) {
-            obtenerUnTrabajo(setTrabajoSelected, trabajo.id);
+    const fectchTrabajoFull = async (trabajo) => {
+        if (trabajo?.id) {
+            const fetchedTrabajo = await obtenerUnTrabajo(trabajo.id);
+            setTrabajoSelected(fetchedTrabajo);
+            setInitialDateDefensa(fetchedTrabajo?.fecha_defensa);
+            setSelectedDate(fetchedTrabajo?.fecha_defensa);
         }
     };
 
     useEffect(() => {
         if (trabajoData?.id) {
             fectchTrabajoFull(trabajoData);
+        }
+    }, [isOpen, trabajoData?.id]);
+
+    useEffect(() => {
+        if (trabajoSelected) {
             setInitialDateDefensa(trabajoSelected?.fecha_defensa);
             setSelectedDate(trabajoSelected?.fecha_defensa);
         }
-    }, [isOpen, trabajoData?.id]);
+    }, [trabajoSelected]);
 
     useEffect(() => {
         if (trabajoData?.id) {
@@ -46,7 +54,9 @@ const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
                 setSelectedDocentes(miembros);
                 setInitialSelectedItems(miembros);
             }, trabajoData.id);
-            showError(msgData);
+            if (msgData && typeof msgData === "string") {
+                showError(msgData);
+            }
         }
     }, [isOpen, trabajoData?.id]);
 

@@ -1,5 +1,14 @@
 import { MdClose } from "react-icons/md";
+import PropTypes from "prop-types";
 
+/**
+ * Este es un componente pa hacer la parte de arriba de un modal.
+ * Tiene un título y un botón pa cerrarlo.
+ * @param {{ onClose: function, title: string }} props
+ * @prop {function} onClose - La función que se llama cuando le das al botón de cerrar.
+ * @prop {string} title - El título que va arriba en el modal.
+ * @returns {ReactElement} - Devuelve algo que es la parte de arriba del modal.
+ */
 const ModalHeader = ({ onClose, title }) => (
     <div className="sticky top-0 bg-white p-4 flex justify-between items-center border-b">
         <h2 className="text-xl font-bold">{title}</h2>
@@ -13,6 +22,11 @@ const ModalHeader = ({ onClose, title }) => (
     </div>
 );
 
+ModalHeader.propTypes = {
+    onClose: PropTypes.func.isRequired,
+    title: PropTypes.string.isRequired,
+};
+
 const colorOption = {
     blue: "bg-blue-600 hover:bg-blue-800",
     gray: "bg-gray-500 hover:bg-gray-600",
@@ -24,6 +38,19 @@ const colorOption = {
     teal: "bg-teal-600 hover:bg-teal-800",
 };
 
+/**
+ * Este componente es el pie de un modal. Abajo del todo.
+ * Tiene un botón pa volver si se seleccionó algo y unos botones
+ * de acción que se pasan por props.
+ * @param {{ hasNestedData: boolean, onBack: function, btnActions: array.<{label: string, onClick: function, color: string}> }} props
+ * @prop {boolean} hasNestedData - Dice si hay algo seleccionado.
+ * @prop {function} onBack - Esta función se llama cuando le das al botón de "Volver".
+ * @prop {array.<{label: string, onClick: function, color: string}>} btnActions - Una lista de cosas que
+ *    definen botones que van abajo. Cada botón tiene label (el texto del botón),
+ *    onClick (qué hace el botón) y color (el color del botón). Los colores pueden ser:
+ *    blue, gray, green, red, yellow, indigo, slate o teal.
+ * @returns {ReactElement} - Devuelve algo que es el pie del modal.
+ */
 const ModalFooter = ({ hasNestedData, onBack, btnActions }) => (
     <div className="sticky bottom-0 bg-white p-4 flex justify-end space-x-2 border-t">
         {hasNestedData && (
@@ -34,7 +61,7 @@ const ModalFooter = ({ hasNestedData, onBack, btnActions }) => (
                 Volver
             </button>
         )}
-      
+
         {btnActions.map((action, index) => (
             <button
                 key={index}
@@ -46,5 +73,11 @@ const ModalFooter = ({ hasNestedData, onBack, btnActions }) => (
         ))}
     </div>
 );
+
+ModalFooter.propTypes = {
+    hasNestedData: PropTypes.bool,
+    onBack: PropTypes.func,
+    btnActions: PropTypes.array,
+};
 
 export { ModalHeader, ModalFooter };

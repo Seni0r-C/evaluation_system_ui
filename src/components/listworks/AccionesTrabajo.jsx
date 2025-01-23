@@ -113,13 +113,12 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user }) => {
         title={"Detalles del Trabajo de Titulación"}
       />
 
-      {/* <AsignacionTribunalModal
-      //TODO hay problemas al mostrar mensajes de error de la nueva forma
+      <AsignacionTribunalModal
         isOpen={isOpenAsignarTutor}
         onClose={() => setIsOpenAsignarTutor(false)}
         trabajoData={trabajoSelected}
         title={"Asignación de tribunal"}
-      /> */}
+      />
 
     </div>
 
