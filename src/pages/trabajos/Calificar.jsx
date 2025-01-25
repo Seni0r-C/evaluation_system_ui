@@ -2,10 +2,10 @@
 import { useEffect, useState } from "react";
 import { FaFilePdf } from "react-icons/fa"; // Importamos los íconos de react-icons
 import { useLocation } from 'react-router-dom';
-import { getEstudiantesByTrabajoId, getUserPhoto } from "../services/usuarioService";
+import { getEstudiantesByTrabajoId, getUserPhoto } from "../../services/usuarioService";
 import axios from "axios";
 import { MdDoneOutline } from "react-icons/md";
-import { API_URL } from "../utils/constants";
+import { API_URL } from "../../utils/constants";
 
 const Calificar = () => {
     const location = useLocation();

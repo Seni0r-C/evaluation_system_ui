@@ -10,15 +10,15 @@ import CustomTrabajoTitulacionListar from '../components/Listar_trabajos';
 // Páginas
 import Login from '../pages/Login';
 import NotFound from '../pages/NotFound';
-import ModalidadesTitulacion from '../pages/modalidadesTitulacion';
-import ItemsRevista from '../pages/itemsRevista';
-import ItemsRubrica from '../pages/itemsRubrica';
-import Calificar from '../pages/calificar';
-import TrabajoTitulacionListar from '../pages/TrabajoTitulacionListar';
+import ModalidadesTitulacion from '../pages/ModalidadesTitulacion';
+import ItemsRevista from '../pages/admin/ItemsRevista';
+import ItemsRubrica from '../pages/admin/ItemsRubrica';
+import Calificar from '../pages/trabajos/Calificar';
+import TrabajoTitulacionListar from '../pages/trabajos/TrabajoTitulacionListar';
 import UserProfile from '../pages/Perfil';
 import Home from '../pages/Home';
 import CalendarioEventos from '../pages/Calendario';
-import TrabajoTitulacionCrear from '../pages/TrabajoTitulacionCrear';
+import TrabajoTitulacionCrear from '../pages/trabajos/TrabajoTitulacionCrear';
 
 const routes = [
   {

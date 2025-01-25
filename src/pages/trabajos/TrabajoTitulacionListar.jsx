@@ -1,15 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
-import axiosInstance from '../services/axiosConfig';
-import { obtenerCarreras } from '../services/carreraService';
-import { obtenerModalidadesPorCarrera } from '../services/modalidadService';
-import { obtenerEstados } from '../services/trabajosTitulacion';
+import axiosInstance from '../../services/axiosConfig';
+import { obtenerCarreras } from '../../services/carreraService';
+import { obtenerModalidadesPorCarrera } from '../../services/modalidadService';
+import { obtenerEstados } from '../../services/trabajosTitulacion';
 import { FaCalendarDay, FaChevronLeft, FaChevronRight, FaEdit } from 'react-icons/fa';
 import { MdChecklist } from 'react-icons/md';
-import BotonAccion from '../components/common/BotonAccion';
-import InputField from '../components/common/InputField';
+import BotonAccion from '../../components/common/BotonAccion';
+import InputField from '../../components/common/InputField';
 import { useNavigate } from 'react-router-dom';
-import { capitalizeWords } from '../utils/constants';
+import { capitalizeWords } from '../../utils/constants';
 
 const TrabajoTitulacionListar = () => {
   const [trabajos, setTrabajos] = useState([]);
