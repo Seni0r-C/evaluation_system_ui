@@ -1,5 +1,5 @@
-import React from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import PropTypes from 'prop-types';
 
 const Paginacion = ({ page, total, limit, onPageChange, onLimitChange }) => (
   <div className="mt-4 flex justify-between items-center">
@@ -35,5 +35,13 @@ const Paginacion = ({ page, total, limit, onPageChange, onLimitChange }) => (
     </div>
   </div>
 );
+
+Paginacion.propTypes = {
+  page: PropTypes.number.isRequired,
+  total: PropTypes.number.isRequired,
+  limit: PropTypes.number.isRequired,
+  onPageChange: PropTypes.func.isRequired,
+  onLimitChange: PropTypes.func.isRequired,
+};
 
 export default Paginacion;

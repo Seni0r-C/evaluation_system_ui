@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 const SimpleField = ({ label, value }) => {
     return (
         <div className="mb-4">
@@ -10,6 +12,11 @@ const SimpleField = ({ label, value }) => {
             />
         </div>
     );
+};
+
+SimpleField.propTypes = {
+    label: PropTypes.string.isRequired,
+    value: PropTypes.string,
 };
 
 export default SimpleField;

@@ -1,4 +1,4 @@
-import React from 'react';
+import PropTypes from "prop-types";
 
 const BotonAccion = ({ onClick, icono: Icono, variant = 'primary', tooltip }) => {
   const variantClasses = {
@@ -23,6 +23,13 @@ const BotonAccion = ({ onClick, icono: Icono, variant = 'primary', tooltip }) =>
       {Icono && <Icono className="text-lg" />}
     </button>
   );
+};
+
+BotonAccion.propTypes = {
+  onClick: PropTypes.func.isRequired,
+  icono: PropTypes.element,
+  variant: PropTypes.oneOf(['primary', 'secondary', 'red', 'green', 'yellow', 'purple', 'teal']),
+  tooltip: PropTypes.string,
 };
 
 export default BotonAccion;
