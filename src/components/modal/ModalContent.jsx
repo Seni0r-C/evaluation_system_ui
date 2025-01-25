@@ -1,6 +1,7 @@
 import ArrayTable from "../common/dynamic/ArrayTable";
 import NestedObjectViewer from "./NestedObjectViewer";
 import SimpleField from "../common/SimpleField";
+import PropTypes from "prop-types";
 
 const ModalContent = ({ data, nestedData, onViewNestedData }) => {
     const renderField = (key, value) => {
@@ -26,6 +27,12 @@ const ModalContent = ({ data, nestedData, onViewNestedData }) => {
             {Object.entries(currentData).map(([key, value]) => renderField(key, value))}
         </div>
     );
+};
+
+ModalContent.propTypes = {
+    data: PropTypes.object,
+    nestedData: PropTypes.object,
+    onViewNestedData: PropTypes.func,
 };
 
 export default ModalContent;
