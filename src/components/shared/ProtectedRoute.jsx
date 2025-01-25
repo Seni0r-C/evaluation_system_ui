@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import AuthContext from '../../context/AuthContext';
 import { useContext, useEffect } from 'react';
 import useAccessControl from '../../hooks/useAccessControl';
-import Unauthorized from '../../pages/Unauthorized';
 import Spinner from './logo_carga/Spinner';
+import Unauthorized from '../../pages/usuario/Unauthorized';
 
 const ProtectedRoute = ({ children }) => {
     const { isAuthenticated } = useContext(AuthContext);

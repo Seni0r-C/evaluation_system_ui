@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import LoadingScreen from "../components/shared/LoadingScreen";
-import background from "../assets/utm.webp";
-import { RutaRaiz, VERSION } from "../utils/constants";
-import { useAuth } from "../hooks/useAuth";
-import { useAuthActions } from "../hooks/useAuthActions";
-import LoginForm from "../components/formularios/LoginForm";
-import logo from "../assets/logo_claro.webp";
+import background from "../../assets/utm.webp";
+import { RutaRaiz, VERSION } from "../../utils/constants";
+import { useAuth } from "../../hooks/useAuth";
+import { useAuthActions } from "../../hooks/useAuthActions";
+import LoginForm from "../../components/formularios/LoginForm";
+import logo from "../../assets/logo_claro.webp";
+import LoadingScreen from "../../components/shared/LoadingScreen";
 
 const Login = () => {
     const [usuario, setUsuario] = useState("");

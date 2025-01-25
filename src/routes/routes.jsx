@@ -3,21 +3,21 @@ import { RutaRaiz } from '../utils/constants';
 
 // Componentes compartidos
 import ErrorBoundary from '../components/shared/ErrorBoundary';
-import Layout from '../components/Layout';
+import Layout from '../components/layout/Layout';
 import ProtectedRoute from '../components/shared/ProtectedRoute';
 import CustomTrabajoTitulacionListar from '../components/Listar_trabajos';
 
 // Páginas
-import Login from '../pages/Login';
-import NotFound from '../pages/NotFound';
-import ModalidadesTitulacion from '../pages/ModalidadesTitulacion';
+import Login from '../pages/usuario/Login';
+import NotFound from '../pages/usuario/NotFound';
+import ModalidadesTitulacion from '../pages/admin/ModalidadesTitulacion';
 import ItemsRevista from '../pages/admin/ItemsRevista';
 import ItemsRubrica from '../pages/admin/ItemsRubrica';
 import Calificar from '../pages/trabajos/Calificar';
 import TrabajoTitulacionListar from '../pages/trabajos/TrabajoTitulacionListar';
-import UserProfile from '../pages/Perfil';
-import Home from '../pages/Home';
-import CalendarioEventos from '../pages/Calendario';
+import UserProfile from '../pages/usuario/Perfil';
+import Home from '../pages/usuario/Home';
+import CalendarioEventos from '../pages/usuario/Calendario';
 import TrabajoTitulacionCrear from '../pages/trabajos/TrabajoTitulacionCrear';
 
 const routes = [

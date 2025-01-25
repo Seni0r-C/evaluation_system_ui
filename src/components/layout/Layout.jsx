@@ -2,14 +2,14 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { IoMdClose, IoMdMenu, IoIosLogOut } from "react-icons/io";
 import { FaUserCircle } from "react-icons/fa";
-import logo from '../assets/logo_claro.webp';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
-import { capitalizeWords, RutaRaiz } from '../utils/constants';
-import UserContext from '../context/UserContext';
+import { useAuth } from '../../hooks/useAuth';
+import { capitalizeWords, RutaRaiz } from '../../utils/constants';
+import UserContext from '../../context/UserContext';
 import SidebarMenu from './menu/SidebarMenu';
-import axiosInstance from '../services/axiosConfig';
-import { transformMenuData } from '../utils/menuUtils';
+import axiosInstance from '../../services/axiosConfig';
+import { transformMenuData } from '../../utils/menuUtils';
+import logo from '../../assets/logo_claro.webp';
 
 
 const Layout = ({ children }) => {
