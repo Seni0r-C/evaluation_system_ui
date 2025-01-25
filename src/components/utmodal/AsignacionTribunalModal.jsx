@@ -5,7 +5,6 @@ import BuscadorDocentes from "../utmcomps/BuscadorDocentes";
 import SelectorFecha from "../common/SelectorFecha";
 import { asignarTribunalService, reasignarTribunalService, obtenerTribunalService } from "../../services/tribunalService";
 import { obtenerUnTrabajo } from "../../services/trabajosTitulacion";
-import { estadosTrabajosIds } from "../../utils/estados_trabajos";
 import PropTypes from "prop-types";
 import { useMessage } from "../../hooks/useMessage";
 
@@ -87,7 +86,7 @@ const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
             );
             return;
         }
-        const msgData = asignarTribunalService(null, trabajoData?.id, selectedDocentes, selectedDate, estadosTrabajosIds.ASIGNADO);
+        const msgData = asignarTribunalService(null, trabajoData?.id, selectedDocentes, selectedDate, "CON TRIBUNAL");
 
         if (showSuccess(msgData)) {
             onClose();
@@ -121,7 +120,7 @@ const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
             );
             return;
         }
-        const msgData = await reasignarTribunalService(null, trabajoData?.id, selectedDocentes, selectedDate, estadosTrabajosIds.ASIGNADO);
+        const msgData = await reasignarTribunalService(null, trabajoData?.id, selectedDocentes, selectedDate, "CON TRIBUNAL");
 
         if (showSuccess(msgData)) {
             trabajoData.fecha_defensa = selectedDate;

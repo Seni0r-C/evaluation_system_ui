@@ -33,7 +33,7 @@ const TrabajosTable = ({ trabajos, permisosAcciones, user }) => {
                                 Ver archivo
                             </a>,
                             trabajo.modalidad,
-                            <EstadoTrabajo estado={trabajo.estado} key={trabajo.id} />,
+                            <EstadoTrabajo estado={trabajo.estado} estado_id={trabajo.estado_id} key={trabajo.id} />,
                         ];
 
                         if (permisosAcciones?.length > 0) {

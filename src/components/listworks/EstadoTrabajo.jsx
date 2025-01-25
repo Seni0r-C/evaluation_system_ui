@@ -1,18 +1,24 @@
-import { estadosTrabajos } from '../../utils/estados_trabajos';
+import PropTypes from 'prop-types';
 
 const colorMap = {
-  [estadosTrabajos.REGISTRADO]: 'bg-blue-100 text-blue-800',
-  [estadosTrabajos.ASIGNADO]: 'bg-orange-100 text-orange-800',
-  [estadosTrabajos.CALIFICADO]: 'bg-green-100 text-green-800',
-  [estadosTrabajos.INFORME_GENERADO]: 'bg-purple-100 text-purple-800',
-  [estadosTrabajos.FINALIZADO]: 'bg-cyan-100 text-cyan-800',
-  [estadosTrabajos.RECHAZADO]: 'bg-red-100 text-red-800',
+  1: 'bg-gray-200 text-gray-800',
+  2: 'bg-yellow-100 text-yellow-800',
+  3: 'bg-green-100 text-green-800',
+  4: 'bg-blue-100 text-blue-800',
 };
 
-const EstadoTrabajo = ({ estado }) => (
-  <span className={`px-2 py-1 rounded-full text-sm ${colorMap[estado] || 'bg-gray-200 text-gray-800'}`}>
-    {estado}
-  </span>
-);
+const EstadoTrabajo = ({ estado, estado_id }) => {
+  const colorClass = colorMap[estado_id] || 'bg-gray-200 text-gray-800';
+  return (
+    <span className={`px-2 py-1 rounded-full text-sm ${colorClass}`}>
+      {estado}
+    </span>
+  );
+};
+
+EstadoTrabajo.propTypes = {
+  estado: PropTypes.string.isRequired,
+  estado_id: PropTypes.number.isRequired,
+};
 
 export default EstadoTrabajo;
