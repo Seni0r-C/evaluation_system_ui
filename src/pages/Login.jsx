@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import LoadingScreen from "../components/LoadingScreen";
+import LoadingScreen from "../components/shared/LoadingScreen";
 import background from "../assets/utm.webp";
 import { RutaRaiz, VERSION } from "../utils/constants";
 import { useAuth } from "../hooks/useAuth";

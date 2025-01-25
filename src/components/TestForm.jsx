@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import BuscadorGenerico from './common/BuscadorGenerico';  // Asegúrate de ajustar la ruta al componente
 // import { buscarUsuariosConRol } from '../services/usuarioService'; // Puedes omitir esta parte si no tienes un servicio real
 const estudiantesData = [

@@ -5,9 +5,9 @@ import axiosInstance from '../services/axiosConfig';
 import { obtenerCarreras } from '../services/carreraService';
 import { obtenerModalidadesPorCarrera } from '../services/modalidadService';
 import { obtenerEstados } from '../services/trabajosTitulacion';
-import FiltroTrabajoTitulacion from './listworks/FiltroTrabajoTitulacion';
-import ListaTrabajosTitulacion from './listworks/ListaTrabajosTitulacion';
-import Paginacion from './listworks/Paginacion';
+import FiltroTrabajoTitulacion from './lista_trabajos/FiltroTrabajoTitulacion';
+import ListaTrabajosTitulacion from './lista_trabajos/ListaTrabajosTitulacion';
+import Paginacion from './lista_trabajos/Paginacion';
 import PropTypes from 'prop-types';
 
 const CustomTrabajoTitulacionListar = ({ permisosAcciones, includeStateFiltter = false, firstStates = [], titulo = "Trabajos de Titulación" }) => {

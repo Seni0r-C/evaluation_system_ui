@@ -4,8 +4,8 @@ import { RutaRaiz } from '../utils/constants';
 // Componentes compartidos
 import ErrorBoundary from '../components/shared/ErrorBoundary';
 import Layout from '../components/Layout';
-import ProtectedRoute from '../components/ProtectedRoute';
-import CustomTrabajoTitulacionListar from '../components/CustomTrabajoTitulacionListar';
+import ProtectedRoute from '../components/shared/ProtectedRoute';
+import CustomTrabajoTitulacionListar from '../components/Listar_trabajos';
 
 // Páginas
 import Login from '../pages/Login';

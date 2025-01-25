@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import LoadingScreen from '../components/LoadingScreen';
+import LoadingScreen from '../components/shared/LoadingScreen';
 
 const AuthContext = createContext();
 

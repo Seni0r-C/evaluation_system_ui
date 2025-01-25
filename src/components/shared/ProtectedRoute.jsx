@@ -1,10 +1,10 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import AuthContext from '../context/AuthContext';
+import AuthContext from '../../context/AuthContext';
 import { useContext, useEffect } from 'react';
-import useAccessControl from '../hooks/useAccessControl';
-import Unauthorized from '../pages/Unauthorized';
-import Spinner from './LogoCarga/Spinner';
+import useAccessControl from '../../hooks/useAccessControl';
+import Unauthorized from '../../pages/Unauthorized';
+import Spinner from './logo_carga/Spinner';
 
 const ProtectedRoute = ({ children }) => {
     const { isAuthenticated } = useContext(AuthContext);

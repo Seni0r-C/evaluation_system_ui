@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
-// import FciSvg from './LogoCarga/FciSvg';
-import Spinner from './LogoCarga/Spinner';
+import Spinner from './logo_carga/Spinner';
 
 const LoadingScreen = ({ isLoading, mensaje = "Cargando..." }) => {
     if (!isLoading) return null;  // Si isLoading es false, no se muestra nada
