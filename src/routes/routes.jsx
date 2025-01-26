@@ -11,7 +11,6 @@ import CustomTrabajoTitulacionListar from '../components/Listar_trabajos';
 import Login from '../pages/usuario/Login';
 import NotFound from '../pages/usuario/NotFound';
 import ModalidadesTitulacion from '../pages/admin/ModalidadesTitulacion';
-import ItemsRevista from '../pages/admin/ItemsRevista';
 import ItemsRubrica from '../pages/admin/ItemsRubrica';
 import Calificar from '../pages/trabajos/Calificar';
 import TrabajoTitulacionListar from '../pages/trabajos/TrabajoTitulacionListar';
@@ -119,18 +118,6 @@ export const routes = [
         <Layout>
           <ProtectedRoute>
             <ModalidadesTitulacion />
-          </ProtectedRoute>
-        </Layout>
-      </ErrorBoundary>
-    ),
-  },
-  {
-    path: '/items-revista',
-    element: (
-      <ErrorBoundary>
-        <Layout>
-          <ProtectedRoute>
-            <ItemsRevista />
           </ProtectedRoute>
         </Layout>
       </ErrorBoundary>
