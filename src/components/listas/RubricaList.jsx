@@ -38,6 +38,7 @@ const RubricaList = ({ rubricas, onDelete, onSelect }) => {
             <table className="table-auto w-full border-collapse">
                 <thead>
                     <tr>
+                        <th className="px-4 py-2 border">ID</th>
                         <th className="px-4 py-2 border">Modalidad</th>
                         <th className="px-4 py-2 border">Tipo de Evaluación</th>
                         <th className="px-4 py-2 border">Acciones</th>
@@ -47,6 +48,7 @@ const RubricaList = ({ rubricas, onDelete, onSelect }) => {
                     {Object.keys(groupedRubricas).map(modalidad => (
                         Object.keys(groupedRubricas[modalidad]).map(tipoEvaluacion => (
                             <tr key={`${modalidad}-${tipoEvaluacion}`}>
+                                <td className="px-4 py-2 border">{groupedRubricas[modalidad][tipoEvaluacion][0].rubrica_id}</td>
                                 <td className="px-4 py-2 border">{modalidad}</td>
                                 <td className="px-4 py-2 border">{tipoEvaluacion}</td>
                                 <td className="px-4 py-2 border">

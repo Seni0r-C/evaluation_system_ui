@@ -107,6 +107,7 @@ function App() {
         try {
             const response = await updateRubrica(id, data);
             setRubricas(rubricas.map(item => item.id === id ? response.data : item));
+            fetchRubricas();
         } catch (error) {
             console.error('Error al actualizar la rúbrica', error);
         }

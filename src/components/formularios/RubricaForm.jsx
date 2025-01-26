@@ -19,7 +19,7 @@ const RubricaForm = ({ onCreate, onUpdate, selected, setSelected, modalidades, t
         e.preventDefault();
         const data = { modalidad_id: modalidadId, tipo_evaluacion_id: tipoEvaluacionId };
         if (selected) {
-            onUpdate(selected.id, data);
+            onUpdate(selected[0].rubrica_id, data);
         } else {
             onCreate(data);
         }
