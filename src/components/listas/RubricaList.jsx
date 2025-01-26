@@ -4,7 +4,7 @@ import { useState } from 'react';
 const RubricaList = ({ rubricas, onDelete, onSelect }) => {
     // Agrupar las rúbricas por modalidad y tipo de evaluación
     const groupedRubricas = rubricas.reduce((acc, rubrica) => {
-        const { modalidad_nombre, tipo_evaluacion_nombre, rubrica_id, criterio_nombre, puntaje_maximo } = rubrica;
+        const { modalidad_nombre, modalidad_id, tipo_evaluacion_id, tipo_evaluacion_nombre, rubrica_id, criterio_nombre, puntaje_maximo } = rubrica;
 
         if (!acc[modalidad_nombre]) {
             acc[modalidad_nombre] = {};
@@ -18,6 +18,9 @@ const RubricaList = ({ rubricas, onDelete, onSelect }) => {
             rubrica_id,
             criterio_nombre,
             puntaje_maximo,
+            tipo_evaluacion_id,
+            modalidad_id
+
         });
 
         return acc;

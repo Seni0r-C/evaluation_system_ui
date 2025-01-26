@@ -8,11 +8,13 @@ import RubricaForm from '../../components/formularios/RubricaForm';
 import RubricaList from '../../components/listas/RubricaList';
 import RubricaCriterioForm from '../../components/formularios/RubricaCriterioForm';
 import RubricaCriterioList from '../../components/listas/RubricaCriterioList';
+import axiosInstance from '../../services/axiosConfig';
 
 function App() {
     const [tiposEvaluacion, setTiposEvaluacion] = useState([]);
     const [rubricas, setRubricas] = useState([]);
     const [rubricaCriterios, setRubricaCriterios] = useState([]);
+    const [modalidades, setModalidades] = useState([]);
 
     const [selectedTipoEvaluacion, setSelectedTipoEvaluacion] = useState(null);
     const [selectedRubrica, setSelectedRubrica] = useState(null);
@@ -45,7 +47,17 @@ function App() {
         }
     };
 
+    const fetchModalidades = async () => {
+        try {
+            const response = await axiosInstance.get('/modalidad-titulacion/listar');
+            setModalidades(response.data);
+        } catch (error) {
+            console.error('Error al cargar las modalidades', error);
+        }
+    };
+
     useEffect(() => {
+        fetchModalidades();
         fetchTiposEvaluacion();
         fetchRubricas();
         fetchRubricaCriterios();
@@ -161,7 +173,14 @@ function App() {
             {/* Rúbrica */}
             <section className="mb-8">
                 <h2 className="text-xl font-semibold mb-4">Rúbricas</h2>
-                <RubricaForm onCreate={handleCreateRubrica} onUpdate={handleUpdateRubrica} selected={selectedRubrica} />
+                <RubricaForm
+                    onCreate={handleCreateRubrica}
+                    onUpdate={handleUpdateRubrica}
+                    selected={selectedRubrica}
+                    setSelected={setSelectedRubrica}
+                    modalidades={modalidades}
+                    tipoEvaluaciones={tiposEvaluacion}
+                />
                 <RubricaList
                     rubricas={rubricas}
                     onDelete={handleDeleteRubrica}
