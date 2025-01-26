@@ -4,7 +4,6 @@ import { transformMenuData } from "../../utils/menuUtils";
 import axiosInstance from "../../services/axiosConfig";
 import MenuForm from "../../components/formularios/MenuForm";
 
-
 const AdminMenu = () => {
     const [menuItems, setMenuItems] = useState([]);
     const [rutas, setRutas] = useState([]);

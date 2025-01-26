@@ -1,155 +1,186 @@
-// Import React and Tailwind CSS
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
+import { getTiposEvaluacion, createTipoEvaluacion, updateTipoEvaluacion, deleteTipoEvaluacion } from '../../services/rubricaService';
+import { getRubricas, createRubrica, updateRubrica, deleteRubrica } from '../../services/rubricaService';
+import { getRubricaCriterios, createRubricaCriterio, updateRubricaCriterio, deleteRubricaCriterio } from '../../services/rubricaService';
+import TipoEvaluacionForm from '../../components/formularios/TipoEvaluacionForm';
+import TipoEvaluacionList from '../../components/listas/TipoEvaluacionList';
+import RubricaForm from '../../components/formularios/RubricaForm';
+import RubricaList from '../../components/listas/RubricaList';
+import RubricaCriterioForm from '../../components/formularios/RubricaCriterioForm';
+import RubricaCriterioList from '../../components/listas/RubricaCriterioList';
 
-const ItemsRubrica = () => {
-    const [tiposEvaluacion, setTiposEvaluacion] = useState([]); // Mock evaluation types from API
-    const [items, setItems] = useState([]); // List of rubric items
-    const [filteredItems, setFilteredItems] = useState([]); // Filtered items based on selected type
-    const [selectedTipoEvaluacion, setSelectedTipoEvaluacion] = useState(""); // Selected type for filtering and adding
 
-    const [newItemName, setNewItemName] = useState("");
-    const [newItemValue, setNewItemValue] = useState("");
 
-    // Mock fetching data from an API
+function App() {
+    const [tiposEvaluacion, setTiposEvaluacion] = useState([]);
+    const [rubricas, setRubricas] = useState([]);
+    const [rubricaCriterios, setRubricaCriterios] = useState([]);
+
+    const [selectedTipoEvaluacion, setSelectedTipoEvaluacion] = useState(null);
+    const [selectedRubrica, setSelectedRubrica] = useState(null);
+    const [selectedRubricaCriterio, setSelectedRubricaCriterio] = useState(null);
+
+    // Cargar Tipos de Evaluación al iniciar
     useEffect(() => {
-        // Simulate fetching tiposEvaluacion from API
-        setTimeout(() => {
-            setTiposEvaluacion(["DEFENZA", "ESCRITO"]);
-        }, 500);
-
-        // Simulate fetching rubric items from API
-        setTimeout(() => {
-            const initialItems = [
-                { id: 1, tipo_evaluacion: "DEFENZA", item: "Demuestra dominio del tema.", valor: 10 },
-                { id: 2, tipo_evaluacion: "ESCRITO", item: "Los objetivos están en verbo infinitivo.", valor: 4 },
-            ];
-            setItems(initialItems);
-            setFilteredItems([]); // Initially no items filtered until a type is selected
-        }, 500);
+        const fetchTiposEvaluacion = async () => {
+            try {
+                const response = await getTiposEvaluacion();
+                setTiposEvaluacion(response.data);
+            } catch (error) {
+                console.error('Error al cargar los tipos de evaluación', error);
+            }
+        };
+        fetchTiposEvaluacion();
     }, []);
 
-    const handleAddItem = () => {
-        if (selectedTipoEvaluacion.trim() && newItemName.trim() && newItemValue.trim()) {
-            const newItem = {
-                id: items.length + 1,
-                tipo_evaluacion: selectedTipoEvaluacion,
-                item: newItemName,
-                valor: parseInt(newItemValue, 10),
-            };
-            const updatedItems = [...items, newItem];
-            setItems(updatedItems);
-
-            // Update filtered items if the new item matches the selected type
-            if (newItem.tipo_evaluacion === selectedTipoEvaluacion) {
-                setFilteredItems([...filteredItems, newItem]);
+    // Cargar Rúbricas al iniciar
+    useEffect(() => {
+        const fetchRubricas = async () => {
+            try {
+                const response = await getRubricas();
+                setRubricas(response.data);
+            } catch (error) {
+                console.error('Error al cargar las rúbricas', error);
             }
+        };
+        fetchRubricas();
+    }, []);
 
-            // Clear input fields
-            setNewItemName("");
-            setNewItemValue("");
+    // Cargar Criterios de Rubrica al iniciar
+    useEffect(() => {
+        const fetchRubricaCriterios = async () => {
+            try {
+                const response = await getRubricaCriterios();
+                setRubricaCriterios(response.data);
+            } catch (error) {
+                console.error('Error al cargar los criterios de rúbrica', error);
+            }
+        };
+        fetchRubricaCriterios();
+    }, []);
+
+    // Métodos para manejar los Tipos de Evaluación
+    const handleCreateTipoEvaluacion = async (data) => {
+        try {
+            const response = await createTipoEvaluacion(data);
+            setTiposEvaluacion([...tiposEvaluacion, response.data]);
+        } catch (error) {
+            console.error('Error al crear el tipo de evaluación', error);
         }
     };
 
-    const handleRemoveItem = (id) => {
-        const updatedItems = items.filter((item) => item.id !== id);
-        setItems(updatedItems);
-
-        // Update filtered items
-        setFilteredItems(updatedItems.filter((item) => item.tipo_evaluacion === selectedTipoEvaluacion));
+    const handleUpdateTipoEvaluacion = async (id, data) => {
+        try {
+            const response = await updateTipoEvaluacion(id, data);
+            setTiposEvaluacion(tiposEvaluacion.map(item => item.id === id ? response.data : item));
+        } catch (error) {
+            console.error('Error al actualizar el tipo de evaluación', error);
+        }
     };
 
-    const handleTipoEvaluacionChange = (tipo) => {
-        setSelectedTipoEvaluacion(tipo);
-        // Filter items based on selected evaluation type
-        setFilteredItems(items.filter((item) => item.tipo_evaluacion === tipo));
+    const handleDeleteTipoEvaluacion = async (id) => {
+        try {
+            await deleteTipoEvaluacion(id);
+            setTiposEvaluacion(tiposEvaluacion.filter(item => item.id !== id));
+        } catch (error) {
+            console.error('Error al eliminar el tipo de evaluación', error);
+        }
+    };
+
+    // Métodos para manejar las Rúbricas
+    const handleCreateRubrica = async (data) => {
+        try {
+            const response = await createRubrica(data);
+            setRubricas([...rubricas, response.data]);
+        } catch (error) {
+            console.error('Error al crear la rúbrica', error);
+        }
+    };
+
+    const handleUpdateRubrica = async (id, data) => {
+        try {
+            const response = await updateRubrica(id, data);
+            setRubricas(rubricas.map(item => item.id === id ? response.data : item));
+        } catch (error) {
+            console.error('Error al actualizar la rúbrica', error);
+        }
+    };
+
+    const handleDeleteRubrica = async (id) => {
+        try {
+            await deleteRubrica(id);
+            setRubricas(rubricas.filter(item => item.id !== id));
+        } catch (error) {
+            console.error('Error al eliminar la rúbrica', error);
+        }
+    };
+
+    // Métodos para manejar los Criterios de Rubrica
+    const handleCreateRubricaCriterio = async (data) => {
+        try {
+            const response = await createRubricaCriterio(data);
+            setRubricaCriterios([...rubricaCriterios, response.data]);
+        } catch (error) {
+            console.error('Error al crear el criterio de rúbrica', error);
+        }
+    };
+
+    const handleUpdateRubricaCriterio = async (id, data) => {
+        try {
+            const response = await updateRubricaCriterio(id, data);
+            setRubricaCriterios(rubricaCriterios.map(item => item.id === id ? response.data : item));
+        } catch (error) {
+            console.error('Error al actualizar el criterio de rúbrica', error);
+        }
+    };
+
+    const handleDeleteRubricaCriterio = async (id) => {
+        try {
+            await deleteRubricaCriterio(id);
+            setRubricaCriterios(rubricaCriterios.filter(item => item.id !== id));
+        } catch (error) {
+            console.error('Error al eliminar el criterio de rúbrica', error);
+        }
     };
 
     return (
-        <div className="p-8 bg-gray-100 min-h-screen">
-            <h1 className="text-2xl font-bold mb-4">Administrar Ítems de Rúbrica</h1>
+        <div className="container mx-auto p-4">
+            <h1 className="text-2xl font-bold mb-4">Administrar Evaluaciones</h1>
 
-            {/* Add Item */}
-            <div className="bg-white p-4 shadow rounded mb-6">
-                <h2 className="text-xl font-semibold mb-4">Agregar Ítem de Rúbrica</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div>
-                        <label className="block mb-2 font-medium">Tipo de Evaluación</label>
-                        <select
-                            value={selectedTipoEvaluacion}
-                            onChange={(e) => handleTipoEvaluacionChange(e.target.value)}
-                            className="w-full p-2 border rounded"
-                        >
-                            <option value="">-- Selecciona --</option>
-                            {tiposEvaluacion.map((tipo, index) => (
-                                <option key={index} value={tipo}>
-                                    {tipo}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div>
-                        <label className="block mb-2 font-medium">Descripción del Ítem</label>
-                        <input
-                            type="text"
-                            value={newItemName}
-                            onChange={(e) => setNewItemName(e.target.value)}
-                            placeholder="Ej: Demuestra dominio del tema."
-                            className="w-full p-2 border rounded"
-                        />
-                    </div>
-                    <div>
-                        <label className="block mb-2 font-medium">Valor</label>
-                        <input
-                            type="number"
-                            value={newItemValue}
-                            onChange={(e) => setNewItemValue(e.target.value)}
-                            placeholder="Ej: 10"
-                            className="w-full p-2 border rounded"
-                        />
-                    </div>
-                </div>
-                <button
-                    onClick={handleAddItem}
-                    className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                    disabled={!selectedTipoEvaluacion}
-                >
-                    Agregar Ítem
-                </button>
-            </div>
+            {/* Tipo de Evaluación */}
+            <section className="mb-8">
+                <h2 className="text-xl font-semibold mb-4">Tipos de Evaluación</h2>
+                <TipoEvaluacionForm onCreate={handleCreateTipoEvaluacion} onUpdate={handleUpdateTipoEvaluacion} selected={selectedTipoEvaluacion} />
+                <TipoEvaluacionList
+                    tiposEvaluacion={tiposEvaluacion}
+                    onDelete={handleDeleteTipoEvaluacion}
+                    onSelect={setSelectedTipoEvaluacion}
+                />
+            </section>
 
-            {/* List of Items */}
-            <div className="bg-white p-4 shadow rounded mb-6">
-                <h2 className="text-xl font-semibold mb-4">Ítems de Rúbrica</h2>
-                <table className="w-full border-collapse border border-gray-300">
-                    <thead>
-                        <tr className="bg-gray-200">
-                            <th className="border border-gray-300 p-2">Tipo de Evaluación</th>
-                            <th className="border border-gray-300 p-2">Descripción del Ítem</th>
-                            <th className="border border-gray-300 p-2">Valor</th>
-                            <th className="border border-gray-300 p-2">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredItems.map((item) => (
-                            <tr key={item.id}>
-                                <td className="border border-gray-300 p-2">{item.tipo_evaluacion}</td>
-                                <td className="border border-gray-300 p-2">{item.item}</td>
-                                <td className="border border-gray-300 p-2 text-center">{item.valor}</td>
-                                <td className="border border-gray-300 p-2 text-center">
-                                    <button
-                                        onClick={() => handleRemoveItem(item.id)}
-                                        className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-                                    >
-                                        Eliminar
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+            {/* Rúbrica */}
+            <section className="mb-8">
+                <h2 className="text-xl font-semibold mb-4">Rúbricas</h2>
+                <RubricaForm onCreate={handleCreateRubrica} onUpdate={handleUpdateRubrica} selected={selectedRubrica} />
+                <RubricaList
+                    rubricas={rubricas}
+                    onDelete={handleDeleteRubrica}
+                    onSelect={setSelectedRubrica}
+                />
+            </section>
+
+            {/* Criterios de Rúbrica */}
+            <section className="mb-8">
+                <h2 className="text-xl font-semibold mb-4">Criterios de Rúbrica</h2>
+                <RubricaCriterioForm onCreate={handleCreateRubricaCriterio} onUpdate={handleUpdateRubricaCriterio} selected={selectedRubricaCriterio} />
+                <RubricaCriterioList
+                    rubricaCriterios={rubricaCriterios}
+                    onDelete={handleDeleteRubricaCriterio}
+                    onSelect={setSelectedRubricaCriterio}
+                />
+            </section>
         </div>
     );
-};
+}
 
-export default ItemsRubrica;
+export default App;
