@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-const TipoEvaluacionForm = ({ onCreate, onUpdate, selected }) => {
+const TipoEvaluacionForm = ({ onCreate, onUpdate, selected, setSelected }) => {
     const [nombre, setNombre] = useState('');
 
     useEffect(() => {
@@ -21,6 +21,7 @@ const TipoEvaluacionForm = ({ onCreate, onUpdate, selected }) => {
             onCreate(data);
         }
         setNombre('');
+        setSelected(null);
     };
 
     return (
@@ -35,6 +36,15 @@ const TipoEvaluacionForm = ({ onCreate, onUpdate, selected }) => {
             <button type="submit" className="bg-green-500 text-white px-4 py-2">
                 {selected ? 'Actualizar' : 'Crear'}
             </button>
+            {selected && (
+                <button
+                    type="button"
+                    onClick={() => setSelected(null)}
+                    className="bg-red-500 text-white px-4 py-2 ml-2"
+                >
+                    Cancelar
+                </button>
+            )}
         </form>
     );
 };
@@ -42,7 +52,8 @@ const TipoEvaluacionForm = ({ onCreate, onUpdate, selected }) => {
 TipoEvaluacionForm.propTypes = {
     onCreate: PropTypes.func.isRequired,
     onUpdate: PropTypes.func.isRequired,
-    selected: PropTypes.object
+    selected: PropTypes.object,
+    setSelected: PropTypes.func
 };
 
 export default TipoEvaluacionForm;

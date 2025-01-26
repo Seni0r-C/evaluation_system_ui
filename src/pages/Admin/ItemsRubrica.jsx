@@ -9,8 +9,6 @@ import RubricaList from '../../components/listas/RubricaList';
 import RubricaCriterioForm from '../../components/formularios/RubricaCriterioForm';
 import RubricaCriterioList from '../../components/listas/RubricaCriterioList';
 
-
-
 function App() {
     const [tiposEvaluacion, setTiposEvaluacion] = useState([]);
     const [rubricas, setRubricas] = useState([]);
@@ -20,42 +18,36 @@ function App() {
     const [selectedRubrica, setSelectedRubrica] = useState(null);
     const [selectedRubricaCriterio, setSelectedRubricaCriterio] = useState(null);
 
-    // Cargar Tipos de Evaluación al iniciar
+    const fetchTiposEvaluacion = async () => {
+        try {
+            const response = await getTiposEvaluacion();
+            setTiposEvaluacion(response.data);
+        } catch (error) {
+            console.error('Error al cargar los tipos de evaluación', error);
+        }
+    };
+
+    const fetchRubricas = async () => {
+        try {
+            const response = await getRubricas();
+            setRubricas(response.data);
+        } catch (error) {
+            console.error('Error al cargar las rúbricas', error);
+        }
+    };
+
+    const fetchRubricaCriterios = async () => {
+        try {
+            const response = await getRubricaCriterios();
+            setRubricaCriterios(response.data);
+        } catch (error) {
+            console.error('Error al cargar los criterios de rúbrica', error);
+        }
+    };
+
     useEffect(() => {
-        const fetchTiposEvaluacion = async () => {
-            try {
-                const response = await getTiposEvaluacion();
-                setTiposEvaluacion(response.data);
-            } catch (error) {
-                console.error('Error al cargar los tipos de evaluación', error);
-            }
-        };
         fetchTiposEvaluacion();
-    }, []);
-
-    // Cargar Rúbricas al iniciar
-    useEffect(() => {
-        const fetchRubricas = async () => {
-            try {
-                const response = await getRubricas();
-                setRubricas(response.data);
-            } catch (error) {
-                console.error('Error al cargar las rúbricas', error);
-            }
-        };
         fetchRubricas();
-    }, []);
-
-    // Cargar Criterios de Rubrica al iniciar
-    useEffect(() => {
-        const fetchRubricaCriterios = async () => {
-            try {
-                const response = await getRubricaCriterios();
-                setRubricaCriterios(response.data);
-            } catch (error) {
-                console.error('Error al cargar los criterios de rúbrica', error);
-            }
-        };
         fetchRubricaCriterios();
     }, []);
 
@@ -64,6 +56,7 @@ function App() {
         try {
             const response = await createTipoEvaluacion(data);
             setTiposEvaluacion([...tiposEvaluacion, response.data]);
+            fetchTiposEvaluacion();
         } catch (error) {
             console.error('Error al crear el tipo de evaluación', error);
         }
@@ -92,6 +85,7 @@ function App() {
         try {
             const response = await createRubrica(data);
             setRubricas([...rubricas, response.data]);
+            fetchRubricas();
         } catch (error) {
             console.error('Error al crear la rúbrica', error);
         }
@@ -120,6 +114,7 @@ function App() {
         try {
             const response = await createRubricaCriterio(data);
             setRubricaCriterios([...rubricaCriterios, response.data]);
+            fetchRubricaCriterios();
         } catch (error) {
             console.error('Error al crear el criterio de rúbrica', error);
         }
@@ -150,7 +145,12 @@ function App() {
             {/* Tipo de Evaluación */}
             <section className="mb-8">
                 <h2 className="text-xl font-semibold mb-4">Tipos de Evaluación</h2>
-                <TipoEvaluacionForm onCreate={handleCreateTipoEvaluacion} onUpdate={handleUpdateTipoEvaluacion} selected={selectedTipoEvaluacion} />
+                <TipoEvaluacionForm
+                    onCreate={handleCreateTipoEvaluacion}
+                    onUpdate={handleUpdateTipoEvaluacion}
+                    selected={selectedTipoEvaluacion}
+                    setSelected={setSelectedTipoEvaluacion}
+                />
                 <TipoEvaluacionList
                     tiposEvaluacion={tiposEvaluacion}
                     onDelete={handleDeleteTipoEvaluacion}
