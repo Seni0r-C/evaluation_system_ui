@@ -49,14 +49,18 @@ export const transformMenuData = (menuItems) => {
 
 };
 
+// Función para obtener el ícono como componente JSX
 export const getIcon = (iconName) => {
-    const iconsMap = {
-        home: <FaHome />,
-        items: <MdOutlineChromeReaderMode />,
-        subir: <GrDocumentUpload />,
-        asignar: <FaUsers />,
-        calificar: <FaListCheck />,
-        reporte: <FaFileAlt />,
-    };
-    return iconsMap[iconName] || null;
+    const IconComponent = iconsMap[iconName];
+    return IconComponent ? <IconComponent /> : null;
+};
+
+// Mapa de íconos en un solo lugar
+export const iconsMap = {
+    home: FaHome,
+    items: MdOutlineChromeReaderMode,
+    subir: GrDocumentUpload,
+    asignar: FaUsers,
+    calificar: FaListCheck,
+    reporte: FaFileAlt,
 };

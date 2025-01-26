@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { FaTrash } from "react-icons/fa";
 import { getIcon, transformMenuData } from "../../utils/menuUtils";
 import axiosInstance from "../../services/axiosConfig";
+import MenuForm from "../../components/formularios/MenuForm";
 
 
 const AdminMenu = () => {
@@ -87,7 +88,7 @@ const AdminMenu = () => {
                                     onClick={() => toggleExpandMenu(menu.name)}
                                     className="text-blue-500 underline"
                                 >
-                                    {expandedMenus[menu.name] ? "Ocultar" : "Ver"}
+                                    {expandedMenus[menu.name] ? "Ocultar" : "Ver Submenu"}
                                 </button>
                             )}
                             <button
@@ -113,67 +114,7 @@ const AdminMenu = () => {
             <h1 className="text-xl font-bold mb-4">Administrar Menú</h1>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {/* Formulario */}
-                <div className="border rounded-lg p-4 shadow-md">
-                    <h2 className="text-lg font-semibold mb-2">Agregar Menú</h2>
-                    <div className="space-y-2">
-                        <input
-                            type="text"
-                            name="nombre"
-                            placeholder="Nombre del menú"
-                            value={formState.nombre}
-                            onChange={handleInputChange}
-                            className="w-full p-2 border rounded"
-                        />
-                        <select
-                            name="ruta_id"
-                            value={formState.ruta_id || ""}
-                            onChange={handleInputChange}
-                            className="w-full p-2 border rounded"
-                        >
-                            <option value="">Seleccionar Ruta</option>
-                            {rutas.map((ruta) => (
-                                <option key={ruta.id} value={ruta.id}>{ruta.ruta}</option>
-                            ))}
-                        </select>
-                        <select
-                            name="padre_id"
-                            value={formState.padre_id || ""}
-                            onChange={handleInputChange}
-                            className="w-full p-2 border rounded"
-                        >
-                            <option value="">Sin Padre</option>
-                            {menuItems.map((menu) => (
-                                <option key={menu.id} value={menu.id}>{menu.name}</option>
-                            ))}
-                        </select>
-                        <input
-                            type="number"
-                            name="orden"
-                            placeholder="Orden"
-                            value={formState.orden}
-                            onChange={handleInputChange}
-                            className="w-full p-2 border rounded"
-                        />
-                        <select
-                            name="todos"
-                            value={formState.todos}
-                            onChange={handleInputChange}
-                            className="w-full p-2 border rounded"
-                        >
-                            <option value={0}>No visible para todos</option>
-                            <option value={1}>Visible para todos</option>
-                        </select>
-                        <input
-                            type="text"
-                            name="icon"
-                            placeholder="Ícono"
-                            value={formState.icon}
-                            onChange={handleInputChange}
-                            className="w-full p-2 border rounded"
-                        />
-                        <button onClick={handleCreateMenu} className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">Agregar</button>
-                    </div>
-                </div>
+                <MenuForm formState={formState} handleInputChange={handleInputChange} handleCreateMenu={handleCreateMenu} rutas={rutas} menuItems={menuItems} />
 
                 {/* Lista del menú */}
                 <div className="border rounded-lg p-4 shadow-md">
