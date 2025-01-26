@@ -20,9 +20,9 @@ import Home from '../pages/usuario/Home';
 import CalendarioEventos from '../pages/usuario/Calendario';
 import TrabajoTitulacionCrear from '../pages/trabajos/TrabajoTitulacionCrear';
 import AdministrarCarreras from '../pages/admin/Carreras';
-import AdminRutasMenu from '../pages/admin/RutasMenu';
+import AdminRutas from '../pages/admin/Rutas';
 
-const routes = [
+export const routes = [
   {
     path: '/login',
     element: (
@@ -88,12 +88,12 @@ const routes = [
     ),
   },
   {
-    path: '/rutas-menu',
+    path: '/rutas',
     element: (
       <ErrorBoundary>
         <Layout>
           <ProtectedRoute>
-            <AdminRutasMenu />
+            <AdminRutas />
           </ProtectedRoute>
         </Layout>
       </ErrorBoundary>
