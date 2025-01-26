@@ -172,7 +172,12 @@ function App() {
             {/* Criterios de Rúbrica */}
             <section className="mb-8">
                 <h2 className="text-xl font-semibold mb-4">Criterios de Rúbrica</h2>
-                <RubricaCriterioForm onCreate={handleCreateRubricaCriterio} onUpdate={handleUpdateRubricaCriterio} selected={selectedRubricaCriterio} />
+                <RubricaCriterioForm
+                    onCreate={handleCreateRubricaCriterio}
+                    onUpdate={handleUpdateRubricaCriterio}
+                    selected={selectedRubricaCriterio}
+                    setSelected={setSelectedRubricaCriterio}
+                />
                 <RubricaCriterioList
                     rubricaCriterios={rubricaCriterios}
                     onDelete={handleDeleteRubricaCriterio}

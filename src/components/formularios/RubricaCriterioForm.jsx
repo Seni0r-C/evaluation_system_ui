@@ -1,30 +1,31 @@
-import  { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-const RubricaCriterioForm = ({ onCreate, onUpdate, selected }) => {
+const RubricaCriterioForm = ({ onCreate, onUpdate, selected, setSelected }) => {
     const [nombre, setNombre] = useState('');
-    const [valor, setValor] = useState('');
+    const [puntajeMaximo, setPuntajeMaximo] = useState('');
 
     useEffect(() => {
         if (selected) {
             setNombre(selected.nombre);
-            setValor(selected.valor);
+            setPuntajeMaximo(selected.puntaje_maximo);
         } else {
             setNombre('');
-            setValor('');
+            setPuntajeMaximo('');
         }
     }, [selected]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const data = { nombre, valor };
+        const data = { nombre, valor: puntajeMaximo };
         if (selected) {
             onUpdate(selected.id, data);
         } else {
             onCreate(data);
         }
         setNombre('');
-        setValor('');
+        setPuntajeMaximo('');
+        setSelected(null);
     };
 
     return (
@@ -38,14 +39,15 @@ const RubricaCriterioForm = ({ onCreate, onUpdate, selected }) => {
             />
             <input
                 type="text"
-                value={valor}
-                onChange={(e) => setValor(e.target.value)}
+                value={puntajeMaximo}
+                onChange={(e) => setPuntajeMaximo(e.target.value)}
                 className="border p-2 mr-2"
-                placeholder="Valor del criterio"
+                placeholder="Puntaje maximo"
             />
             <button type="submit" className="bg-green-500 text-white px-4 py-2">
                 {selected ? 'Actualizar' : 'Crear'}
             </button>
+            {selected && <button onClick={() => setSelected(null)} className="bg-red-500 text-white px-4 py-2 ml-2">Cancelar</button>}
         </form>
     );
 };
@@ -54,6 +56,7 @@ RubricaCriterioForm.propTypes = {
     onCreate: PropTypes.func.isRequired,
     onUpdate: PropTypes.func.isRequired,
     selected: PropTypes.object,
+    setSelected: PropTypes.func
 };
 
 export default RubricaCriterioForm;
