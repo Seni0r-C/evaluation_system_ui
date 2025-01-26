@@ -19,7 +19,8 @@ import UserProfile from '../pages/usuario/Perfil';
 import Home from '../pages/usuario/Home';
 import CalendarioEventos from '../pages/usuario/Calendario';
 import TrabajoTitulacionCrear from '../pages/trabajos/TrabajoTitulacionCrear';
-import AdministrarCarreras from '../pages/admin/AdministrarCarreras';
+import AdministrarCarreras from '../pages/admin/Carreras';
+import AdminRutasMenu from '../pages/admin/RutasMenu';
 
 const routes = [
   {
@@ -81,6 +82,18 @@ const routes = [
         <Layout>
           <ProtectedRoute>
             <AdministrarCarreras />
+          </ProtectedRoute>
+        </Layout>
+      </ErrorBoundary>
+    ),
+  },
+  {
+    path: '/rutas-menu',
+    element: (
+      <ErrorBoundary>
+        <Layout>
+          <ProtectedRoute>
+            <AdminRutasMenu />
           </ProtectedRoute>
         </Layout>
       </ErrorBoundary>
