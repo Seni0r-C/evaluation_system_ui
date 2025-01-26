@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axiosInstance from '../../services/axiosConfig';
 import { routes } from '../../routes/routes';
 import GenericModal from '../../components/modal/GenericModal';
+import { Link } from 'react-router-dom';
 
 const AdminRutas = () => {
     const [roles, setRoles] = useState([]);
@@ -114,7 +115,11 @@ const AdminRutas = () => {
                         {rutasConEstado.map((ruta) => (
                             <tr key={ruta.path}>
                                 <td className="px-4 py-2 border text-center">{ruta.id}</td>
-                                <td className="px-4 py-2 border">{ruta.path}</td>
+                                <td className="px-4 py-2 border">
+                                    <Link to={ruta.path} className="text-blue-500 hover:underline">
+                                        {ruta.path}
+                                    </Link>
+                                </td>
                                 <td className="px-4 py-2 border text-center">
                                     {ruta.enBaseDatos ? "Sí" : "No"}
                                 </td>

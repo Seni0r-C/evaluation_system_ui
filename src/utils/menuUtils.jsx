@@ -14,6 +14,7 @@ export const transformMenuData = (menuItems) => {
             href: item.ruta || null,
             subOptions: [],
             icon: getIcon(item.icon),
+            id: item.id
         };
         if (item.padre) {
             // Si tiene un padre, es un submenú
