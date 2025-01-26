@@ -1,8 +1,8 @@
 import { useContext } from 'react';
 import UserContext from '../../context/UserContext';
-import InicioEstudiante from '../inicio/InicioEstudiante';
-import InicioAdmin from '../inicio/InicioAdmin';
-import InicioDefault from '../inicio/InicioDefault';
+import InicioEstudiante from './inicio/InicioEstudiante';
+import InicioAdmin from './inicio/InicioAdmin';
+import InicioDefault from './inicio/InicioDefault';
 
 const Home = () => {
     const { hasRole } = useContext(UserContext);
