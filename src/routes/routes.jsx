@@ -21,6 +21,7 @@ import CalendarioEventos from '../pages/usuario/Calendario';
 import TrabajoTitulacionCrear from '../pages/trabajos/TrabajoTitulacionCrear';
 import AdministrarCarreras from '../pages/admin/Carreras';
 import AdminRutas from '../pages/admin/Rutas';
+import AdminMenu from '../pages/admin/AdminMenu';
 
 export const routes = [
   {
@@ -94,6 +95,18 @@ export const routes = [
         <Layout>
           <ProtectedRoute>
             <AdminRutas />
+          </ProtectedRoute>
+        </Layout>
+      </ErrorBoundary>
+    ),
+  },
+  {
+    path: '/menu',
+    element: (
+      <ErrorBoundary>
+        <Layout>
+          <ProtectedRoute>
+            <AdminMenu />
           </ProtectedRoute>
         </Layout>
       </ErrorBoundary>

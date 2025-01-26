@@ -48,7 +48,7 @@ export const transformMenuData = (menuItems) => {
 
 };
 
-const getIcon = (iconName) => {
+export const getIcon = (iconName) => {
     const iconsMap = {
         home: <FaHome />,
         items: <MdOutlineChromeReaderMode />,
