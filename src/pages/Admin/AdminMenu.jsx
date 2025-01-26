@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { FaTrash } from "react-icons/fa";
-import { getIcon, transformMenuData } from "../../utils/menuUtils";
+import { transformMenuData } from "../../utils/menuUtils";
 import axiosInstance from "../../services/axiosConfig";
 import MenuForm from "../../components/formularios/MenuForm";
 
@@ -76,11 +76,11 @@ const AdminMenu = () => {
     const renderMenuItems = (items) => {
         return (
             <ul className="space-y-2">
-                {items.map((menu) => (
+                {items.filter((item) => item.name !== "Inicio").map((menu) => (
                     <li key={menu.name} className="p-2 border rounded">
                         <div className="flex justify-between items-center">
                             <div className="flex items-center space-x-2">
-                                {menu.icon && getIcon(menu.icon)}
+                                <span>{menu.icon}</span>
                                 <span>{menu.name}</span>
                             </div>
                             {menu.subOptions.length > 0 && (
