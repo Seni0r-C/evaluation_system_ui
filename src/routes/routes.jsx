@@ -19,6 +19,7 @@ import UserProfile from '../pages/usuario/Perfil';
 import Home from '../pages/usuario/Home';
 import CalendarioEventos from '../pages/usuario/Calendario';
 import TrabajoTitulacionCrear from '../pages/trabajos/TrabajoTitulacionCrear';
+import AdministrarCarreras from '../pages/admin/AdministrarCarreras';
 
 const routes = [
   {
@@ -68,6 +69,18 @@ const routes = [
         <Layout>
           <ProtectedRoute>
             <CalendarioEventos />
+          </ProtectedRoute>
+        </Layout>
+      </ErrorBoundary>
+    ),
+  },
+  {
+    path: '/carreras',
+    element: (
+      <ErrorBoundary>
+        <Layout>
+          <ProtectedRoute>
+            <AdministrarCarreras />
           </ProtectedRoute>
         </Layout>
       </ErrorBoundary>
