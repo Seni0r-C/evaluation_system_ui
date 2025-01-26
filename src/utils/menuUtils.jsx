@@ -14,14 +14,15 @@ export const transformMenuData = (menuItems) => {
             href: item.ruta || null,
             subOptions: [],
             icon: getIcon(item.icon),
-            id: item.id
+            id: item.id,
+            orden: item.orden
         };
         if (item.padre) {
             // Si tiene un padre, es un submenú
             subMenus.push({ ...menuItem, parentId: item.padre });
         } else {
             // Si no tiene un padre, es un menú principal
-            menuById[item.orden] = menuItem;
+            menuById[item.id] = menuItem;
         }
     });
 
@@ -32,21 +33,24 @@ export const transformMenuData = (menuItems) => {
         }
     });
 
-    // Convertir a un array y filtrar los elementos no válidos
-    const filteredMenu = Object.values(menuById).filter(menuItem => {
-        // Filtro para los elementos principales
-        return menuItem.href || menuItem.subOptions.length > 0;
+    // Convertir a un array y ordenar por "orden"
+    const sortedMenu = Object.values(menuById)
+        .filter(menuItem => {
+            // Filtro para los elementos principales
+            return menuItem.href || menuItem.subOptions.length > 0;
+        })
+        .sort((a, b) => a.orden - b.orden); // Ordenar menús principales
+
+    // Ordenar también los subOptions de cada menú
+    sortedMenu.forEach(menuItem => {
+        menuItem.subOptions = menuItem.subOptions
+            .filter(subOption => {
+                return subOption.href || subOption.subOptions.length > 0;
+            })
+            .sort((a, b) => a.orden - b.orden); // Ordenar submenús
     });
 
-    // Filtrar también los subOptions de cada menú
-    filteredMenu.forEach(menuItem => {
-        menuItem.subOptions = menuItem.subOptions.filter(subOption => {
-            return subOption.href || subOption.subOptions.length > 0;
-        });
-    });
-
-    return filteredMenu;
-
+    return sortedMenu;
 };
 
 // Función para obtener el ícono como componente JSX

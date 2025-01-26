@@ -80,6 +80,7 @@ const AdminMenu = () => {
                     <li key={menu.name} className="p-2 border rounded">
                         <div className="flex justify-between items-center">
                             <div className="flex items-center space-x-2">
+                                <span>{menu.orden}</span>
                                 <span>{menu.icon}</span>
                                 <span>{menu.name}</span>
                             </div>
