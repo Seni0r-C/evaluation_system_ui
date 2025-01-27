@@ -20,6 +20,8 @@ function App() {
     const [selectedRubrica, setSelectedRubrica] = useState(null);
     const [selectedRubricaCriterio, setSelectedRubricaCriterio] = useState(null);
 
+    const [activeTab, setActiveTab] = useState("tipoEvaluacion");
+
     const fetchTiposEvaluacion = async () => {
         try {
             const response = await getTiposEvaluacion();
@@ -155,55 +157,92 @@ function App() {
         <div className="container mx-auto p-4">
             <h1 className="text-2xl font-bold mb-4">Administrar Evaluaciones</h1>
 
-            {/* Tipo de Evaluación */}
-            <section className="mb-8">
-                <h2 className="text-xl font-semibold mb-4">Tipos de Evaluación</h2>
-                <TipoEvaluacionForm
-                    onCreate={handleCreateTipoEvaluacion}
-                    onUpdate={handleUpdateTipoEvaluacion}
-                    selected={selectedTipoEvaluacion}
-                    setSelected={setSelectedTipoEvaluacion}
-                />
-                <TipoEvaluacionList
-                    tiposEvaluacion={tiposEvaluacion}
-                    onDelete={handleDeleteTipoEvaluacion}
-                    onSelect={setSelectedTipoEvaluacion}
-                />
-            </section>
+            {/* Pestañas */}
+            <div className="border-b mb-4">
+                <nav className="flex space-x-4">
+                    <button
+                        className={`px-4 py-2 text-sm font-medium ${activeTab === "tipoEvaluacion"
+                                ? "border-b-2 border-blue-500 text-blue-500"
+                                : "text-gray-600 hover:text-blue-500"
+                            }`}
+                        onClick={() => setActiveTab("tipoEvaluacion")}
+                    >
+                        Tipos de Evaluación
+                    </button>
+                    <button
+                        className={`px-4 py-2 text-sm font-medium ${activeTab === "rubricas"
+                                ? "border-b-2 border-blue-500 text-blue-500"
+                                : "text-gray-600 hover:text-blue-500"
+                            }`}
+                        onClick={() => setActiveTab("rubricas")}
+                    >
+                        Rúbricas
+                    </button>
+                    <button
+                        className={`px-4 py-2 text-sm font-medium ${activeTab === "criterios"
+                                ? "border-b-2 border-blue-500 text-blue-500"
+                                : "text-gray-600 hover:text-blue-500"
+                            }`}
+                        onClick={() => setActiveTab("criterios")}
+                    >
+                        Criterios de Rúbrica
+                    </button>
+                </nav>
+            </div>
 
-            {/* Rúbrica */}
-            <section className="mb-8">
-                <h2 className="text-xl font-semibold mb-4">Rúbricas</h2>
-                <RubricaForm
-                    onCreate={handleCreateRubrica}
-                    onUpdate={handleUpdateRubrica}
-                    selected={selectedRubrica}
-                    setSelected={setSelectedRubrica}
-                    modalidades={modalidades}
-                    tipoEvaluaciones={tiposEvaluacion}
-                />
-                <RubricaList
-                    rubricas={rubricas}
-                    onDelete={handleDeleteRubrica}
-                    onSelect={setSelectedRubrica}
-                />
-            </section>
-
-            {/* Criterios de Rúbrica */}
-            <section className="mb-8">
-                <h2 className="text-xl font-semibold mb-4">Criterios de Rúbrica</h2>
-                <RubricaCriterioForm
-                    onCreate={handleCreateRubricaCriterio}
-                    onUpdate={handleUpdateRubricaCriterio}
-                    selected={selectedRubricaCriterio}
-                    setSelected={setSelectedRubricaCriterio}
-                />
-                <RubricaCriterioList
-                    rubricaCriterios={rubricaCriterios}
-                    onDelete={handleDeleteRubricaCriterio}
-                    onSelect={setSelectedRubricaCriterio}
-                />
-            </section>
+            {/* Contenido de las pestañas */}
+            <div>
+                {activeTab === "tipoEvaluacion" && (
+                    <section>
+                        <h2 className="text-xl font-semibold mb-4">Tipos de Evaluación</h2>
+                        <TipoEvaluacionForm
+                            onCreate={handleCreateTipoEvaluacion}
+                            onUpdate={handleUpdateTipoEvaluacion}
+                            selected={selectedTipoEvaluacion}
+                            setSelected={setSelectedTipoEvaluacion}
+                        />
+                        <TipoEvaluacionList
+                            tiposEvaluacion={tiposEvaluacion}
+                            onDelete={handleDeleteTipoEvaluacion}
+                            onSelect={setSelectedTipoEvaluacion}
+                        />
+                    </section>
+                )}
+                {activeTab === "rubricas" && (
+                    <section>
+                        <h2 className="text-xl font-semibold mb-4">Rúbricas</h2>
+                        <RubricaForm
+                            onCreate={handleCreateRubrica}
+                            onUpdate={handleUpdateRubrica}
+                            selected={selectedRubrica}
+                            setSelected={setSelectedRubrica}
+                            modalidades={modalidades}
+                            tipoEvaluaciones={tiposEvaluacion}
+                        />
+                        <RubricaList
+                            rubricas={rubricas}
+                            onDelete={handleDeleteRubrica}
+                            onSelect={setSelectedRubrica}
+                        />
+                    </section>
+                )}
+                {activeTab === "criterios" && (
+                    <section>
+                        <h2 className="text-xl font-semibold mb-4">Criterios de Rúbrica</h2>
+                        <RubricaCriterioForm
+                            onCreate={handleCreateRubricaCriterio}
+                            onUpdate={handleUpdateRubricaCriterio}
+                            selected={selectedRubricaCriterio}
+                            setSelected={setSelectedRubricaCriterio}
+                        />
+                        <RubricaCriterioList
+                            rubricaCriterios={rubricaCriterios}
+                            onDelete={handleDeleteRubricaCriterio}
+                            onSelect={setSelectedRubricaCriterio}
+                        />
+                    </section>
+                )}
+            </div>
         </div>
     );
 }
