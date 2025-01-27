@@ -35,7 +35,7 @@ const CustomTrabajoTitulacionListar = ({ permisosAcciones, includeStateFiltter =
   useEffect(() => {
     obtenerCarreras(setCarreras);
     if (firstStates && includeStateFiltter) {
-      setEstados(Array.isArray(firstStates) ? firstStates : [firstStates]);
+      setEstados(firstStates);
     } else if (firstStates === '' && includeStateFiltter) {
       obtenerEstados(setEstados);
     }
