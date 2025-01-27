@@ -81,8 +81,8 @@ const AdminMenu = () => {
         }
     };
 
-    const moveMenuItem = (id, direction) => {
-        const newMenuItems = [...menuItems];
+    const moveMenuItem = (id, direction, arrayMenu) => {
+        const newMenuItems = [...arrayMenu];
         const index = newMenuItems.findIndex(item => item.id === id);
         if (index === -1) return;
 
@@ -98,7 +98,7 @@ const AdminMenu = () => {
         updateMenuOrder(newMenuItems);
     };
 
-    const renderMenuItems = (items) => {
+    const renderMenuItems = (items, isSubmenu = false) => {
         return (
             <ul className="space-y-2">
                 {items.filter((item) => item.name !== "Inicio").map((menu) => (
@@ -106,16 +106,16 @@ const AdminMenu = () => {
                         <div className="flex  items-center">
                             <div className="flex space-x-2 mr-2">
                                 <button
-                                    onClick={() => moveMenuItem(menu.id, 'up')}
+                                    onClick={() => moveMenuItem(menu.id, 'up', items)}
                                     className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600  disabled:opacity-50"
-                                    disabled={menu.orden === 2}
+                                    disabled={isSubmenu ? menu.orden === 1 : menu.orden === 2}
                                 >
                                     ↑
                                 </button>
                                 <button
-                                    onClick={() => moveMenuItem(menu.id, 'down')}
+                                    onClick={() => moveMenuItem(menu.id, 'down', items)}
                                     className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 disabled:opacity-50"
-                                    disabled={menu.orden === menuItems.length}
+                                    disabled={menu.orden === items.length}
                                 >
                                     ↓
                                 </button>
@@ -143,7 +143,7 @@ const AdminMenu = () => {
                         </div>
                         {expandedMenus[menu.id] && menu.subOptions.length > 0 && (
                             <div className="ml-4 mt-2 border-l pl-4">
-                                {renderMenuItems(menu.subOptions)}
+                                {renderMenuItems(menu.subOptions, true)}
                             </div>
                         )}
                     </li>
