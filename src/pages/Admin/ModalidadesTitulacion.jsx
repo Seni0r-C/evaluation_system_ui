@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
-import { API_URL } from "../../utils/constants";
+import axiosInstance from "../../services/axiosConfig";
 
 const ModalidadesTitulacion = () => {
     const [modalidades, setModalidades] = useState([]);
@@ -10,30 +9,29 @@ const ModalidadesTitulacion = () => {
     const [selectedCarrera, setSelectedCarrera] = useState("");
     const [asociaciones, setAsociaciones] = useState([]);
 
-    // Fetch modalidades
+    const [activeTab, setActiveTab] = useState("formulario");
+
     const fetchModalidades = async () => {
         try {
-            const res = await axios.get(API_URL + "/modalidad-titulacion/listar");
+            const res = await axiosInstance.get("/modalidad-titulacion/listar");
             setModalidades(res.data);
         } catch (err) {
             console.error(err);
         }
     };
 
-    // Fetch carreras
     const fetchCarreras = async () => {
         try {
-            const res = await axios.get(API_URL + "/carrera/listar");
+            const res = await axiosInstance.get("/carrera/listar");
             setCarreras(res.data.datos);
         } catch (err) {
             console.error(err);
         }
     };
 
-    // Fetch asociaciones por carrera
     const fetchAsociaciones = async (idCarrera) => {
         try {
-            const res = await axios.get(`${API_URL}/modalidad-titulacion/listarPorCarrera/${idCarrera}`);
+            const res = await axiosInstance.get(`/modalidad-titulacion/listarPorCarrera/${idCarrera}`);
             setAsociaciones(res.data);
         } catch (err) {
             console.error(err);
@@ -45,20 +43,18 @@ const ModalidadesTitulacion = () => {
         fetchCarreras();
     }, []);
 
-    // Handle input changes
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
-    // Create or update modalidad
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             if (selectedId) {
-                await axios.put(`${API_URL}/modalidad-titulacion/actualizar/${selectedId}`, formData);
+                await axiosInstance.put(`/modalidad-titulacion/actualizar/${selectedId}`, formData);
             } else {
-                await axios.post(API_URL + "/modalidad-titulacion/crear", formData);
+                await axiosInstance.post("/modalidad-titulacion/crear", formData);
             }
             setFormData({ nombre: "", max_participantes: "" });
             setSelectedId(null);
@@ -68,36 +64,32 @@ const ModalidadesTitulacion = () => {
         }
     };
 
-    // Edit modalidad
     const handleEdit = (modalidad) => {
         setFormData({ nombre: modalidad.nombre, max_participantes: modalidad.max_participantes });
         setSelectedId(modalidad.id);
     };
 
-    // Delete modalidad
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`${API_URL}/modalidad-titulacion/eliminar/${id}`);
+            await axiosInstance.delete(`/modalidad-titulacion/eliminar/${id}`);
             fetchModalidades();
         } catch (err) {
             console.error(err);
         }
     };
 
-    // Associate modalidad with carrera
     const handleAsociar = async (idModalidad) => {
         try {
-            await axios.post(API_URL + "/modalidad-titulacion/asociar", { id_carrera: selectedCarrera, id_modalidad_titulacion: idModalidad });
+            await axiosInstance.post("/modalidad-titulacion/asociar", { id_carrera: selectedCarrera, id_modalidad_titulacion: idModalidad });
             fetchAsociaciones(selectedCarrera);
         } catch (err) {
             console.error(err);
         }
     };
 
-    // Disassociate modalidad from carrera
     const handleDesasociar = async (idModalidad) => {
         try {
-            await axios.delete(API_URL + "/modalidad-titulacion/desasociar", { data: { id_carrera: selectedCarrera, id_modalidad_titulacion: idModalidad } });
+            await axiosInstance.delete("/modalidad-titulacion/desasociar", { data: { id_carrera: selectedCarrera, id_modalidad_titulacion: idModalidad } });
             fetchAsociaciones(selectedCarrera);
         } catch (err) {
             console.error(err);
@@ -105,118 +97,187 @@ const ModalidadesTitulacion = () => {
     };
 
     return (
-        <div className="p-6 space-y-6">
-            <h1 className="text-2xl font-bold">Gestión de Modalidades de Titulación</h1>
+        <div className="p-6 space-y-8">
+            <h1 className="text-3xl font-bold text-gray-800">Gestión de Modalidades de Titulación</h1>
+            <div className="flex space-x-4 border-b">
+                <button
+                    className={`py-2 px-4 ${activeTab === "formulario" ? "border-b-2 border-blue-600 text-blue-600" : "text-gray-600"}`}
+                    onClick={() => setActiveTab("formulario")}
+                >
+                    Crear Modalidad
+                </button>
+                <button
+                    className={`py-2 px-4 ${activeTab === "modalidades" ? "border-b-2 border-blue-600 text-blue-600" : "text-gray-600"}`}
+                    onClick={() => setActiveTab("modalidades")}
+                >
+                    Modalidades
+                </button>
+                <button
+                    className={`py-2 px-4 ${activeTab === "asociaciones" ? "border-b-2 border-blue-600 text-blue-600" : "text-gray-600"}`}
+                    onClick={() => setActiveTab("asociaciones")}
+                >
+                    Asociaciones
+                </button>
+            </div>
 
             {/* Formulario de Modalidades */}
-            <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="flex flex-col space-y-2">
-                    <label className="font-semibold">Nombre:</label>
-                    <input
-                        type="text"
-                        name="nombre"
-                        value={formData.nombre}
-                        onChange={handleInputChange}
-                        className="p-2 border rounded"
-                        required
-                    />
+            {activeTab === "formulario" && (
+                <div className="bg-white shadow-md rounded-lg p-6">
+                    <h2 className="text-xl font-semibold mb-4">Crear o Editar Modalidad</h2>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">Nombre</label>
+                            <input
+                                type="text"
+                                name="nombre"
+                                value={formData.nombre}
+                                onChange={handleInputChange}
+                                className="mt-1 block w-full p-2 border border-gray-300 rounded-lg"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">Máximo de Participantes</label>
+                            <input
+                                type="number"
+                                name="max_participantes"
+                                value={formData.max_participantes}
+                                onChange={handleInputChange}
+                                className="mt-1 block w-full p-2 border border-gray-300 rounded-lg"
+                                required
+                            />
+                        </div>
+                        <button
+                            type="submit"
+                            className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                        >
+                            {selectedId ? "Actualizar Modalidad" : "Crear Modalidad"}
+                        </button>
+                        {selectedId && (
+                            <button
+                                type="button"
+                                className="w-full py-2 px-4 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                                onClick={() => { setSelectedId(null); setFormData({ nombre: "", max_participantes: "" }); setActiveTab("modalidades"); }}
+                            >
+                                Cancelar
+                            </button>
+                        )}
+                    </form>
                 </div>
-                <div className="flex flex-col space-y-2">
-                    <label className="font-semibold">Máximo de Participantes:</label>
-                    <input
-                        type="number"
-                        name="max_participantes"
-                        value={formData.max_participantes}
-                        onChange={handleInputChange}
-                        className="p-2 border rounded"
-                        required
-                    />
-                </div>
-                <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded">
-                    {selectedId ? "Actualizar" : "Crear"}
-                </button>
-            </form>
+            )}
 
             {/* Lista de Modalidades */}
-            <div>
-                <h2 className="text-xl font-bold">Modalidades Existentes</h2>
-                <ul className="space-y-2">
-                    {modalidades.map((modalidad) => (
-                        <li key={modalidad.id} className="p-2 border rounded flex justify-between items-center">
-                            <span>{modalidad.nombre} (Máx: {modalidad.max_participantes})</span>
-                            <div className="space-x-2">
-                                <button
-                                    onClick={() => handleEdit(modalidad)}
-                                    className="px-2 py-1 bg-yellow-500 text-white rounded"
-                                >
-                                    Editar
-                                </button>
-                                <button
-                                    onClick={() => handleDelete(modalidad.id)}
-                                    className="px-2 py-1 bg-red-500 text-white rounded"
-                                >
-                                    Eliminar
-                                </button>
-                            </div>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-
-            {/* Gestión de Asociaciones */}
-            <div>
-                <h2 className="text-xl font-bold">Asociar Modalidades a Carreras</h2>
-                <div className="space-y-4">
-                    <div className="flex flex-col space-y-2">
-                        <label className="font-semibold">Seleccionar Carrera:</label>
-                        <select
-                            onChange={(e) => {
-                                setSelectedCarrera(e.target.value);
-                                fetchAsociaciones(e.target.value);
-                            }}
-                            value={selectedCarrera}
-                            className="p-2 border rounded"
-                        >
-                            <option value="">Seleccione una carrera</option>
-                            {carreras.map((carrera) => (
-                                <option key={carrera.id} value={carrera.id}>
-                                    {carrera.nombre}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <h3 className="font-semibold">Modalidades Asociadas</h3>
-                    <ul className="space-y-2">
-                        {asociaciones.map((asociacion) => (
-                            <li key={asociacion.id} className="p-2 border rounded flex justify-between items-center">
-                                <span>{asociacion.nombre}</span>
-                                <button
-                                    onClick={() => handleDesasociar(asociacion.id)}
-                                    className="px-2 py-1 bg-red-500 text-white rounded"
-                                >
-                                    Desasociar
-                                </button>
-                            </li>
-                        ))}
-                    </ul>
-
-                    <h3 className="font-semibold">Modalidades Disponibles</h3>
-                    <ul className="space-y-2">
+            {activeTab === "modalidades" && (
+                <div className="bg-white shadow-md rounded-lg p-6">
+                    <h2 className="text-xl font-semibold mb-4">Modalidades Existentes</h2>
+                    <ul className="space-y-4">
                         {modalidades.map((modalidad) => (
-                            <li key={modalidad.id} className="p-2 border rounded flex justify-between items-center">
-                                <span>{modalidad.nombre}</span>
-                                <button
-                                    onClick={() => handleAsociar(modalidad.id)}
-                                    className="px-2 py-1 bg-green-500 text-white rounded"
-                                >
-                                    Asociar
-                                </button>
+                            <li
+                                key={modalidad.id}
+                                className="p-4 border rounded-lg flex justify-between items-center"
+                            >
+                                <div>
+                                    <p className="font-medium text-gray-800">{modalidad.nombre}</p>
+                                    <p className="text-sm text-gray-600">Máximo: {modalidad.max_participantes}</p>
+                                </div>
+                                <div className="flex space-x-2">
+                                    <button
+                                        onClick={() => { setActiveTab("formulario"); handleEdit(modalidad); }}
+                                        className="py-1 px-3 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600"
+                                    >
+                                        Editar
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(modalidad.id)}
+                                        className="py-1 px-3 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                                    >
+                                        Eliminar
+                                    </button>
+                                </div>
                             </li>
                         ))}
                     </ul>
                 </div>
-            </div>
+            )}
+
+            {/* Gestión de Asociaciones */}
+            {activeTab === "asociaciones" && (
+                <div className="bg-white shadow-md rounded-lg p-6">
+                    <h2 className="text-xl font-semibold mb-4">Asociar Modalidades a Carreras</h2>
+                    <div className="space-y-4">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">Seleccionar Carrera</label>
+                            <select
+                                onChange={(e) => {
+                                    setSelectedCarrera(e.target.value);
+                                    if (e.target.value) {
+                                        fetchAsociaciones(e.target.value);
+                                    } else {
+                                        setAsociaciones([]);
+                                    }
+                                }}
+                                value={selectedCarrera}
+                                className="mt-1 block w-full p-2 border border-gray-300 rounded-lg"
+                            >
+                                <option value="">Seleccione una carrera</option>
+                                {carreras.map((carrera) => (
+                                    <option key={carrera.id} value={carrera.id}>
+                                        {carrera.nombre}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {selectedCarrera && (
+                            <>
+                                {/* Modalidades Asociadas */}
+                                <h3 className="text-lg font-semibold">Modalidades Asociadas</h3>
+                                <ul className="space-y-4">
+                                    {asociaciones.length > 0 ? (
+                                        asociaciones.map((asociacion) => (
+                                            <li
+                                                key={asociacion.id}
+                                                className="p-4 border rounded-lg flex justify-between items-center"
+                                            >
+                                                <span className="text-gray-800">{asociacion.nombre}</span>
+                                                <button
+                                                    onClick={() => handleDesasociar(asociacion.id)}
+                                                    className="py-1 px-3 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                                                >
+                                                    Desasociar
+                                                </button>
+                                            </li>
+                                        ))
+                                    ) : (
+                                        <p className="text-gray-600">No hay modalidades asociadas.</p>
+                                    )}
+                                </ul>
+
+                                {/* Modalidades Disponibles */}
+                                <h3 className="text-lg font-semibold">Modalidades Disponibles</h3>
+                                <ul className="space-y-4">
+                                    {modalidades
+                                        .filter((modalidad) => !asociaciones.some((a) => a.id === modalidad.id))
+                                        .map((modalidad) => (
+                                            <li
+                                                key={modalidad.id}
+                                                className="p-4 border rounded-lg flex justify-between items-center"
+                                            >
+                                                <span className="text-gray-800">{modalidad.nombre}</span>
+                                                <button
+                                                    onClick={() => handleAsociar(modalidad.id)}
+                                                    className="py-1 px-3 bg-green-500 text-white rounded-lg hover:bg-green-600"
+                                                >
+                                                    Asociar
+                                                </button>
+                                            </li>
+                                        ))}
+                                </ul>
+                            </>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
