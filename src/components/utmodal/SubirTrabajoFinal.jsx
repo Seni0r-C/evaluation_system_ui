@@ -3,7 +3,7 @@ import GenericModal from '../modal/GenericModal';
 import PropTypes from 'prop-types';
 import { subirTrabajoFinal } from '../../services/trabajosTitulacion';
 
-const SubirTrabajoFinal = ({ isOpen, onClose, trabajoData }) => {
+const TrabajoFinalModal = ({ isOpen, onClose, trabajoData }) => {
     const [link, setLink] = useState('');
 
     const handleSubirTrabajoFinal = () => {
@@ -47,10 +47,10 @@ const SubirTrabajoFinal = ({ isOpen, onClose, trabajoData }) => {
     );
 };
 
-SubirTrabajoFinal.propTypes = {
+TrabajoFinalModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     trabajoData: PropTypes.object,
 };
 
-export default SubirTrabajoFinal;
+export default TrabajoFinalModal;

@@ -4,12 +4,12 @@ import { FaCalendarDay, FaEdit, FaFilePdf, FaEye } from 'react-icons/fa';
 import { MdChecklist, MdGroupAdd } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { permisos } from '../../utils/permisos';
-import DynamicModal from '../modal/ModalData';
+import InfoTrabajoModal from '../modal/ModalData';
 import { obtenerUnTrabajo } from '../../services/trabajosTitulacion';
-import AsignacionTribunalModal from '../utmodal/AsignacionTribunalModal';
+import AsignarTribunalModal from '../utmodal/AsignacionTribunalModal';
 import PropTypes from 'prop-types';
 import { GrDocumentUser } from 'react-icons/gr';
-import SubirTrabajoFinal from '../utmodal/SubirTrabajoFinal';
+import TrabajoFinalModal from '../utmodal/SubirTrabajoFinal';
 
 const AccionesTrabajo = ({ trabajo, permisosAcciones, user }) => {
   const navigate = useNavigate();
@@ -122,21 +122,21 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user }) => {
           />
         ) : null
       )}
-      <DynamicModal
+      <InfoTrabajoModal
         isOpen={isOpenVerDetalle}
         onClose={() => setIsOpenVerDetalle(false)}
         data={trabajoSelected}
         title={"Detalles del Trabajo de Titulación"}
       />
 
-      <AsignacionTribunalModal
+      <AsignarTribunalModal
         isOpen={isOpenAsignarTutor}
         onClose={() => setIsOpenAsignarTutor(false)}
         trabajoData={trabajoSelected}
         title={"Asignación de tribunal"}
       />
 
-      <SubirTrabajoFinal
+      <TrabajoFinalModal
         isOpen={isOpenSubirTrabajoFinal}
         onClose={() => setIsOpenSubirTrabajoFinal(false)}
         trabajoData={trabajoSelected}

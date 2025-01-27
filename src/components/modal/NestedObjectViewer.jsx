@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 const NestedObjectViewer = ({ label, onViewDetails }) => {
     return (
         <div className="mb-4">
@@ -10,6 +12,11 @@ const NestedObjectViewer = ({ label, onViewDetails }) => {
             </button>
         </div>
     );
+};
+
+NestedObjectViewer.propTypes = {
+    label: PropTypes.string.isRequired,
+    onViewDetails: PropTypes.func.isRequired,
 };
 
 export default NestedObjectViewer;

@@ -8,7 +8,7 @@ import { obtenerUnTrabajo } from "../../services/trabajosTitulacion";
 import PropTypes from "prop-types";
 import { useMessage } from "../../hooks/useMessage";
 
-const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
+const AsignarTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
     const { showError, showWarning, showSuccess } = useMessage();
     // Modal
     const [nestedData, setNestedData] = useState("");
@@ -173,11 +173,11 @@ const AsignacionTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
     );
 };
 
-AsignacionTribunalModal.propTypes = {
+AsignarTribunalModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     trabajoData: PropTypes.object,
     title: PropTypes.string,
 };
 
-export default AsignacionTribunalModal;
+export default AsignarTribunalModal;
