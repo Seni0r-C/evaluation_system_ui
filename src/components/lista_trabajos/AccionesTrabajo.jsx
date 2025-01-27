@@ -122,6 +122,7 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user }) => {
           />
         ) : null
       )}
+
       <InfoTrabajoModal
         isOpen={isOpenVerDetalle}
         onClose={() => setIsOpenVerDetalle(false)}

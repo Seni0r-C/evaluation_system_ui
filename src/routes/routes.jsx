@@ -158,7 +158,8 @@ export const routes = [
                 'detallesTrabajo',
                 'subirTrabajoFinal',
               ]}
-              firstStates={["ANTEPROYECTO"]}
+              includeStateFiltter={true}
+              firstStates={["ANTEPROYECTO", "SIN TRIBUNAL"]}
             />
           </ProtectedRoute>
         </Layout>
@@ -224,7 +225,7 @@ export const routes = [
                 'asignarTribunal',
               ]}
               includeStateFiltter={true}
-              firstStates={["SIN TRIBUNAL"]}
+              firstStates={["SIN TRIBUNAL", "CON TRIBUNAL"]}  
             />
           </ProtectedRoute>
         </Layout>
