@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { iconsMap } from "../../utils/menuUtils";
 import PropTypes from "prop-types";
 
-const MenuForm = ({ formState, handleInputChange, handleCreateMenu, rutas, menuItems }) => {
+const MenuForm = ({ formState, setFormState, handleInputChange, handleCreateMenu, rutas, menuItems, handleUpdateMenu }) => {
     const [showIconMenu, setShowIconMenu] = useState(false);
     const [menuPosition, setMenuPosition] = useState("bottom");
     const buttonRef = useRef(null);
@@ -110,11 +110,19 @@ const MenuForm = ({ formState, handleInputChange, handleCreateMenu, rutas, menuI
                     )}
                 </div>
                 <button
-                    onClick={handleCreateMenu}
+                    onClick={formState.id ? handleUpdateMenu : handleCreateMenu}
                     className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
                 >
-                    Agregar
+                    {formState.id ? "Actualizar Menú" : "Crear Menú"}
                 </button>
+                {formState.id && (
+                    <button
+                        onClick={() => setFormState({ nombre: "", ruta_id: null, padre_id: null, orden: 0, todos: 0, icon: "" })}
+                        className="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600"
+                    >
+                        Cancelar
+                    </button>
+                )}
             </div>
         </div>
     );
@@ -126,6 +134,8 @@ MenuForm.propTypes = {
     handleCreateMenu: PropTypes.func.isRequired,
     rutas: PropTypes.array.isRequired,
     menuItems: PropTypes.array.isRequired,
+    handleUpdateMenu: PropTypes.func.isRequired,
+    setFormState: PropTypes.func
 };
 
 export default MenuForm;

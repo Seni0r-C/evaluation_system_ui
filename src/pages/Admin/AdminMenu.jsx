@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FaTrash } from "react-icons/fa";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import { transformMenuData } from "../../utils/menuUtils";
 import axiosInstance from "../../services/axiosConfig";
 import MenuForm from "../../components/formularios/MenuForm";
@@ -55,6 +55,16 @@ const AdminMenu = () => {
         }
     };
 
+    const handleUpdateMenu = async () => {
+        try {
+            await axiosInstance.put(`rutas/menu/${formState.id}`, formState);
+            fetchMenu();
+            setFormState({ nombre: "", ruta_id: null, padre_id: null, orden: 0, todos: 0, icon: "" });
+        } catch (error) {
+            console.error("Error updating menu:", error);
+        }
+    };
+
     const handleDeleteMenu = async (id) => {
         try {
             await axiosInstance.delete(`rutas/menu/${id}`);
@@ -95,6 +105,18 @@ const AdminMenu = () => {
 
         // Llamar al servidor para actualizar el orden
         updateMenuOrder(newMenuItems);
+    };
+
+    const handleEditMenu = (menu) => {
+        console.log(menu);
+        setFormState({
+            id: menu.id,
+            nombre: menu.name,
+            ruta_id: menu.ruta_id,
+            padre_id: menu.padre,
+            todos: menu.todos,
+            icon: menu.icon_name,
+        });
     };
 
     const renderMenuItems = (items, isSubmenu = false) => {
@@ -141,6 +163,12 @@ const AdminMenu = () => {
                                     <FaTrash />
                                 </button>
                             }
+                            <button
+                                onClick={() => handleEditMenu(menu)}
+                                className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 ml-2"
+                            >
+                                <FaEdit />
+                            </button>
 
                         </div>
                         {expandedMenus[menu.id] && menu.subOptions.length > 0 && (
@@ -159,7 +187,15 @@ const AdminMenu = () => {
             <h1 className="text-xl font-bold mb-4">Administrar Menú</h1>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {/* Formulario */}
-                <MenuForm formState={formState} handleInputChange={handleInputChange} handleCreateMenu={handleCreateMenu} rutas={rutas} menuItems={menuItems} />
+                <MenuForm
+                    formState={formState}
+                    handleInputChange={handleInputChange}
+                    handleCreateMenu={handleCreateMenu}
+                    rutas={rutas}
+                    menuItems={menuItems}
+                    handleUpdateMenu={handleUpdateMenu}
+                    setFormState={setFormState}
+                />
 
                 {/* Lista del menú */}
                 <div className="border rounded-lg p-4 shadow-md">
