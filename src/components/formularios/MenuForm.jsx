@@ -37,12 +37,14 @@ const MenuForm = ({ formState, handleInputChange, handleCreateMenu, rutas, menuI
                     value={formState.nombre}
                     onChange={handleInputChange}
                     className="w-full p-2 border rounded"
+                    required
                 />
                 <select
                     name="ruta_id"
                     value={formState.ruta_id || ""}
                     onChange={handleInputChange}
                     className="w-full p-2 border rounded"
+                    required
                 >
                     <option value="">Seleccionar Ruta</option>
                     {rutas.map((ruta) => (
@@ -64,14 +66,6 @@ const MenuForm = ({ formState, handleInputChange, handleCreateMenu, rutas, menuI
                         </option>
                     ))}
                 </select>
-                <input
-                    type="number"
-                    name="orden"
-                    placeholder="Orden"
-                    value={formState.orden}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border rounded"
-                />
                 <select
                     name="todos"
                     value={formState.todos}

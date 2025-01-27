@@ -11,7 +11,6 @@ const AdminMenu = () => {
         nombre: "",
         ruta_id: null,
         padre_id: null,
-        orden: 0,
         todos: 0,
         icon: "",
     });
@@ -126,20 +125,23 @@ const AdminMenu = () => {
                                 <span>{menu.name}</span>
                             </div>
 
-                            {menu.subOptions.length > 0 && (
+                            {menu.subOptions.length > 0 ? (
                                 <button
                                     onClick={() => toggleExpandMenu(menu.id)}
                                     className="text-blue-500 underline mr-4"
                                 >
                                     {expandedMenus[menu.id] ? "Ocultar" : "Ver Submenu"}
                                 </button>
-                            )}
-                            <button
-                                onClick={() => handleDeleteMenu(menu.id)}
-                                className="bg-red-500 text-white p-2 rounded hover:bg-red-600"
-                            >
-                                <FaTrash />
-                            </button>
+                            )
+                                :
+                                <button
+                                    onClick={() => handleDeleteMenu(menu.id)}
+                                    className="bg-red-500 text-white p-2 rounded hover:bg-red-600"
+                                >
+                                    <FaTrash />
+                                </button>
+                            }
+
                         </div>
                         {expandedMenus[menu.id] && menu.subOptions.length > 0 && (
                             <div className="ml-4 mt-2 border-l pl-4">
