@@ -18,9 +18,9 @@ export const asignarTribunalService = async (setResults, trabajo_id, docente_ids
 };
 
 // Refactored version of reasignarTribunalService using async/await
-export const reasignarTribunalService = async (setResults, trabajo_id, docente_ids, fecha_defensa, estado_id) => {
+export const reasignarTribunalService = async (setResults, trabajo_id, docente_ids, fecha_defensa) => {
     try {
-        const response = await axiosInstance.post(`/trabajo-titulacion/reasignarTribunal`, { trabajo_id, docente_ids, fecha_defensa, estado_id });
+        const response = await axiosInstance.post(`/trabajo-titulacion/reasignarTribunal`, { trabajo_id, docente_ids, fecha_defensa });
 
         if (response.data) {
             return response.data;

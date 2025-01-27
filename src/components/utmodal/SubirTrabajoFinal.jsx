@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { subirTrabajoFinal } from '../../services/trabajosTitulacion';
 
 const TrabajoFinalModal = ({ isOpen, onClose, trabajoData }) => {
-    const [link, setLink] = useState('');
+    const [link, setLink] = useState(trabajoData?.link_final || '');
 
     const handleSubirTrabajoFinal = () => {
         subirTrabajoFinal(trabajoData.id, link);

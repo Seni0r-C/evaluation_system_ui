@@ -49,8 +49,8 @@ const AsignarTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
                 setSelectedDocentes(miembros);
                 setInitialSelectedItems(miembros);
             }, trabajoData.id);
-            if (msgData && typeof msgData === "string") {
-                showError(msgData);
+            if (msgData.typeMsg === "error") {
+                showError(msgData.message);
             }
         }
     }, [isOpen, trabajoData?.id]);
@@ -76,7 +76,6 @@ const AsignarTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
             showWarning(
                 "No se ha realizado ningún cambio para asignar el tribunal."
             );
-            // showWarning(`No se ha realizado ningún cambio. \nselectedDocentes:\n${JSON.stringify(selectedDocentes)} \r\ninitialSelectedItems:\n${JSON.stringify(initialSelectedItems)} ${changeLess}`);
             onClose();
             return;
         }
@@ -86,7 +85,7 @@ const AsignarTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
             );
             return;
         }
-        const msgData = asignarTribunalService(null, trabajoData?.id, selectedDocentes, selectedDate, "CON TRIBUNAL");
+        const msgData = asignarTribunalService(null, trabajoData?.id, selectedDocentes, selectedDate);
 
         if (showSuccess(msgData)) {
             onClose();
@@ -120,11 +119,12 @@ const AsignarTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
             );
             return;
         }
-        const msgData = await reasignarTribunalService(null, trabajoData?.id, selectedDocentes, selectedDate, "CON TRIBUNAL");
+        const msgData = await reasignarTribunalService(null, trabajoData?.id, selectedDocentes, selectedDate);
 
-        if (showSuccess(msgData)) {
+        if (msgData.typeMsg === "success") {
             trabajoData.fecha_defensa = selectedDate;
             onClose();
+            showSuccess(msgData.message);
         }
     };
 

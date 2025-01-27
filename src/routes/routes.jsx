@@ -220,6 +220,7 @@ export const routes = [
         <Layout>
           <ProtectedRoute>
             <CustomTrabajoTitulacionListar
+              titulo="Asignación de Tribunal y fecha de Defensa"
               permisosAcciones={[
                 'detallesTrabajo',
                 'asignarTribunal',
