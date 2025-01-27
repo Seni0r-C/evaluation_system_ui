@@ -1,11 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { FaFilePdf } from "react-icons/fa"; // Importamos los íconos de react-icons
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { getEstudiantesByTrabajoId, getUserPhoto } from "../../services/usuarioService";
-import axios from "axios";
 import { MdDoneOutline } from "react-icons/md";
-import { API_URL } from "../../utils/constants";
+import axiosInstance from "../../services/axiosConfig";
 
 const Calificar = () => {
     const location = useLocation();
@@ -19,6 +18,8 @@ const Calificar = () => {
     const [currentRubrica, setCurrentRubrica] = useState(null);
     const [calificacionesSeleccionadas, setCalificacionesSeleccionadas] = useState({});
     const [showFinalizar, setShowFinalizar] = useState(false);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         setShowFinalizar(isCalificacionCompleta());
@@ -60,15 +61,15 @@ const Calificar = () => {
     useEffect(() => {
         const fetchRubricas = async () => {
             try {
-                const tiposResponse = await axios.get(
-                    `${API_URL}/calificacion/tipo-evaluacion/${trabajo?.modalidad_id}`
+                const tiposResponse = await axiosInstance.get(
+                    `/calificacion/tipo-evaluacion/${trabajo?.modalidad_id}`
                 );
                 const tiposEvaluacion = tiposResponse.data ?? [];
                 setTipoEvaluacion(tiposEvaluacion);
 
                 const rubricasPromises = tiposEvaluacion.map(async (tipo) => {
                     try {
-                        const response = await axios.get(API_URL + "/calificacion/rubrica", {
+                        const response = await axiosInstance.get("/calificacion/rubrica", {
                             params: {
                                 id_tipo_evaluacion: tipo.tipo_evaluacion_id,
                                 id_modalidad: trabajo?.modalidad_id,
@@ -138,38 +139,39 @@ const Calificar = () => {
         const user = JSON.parse(info);
 
         try {
-            // Recorremos los estudiantes
+            // Preparar datos en un solo array para enviar al servidor
+            const payload = [];
+
             for (const studentId in calificacionesSeleccionadas) {
-                // Recorremos los tipos de evaluación
                 for (const tipoEvaluacion in calificacionesSeleccionadas[studentId]) {
                     const rubrica = rubricas[tipoEvaluacion];
 
-                    if (!rubrica) continue; // Saltar si no hay rúbrica disponible
+                    if (!rubrica) continue;
 
                     const rubricaId = rubrica.rubrica_id;
                     const criterios = rubrica.rubrica.criterios;
 
-                    // Recorremos los criterios de la rúbrica
                     for (const [criterioIndex, puntajeObtenido] of Object.entries(calificacionesSeleccionadas[studentId][tipoEvaluacion])) {
                         const criterio = criterios[criterioIndex];
 
-                        // Crear payload para el endpoint
-                        const payload = {
+                        // Agregar cada calificación al array
+                        payload.push({
                             trabajo_id: trabajo.id,
                             rubrica_id: rubricaId,
-                            rubrica_criterio_id: criterio.id, // Asegúrate de que cada criterio tenga un identificador único
-                            docente_id: user.id, // Reemplaza con el ID del docente autenticado
+                            rubrica_criterio_id: criterio.id,
+                            docente_id: user.id,
                             estudiante_id: studentId,
                             puntaje_obtenido: puntajeObtenido,
-                        };
-
-                        // Realizar petición al backend
-                        await axios.post(`${API_URL}/calificacion/rubrica-evaluacion`, payload);
+                        });
                     }
                 }
             }
 
+            // Enviar el array completo al servidor
+            await axiosInstance.post(`/calificacion/rubrica-evaluacion`, { calificaciones: payload });
+
             alert("Calificaciones finalizadas y guardadas correctamente.");
+            navigate("/calificacion-de-trabajo-titulacion");
         } catch (error) {
             console.error("Error al finalizar las calificaciones:", error);
             alert("Ocurrió un error al finalizar las calificaciones.");
