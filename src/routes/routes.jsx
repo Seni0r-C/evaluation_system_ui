@@ -148,6 +148,24 @@ export const routes = [
     ),
   },
   {
+    path: '/registro-trabajo-final',
+    element: (
+      <ErrorBoundary>
+        <Layout>
+          <ProtectedRoute>
+            <CustomTrabajoTitulacionListar
+              permisosAcciones={[
+                'detallesTrabajo',
+                'subirTrabajoFinal',
+              ]}
+              firstStates={["ANTEPROYECTO"]}
+            />
+          </ProtectedRoute>
+        </Layout>
+      </ErrorBoundary>
+    ),
+  },
+  {
     path: '/calificacion-de-trabajo-titulacion',
     element: (
       <ErrorBoundary>

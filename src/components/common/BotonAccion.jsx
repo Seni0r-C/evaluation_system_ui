@@ -27,7 +27,7 @@ const BotonAccion = ({ onClick, icono: Icono, variant = 'primary', tooltip }) =>
 
 BotonAccion.propTypes = {
   onClick: PropTypes.func.isRequired,
-  icono: PropTypes.element,
+  icono: PropTypes.func,
   variant: PropTypes.oneOf(['primary', 'secondary', 'red', 'green', 'yellow', 'purple', 'teal']),
   tooltip: PropTypes.string,
 };

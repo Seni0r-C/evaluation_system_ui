@@ -8,12 +8,15 @@ import DynamicModal from '../modal/ModalData';
 import { obtenerUnTrabajo } from '../../services/trabajosTitulacion';
 import AsignacionTribunalModal from '../utmodal/AsignacionTribunalModal';
 import PropTypes from 'prop-types';
+import { GrDocumentUser } from 'react-icons/gr';
+import SubirTrabajoFinal from '../utmodal/SubirTrabajoFinal';
 
 const AccionesTrabajo = ({ trabajo, permisosAcciones, user }) => {
   const navigate = useNavigate();
   const [isOpenVerDetalle, setIsOpenVerDetalle] = useState(false);
   const [isOpenAsignarTutor, setIsOpenAsignarTutor] = useState(false);
   const [trabajoSelected, setTrabajoSelected] = useState(null);
+  const [isOpenSubirTrabajoFinal, setIsOpenSubirTrabajoFinal] = useState(false);
 
   const fectchTrabajoFull = (trabajo) => {
     if (trabajo?.id ?? false) {
@@ -38,6 +41,11 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user }) => {
   const handleVerDetalles = (trabajo) => {
     fectchTrabajoFull(trabajo);
     setIsOpenVerDetalle(true);
+  };
+
+  const handleSubirTrabajoFinal = (trabajo) => {
+    setTrabajoSelected(trabajo);
+    setIsOpenSubirTrabajoFinal(true);
   };
 
   // Definición de acciones
@@ -90,6 +98,14 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user }) => {
       tooltip: 'Calificar',
       onClick: handleCalificar,
     },
+    {
+      roles: permisos.ROLES_REGISTRO_TRABAJO,
+      permiso: 'subirTrabajoFinal',
+      icono: GrDocumentUser,
+      variant: 'primary',
+      tooltip: 'Subir Trabajo Final',
+      onClick: handleSubirTrabajoFinal,
+    }
   ];
 
   return (
@@ -118,6 +134,12 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user }) => {
         onClose={() => setIsOpenAsignarTutor(false)}
         trabajoData={trabajoSelected}
         title={"Asignación de tribunal"}
+      />
+
+      <SubirTrabajoFinal
+        isOpen={isOpenSubirTrabajoFinal}
+        onClose={() => setIsOpenSubirTrabajoFinal(false)}
+        trabajoData={trabajoSelected}
       />
 
     </div>

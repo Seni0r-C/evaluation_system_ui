@@ -32,3 +32,15 @@ export const obtenerUnTrabajo = (setResults, idTrabajo) => {
         })
         .catch(error => console.error('Error al buscar estados:', error));
 };
+
+export const subirTrabajoFinal = (trabajo, link) => {
+    axiosInstance.patch(`/trabajo-titulacion/actualizar/${trabajo}`, { link_final: link })
+        .then(response => {
+            if (!response.error) {
+                // alert(JSON.stringify(response, null, 2));
+            } else {
+                console.error('Error en la respuesta de la API.');
+            }
+        })
+        .catch(error => console.error('Error al buscar estados:', error));
+};
