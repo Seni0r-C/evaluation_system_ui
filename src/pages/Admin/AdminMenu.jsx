@@ -72,23 +72,66 @@ const AdminMenu = () => {
         }));
     };
 
+    const updateMenuOrder = async (items) => {
+        try {
+            await axiosInstance.patch('/rutas/menu/reorder', { items });
+            fetchMenu();
+        } catch (error) {
+            console.error("Error updating menu order:", error);
+        }
+    };
+
+    const moveMenuItem = (id, direction) => {
+        const newMenuItems = [...menuItems];
+        const index = newMenuItems.findIndex(item => item.id === id);
+        if (index === -1) return;
+
+        // Cambiar el orden según la dirección (subir o bajar)
+        const targetIndex = direction === 'up' ? index - 1 : index + 1;
+        if (targetIndex < 0 || targetIndex >= newMenuItems.length) return;
+
+        // Intercambiar los ítems en el arreglo
+        [newMenuItems[index].orden, newMenuItems[targetIndex].orden] = [newMenuItems[targetIndex].orden, newMenuItems[index].orden];
+        // setMenuItems(newMenuItems);
+
+        // Llamar al servidor para actualizar el orden
+        updateMenuOrder(newMenuItems);
+    };
+
     const renderMenuItems = (items) => {
         return (
             <ul className="space-y-2">
                 {items.filter((item) => item.name !== "Inicio").map((menu) => (
-                    <li key={menu.name} className="p-2 border rounded">
-                        <div className="flex justify-between items-center">
-                            <div className="flex items-center space-x-2">
+                    <li key={menu.id} className="p-2 border rounded">
+                        <div className="flex  items-center">
+                            <div className="flex space-x-2 mr-2">
+                                <button
+                                    onClick={() => moveMenuItem(menu.id, 'up')}
+                                    className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600  disabled:opacity-50"
+                                    disabled={menu.orden === 2}
+                                >
+                                    ↑
+                                </button>
+                                <button
+                                    onClick={() => moveMenuItem(menu.id, 'down')}
+                                    className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 disabled:opacity-50"
+                                    disabled={menu.orden === menuItems.length}
+                                >
+                                    ↓
+                                </button>
+                            </div>
+                            <div className="flex items-center space-x-2 mr-auto">
                                 <span>{menu.orden}</span>
                                 <span>{menu.icon}</span>
                                 <span>{menu.name}</span>
                             </div>
+
                             {menu.subOptions.length > 0 && (
                                 <button
-                                    onClick={() => toggleExpandMenu(menu.name)}
-                                    className="text-blue-500 underline"
+                                    onClick={() => toggleExpandMenu(menu.id)}
+                                    className="text-blue-500 underline mr-4"
                                 >
-                                    {expandedMenus[menu.name] ? "Ocultar" : "Ver Submenu"}
+                                    {expandedMenus[menu.id] ? "Ocultar" : "Ver Submenu"}
                                 </button>
                             )}
                             <button
@@ -98,7 +141,7 @@ const AdminMenu = () => {
                                 <FaTrash />
                             </button>
                         </div>
-                        {expandedMenus[menu.name] && menu.subOptions.length > 0 && (
+                        {expandedMenus[menu.id] && menu.subOptions.length > 0 && (
                             <div className="ml-4 mt-2 border-l pl-4">
                                 {renderMenuItems(menu.subOptions)}
                             </div>
