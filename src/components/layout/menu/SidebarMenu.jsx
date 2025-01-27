@@ -6,7 +6,7 @@ const SidebarMenu = ({ menuData }) => {
     const [openMenuIndex, setOpenMenuIndex] = useState(null);
     
     return (
-        <nav className="space-y-4">
+        <nav className="space-y-2">
             {menuData.map((item, index) => (
                 <MenuItem
                     key={index}

@@ -154,7 +154,10 @@ const Layout = ({ children }) => {
                     {/* Barra lateral */}
                     <aside
                         className={`bg-gray-100 text-gray-950 py-6 px-2 z-30 space-y-6 w-56 h-full fixed transition-transform duration-300 ease-in-out ${isSidebarVisible ? 'translate-x-0 opacity-100' : '-translate-x-full'
-                            } border-r-2 border-gray-200`}
+                            } border-r-2 border-gray-200 overflow-y-scroll pb-20`}
+                        style={{
+                            minHeight: `calc(100vh - 4rem)`, // Altura mínima dinámica (100% del viewport menos el header)
+                        }}
                     >
                         <SidebarMenu menuData={menuData} />
                     </aside>
