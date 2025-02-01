@@ -4,6 +4,8 @@ import { ensureFileExtension } from '../utils/fileUtility';
 // Función para obtener el acta
 export const generarActa = async (trabajo) => {
   try {
+    // alert(JSON.stringify(trabajo, null, 2));
+    // return { typeMsg: 'success', message: 'Acta generada exitosamente.'};
     // const responseFileName = await axiosInstance.get(`acta/pdf-name/${trabajo.id}`);
     const responseFileName = await axiosInstance.get(`acta/pdf-name/2`);
     const fileName = responseFileName.data.fileName;

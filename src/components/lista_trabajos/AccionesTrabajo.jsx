@@ -39,6 +39,7 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user }) => {
   };
 
   const handleGenerarReporte = (trabajo) => {
+    showMsg({ typeMsg: 'wait', message: 'Generando Acta...' });
     generarActa(trabajo)
       .then(showMsg);
   };

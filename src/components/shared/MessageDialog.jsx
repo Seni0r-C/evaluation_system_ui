@@ -1,6 +1,7 @@
 // MessageDialog.js
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
+import { MdError, MdInfo, MdWarning, MdCheckCircle, MdHourglassEmpty } from 'react-icons/md';
 
 const MessageDialog = ({ message, onClose, isOpen, iconType }) => {
     if (!isOpen) return null;
@@ -8,11 +9,49 @@ const MessageDialog = ({ message, onClose, isOpen, iconType }) => {
     const renderIcon = () => {
         switch (iconType) {
             case 'error':
-                return <span className="text-red-500">❌</span>;
+                return <MdError className="text-red-500 text-5xl" />;
+            case 'info':
+                return <MdInfo className="text-blue-500 text-5xl" />;
+            case 'wait':
+                return <MdHourglassEmpty className="text-orange-500 text-5xl" />;
             case 'warning':
-                return <span className="text-yellow-500">⚠️</span>;
+                return <MdWarning className="text-yellow-500 text-5xl" />;
             case 'success':
-                return <span className="text-green-500">✅</span>;
+                return <MdCheckCircle className="text-green-500 text-5xl" />;
+            default:
+                return null;
+        }
+    };
+    
+    const styleTextMessage = () => {
+        switch (iconType) {
+            case 'error':
+                return "text-red-600";
+            case 'info':
+                return "text-blue-600";
+            case 'wait':
+                return "text-orange-600";
+            case 'warning':
+                return "text-yellow-600";
+            case 'success':
+                return "text-green-600";
+            default:
+                return null;
+        }
+    };
+
+    const messageTypeUIText = () => {
+        switch (iconType) {
+            case 'error':
+                return 'Error';
+            case 'info':
+                return 'Información';
+            case 'wait':
+                return 'Espera un momento';
+            case 'warning':
+                return 'Advertencia';
+            case 'success':
+                return 'Operacion exitosa';
             default:
                 return null;
         }
@@ -20,18 +59,19 @@ const MessageDialog = ({ message, onClose, isOpen, iconType }) => {
 
     return ReactDOM.createPortal(
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50">
-            <div className="bg-white p-8 rounded-md shadow-2xl max-w-lg w-full transition-all transform hover:scale-105">
-                <div className="flex items-center mb-5">
-                    {renderIcon() && <div className="mr-3">{renderIcon()}</div>}
-                    <h2 className="text-xl font-bold text-gray-800">Mensaje</h2>
+            <div className="bg-white p-8 rounded-lg shadow-2xl max-w-lg w-full text-center transition-transform transform hover:scale-105">
+                <div className="flex flex-col items-center mb-5">
+                    {renderIcon()}
+                    <h2 className={styleTextMessage()+" mt-3 text-xl font-bold "}>{messageTypeUIText(iconType)}</h2>
                 </div>
-                <p className="text-gray-700 mb-6">{message}</p>
-                <button
-                    className="block px-10 py-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-all transform focus:outline-none focus:ring-2 focus:ring-blue-300 mx-auto"
+                <p className="text-gray-700 text-lg mb-6">{message}</p>
+                {iconType!=="wait" && (<button
+                    className="px-6 py-3 bg-blue-500 text-white text-lg rounded-md shadow hover:bg-blue-600 hover:shadow-lg transition-all focus:outline-none focus:ring-2 focus:ring-blue-300"
                     onClick={onClose}
                 >
                     Cerrar
-                </button>
+                </button>)
+                }
             </div>
         </div>,
         document.body
@@ -42,7 +82,7 @@ MessageDialog.propTypes = {
     message: PropTypes.string.isRequired,
     onClose: PropTypes.func.isRequired,
     isOpen: PropTypes.bool.isRequired,
-    iconType: PropTypes.oneOf(['error', 'warning', 'success', null]),
+    iconType: PropTypes.oneOf(['error', 'info', 'wait', 'warning', 'success', null]),
 };
 
 export default MessageDialog;
