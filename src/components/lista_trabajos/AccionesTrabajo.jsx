@@ -10,6 +10,9 @@ import AsignarTribunalModal from '../utmodal/AsignacionTribunalModal';
 import PropTypes from 'prop-types';
 import { GrDocumentUser } from 'react-icons/gr';
 import TrabajoFinalModal from '../utmodal/SubirTrabajoFinal';
+import { generarActa } from '../../services/reportService';
+import { useMessage } from '../../hooks/useMessage';
+
 
 const AccionesTrabajo = ({ trabajo, permisosAcciones, user }) => {
   const navigate = useNavigate();
@@ -17,6 +20,7 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user }) => {
   const [isOpenAsignarTutor, setIsOpenAsignarTutor] = useState(false);
   const [trabajoSelected, setTrabajoSelected] = useState(null);
   const [isOpenSubirTrabajoFinal, setIsOpenSubirTrabajoFinal] = useState(false);
+  const { showMsg } = useMessage();
 
   const fectchTrabajoFull = (trabajo) => {
     if (trabajo?.id ?? false) {
@@ -35,7 +39,8 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user }) => {
   };
 
   const handleGenerarReporte = (trabajo) => {
-    alert(JSON.stringify(trabajo, null, 2));
+    generarActa(trabajo)
+      .then(showMsg);
   };
 
   const handleVerDetalles = (trabajo) => {

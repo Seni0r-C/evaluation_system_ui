@@ -16,6 +16,10 @@ export const MessageProvider = ({ children }) => {
         setMessageState({ message, isOpen: true, iconType });
     }, []);
 
+    const showMsg = useCallback(({ typeMsg, message }) => {
+        setMessageState({ message, isOpen: true, iconType: typeMsg });
+    }, []);
+
     const closeMessage = useCallback(() => {
         setMessageState({ ...messageState, isOpen: false });
     }, [messageState]);
@@ -38,7 +42,7 @@ export const MessageProvider = ({ children }) => {
 
     return (
         <MessageContext.Provider
-            value={{ showMessage, showSuccess, showError, showWarning, closeMessage }}
+            value={{ showMessage, showSuccess, showError, showWarning, closeMessage, showMsg }}
         >
             {children}
             <MessageDialog
