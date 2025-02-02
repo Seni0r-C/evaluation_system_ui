@@ -150,7 +150,21 @@ const AsignarTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
                     setSelectedDocentes={setSelectedDocentes}
                     initialSelectedItems={selectedDocentes}
                     allowDuplicates={false}
-                    maxSelections={3}
+                    maxSelections={1}
+                    required={true}
+                />
+                <BuscadorDocentes
+                    setSelectedDocentes={setSelectedDocentes}
+                    initialSelectedItems={selectedDocentes}
+                    allowDuplicates={false}
+                    maxSelections={1}
+                    required={true}
+                />
+                <BuscadorDocentes
+                    setSelectedDocentes={setSelectedDocentes}
+                    initialSelectedItems={selectedDocentes}
+                    allowDuplicates={false}
+                    maxSelections={1}
                     required={true}
                 />
                 <ModalFooter
