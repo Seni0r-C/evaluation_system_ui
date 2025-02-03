@@ -150,23 +150,10 @@ const AsignarTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
                     setSelectedDocentes={setSelectedDocentes}
                     initialSelectedItems={selectedDocentes}
                     allowDuplicates={false}
-                    maxSelections={1}
+                    maxSelections={3}
                     required={true}
                 />
-                <BuscadorDocentes
-                    setSelectedDocentes={setSelectedDocentes}
-                    initialSelectedItems={selectedDocentes}
-                    allowDuplicates={false}
-                    maxSelections={1}
-                    required={true}
-                />
-                <BuscadorDocentes
-                    setSelectedDocentes={setSelectedDocentes}
-                    initialSelectedItems={selectedDocentes}
-                    allowDuplicates={false}
-                    maxSelections={1}
-                    required={true}
-                />
+                
                 <ModalFooter
                     hasNestedData={!!nestedData}
                     onBack={() => setNestedData(null)}
