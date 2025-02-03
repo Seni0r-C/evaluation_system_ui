@@ -2,6 +2,8 @@ import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { FaChevronDown, FaChevronUp, FaSearchPlus } from 'react-icons/fa';
 import Spinner from '../shared/logo_carga/Spinner';
+import { useMessage } from "../../hooks/useMessage";
+
 
 const BuscadorGenerico = ({
   label,
@@ -13,6 +15,10 @@ const BuscadorGenerico = ({
   maxSelections = 1,
   required = false,
   initialSelectedItems = [],
+  showMessageMap = {
+    maxSelectionError: { typeMsg: 'warning', message: 'Se ha alcanzado el límite de selecciones permitidas (' + maxSelections + ').' },
+    duplicateError: { typeMsg: 'warning', message: 'No se permiten duplicados.' }
+  }
 }) => {
   const [searchValue, setSearchValue] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -29,13 +35,16 @@ const BuscadorGenerico = ({
     }, {})
   );
 
+  // Messages showMesageMap
+  const { showMsg } = useMessage();
+
   useEffect(() => {
     setSelectedItems(initialSelectedItems);
   }, [initialSelectedItems]);
 
   const resetTextBoxs = () => {
-      setSearchValue('');
-      setSubSearchValues('');
+    setSearchValue('');
+    setSubSearchValues('');
   };
 
   const handleButtonDropdown = () => {
@@ -63,10 +72,26 @@ const BuscadorGenerico = ({
     setShowDropdown(true);
   };
 
+  const hasMaxSelections = () => {
+    const hasMaxSelections = maxSelections !== -1 && selectedItems.length >= maxSelections;
+    if (hasMaxSelections && showMessageMap !== null) {
+      showMsg(showMessageMap.maxSelectionError)
+    }
+    return hasMaxSelections;
+  };
+
+  const wouldHaveDuplicates = (item) => {
+    const hasDuplicates = !allowDuplicates && selectedItems.some((selected) => selected.id === item.id);
+    if (hasDuplicates && showMessageMap !== null) {
+      showMsg(showMessageMap.duplicateError)
+    }
+    return hasDuplicates;
+  };
+
   // Manejar selección de un ítem
   const handleItemSelect = (item) => {
-    if (!allowDuplicates && selectedItems.some((selected) => selected.id === item.id)) return;
-    if (maxSelections !== -1 && selectedItems.length >= maxSelections) return;
+    if (hasMaxSelections()) return;
+    if (wouldHaveDuplicates(item)) return;
 
     const updatedItems = [...selectedItems, item];
     setSelectedItems(updatedItems);
@@ -83,6 +108,7 @@ const BuscadorGenerico = ({
     onSelectionChange(updatedItems);
   };
 
+  
   return (
     <div className="mb-4 relative">
       {/* Etiqueta del campo */}
@@ -104,8 +130,8 @@ const BuscadorGenerico = ({
         {/* Botón para mostrar campos adicionales */}
         {subSearchHandlers.length > 0 && (
           <button
-          onClick={handleButtonAdvancedSearch}
-          className={`p-3 border-l text-lg ${showAdvancedSearch ? 'bg-green-700 text-green-100 hover:bg-green-700' : 'bg-green-300 hover:bg-green-400'}`}
+            onClick={handleButtonAdvancedSearch}
+            className={`p-3 border-l text-lg ${showAdvancedSearch ? 'bg-green-700 text-green-100 hover:bg-green-700' : 'bg-green-300 hover:bg-green-400'}`}
           >
             <FaSearchPlus />
           </button>

@@ -1,6 +1,8 @@
 import BuscadorGenerico from '../common/BuscadorGenerico';
 import { buscarUsuarios as buscarUsuariosService } from '../../services/usuarioService';
 import PropTypes from 'prop-types';
+import { useMessage } from "../../hooks/useMessage";
+
 
 const BuscadorDocentes = ({ setSelectedDocentes, initialSelectedItems = [], allowDuplicates = false, maxSelections = -1, required = false }) => {
     const handleBuscarNombre = (query, setResults, setShowSpinner) => {
@@ -18,8 +20,8 @@ const BuscadorDocentes = ({ setSelectedDocentes, initialSelectedItems = [], allo
                 placeholder="Ingrese el nombre del docente"
                 handlerBuscar={handleBuscarNombre}
                 onSelectionChange={(items) => setSelectedDocentes(items)}
-                allowDuplicates={allowDuplicates}  // No permitir duplicados
-                maxSelections={maxSelections}       // Selección múltiple ilimitada
+                allowDuplicates={allowDuplicates} 
+                maxSelections={maxSelections}   
                 required={required}
                 initialSelectedItems={initialSelectedItems}
             />
