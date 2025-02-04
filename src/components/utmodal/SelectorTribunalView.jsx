@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import BuscadorDocentes from "../utmcomps/BuscadorDocentes";
 import PropTypes from "prop-types";
 
-const SelectorTribunalModal = ({ selectedTribunal, setSelectedTribunal }) => {
+const SelectorTribunalView = ({ selectedTribunal, setSelectedTribunal }) => {
     // Selector Docentes
     const delgadoConsejoDirectivoKey = "DELEGADO H. CONSEJO DIRECTIVO";
     const [selectedDelegadoConsejoDirectivo, setSelectedDocenteDelegadoConsejoDirectivo] = useState([]);
@@ -86,9 +86,9 @@ const SelectorTribunalModal = ({ selectedTribunal, setSelectedTribunal }) => {
     );
 };
 
-SelectorTribunalModal.propTypes = {
+SelectorTribunalView.propTypes = {
     setSelectedTribunal: PropTypes.func.isRequired,
     selectedTribunal: PropTypes.array.isRequired
 };
 
-export default SelectorTribunalModal;
+export default SelectorTribunalView;

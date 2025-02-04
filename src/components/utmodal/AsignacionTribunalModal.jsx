@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { ModalHeader, ModalFooter } from "../modal/ModalTopHeader";
 // import BuscadorDocentes from "../utmcomps/BuscadorDocentes";
-import SelectorTribunalModal from "./SelectorTribunalModal";
+import SelectorTribunalView from "./SelectorTribunalView";
 import SelectorFecha from "../common/SelectorFecha";
 import { asignarTribunalService, reasignarTribunalService, obtenerTribunalService } from "../../services/tribunalService";
 import { obtenerUnTrabajo } from "../../services/trabajosTitulacion";
@@ -10,7 +10,7 @@ import PropTypes from "prop-types";
 import { useMessage } from "../../hooks/useMessage";
 
 const AsignarTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
-    const { showError, showWarning, showSuccess, showMsg } = useMessage();
+    const { showError, showWarning, showMsg } = useMessage();
     // Modal
     const [nestedData, setNestedData] = useState("");
     // Selector Docentes
@@ -90,6 +90,8 @@ const AsignarTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
         const msgData = await asignarTribunalService(null, trabajoData?.id, selectedDocentes, selectedDate);
 
         if (showMsg(msgData)) {
+            trabajoData.fecha_defensa = selectedDate;
+            trabajoData.estado = "CON TRIBUNAL";
             onClose();
         }
     };
@@ -126,6 +128,7 @@ const AsignarTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
 
         if (showMsg(msgData)) {
             trabajoData.fecha_defensa = selectedDate;
+            trabajoData.estado = "CON TRIBUNAL";
             onClose();
         }
     };
@@ -149,15 +152,7 @@ const AsignarTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
                     </div>
                 </div>
 
-                {/* <BuscadorDocentes
-                    setSelectedDocentes={setSelectedDocentes}
-                    initialSelectedItems={selectedDocentes}
-                    allowDuplicates={false}
-                    maxSelections={3}
-                    required={true}
-                /> */}
-
-                <SelectorTribunalModal
+                <SelectorTribunalView
                     selectedTribunal={selectedDocentes}
                     setSelectedTribunal={setSelectedDocentes}
                 />
