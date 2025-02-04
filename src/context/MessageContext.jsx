@@ -18,6 +18,7 @@ export const MessageProvider = ({ children }) => {
 
     const showMsg = useCallback(({ typeMsg, message }) => {
         setMessageState({ message, isOpen: true, iconType: typeMsg });
+        return typeMsg === 'success';
     }, []);
 
     const closeMessage = useCallback(() => {

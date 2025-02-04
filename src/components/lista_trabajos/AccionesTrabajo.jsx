@@ -17,7 +17,7 @@ import { useMessage } from '../../hooks/useMessage';
 const AccionesTrabajo = ({ trabajo, permisosAcciones, user }) => {
   const navigate = useNavigate();
   const [isOpenVerDetalle, setIsOpenVerDetalle] = useState(false);
-  const [isOpenAsignarTutor, setIsOpenAsignarTutor] = useState(false);
+  const [isOpenAsignarTribunal, setIsOpenAsignarTribunal] = useState(false);
   const [trabajoSelected, setTrabajoSelected] = useState(null);
   const [isOpenSubirTrabajoFinal, setIsOpenSubirTrabajoFinal] = useState(false);
   const { showMsg } = useMessage();
@@ -35,7 +35,7 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user }) => {
 
   const handleAsignarTribunal = (trabajo) => {
     fectchTrabajoFull(trabajo);
-    setIsOpenAsignarTutor(true);
+    setIsOpenAsignarTribunal(true);
   };
 
   const handleGenerarReporte = (trabajo) => {
@@ -137,8 +137,8 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user }) => {
       />
 
       <AsignarTribunalModal
-        isOpen={isOpenAsignarTutor}
-        onClose={() => setIsOpenAsignarTutor(false)}
+        isOpen={isOpenAsignarTribunal}
+        onClose={() => setIsOpenAsignarTribunal(false)}
         trabajoData={trabajoSelected}
         title={"Asignación de tribunal"}
       />

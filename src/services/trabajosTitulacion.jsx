@@ -30,7 +30,7 @@ export const obtenerUnTrabajo = (setResults, idTrabajo) => {
                 console.error('Error en la respuesta de la API.');
             }
         })
-        .catch(error => console.error('Error al buscar estados:', error));
+        .catch(error => console.error('Error al obtener el trabajo:', error));
 };
 
 export const subirTrabajoFinal = (trabajo, link) => {

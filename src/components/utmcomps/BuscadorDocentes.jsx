@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { useMessage } from "../../hooks/useMessage";
 
 
-const BuscadorDocentes = ({ setSelectedDocentes, initialSelectedItems = [], allowDuplicates = false, maxSelections = -1, required = false }) => {
+const BuscadorDocentes = ({ setSelectedDocentes, initialSelectedItems = [], allowDuplicates = false, maxSelections = -1, required = false, label="Buscar Docentes" }) => {
     const handleBuscarNombre = (query, setResults, setShowSpinner) => {
         setShowSpinner(true);  // Mostrar el spinner
         setTimeout(() => {
@@ -13,10 +13,10 @@ const BuscadorDocentes = ({ setSelectedDocentes, initialSelectedItems = [], allo
         }, 500);  // Simulamos un retraso en la búsqueda
     };
     return (
-        <div className="p-4">
+        <div className="p-1">
             {/* Buscador de Docentes */}
             <BuscadorGenerico
-                label="Buscar Docentes"
+                label={label}
                 placeholder="Ingrese el nombre del docente"
                 handlerBuscar={handleBuscarNombre}
                 onSelectionChange={(items) => setSelectedDocentes(items)}

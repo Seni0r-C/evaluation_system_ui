@@ -110,9 +110,10 @@ const BuscadorGenerico = ({
 
   
   return (
-    <div className="mb-4 relative">
+    // <div className="mb-4 relative">
+    <div className="pl-4 pr-4 pt-2">
       {/* Etiqueta del campo */}
-      <label className="block text-sm font-medium text-gray-700 mb-2">
+      <label className="block text-sm font-medium text-gray-700">
         {label}
         {required && <span className="text-red-500"> *</span>}
       </label>
