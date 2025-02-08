@@ -1,5 +1,6 @@
 const API_URL_PROD = "https://api.justusas.com/";
-const API_URL_DEV = "http://localhost:3000";
+const API_URL_DEV = "http://172.29.33.226:3000";
+// const API_URL_DEV = "http://localhost:3000";
 const IS_PRODUCCION = true;
 export const API_URL = IS_PRODUCCION?API_URL_PROD:API_URL_DEV;
 
