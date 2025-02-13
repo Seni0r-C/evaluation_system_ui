@@ -10,7 +10,7 @@ import AsignarTribunalModal from '../utmodal/AsignacionTribunalModal';
 import PropTypes from 'prop-types';
 import { GrDocumentUser } from 'react-icons/gr';
 import TrabajoFinalModal from '../utmodal/SubirTrabajoFinal';
-import { generarActa } from '../../services/reportService';
+import { generarActa } from '../../services/actaService';
 import { useMessage } from '../../hooks/useMessage';
 
 
