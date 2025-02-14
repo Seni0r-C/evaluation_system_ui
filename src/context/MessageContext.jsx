@@ -1,5 +1,5 @@
 // MessageContext.js
-import { createContext, useState, useCallback } from 'react';
+import { createContext, useState, useCallback, useRef } from 'react';
 import MessageDialog from '../components/shared/MessageDialog';
 import PropTypes from 'prop-types';
 
@@ -12,6 +12,10 @@ export const MessageProvider = ({ children }) => {
         iconType: null,
     });
 
+
+    const onCancelCallback = useRef(() => { });
+    const onConfirmCallback = useRef(() => { });
+
     const showMessage = useCallback((message, iconType = null) => {
         setMessageState({ message, isOpen: true, iconType });
     }, []);
@@ -21,9 +25,24 @@ export const MessageProvider = ({ children }) => {
         return typeMsg === 'success';
     }, []);
 
+    const showQuestion = useCallback((message, onConfirm, onCancel=() => {}) => {
+        onCancelCallback.current = () => {
+            onCancel(); 
+            closeMessage();
+        };
+
+        onConfirmCallback.current = () => {
+            onConfirm(); 
+            closeMessage();
+        };
+
+        setMessageState({ message, isOpen: true, iconType: "question" });
+    }, []);
+
     const showIfError = useCallback(({ typeMsg, message }) => {
         if (typeMsg !== 'error') {
             setMessageState({
+                message: '',
                 message: '',
                 isOpen: false,
                 iconType: null,
@@ -56,7 +75,7 @@ export const MessageProvider = ({ children }) => {
 
     return (
         <MessageContext.Provider
-            value={{ showMessage, showSuccess, showError, showWarning, closeMessage, showMsg, showIfError }}
+            value={{ showMessage, showSuccess, showError, showWarning, closeMessage, showMsg, showIfError, showQuestion }}
         >
             {children}
             <MessageDialog
@@ -64,6 +83,8 @@ export const MessageProvider = ({ children }) => {
                 isOpen={messageState.isOpen}
                 onClose={closeMessage}
                 iconType={messageState.iconType}
+                onCancel={() => onCancelCallback.current()}
+                onConfirm={() => onConfirmCallback.current()}
             />
         </MessageContext.Provider>
     );

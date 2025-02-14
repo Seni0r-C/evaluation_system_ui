@@ -8,6 +8,7 @@ import RubricaForm from '../../components/formularios/RubricaForm';
 import RubricaList from '../../components/listas/RubricaList';
 import RubricaCriterioForm from '../../components/formularios/RubricaCriterioForm';
 import RubricaCriterioList from '../../components/listas/RubricaCriterioList';
+import RubricaCriterios from '../Admin/RubricaCriterios';
 import axiosInstance from '../../services/axiosConfig';
 
 function App() {
@@ -187,6 +188,15 @@ function App() {
                     >
                         Criterios de Rúbrica
                     </button>
+                    <button
+                        className={`px-4 py-2 text-sm font-medium ${activeTab === "criterios2"
+                                ? "border-b-2 border-blue-500 text-blue-500"
+                                : "text-gray-600 hover:text-blue-500"
+                            }`}
+                        onClick={() => setActiveTab("criterios2")}
+                    >
+                        Gestión de Criterios de Rúbrica
+                    </button>
                 </nav>
             </div>
 
@@ -240,6 +250,12 @@ function App() {
                             onDelete={handleDeleteRubricaCriterio}
                             onSelect={setSelectedRubricaCriterio}
                         />
+                    </section>
+                )}
+                {activeTab === "criterios2" && (
+                    <section>
+                        <h2 className="text-xl font-semibold mb-4"> Gestión de Criterios de Rúbrica</h2>
+                        <RubricaCriterios />
                     </section>
                 )}
             </div>
