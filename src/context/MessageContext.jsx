@@ -21,6 +21,19 @@ export const MessageProvider = ({ children }) => {
         return typeMsg === 'success';
     }, []);
 
+    const showIfError = useCallback(({ typeMsg, message }) => {
+        if (typeMsg !== 'error') {
+            setMessageState({
+                message: '',
+                isOpen: false,
+                iconType: null,
+            });
+            return false;
+        }
+        setMessageState({ message, isOpen: true, iconType: typeMsg });
+        return typeMsg === 'error';
+    }, []);
+
     const closeMessage = useCallback(() => {
         setMessageState({ ...messageState, isOpen: false });
     }, [messageState]);
@@ -43,7 +56,7 @@ export const MessageProvider = ({ children }) => {
 
     return (
         <MessageContext.Provider
-            value={{ showMessage, showSuccess, showError, showWarning, closeMessage, showMsg }}
+            value={{ showMessage, showSuccess, showError, showWarning, closeMessage, showMsg, showIfError }}
         >
             {children}
             <MessageDialog

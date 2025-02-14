@@ -5,7 +5,7 @@ import { MdChecklist, MdGroupAdd } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { permisos } from '../../utils/permisos';
 import InfoTrabajoModal from '../modal/ModalData';
-import { obtenerUnTrabajo } from '../../services/trabajosTitulacion';
+import { obtenerUnTrabajo2 } from '../../services/trabajosTitulacion';
 import AsignarTribunalModal from '../utmodal/AsignacionTribunalModal';
 import PropTypes from 'prop-types';
 import { GrDocumentUser } from 'react-icons/gr';
@@ -20,11 +20,11 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user }) => {
   const [isOpenAsignarTribunal, setIsOpenAsignarTribunal] = useState(false);
   const [trabajoSelected, setTrabajoSelected] = useState(null);
   const [isOpenSubirTrabajoFinal, setIsOpenSubirTrabajoFinal] = useState(false);
-  const { showMsg } = useMessage();
+  const { showMsg, showIfError } = useMessage();
 
-  const fectchTrabajoFull = (trabajo) => {
+  const fectchTrabajoFull = async (trabajo) => {
     if (trabajo?.id ?? false) {
-      obtenerUnTrabajo(setTrabajoSelected, trabajo.id);
+      return await obtenerUnTrabajo2(setTrabajoSelected, trabajo.id);
     }
   };
 
@@ -34,18 +34,20 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user }) => {
   };
 
   const handleAsignarTribunal = (trabajo) => {
-    fectchTrabajoFull(trabajo);
+    showMsg({ typeMsg: 'wait', message: 'Cargando datos de tribunal...' });
+    fectchTrabajoFull(trabajo).then(showIfError);
     setIsOpenAsignarTribunal(true);
   };
-
+  
   const handleGenerarReporte = (trabajo) => {
     showMsg({ typeMsg: 'wait', message: 'Generando Acta...' });
     generarActa(trabajo)
-      .then(showMsg);
+    .then(showIfError);
   };
-
+  
   const handleVerDetalles = (trabajo) => {
-    fectchTrabajoFull(trabajo);
+    showMsg({ typeMsg: 'wait', message: 'Cargando datos de trabajo...' });
+    fectchTrabajoFull(trabajo).then(showIfError);
     setIsOpenVerDetalle(true);
   };
 

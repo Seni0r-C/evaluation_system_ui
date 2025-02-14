@@ -40,7 +40,7 @@ const CustomTrabajoTitulacionListar = ({ permisosAcciones, includeStateFiltter =
       obtenerEstados(setEstados);
     }
 
-  }, []);
+  }, [estados]);
 
   useEffect(() => {
     if (firstStates) {

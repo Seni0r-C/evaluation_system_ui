@@ -2,16 +2,16 @@ import { useState } from 'react';
 import GenericModal from '../modal/GenericModal';
 import PropTypes from 'prop-types';
 import { subirTrabajoFinal } from '../../services/trabajosTitulacion';
+import { useMessage } from '../../hooks/useMessage';
 
 const TrabajoFinalModal = ({ isOpen, onClose, trabajoData }) => {
+    const {showMsg} = useMessage();
     const [link, setLink] = useState(trabajoData?.link_final || '');
 
+
     const handleSubirTrabajoFinal = () => {
-        subirTrabajoFinal(trabajoData.id, link);
-
-        alert('Trabajo final subido exitosamente');
+        subirTrabajoFinal(trabajoData.id, link).then(showMsg);
         onClose();
-
     };
 
     if (!isOpen) {

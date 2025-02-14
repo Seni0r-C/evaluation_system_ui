@@ -158,8 +158,8 @@ export const routes = [
                 'detallesTrabajo',
                 'subirTrabajoFinal',
               ]}
-              includeStateFiltter={true}
-              firstStates={["ANTEPROYECTO", "SIN TRIBUNAL"]}
+              includeStateFiltter={false}
+              firstStates={["ANTEPROYECTO"]}
             />
           </ProtectedRoute>
         </Layout>
