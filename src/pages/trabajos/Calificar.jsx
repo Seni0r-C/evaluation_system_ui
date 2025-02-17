@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { getEstudiantesByTrabajoId, getUserPhoto } from "../../services/usuarioService";
 import { MdDoneOutline } from "react-icons/md";
 import axiosInstance from "../../services/axiosConfig";
+import { obtenerTiposEvaluacionByModalidadList } from "../../services/rubricaCriterioService";
 
 const Calificar = () => {
     const location = useLocation();
@@ -58,15 +59,18 @@ const Calificar = () => {
         fetchPhotos();
     }, [estudiantes]);
 
+   
     useEffect(() => {
         const fetchRubricas = async () => {
             try {
-                const tiposResponse = await axiosInstance.get(
-                    `/calificacion/tipo-evaluacion/${trabajo?.modalidad_id}`
-                );
-                const tiposEvaluacion = tiposResponse.data ?? [];
+                const tiposResponse = await obtenerTiposEvaluacionByModalidadList(trabajo?.modalidad_id);
+                const tiposEvaluacion = tiposResponse.map((tipo) => {
+                    return {
+                        tipo_evaluacion_id: tipo.id,
+                        tipo_evaluacion_nombre: tipo.nombre
+                    }
+                });
                 setTipoEvaluacion(tiposEvaluacion);
-
                 const rubricasPromises = tiposEvaluacion.map(async (tipo) => {
                     try {
                         const response = await axiosInstance.get("/calificacion/rubrica", {
@@ -200,7 +204,7 @@ const Calificar = () => {
     return (
         <div className="w-full overflow-hidden relative h-full">
             <div className="bg-white rounded-xl p-8 pr-14 mx-auto">
-                <h1 className="text-2xl font-extrabold mb-6 text-center text-blue-700">Calificación de Titulación</h1>
+                <h1 className="text-2xl font-extrabold mb-6 text-center text-blue-700">Calificación de Titulación modalidad {trabajo.modalidad} <br/>{trabajo.titulo}</h1>
 
                 {showFinalizar && (
                     <div className="flex justify-center mt-6">

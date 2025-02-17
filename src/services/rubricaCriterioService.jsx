@@ -47,6 +47,20 @@ export const obtenerTiposEvaluacionByModalidad = async (setTiposEvaluacion, moda
     }
 };
 
+export const obtenerTiposEvaluacionByModalidadList = async (modalidadId) => {
+    try {
+        const response = await axiosInstance.get(`/rubrica/tipos-evaluacion/${modalidadId}`);
+        if (response?.data) {
+            return response.data;
+        } else {
+            return [];
+        }
+    } catch (error) {
+        console.error('Error al obtener tipos de evaluación:', error);
+        return [];
+    }
+};
+
 // Obtener criterios de rúbrica filtrados
 export const obtenerCriteriosRubrica = async (setCriterios, modalidadId, tipoEvaluacionId) => {
     try {
