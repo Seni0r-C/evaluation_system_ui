@@ -6,6 +6,7 @@ import { getEstudiantesByTrabajoId, getUserPhoto } from "../../services/usuarioS
 import { MdDoneOutline } from "react-icons/md";
 import axiosInstance from "../../services/axiosConfig";
 import { obtenerTiposEvaluacionByModalidadList } from "../../services/rubricaCriterioService";
+import ComboBoxIndexacionRevistas from "../../components/utmcomps/ComboBoxIndexacionRevistas";
 
 const Calificar = () => {
     const location = useLocation();
@@ -59,7 +60,7 @@ const Calificar = () => {
         fetchPhotos();
     }, [estudiantes]);
 
-   
+
     useEffect(() => {
         const fetchRubricas = async () => {
             try {
@@ -201,10 +202,36 @@ const Calificar = () => {
         return value ? value : 0;
     };
 
+    const isArticuloAcademico = () => {
+        const ARTICULO_ACADEMICO_KEYS = ["ARTICULO CIENTIFICO", "ARTICULO ACADEMICO", "ARTÍCULO ACADÉMICO", "ARTÍCULO CIENTÍFICO"];
+        const modalidad = (trabajo.modalidad || "").toUpperCase();
+        return ARTICULO_ACADEMICO_KEYS.some(moda => moda === modalidad);
+    };
+
+
+    const items = [
+        { id: 1, nombre: "Opción 1", categoria: "A" },
+        { id: 2, nombre: "Opción 2", categoria: "B" },
+        { id: 3, nombre: "Opción 3", categoria: "A" }
+    ];
+
+    const handleSelection = (selectedItem) => {
+        console.log("Seleccionado:", selectedItem);
+    };
+
     return (
         <div className="w-full overflow-hidden relative h-full">
             <div className="bg-white rounded-xl p-8 pr-14 mx-auto">
-                <h1 className="text-2xl font-extrabold mb-6 text-center text-blue-700">Calificación de Titulación modalidad {trabajo.modalidad} <br/>{trabajo.titulo}</h1>
+                <div>
+                <h1 className="text-xl font-bold mb-6 text-center text-gray-700">                    
+                    <span className="block text-xl font-extrabold mb-3 text-center text-blue-700">
+                    {trabajo.modalidad} 
+                    </span>
+                    
+                    {trabajo.titulo}
+                </h1>
+
+                </div>
 
                 {showFinalizar && (
                     <div className="flex justify-center mt-6">
@@ -217,7 +244,14 @@ const Calificar = () => {
                         </button>
                     </div>
                 )}
-
+                 {isArticuloAcademico() && (
+                                <span className="flex justify-center text-lg font-medium text-center text-gray-700 mb-2">
+                                    <ComboBoxIndexacionRevistas onSelect={(indexacion) => {
+                                        alert("Indexación seleccionada:" + indexacion);
+                                    }} />
+                                </span>
+                    )}
+                <span className="block border-b-2 mb-4 border-gray-500"/>
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-5">
                     {selectedStudent && (
                         <div className="lg:col-span-3 mt-6 lg:mt-0">
@@ -243,9 +277,10 @@ const Calificar = () => {
                                 })}
                             </div>
 
-                            <h3 className="text-2xl font-semibold mb-6 text-blue-600">
+                            {/* <h3 className="text-2xl font-semibold mb-6 text-blue-600">
                                 Rúbrica de Calificación - {selectedRubricaType}
-                            </h3>
+                            </h3> */}
+                           
                             <div className="overflow-x-auto">
                                 {/* Validaciones para evitar errores */}
                                 {currentRubrica ? (
