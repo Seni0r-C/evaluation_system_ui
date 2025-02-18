@@ -16,6 +16,10 @@ export const MessageProvider = ({ children }) => {
     const onCancelCallback = useRef(() => { });
     const onConfirmCallback = useRef(() => { });
 
+    const closeMessage = useCallback(() => {
+        setMessageState({ ...messageState, isOpen: false });
+    }, [messageState]);
+
     const showMessage = useCallback((message, iconType = null) => {
         setMessageState({ message, isOpen: true, iconType });
     }, []);
@@ -53,9 +57,7 @@ export const MessageProvider = ({ children }) => {
         return typeMsg === 'error';
     }, []);
 
-    const closeMessage = useCallback(() => {
-        setMessageState({ ...messageState, isOpen: false });
-    }, [messageState]);
+
 
     // Métodos más específicos para cada tipo de mensaje
     const showSuccess = useCallback(

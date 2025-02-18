@@ -29,7 +29,8 @@ const InicioAdmin = () => {
             {/* Información adicional */}
             <div className="bg-gray-100 shadow-inner rounded-lg p-4">
                 <h2 className="text-lg font-medium text-gray-700">Información adicional</h2>
-                <p className="text-gray-600 mt-2">Recuerda revisar periódicamente tus asignaciones y el calendario de eventos para mantenerte al día.</p>
+                <p className="text-gray-600 mt-2">Recuerda revisar periódicamente tus asignaciones.</p>
+                {/* <p className="text-gray-600 mt-2">Recuerda revisar periódicamente tus asignaciones y el calendario de eventos para mantenerte al día.</p> */}
             </div>
         </div>
     );

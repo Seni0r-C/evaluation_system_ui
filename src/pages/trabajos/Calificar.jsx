@@ -7,8 +7,10 @@ import { MdDoneOutline } from "react-icons/md";
 import axiosInstance from "../../services/axiosConfig";
 import { obtenerTiposEvaluacionByModalidadList } from "../../services/rubricaCriterioService";
 import ComboBoxIndexacionRevistas from "../../components/utmcomps/ComboBoxIndexacionRevistas";
+import { useMessage } from "../../hooks/useMessage";
 
 const Calificar = () => {
+    const { showMsg } = useMessage();
     const location = useLocation();
     const trabajo = location.state.trabajo ?? null;
     const [selectedStudent, setSelectedStudent] = useState(null);
@@ -20,6 +22,8 @@ const Calificar = () => {
     const [currentRubrica, setCurrentRubrica] = useState(null);
     const [calificacionesSeleccionadas, setCalificacionesSeleccionadas] = useState({});
     const [showFinalizar, setShowFinalizar] = useState(false);
+    // 
+    const [indexacionSelected, setIndexacionSelected] = useState(null);
 
     const navigate = useNavigate();
 
@@ -121,6 +125,12 @@ const Calificar = () => {
         }));
     }, [selectedStudent, selectedRubricaType]);
 
+    useEffect(() => {
+        if (isArticuloAcademico() && !indexacionSelected) {
+            showMsg({ typeMsg: 'info', message: 'Por favor seleccione una indexación' });
+        }
+    }, [indexacionSelected]);
+
     const isCalificacionCompleta = () => {
         if (selectedStudent === null)
             return false;
@@ -140,6 +150,10 @@ const Calificar = () => {
     };
 
     const handleFinalizar = async () => {
+        if (isArticuloAcademico() && !indexacionSelected) {
+            showMsg({ typeMsg: 'warning', message: 'Por favor seleccione una indexación' });
+            return;
+        }
         const info = localStorage.getItem('userInfo');
         const user = JSON.parse(info);
 
@@ -175,15 +189,16 @@ const Calificar = () => {
             // Enviar el array completo al servidor
             await axiosInstance.post(`/calificacion/rubrica-evaluacion`, { calificaciones: payload });
 
-            alert("Calificaciones finalizadas y guardadas correctamente.");
+            showMsg({ typeMsg: 'success', message: 'Calificaciones finalizadas y guardadas correctamente.' });
             navigate("/calificacion-de-trabajo-titulacion");
         } catch (error) {
             console.error("Error al finalizar las calificaciones:", error);
-            alert("Ocurrió un error al finalizar las calificaciones.");
+            showMsg({ typeMsg: 'error', message: 'Error al finalizar las calificaciones.' });
         }
     };
 
     const hendelCalificacion = (e, criterioIndex, criterio) => {
+        // const value = Math.min(criterio.puntaje_maximo, Math.max(0, e.target.value));
         const value = Math.min(criterio.puntaje_maximo, Math.max(0, e.target.value));
         setCalificacionesSeleccionadas((prev) => ({
             ...prev,
@@ -197,9 +212,10 @@ const Calificar = () => {
         }));
     };
 
-    const calificacionValue = (criterioIndex) => {
+    const calificacionValue = (minimo, maximo, criterioIndex) => {
         const value = calificacionesSeleccionadas[selectedStudent]?.[selectedRubricaType]?.[criterioIndex];
-        return value ? value : 0;
+        return Math.max(minimo, value ?? 0);
+        // return Math.max(minimo, minimo==0?Number(maximo)/(getIndexPercent()*Number(maximo)):value);
     };
 
     const isArticuloAcademico = () => {
@@ -208,12 +224,24 @@ const Calificar = () => {
         return ARTICULO_ACADEMICO_KEYS.some(moda => moda === modalidad);
     };
 
+    const getIndexPercent = () => {
+        if (!indexacionSelected) {
+            return 1;
+        }
+        return indexacionSelected.value;
+    };
 
-    const items = [
-        { id: 1, nombre: "Opción 1", categoria: "A" },
-        { id: 2, nombre: "Opción 2", categoria: "B" },
-        { id: 3, nombre: "Opción 3", categoria: "A" }
-    ];
+
+    const calculateMinScore = (criterio) => {
+        if (!isArticuloAcademico() || !indexacionSelected) return 0;
+        return Number(criterio.puntaje_maximo) * getIndexPercent();
+    };
+
+    const calculateMaxScore = (criterio) => {
+        if (!isArticuloAcademico() || !indexacionSelected) return criterio.puntaje_maximo;
+        return calculateMinScore(criterio) + (Number(criterio.puntaje_maximo) * (1 - getIndexPercent()));
+    };
+
 
     const handleSelection = (selectedItem) => {
         console.log("Seleccionado:", selectedItem);
@@ -223,13 +251,13 @@ const Calificar = () => {
         <div className="w-full overflow-hidden relative h-full">
             <div className="bg-white rounded-xl p-8 pr-14 mx-auto">
                 <div>
-                <h1 className="text-xl font-bold mb-6 text-center text-gray-700">                    
-                    <span className="block text-xl font-extrabold mb-3 text-center text-blue-700">
-                    {trabajo.modalidad} 
-                    </span>
-                    
-                    {trabajo.titulo}
-                </h1>
+                    <h1 className="text-xl font-bold mb-6 text-center text-gray-700">
+                        <span className="block text-xl font-extrabold mb-3 text-center text-blue-700">
+                            {trabajo.modalidad}
+                        </span>
+
+                        {trabajo.titulo}
+                    </h1>
 
                 </div>
 
@@ -244,14 +272,15 @@ const Calificar = () => {
                         </button>
                     </div>
                 )}
-                 {isArticuloAcademico() && (
-                                <span className="flex justify-center text-lg font-medium text-center text-gray-700 mb-2">
-                                    <ComboBoxIndexacionRevistas onSelect={(indexacion) => {
-                                        alert("Indexación seleccionada:" + indexacion);
-                                    }} />
-                                </span>
-                    )}
-                <span className="block border-b-2 mb-4 border-gray-500"/>
+                {isArticuloAcademico() && (
+                    <span className="flex justify-center text-lg font-medium text-center text-gray-700 mb-2">
+                        <ComboBoxIndexacionRevistas onSelect={(indexacion) => {
+                            setIndexacionSelected(indexacion);
+                            alert("Indexación seleccionada:" + JSON.stringify(indexacion));
+                        }} />
+                    </span>
+                )}
+                <span className="block border-b-2 mb-4 border-gray-500" />
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-5">
                     {selectedStudent && (
                         <div className="lg:col-span-3 mt-6 lg:mt-0">
@@ -280,7 +309,7 @@ const Calificar = () => {
                             {/* <h3 className="text-2xl font-semibold mb-6 text-blue-600">
                                 Rúbrica de Calificación - {selectedRubricaType}
                             </h3> */}
-                           
+
                             <div className="overflow-x-auto">
                                 {/* Validaciones para evitar errores */}
                                 {currentRubrica ? (
@@ -295,6 +324,9 @@ const Calificar = () => {
                                                 <th className="border border-gray-300 px-4 py-3 text-center font-semibold">
                                                     Calificación
                                                 </th>
+                                                {/* <th className="text-sm font-semibold text-blue-700 text-center border border-gray-300 px-2" >
+                                                    min - max
+                                                </th> */}
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -314,24 +346,64 @@ const Calificar = () => {
                                                         <input
                                                             type="number"
                                                             className="w-full border border-gray-300 rounded-md px-2 py-1 text-center focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                                                            max={criterio.puntaje_maximo}
-                                                            min="0"
+                                                            max={calculateMaxScore(criterio)}
+                                                            min={calculateMinScore(criterio)}
                                                             onKeyPress={(e) => {
                                                                 if (!/[0-9.]/.test(e.key)) {
                                                                     e.preventDefault();
                                                                 }
                                                             }}
-                                                            placeholder={`0 - ${criterio.puntaje_maximo}`}
-                                                            value={calificacionValue(criterioIndex)}
+                                                            placeholder={`${calculateMinScore(criterio)} - ${calculateMaxScore(criterio)}`}
+                                                            value={calificacionValue(calculateMinScore(criterio), calculateMaxScore(criterio), criterioIndex) ?? calculateMinScore(criterio)}
                                                             onChange={(e) => hendelCalificacion(e, criterioIndex, criterio)}
                                                         />
                                                     </td>
+                                                    {/* <td className="text-sm font-semibold text-blue-700 text-center border border-gray-300 px-2" >
+                                                        {`${calculateMinScore(criterio)} - ${calculateMaxScore(criterio)}`}
+                                                    </td> */}
                                                 </tr>
                                             ))}
+                                            {/* Fila de Totales */}
+                                            <tr className="bg-gray-100 font-bold">
+                                                <td className="py-2 text-sm font-bold text-blue-700 text-left border border-gray-300">
+                                                    <span className="ml-5">TOTAL</span>
+                                                </td>
+
+                                                {/* <td className="border border-gray-300"></td> */}
+                                                {/* Suma de puntajes máximos */}
+                                                <td className="text-sm font-semibold text-blue-700 text-center border border-gray-300">
+                                                    {currentRubrica.rubrica.criterios.reduce(
+                                                        (total, criterio) => Number(total) + Number(criterio.puntaje_maximo), 0
+                                                    )}
+                                                </td>
+
+                                                <td className="text-sm font-semibold text-blue-700 text-center border border-gray-300">
+                                                    {currentRubrica.rubrica.criterios.reduce(
+                                                        (total, criterio, index) =>
+                                                            total +
+                                                            (calificacionValue(
+                                                                calculateMinScore(criterio),
+                                                                calculateMaxScore(criterio),
+                                                                index
+                                                            ) ?? calculateMinScore(criterio)),
+                                                        0
+                                                    )}
+                                                </td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 ) : (
-                                    <p>Seleccione una rúbrica para visualizarla.</p>
+                                    <table>
+                                        <tbody>
+                                            <tr
+                                                className="odd:bg-white even:bg-gray-50"
+                                            >
+                                                <td className="text-md font-semibold text-blue-700 text-center border border-gray-300" >
+                                                    <p>Seleccione una rúbrica para visualizarla.</p>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 )}
 
                             </div>

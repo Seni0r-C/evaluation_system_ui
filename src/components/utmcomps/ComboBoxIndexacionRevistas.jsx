@@ -2,8 +2,8 @@ import { useState } from "react";
 import ComboBox from "../common/ComboBox";
 
 const indexaciones = [
-    { id: 1, name: "LatinIndex", value: 0.5 },
-    { id: 2, name: "Scopus", value: 0.8 }
+    { id: 1, name: "LatinIndex 60%", value: 0.6 },
+    { id: 2, name: "Scopus 80%", value: 0.8 }
 ];
 
 const ComboBoxIndexacionRevistas = ({ onSelect }) => {
