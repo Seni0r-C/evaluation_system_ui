@@ -5,27 +5,37 @@ import axiosInstance from '../services/axiosConfig';
 
 // Componente genérico para renderizar datos en forma de tabla
 const DataTable = ({ data }) => {
-    if (!data || data.length === 0) {
-        return <div>No hay datos para mostrar.</div>;
-    }
-    const columns = Object.keys(data[0]);
+    const columns = data && data.length > 0 ? Object.keys(data[0]) : [];
+
     return (
         <table className="min-w-full bg-white border border-gray-300">
             <thead>
                 <tr>
-                    {columns.map((col) => (
-                        <th key={col} className="py-2 px-4 border-b">{col}</th>
-                    ))}
+                    {columns.length > 0 ? (
+                        columns.map((col) => (
+                            <th key={col} className="py-2 px-4 border-b">{col}</th>
+                        ))
+                    ) : (
+                        <th className="py-2 px-4 border-b">Sin columnas disponibles</th>
+                    )}
                 </tr>
             </thead>
             <tbody>
-                {data.map((row, index) => (
-                    <tr key={index}>
-                        {columns.map((col) => (
-                            <td key={col} className="py-2 px-4 border-b">{row[col]}</td>
-                        ))}
+                {data && data.length > 0 ? (
+                    data.map((row, index) => (
+                        <tr key={index}>
+                            {columns.map((col) => (
+                                <td key={col} className="py-2 px-4 border-b">{row[col]}</td>
+                            ))}
+                        </tr>
+                    ))
+                ) : (
+                    <tr>
+                        <td colSpan={columns.length || 1} className="py-2 px-4 text-center">
+                            No hay datos para mostrar.
+                        </td>
                     </tr>
-                ))}
+                )}
             </tbody>
         </table>
     );
@@ -102,7 +112,7 @@ const GraduationRangeReport = () => {
                     Buscar
                 </button>
             </div>
-            {data && data.length > 0 && <DataTable data={data} />}
+            <DataTable data={data} />
             <Pagination page={page} onPageChange={setPage} />
         </div>
     );
@@ -152,7 +162,7 @@ const PendingWorksReport = () => {
                     Buscar
                 </button>
             </div>
-            {data && data.length > 0 && <DataTable data={data} />}
+            <DataTable data={data} />
             <Pagination page={page} onPageChange={setPage} />
         </div>
     );
@@ -182,7 +192,7 @@ const AverageGradesReport = () => {
     return (
         <div>
             <h2 className="text-xl font-bold mb-4">Calificaciones Promedio por Modalidad</h2>
-            {data && data.length > 0 && <DataTable data={data} />}
+            <DataTable data={data} />
             <Pagination page={page} onPageChange={setPage} />
         </div>
     );
@@ -212,60 +222,60 @@ const TutorWorkloadReport = () => {
     return (
         <div>
             <h2 className="text-xl font-bold mb-4">Carga de Trabajo de Docentes como Tutores</h2>
-            {data && data.length > 0 && <DataTable data={data} />}
+            <DataTable data={data} />
             <Pagination page={page} onPageChange={setPage} />
         </div>
     );
 };
 
 // 5. Reporte de Solicitudes de Excepción
-const ExceptionRequestsReport = () => {
-    const [estado, setEstado] = useState('');
-    const [data, setData] = useState([]);
-    const [page, setPage] = useState(1);
-    const limit = 10;
+// const ExceptionRequestsReport = () => {
+//     const [estado, setEstado] = useState('');
+//     const [data, setData] = useState([]);
+//     const [page, setPage] = useState(1);
+//     const limit = 10;
 
-    const fetchData = async () => {
-        if (!estado) return;
-        try {
-            const response = await axiosInstance.get('/reportes/solicitudes-excepcion', {
-                params: { estado, page, limit },
-            });
-            setData(response.data.data);
-        } catch (error) {
-            console.error(error);
-        }
-    };
+//     const fetchData = async () => {
+//         if (!estado) return;
+//         try {
+//             const response = await axiosInstance.get('/reportes/solicitudes-excepcion', {
+//                 params: { estado, page, limit },
+//             });
+//             setData(response.data.data);
+//         } catch (error) {
+//             console.error(error);
+//         }
+//     };
 
-    return (
-        <div>
-            <h2 className="text-xl font-bold mb-4">Solicitudes de Excepción</h2>
-            <div className="flex space-x-4 mb-4">
-                <select
-                    value={estado}
-                    onChange={(e) => setEstado(e.target.value)}
-                    className="border p-2 rounded"
-                >
-                    <option value="">Selecciona un estado</option>
-                    <option value="Aprobada">Aprobada</option>
-                    <option value="Rechazada">Rechazada</option>
-                    <option value="Pendiente">Pendiente</option>
-                </select>
-                <button
-                    onClick={() => {
-                        setPage(1);
-                        fetchData();
-                    }}
-                    className="bg-blue-500 text-white px-4 py-2 rounded"
-                >
-                    Buscar
-                </button>
-            </div>
-            {data && data.length > 0 && <DataTable data={data} />}
-            <Pagination page={page} onPageChange={setPage} />
-        </div>
-    );
-};
+//     return (
+//         <div>
+//             <h2 className="text-xl font-bold mb-4">Solicitudes de Excepción</h2>
+//             <div className="flex space-x-4 mb-4">
+//                 <select
+//                     value={estado}
+//                     onChange={(e) => setEstado(e.target.value)}
+//                     className="border p-2 rounded"
+//                 >
+//                     <option value="">Selecciona un estado</option>
+//                     <option value="Aprobada">Aprobada</option>
+//                     <option value="Rechazada">Rechazada</option>
+//                     <option value="Pendiente">Pendiente</option>
+//                 </select>
+//                 <button
+//                     onClick={() => {
+//                         setPage(1);
+//                         fetchData();
+//                     }}
+//                     className="bg-blue-500 text-white px-4 py-2 rounded"
+//                 >
+//                     Buscar
+//                 </button>
+//             </div>
+//             <DataTable data={data} />
+//             <Pagination page={page} onPageChange={setPage} />
+//         </div>
+//     );
+// };
 
 // 6. Reporte de Tendencias de Rendimiento Académico
 const AcademicPerformanceTrendsReport = () => {
@@ -291,7 +301,7 @@ const AcademicPerformanceTrendsReport = () => {
     return (
         <div>
             <h2 className="text-xl font-bold mb-4">Tendencias de Rendimiento Académico</h2>
-            {data && data.length > 0 && <DataTable data={data} />}
+            <DataTable data={data} />
             <Pagination page={page} onPageChange={setPage} />
         </div>
     );
@@ -304,7 +314,7 @@ const ReportsPage = () => {
         { key: 'pendingWorks', label: 'Trabajos Pendientes por Estado' },
         { key: 'averageGrades', label: 'Calificaciones Promedio por Modalidad' },
         { key: 'tutorWorkload', label: 'Carga de Trabajo de Docentes como Tutores' },
-        { key: 'exceptionRequests', label: 'Solicitudes de Excepción' },
+        // { key: 'exceptionRequests', label: 'Solicitudes de Excepción' },
         { key: 'academicPerformanceTrends', label: 'Tendencias de Rendimiento Académico' },
     ];
     const [selectedReport, setSelectedReport] = useState(reportTypes[0].key);
@@ -330,7 +340,7 @@ const ReportsPage = () => {
             {selectedReport === 'pendingWorks' && <PendingWorksReport />}
             {selectedReport === 'averageGrades' && <AverageGradesReport />}
             {selectedReport === 'tutorWorkload' && <TutorWorkloadReport />}
-            {selectedReport === 'exceptionRequests' && <ExceptionRequestsReport />}
+            {/* {selectedReport === 'exceptionRequests' && <ExceptionRequestsReport />} */}
             {selectedReport === 'academicPerformanceTrends' && <AcademicPerformanceTrendsReport />}
         </div>
     );
