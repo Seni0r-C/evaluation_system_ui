@@ -21,6 +21,7 @@ import TrabajoTitulacionCrear from '../pages/trabajos/TrabajoTitulacionCrear';
 import AdministrarCarreras from '../pages/admin/Carreras';
 import AdminRutas from '../pages/admin/Rutas';
 import AdminMenu from '../pages/admin/AdminMenu';
+import ReportsPage from '../pages/Reportes';
 
 export const routes = [
   {
@@ -258,6 +259,18 @@ export const routes = [
         <Layout>
           <ProtectedRoute>
             <UserProfile />
+          </ProtectedRoute>
+        </Layout>
+      </ErrorBoundary>
+    ),
+  },
+  {
+    path: '/reportes',
+    element: (
+      <ErrorBoundary>
+        <Layout>
+          <ProtectedRoute>
+            <ReportsPage />
           </ProtectedRoute>
         </Layout>
       </ErrorBoundary>

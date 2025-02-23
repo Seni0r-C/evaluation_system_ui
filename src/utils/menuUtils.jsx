@@ -1,7 +1,7 @@
 import { FaHome, FaUsers, FaFileAlt } from "react-icons/fa";
 import { FaListCheck } from "react-icons/fa6";
 import { GrDocumentUpload } from "react-icons/gr";
-import { MdOutlineChromeReaderMode } from "react-icons/md";
+import { MdAssessment, MdOutlineChromeReaderMode } from "react-icons/md";
 
 export const transformMenuData = (menuItems) => {
     const menuById = {}; // Para almacenar los menús principales
@@ -71,4 +71,5 @@ export const iconsMap = {
     asignar: FaUsers,
     calificar: FaListCheck,
     reporte: FaFileAlt,
+    datos: MdAssessment
 };
