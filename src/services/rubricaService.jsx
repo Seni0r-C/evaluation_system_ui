@@ -6,6 +6,12 @@ export const createTipoEvaluacion = (data) => axiosInstance.post(`/calificacion/
 export const updateTipoEvaluacion = (id, data) => axiosInstance.put(`/calificacion/tipo-evaluacion/${id}`, data);
 export const deleteTipoEvaluacion = (id) => axiosInstance.delete(`/calificacion/tipo-evaluacion/${id}`);
 
+// Tipos de Evaluación
+export const getTiposEvaluacionJerarquia = () => axiosInstance.get(`/calificacion/tipo-evaluacion-jerarquia`);
+export const createTipoEvaluacionJerarquia = (data) => axiosInstance.post(`/calificacion/tipo-evaluacion-jerarquia`, data);
+export const updateTipoEvaluacionJerarquia = (id, data) => axiosInstance.put(`/calificacion/tipo-evaluacion-jerarquia/${id}`, data);
+export const deleteTipoEvaluacionJerarquia = (id) => axiosInstance.delete(`/calificacion/tipo-evaluacion-jerarquia/${id}`);
+
 // Rúbricas
 export const getRubricas = () => axiosInstance.get(`/calificacion/rubrica`);
 export const createRubrica = (data) => axiosInstance.post(`/calificacion/rubrica`, data);
