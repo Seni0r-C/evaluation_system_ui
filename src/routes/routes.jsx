@@ -264,18 +264,18 @@ export const routes = [
       </ErrorBoundary>
     ),
   },
-  {
-    path: '/reportes',
-    element: (
-      <ErrorBoundary>
-        <Layout>
-          <ProtectedRoute>
-            <ReportsPage />
-          </ProtectedRoute>
-        </Layout>
-      </ErrorBoundary>
-    ),
-  },
+  // {
+  //   path: '/reportes',
+  //   element: (
+  //     <ErrorBoundary>
+  //       <Layout>
+  //         <ProtectedRoute>
+  //           <ReportsPage />
+  //         </ProtectedRoute>
+  //       </Layout>
+  //     </ErrorBoundary>
+  //   ),
+  // },
   {
     path: '*',
     element: (
