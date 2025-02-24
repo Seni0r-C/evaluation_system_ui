@@ -125,12 +125,6 @@ const Calificar = () => {
         }));
     }, [selectedStudent, selectedRubricaType]);
 
-    useEffect(() => {
-        if (isArticuloAcademico() && !indexacionSelected) {
-            showMsg({ typeMsg: 'info', message: 'Por favor seleccione una indexación' });
-        }
-    }, [indexacionSelected]);
-
     const isCalificacionCompleta = () => {
         if (selectedStudent === null)
             return false;
@@ -198,8 +192,12 @@ const Calificar = () => {
     };
 
     const hendelCalificacion = (e, criterioIndex, criterio) => {
+        let valor = 0
+        if (e) {
+            valor = e.target?.value || e.value;
+        }
         // const value = Math.min(criterio.puntaje_maximo, Math.max(0, e.target.value));
-        const value = Math.min(criterio.puntaje_maximo, Math.max(0, e.target.value));
+        const value = Math.min(criterio.puntaje_maximo, Math.max(0, valor));
         setCalificacionesSeleccionadas((prev) => ({
             ...prev,
             [selectedStudent]: {
@@ -228,7 +226,7 @@ const Calificar = () => {
         if (!indexacionSelected) {
             return 1;
         }
-        return indexacionSelected.value;
+        return indexacionSelected.porcentaje;
     };
 
 
@@ -240,11 +238,6 @@ const Calificar = () => {
     const calculateMaxScore = (criterio) => {
         if (!isArticuloAcademico() || !indexacionSelected) return criterio.puntaje_maximo;
         return calculateMinScore(criterio) + (Number(criterio.puntaje_maximo) * (1 - getIndexPercent()));
-    };
-
-
-    const handleSelection = (selectedItem) => {
-        console.log("Seleccionado:", selectedItem);
     };
 
     return (
@@ -272,14 +265,6 @@ const Calificar = () => {
                         </button>
                     </div>
                 )}
-                {isArticuloAcademico() && (
-                    <span className="flex justify-center text-lg font-medium text-center text-gray-700 mb-2">
-                        <ComboBoxIndexacionRevistas onSelect={(indexacion) => {
-                            setIndexacionSelected(indexacion);
-                            alert("Indexación seleccionada:" + JSON.stringify(indexacion));
-                        }} />
-                    </span>
-                )}
                 <span className="block border-b-2 mb-4 border-gray-500" />
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-5">
                     {selectedStudent && (
@@ -287,7 +272,6 @@ const Calificar = () => {
                             <div className="flex justify-center mb-4">
                                 {tipoEvaluacion.map((tipo) => {
                                     const isSelected = selectedRubricaType === tipo.tipo_evaluacion_nombre;
-                                    // const Icon = tipo.tipo_evaluacion_nombre === "Defensa" ? RiSpeakFill : IoDocumentText;
 
                                     return (
                                         <button
@@ -300,15 +284,10 @@ const Calificar = () => {
                                                 }`}
                                         >
                                             {tipo.tipo_evaluacion_nombre}
-                                            {/* <Icon className="ml-2" /> */}
                                         </button>
                                     );
                                 })}
                             </div>
-
-                            {/* <h3 className="text-2xl font-semibold mb-6 text-blue-600">
-                                Rúbrica de Calificación - {selectedRubricaType}
-                            </h3> */}
 
                             <div className="overflow-x-auto">
                                 {/* Validaciones para evitar errores */}
@@ -343,24 +322,30 @@ const Calificar = () => {
                                                         {criterio.puntaje_maximo}
                                                     </td>
                                                     <td className="text-sm font-semibold text-blue-700 text-center border border-gray-300" >
-                                                        <input
-                                                            type="number"
-                                                            className="w-full border border-gray-300 rounded-md px-2 py-1 text-center focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                                                            max={calculateMaxScore(criterio)}
-                                                            min={calculateMinScore(criterio)}
-                                                            onKeyPress={(e) => {
-                                                                if (!/[0-9.]/.test(e.key)) {
-                                                                    e.preventDefault();
-                                                                }
-                                                            }}
-                                                            placeholder={`${calculateMinScore(criterio)} - ${calculateMaxScore(criterio)}`}
-                                                            value={calificacionValue(calculateMinScore(criterio), calculateMaxScore(criterio), criterioIndex) ?? calculateMinScore(criterio)}
-                                                            onChange={(e) => hendelCalificacion(e, criterioIndex, criterio)}
-                                                        />
+                                                        {isArticuloAcademico() && selectedRubricaType == "INFORME FINAL" ?
+                                                            <span className="flex justify-center text-lg font-medium text-center text-gray-700 mb-2">
+                                                                <ComboBoxIndexacionRevistas onSelect={(indexacion) => {
+                                                                    setIndexacionSelected(indexacion);
+                                                                    hendelCalificacion(indexacion, criterioIndex, criterio)
+                                                                }} />
+                                                            </span>
+                                                            : (
+                                                                <input
+                                                                    type="number"
+                                                                    className="w-full border border-gray-300 rounded-md px-2 py-1 text-center focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                                                    max={calculateMaxScore(criterio)}
+                                                                    min={calculateMinScore(criterio)}
+                                                                    onKeyPress={(e) => {
+                                                                        if (!/[0-9.]/.test(e.key)) {
+                                                                            e.preventDefault();
+                                                                        }
+                                                                    }}
+                                                                    placeholder={`${calculateMinScore(criterio)} - ${calculateMaxScore(criterio)}`}
+                                                                    value={calificacionValue(calculateMinScore(criterio), calculateMaxScore(criterio), criterioIndex) ?? calculateMinScore(criterio)}
+                                                                    onChange={(e) => hendelCalificacion(e, criterioIndex, criterio)}
+                                                                />
+                                                            )}
                                                     </td>
-                                                    {/* <td className="text-sm font-semibold text-blue-700 text-center border border-gray-300 px-2" >
-                                                        {`${calculateMinScore(criterio)} - ${calculateMaxScore(criterio)}`}
-                                                    </td> */}
                                                 </tr>
                                             ))}
                                             {/* Fila de Totales */}
