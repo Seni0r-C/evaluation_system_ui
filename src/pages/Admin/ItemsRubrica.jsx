@@ -231,7 +231,7 @@ function App() {
                     >
                         Rúbricas
                     </button>
-                    <button
+                    {/* <button
                         className={`px-4 py-2 text-sm font-medium ${activeTab === "criterios"
                             ? "border-b-2 border-blue-500 text-blue-500"
                             : "text-gray-600 hover:text-blue-500"
@@ -239,7 +239,7 @@ function App() {
                         onClick={() => setActiveTab("criterios")}
                     >
                         Criterios de Rúbrica
-                    </button>
+                    </button> */}
                     <button
                         className={`px-4 py-2 text-sm font-medium ${activeTab === "criterios2"
                             ? "border-b-2 border-blue-500 text-blue-500"

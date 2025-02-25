@@ -4,8 +4,10 @@ const BotonAccion = ({ onClick, icono: Icono, variant = 'primary', tooltip }) =>
   const variantClasses = {
     primary: 'bg-blue-500 text-white hover:bg-blue-600',
     secondary: 'bg-gray-500 text-white hover:bg-gray-600',
+    gray: 'bg-gray-500 text-white hover:bg-gray-600',
     red: 'bg-red-500 text-white hover:bg-red-600',
     green: 'bg-green-500 text-white hover:bg-green-600',
+    orange: 'bg-orange-500 text-white hover:bg-orange-600',
     yellow: 'bg-yellow-500 text-white hover:bg-yellow-600',
     purple: 'bg-purple-500 text-white hover:bg-purple-600',
     teal: 'bg-teal-600 text-white hover:bg-teal-700',
