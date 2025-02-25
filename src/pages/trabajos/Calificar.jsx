@@ -425,7 +425,7 @@ const Calificar = () => {
                                 className="w-full flex items-center gap-4 px-4 py-3 rounded-lg shadow-md transition-all duration-200 bg-red-500 hover:bg-red-600 text-white"
                             >
                                 <FaFilePdf className="w-12 h-12" />
-                                <span className="text-left font-medium">Ver Documento</span>
+                                <span className="text-left font-medium">Trabajo de titulación</span>
                             </a>
                         </div>
                     </div>

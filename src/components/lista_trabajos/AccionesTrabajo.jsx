@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import BotonAccion from '../common/BotonAccion';
-import { FaCalendarDay, FaEdit, FaFilePdf, FaEye } from 'react-icons/fa';
-import { MdChecklist, MdGroupAdd } from 'react-icons/md';
+import { FaCalendarDay, FaEdit, FaFilePdf, FaEye, FaFileArchive, FaFileAlt, FaFileSignature } from 'react-icons/fa';
+import { MdArticle, MdChecklist, MdGavel, MdGroupAdd, MdRecordVoiceOver } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { permisos } from '../../utils/permisos';
 import InfoTrabajoModal from '../modal/ModalData';
@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import { GrDocumentUser } from 'react-icons/gr';
 import TrabajoFinalModal from '../utmodal/SubirTrabajoFinal';
 import { generarActa } from '../../services/actaService';
+import { generarDocCalificacion } from '../../services/notasDocService';
 import { useMessage } from '../../hooks/useMessage';
 
 
@@ -38,13 +39,19 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user }) => {
     fectchTrabajoFull(trabajo).then(showIfError);
     setIsOpenAsignarTribunal(true);
   };
-  
-  const handleGenerarReporte = (trabajo) => {
+
+  const handleGenerarActa = (trabajo) => {
     showMsg({ typeMsg: 'wait', message: 'Generando Acta...' });
     generarActa(trabajo)
-    .then(showIfError);
+      .then(showIfError);
   };
   
+  const handleDocCalificacion = (trabajo) => {
+    showMsg({ typeMsg: 'wait', message: 'Generando documento calificación...' });
+    generarDocCalificacion(trabajo)
+      .then(showIfError);
+  };
+
   const handleVerDetalles = (trabajo) => {
     showMsg({ typeMsg: 'wait', message: 'Cargando datos de trabajo...' });
     fectchTrabajoFull(trabajo).then(showIfError);
@@ -55,6 +62,7 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user }) => {
     setTrabajoSelected(trabajo);
     setIsOpenSubirTrabajoFinal(true);
   };
+  
 
   // Definición de acciones
   const accionesObjs = [
@@ -73,14 +81,33 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user }) => {
       variant: 'purple',
       tooltip: 'Asignar Tribunal',
       onClick: handleAsignarTribunal,
+    // },
+    // {
+    //   roles: permisos.ROLES_GENERACION_DOCUMENTO_EVALUACION,
+    //   permiso: 'generarReporte',
+    //   icono: FaFileSignature,
+    //   variant: 'blue',
+    //   tooltip: 'Documento evaluación escrita',
+    //   onClick: handleGenerarActa,
+    },
+    {
+      roles: permisos.ROLES_GENERACION_DOCUMENTO_EVALUACION,
+      permiso: 'generarReporte',
+      // icono: MdRecordVoiceOver,
+      icono: FaFileSignature,
+      variant: 'blue',
+      tooltip: 'Generar documento calificación',
+      onClick: handleDocCalificacion,
     },
     {
       roles: permisos.ROLES_GENERACION_DOCUMENTO_CALIFICACION,
       permiso: 'generarReporte',
-      icono: FaFilePdf,
+      // icono: FaFilePdf,
+      icono: MdGavel,
       variant: 'red',
-      tooltip: 'Generar Reporte',
-      onClick: handleGenerarReporte,
+      // tooltip: 'Generar documento califiación',
+      tooltip: 'Descargar acta',
+      onClick: handleGenerarActa,
     },
     {
       roles: permisos.ROLES_EDICION_TRABAJOS,
