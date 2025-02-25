@@ -6,7 +6,7 @@ export const generarDocCalificacion = async (trabajo) => {
   try {
     // alert(JSON.stringify(trabajo, null, 2));
     // return { typeMsg: 'success', message: 'Acta generada exitosamente.'};
-    const responseFileName = await axiosInstance.get(`notas/pdf-name/${trabajo.id}/${2}`);
+    const responseFileName = await axiosInstance.get(`notas/pdf-name/${trabajo.id}/${-1}`);
     // const responseFileName = await axiosInstance.get(`acta/pdf-name/2`);
     const fileName = responseFileName.data.fileName;
     // return { typeMsg: 'success', message: JSON.stringify(responseFileName.data.fileName, null, 2) };
