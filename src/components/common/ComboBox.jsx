@@ -1,6 +1,18 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 
+/**
+ * Componente que renderiza un select con la lista de items.
+ * 
+ * @param {{ label: string, items: array, displayKey: string, displayFn: function, onSelect: function, placeholder: string, required: boolean }} props
+ * @prop {string} label - Texto del label del campo. Opcional.
+ * @prop {array} items - Lista de objetos que se renderizarán como opciones del select. Opcional. Por defecto es un arreglo vacío.
+ * @prop {string} displayKey - Clave del objeto que se utilizar  para mostrar el texto en el select. Opcional. Por defecto se utiliza la clave "nombre".
+ * @prop {function} displayFn - Función que se utilizar  para mostrar el texto en el select. Opcional. Por defecto se utiliza la clave "nombre" del objeto.
+ * @prop {function} onSelect - Función que se llamar  cuando se seleccione un item. Opcional. Por defecto no se llama a ninguna función.
+ * @prop {string} placeholder - Texto que se mostrar  en el select antes de que se seleccione un item. Opcional. Por defecto es "Seleccione una opción".
+ * @prop {boolean} required - Indica si el campo es requerido. Opcional. Por defecto es false.
+ */
 const ComboBox = ({
     label,
     items = [],
@@ -16,7 +28,7 @@ const ComboBox = ({
         const selectedId = event.target?.value || "";
         const item = items.find(i => String(i.id) === selectedId);
         setSelectedItem(item);
-        onSelect && onSelect(item); // Devuelve el objeto completo
+        onSelect && onSelect(item);
     };
 
     return (

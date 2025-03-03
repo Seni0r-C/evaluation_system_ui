@@ -1,5 +1,12 @@
 import PropTypes from "prop-types";
 
+/**
+ * Componente que renderiza un campo de texto solo para lectura.
+ * @param {{ label: string, value: string }} props
+ * @prop {string} label - Texto del label del campo.
+ * @prop {string} value - Valor a mostrar en el campo.
+ * @returns {ReactElement} - Un ReactElement que representa el campo de texto.
+ */
 const SimpleField = ({ label, value }) => {
     return (
         <div className="mb-4">

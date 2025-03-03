@@ -1,4 +1,4 @@
-import BuscadorGenerico from '../common/BuscadorGenerico';
+import SearchDropdown from '../common/BuscadorGenerico';
 import { buscarUsuarios as buscarUsuariosService } from '../../services/usuarioService';
 import PropTypes from 'prop-types';
 import { useMessage } from "../../hooks/useMessage";
@@ -15,7 +15,7 @@ const BuscadorDocentes = ({ setSelectedDocentes, initialSelectedItems = [], allo
     return (
         <div className="p-1">
             {/* Buscador de Docentes */}
-            <BuscadorGenerico
+            <SearchDropdown
                 label={label}
                 placeholder="Ingrese el nombre del docente"
                 handlerBuscar={handleBuscarNombre}

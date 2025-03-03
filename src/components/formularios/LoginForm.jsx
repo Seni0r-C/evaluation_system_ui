@@ -1,6 +1,19 @@
 import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa';
 import PropTypes from 'prop-types';
 
+/**
+ * Componente que renderiza un formulario para el inicio de sesión.
+ *
+ * @param {string} usuario - El usuario actual.
+ * @param {function} setUsuario - Función para cambiar el usuario.
+ * @param {string} password - La contraseña actual.
+ * @param {function} setPassword - Función para cambiar la contraseña.
+ * @param {boolean} showPassword - Indica si se debe mostrar la contraseña.
+ * @param {function} toggleShowPassword - Función para cambiar el estado de showPassword.
+ * @param {function} handleSubmit - Función para manejar el envío del formulario.
+ *
+ * @returns {JSX.Element} Un formulario con un input para el usuario y otro para la contraseña, y un botón para enviar el formulario.
+ */
 const LoginForm = ({ usuario, setUsuario, password, setPassword, showPassword, toggleShowPassword, handleSubmit }) => (
     <form onSubmit={handleSubmit} className="text-white">
         <div className="mb-4">

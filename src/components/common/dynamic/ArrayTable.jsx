@@ -1,13 +1,27 @@
 import PropTypes from 'prop-types';
 import { isObject, renderTableHeaders, renderTableRow } from '../../../utils/tableUtils';
 
-// Componente principal de la tabla
+/**
+ * Componente para renderizar un array de datos en una tabla.
+ * La tabla puede tener encabezados dinámicos o no, dependiendo de si los
+ * objetos en el array tienen propiedades o no.
+ * Si el array es vacío, se muestra un mensaje "No hay datos".
+ * @param {string} label - Título del label que se muestra arriba de la tabla.
+ * @param {array} data - Array de datos que se van a renderizar en la tabla.
+ * @returns {ReactElement} - Un ReactElement que representa una tabla con los datos del array.
+ */
 const ArrayTable = ({ label, data }) => {
-    // Verificamos que `data` sea un array
     const isArray = Array.isArray(data);
     const isSimpleArray = isArray && data.length > 0 && !isObject(data[0]);
 
-    // Verificamos si hay datos disponibles
+    /**
+     * Renderiza un mensaje de "No hay datos" para cuando el array es vacío.
+     * El mensaje se muestra en una celda de una fila que ocupa el ancho de la tabla.
+     * La cantidad de columnas se determina según el tipo de array:
+     *   - Si es un array de objetos, se toma la cantidad de propiedades del primer objeto.
+     *   - Si es un array de valores simples, se toma el valor 1.
+     * @returns {ReactElement} - Un ReactElement que representa una celda con el mensaje.
+     */
     const renderNoDataMessage = () => {
         const columnCount = isSimpleArray ? 1 : Object.keys(data[0]).length;
         return (
@@ -40,7 +54,6 @@ const ArrayTable = ({ label, data }) => {
     );
 };
 
-// Validación de las propiedades del componente
 ArrayTable.propTypes = {
     label: PropTypes.string.isRequired,
     data: PropTypes.array.isRequired,

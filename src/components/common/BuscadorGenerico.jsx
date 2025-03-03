@@ -4,8 +4,22 @@ import { FaChevronDown, FaChevronUp, FaSearchPlus } from 'react-icons/fa';
 import Spinner from '../shared/logo_carga/Spinner';
 import { useMessage } from "../../hooks/useMessage";
 
-
-const BuscadorGenerico = ({
+/**
+ * Componente de búsqueda genérico que permite buscar en una API o base de datos
+ * y seleccionar uno o varios resultados.
+ * 
+ * @param {string} label Etiqueta del campo de búsqueda
+ * @param {string} placeholder Placeholder del campo de búsqueda
+ * @param {Function} handlerBuscar Función que se encarga de buscar en la API o base de datos
+ * @param {Array} subSearchHandlers Arreglo de objetos que contienen la configuración para los campos adicionales de búsqueda
+ * @param {Function} onSelectionChange Función que se llama cuando se selecciona un resultado
+ * @param {boolean} [allowDuplicates=false] Indica si se permite la selección de resultados duplicados
+ * @param {number} [maxSelections=1] Número máximo de resultados que se pueden seleccionar
+ * @param {boolean} [required=false] Indica si el campo de búsqueda es requerido
+ * @param {Array} initialSelectedItems Arreglo de objetos que contienen los resultados seleccionados inicialmente
+ * @param {Object} showMessageMap Objeto que contiene los mensajes que se muestran en caso de error
+ */
+const SearchDropdown = ({
   label,
   placeholder,
   handlerBuscar,
@@ -27,7 +41,7 @@ const BuscadorGenerico = ({
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const [showDropdown, setShowDropdown] = useState(false);
   const [searchedMessage, setSearchedMessage] = useState("Escriba para empezar la búsqueda.");
-  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false); // Controla el despliegue
+  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
   const [subSearchValues, setSubSearchValues] = useState(
     subSearchHandlers.reduce((acc, field) => {
       acc[field.label] = '';
@@ -35,14 +49,13 @@ const BuscadorGenerico = ({
     }, {})
   );
 
-  // Messages showMesageMap
   const { showMsg } = useMessage();
 
   useEffect(() => {
     setSelectedItems(initialSelectedItems);
   }, [initialSelectedItems]);
 
-  const resetTextBoxs = () => {
+  const clearSearchFields = () => {
     setSearchValue('');
     setSubSearchValues('');
   };
@@ -50,12 +63,13 @@ const BuscadorGenerico = ({
   const handleButtonDropdown = () => {
     setShowDropdown(!showDropdown);
   };
+
   const handleButtonAdvancedSearch = () => {
     setShowAdvancedSearch(!showAdvancedSearch)
   };
   // Manejar cambio en el campo principal
   const handleSearchChange = (value, handler) => {
-    resetTextBoxs();
+    clearSearchFields();
     setSearchedMessage("No hay resultados disponibles.");
     setSearchValue(value);
     setShowSpinner(true);
@@ -65,7 +79,7 @@ const BuscadorGenerico = ({
 
   // Manejar cambio en los campos adicionales
   const handleSubSearchChange = (label, value, handler) => {
-    resetTextBoxs();
+    clearSearchFields();
     setSubSearchValues((prev) => ({ ...prev, [label]: value }));
     setShowSpinner(true);
     handler(value, setSearchResults, setShowSpinner);
@@ -108,10 +122,9 @@ const BuscadorGenerico = ({
     onSelectionChange(updatedItems);
   };
 
-  
   return (
-    // <div className="mb-4 relative">
     <div className="pl-4 pr-4 pt-2">
+
       {/* Etiqueta del campo */}
       <label className="block text-sm font-medium text-gray-700">
         {label}
@@ -128,6 +141,7 @@ const BuscadorGenerico = ({
           className="w-full border-none px-3 py-2 focus:outline-none"
           required={required}
         />
+
         {/* Botón para mostrar campos adicionales */}
         {subSearchHandlers.length > 0 && (
           <button
@@ -227,7 +241,7 @@ const BuscadorGenerico = ({
   );
 };
 
-BuscadorGenerico.propTypes = {
+SearchDropdown.propTypes = {
   label: PropTypes.string.isRequired,
   placeholder: PropTypes.string.isRequired,
   handlerBuscar: PropTypes.func.isRequired,
@@ -243,6 +257,7 @@ BuscadorGenerico.propTypes = {
   maxSelections: PropTypes.number,
   required: PropTypes.bool,
   initialSelectedItems: PropTypes.array,
+  showMessageMap: PropTypes.object,
 };
 
-export default BuscadorGenerico;
+export default SearchDropdown;

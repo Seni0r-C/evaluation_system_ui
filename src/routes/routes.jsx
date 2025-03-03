@@ -21,7 +21,7 @@ import TrabajoTitulacionCrear from '../pages/trabajos/TrabajoTitulacionCrear';
 import AdministrarCarreras from '../pages/admin/Carreras';
 import AdminRutas from '../pages/admin/Rutas';
 import AdminMenu from '../pages/admin/AdminMenu';
-import ReportsPage from '../pages/Reportes';
+// import ReportsPage from '../pages/Reportes';
 
 export const routes = [
   {
