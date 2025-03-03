@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axiosInstance from "../../services/axiosConfig";
 
-const ModalidadesTitulacion = () => {
+const Modalidades = () => {
     const [modalidades, setModalidades] = useState([]);
     const [formData, setFormData] = useState({ nombre: "", max_participantes: "" });
     const [selectedId, setSelectedId] = useState(null);
@@ -282,4 +282,4 @@ const ModalidadesTitulacion = () => {
     );
 };
 
-export default ModalidadesTitulacion;
+export default Modalidades;

@@ -1,6 +1,6 @@
 export const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
-export const RutaRaiz = "/";
+export const baseRoute = "/";
 
 export const VERSION = "0.6.5";
 
@@ -22,10 +22,10 @@ export function capitalizeWords(str) {
 export const hourAndDateFromDateTimeMySQL = (date) => {
     try {
         const parts = date.split(",");
-        const dtparts = parts[0].trim().split("/");
-        const day = dtparts[0];
-        const month = dtparts[1];
-        const year = dtparts[2];
+        const dateParts = parts[0].trim().split("/");
+        const day = dateParts[0];
+        const month = dateParts[1];
+        const year = dateParts[2];
         const time = parts[1].trim();
         return `${year}-${month}-${day}T${time}`;
     } catch (Exception) {

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { RutaRaiz } from '../../utils/constants';
+import { baseRoute } from '../../utils/constants';
 
 const NotFound = () => {
     return (
@@ -14,7 +14,7 @@ const NotFound = () => {
                 </p>
                 <div className="mt-6">
                     <Link
-                        to={RutaRaiz}
+                        to={baseRoute}
                         className="inline-block px-6 py-3 text-white bg-blue-500 hover:bg-blue-600 rounded-full text-lg font-medium shadow-md duration-300 ease-in-out transition-colors"
                     >
                         Volver al inicio

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import background from "../../assets/utm.webp";
-import { RutaRaiz, VERSION } from "../../utils/constants";
+import { baseRoute, VERSION } from "../../utils/constants";
 import { useAuth } from "../../hooks/useAuth";
 import { useAuthActions } from "../../hooks/useAuthActions";
 import LoginForm from "../../components/formularios/LoginForm";
@@ -19,7 +19,7 @@ const Login = () => {
     // Mover la lógica de navegación a un efecto secundario
     useEffect(() => {
         if (isAuthenticated) {
-            navigate(RutaRaiz);
+            navigate(baseRoute);
         }
     }, [isAuthenticated, navigate]);
 
