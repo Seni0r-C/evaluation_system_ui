@@ -9,4 +9,4 @@ export default defineConfig({
   server: {
     allowedHosts: ["justusas.com"]
   }
-})
+})  
