@@ -168,6 +168,7 @@ export const routes = [
                 'calificar',
               ]}
               firstStates={["CON TRIBUNAL"]}
+              endpoint='listar-tri'
             />
           </ProtectedRoute>
         </Layout>

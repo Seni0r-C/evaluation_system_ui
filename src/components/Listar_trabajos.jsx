@@ -15,7 +15,7 @@ const CustomTrabajoTitulacionListar = ({
   includeStateFiltter = false,
   firstStates = [],
   titulo = "Trabajos de Titulación",
-  endpoint = '/trabajo-titulacion/listar'
+  endpoint = 'listar'
 }) => {
   const [trabajos, setTrabajos] = useState([]);
   const [total, setTotal] = useState(0);
@@ -83,7 +83,7 @@ const CustomTrabajoTitulacionListar = ({
 
   const fetchTrabajos = async () => {
     try {
-      const response = await axiosInstance.get(endpoint, {
+      const response = await axiosInstance.get(`/trabajo-titulacion/${endpoint}`, {
         params: {
           ...filters,
           page,
