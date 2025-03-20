@@ -10,13 +10,18 @@ import ListaTrabajosTitulacion from './lista_trabajos/ListaTrabajosTitulacion';
 import Paginacion from './lista_trabajos/Paginacion';
 import PropTypes from 'prop-types';
 
-const CustomTrabajoTitulacionListar = ({ permisosAcciones, includeStateFiltter = false, firstStates = [], titulo = "Trabajos de Titulación" }) => {
+const CustomTrabajoTitulacionListar = ({
+  permisosAcciones,
+  includeStateFiltter = false,
+  firstStates = [],
+  titulo = "Trabajos de Titulación",
+  endpoint = '/trabajo-titulacion/listar'
+}) => {
   const [trabajos, setTrabajos] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [verTodo, setVerTodo] = useState(false);
-
   const info = localStorage.getItem('userInfo');
   const user = JSON.parse(info);
 
@@ -78,11 +83,12 @@ const CustomTrabajoTitulacionListar = ({ permisosAcciones, includeStateFiltter =
 
   const fetchTrabajos = async () => {
     try {
-      const response = await axiosInstance.get('/trabajo-titulacion/listar', {
+      const response = await axiosInstance.get(endpoint, {
         params: {
           ...filters,
           page,
           limit,
+          user: { id: user.id, roles: user.roles, name: user.nombre },
         },
       });
 

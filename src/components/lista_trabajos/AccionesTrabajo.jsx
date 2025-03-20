@@ -96,7 +96,7 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user }) => {
       // icono: MdRecordVoiceOver,
       // icono: FaFileSignature,
       icono: MdChecklist,
-      variant: 'gray',
+      variant: 'blue',
       tooltip: 'Generar documento calificación',
       onClick: handleDocCalificacion,
     },

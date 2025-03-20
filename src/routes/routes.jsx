@@ -142,6 +142,7 @@ export const routes = [
         <Layout>
           <ProtectedRoute>
             <CustomTrabajoTitulacionListar
+              titulo="Registro de Trabajo Final"
               permisosAcciones={[
                 'detallesTrabajo',
                 'subirTrabajoFinal',
@@ -161,6 +162,7 @@ export const routes = [
         <Layout>
           <ProtectedRoute>
             <CustomTrabajoTitulacionListar
+              titulo="Calificación de Trabajo Titulación"
               permisosAcciones={[
                 'detallesTrabajo',
                 'calificar',
@@ -179,6 +181,7 @@ export const routes = [
         <Layout>
           <ProtectedRoute>
             <CustomTrabajoTitulacionListar
+              titulo="Trabajos Titulación Defendidos"
               permisosAcciones={[
                 'detallesTrabajo',
               ]}
@@ -228,6 +231,7 @@ export const routes = [
         <Layout>
           <ProtectedRoute>
             <CustomTrabajoTitulacionListar
+              titulo="Generación de Documentos"
               permisosAcciones={[
                 'detallesTrabajo',
                 'generarReporte',
