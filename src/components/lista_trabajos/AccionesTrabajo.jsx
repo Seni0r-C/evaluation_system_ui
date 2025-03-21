@@ -144,13 +144,14 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user }) => {
     }
   ];
 
+  // key={permiso}
   return (
     <div className="flex justify-end gap-4">
-      {accionesObjs.map(({ roles, permiso, icono, variant, tooltip, onClick }) =>
+      {accionesObjs.map(({ roles, permiso, icono, variant, tooltip, onClick }, index) =>
         roles.some((role) => user.roles.some(r => r.nombre === role)) &&
           permisosAcciones.includes(permiso) ? (
           <BotonAccion
-            key={permiso}
+            key={`btn-action-${index}`}
             onClick={() => onClick(trabajo)}
             icono={icono}
             variant={variant}

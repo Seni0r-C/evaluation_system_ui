@@ -18,6 +18,7 @@ import PropTypes from "prop-types";
 const ActionButton = ({ onClick, icono: Icono, variant = 'primary', tooltip }) => {
   const variantClasses = {
     primary: 'bg-blue-500 text-white hover:bg-blue-600',
+    blue: 'bg-blue-500 text-white hover:bg-blue-600',
     secondary: 'bg-gray-500 text-white hover:bg-gray-600',
     gray: 'bg-gray-500 text-white hover:bg-gray-600',
     red: 'bg-red-500 text-white hover:bg-red-600',
@@ -45,7 +46,7 @@ const ActionButton = ({ onClick, icono: Icono, variant = 'primary', tooltip }) =
 ActionButton.propTypes = {
   onClick: PropTypes.func.isRequired,
   icono: PropTypes.func,
-  variant: PropTypes.oneOf(['primary', 'secondary', 'red', 'green', 'yellow', 'purple', 'teal']),
+  variant: PropTypes.oneOf(['primary', 'secondary', 'red', 'green', 'yellow', 'purple', 'teal', 'gray', 'orange', 'blue']),	
   tooltip: PropTypes.string,
 };
 
