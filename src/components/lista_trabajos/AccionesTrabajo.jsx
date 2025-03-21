@@ -144,7 +144,6 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user }) => {
     }
   ];
 
-  // key={permiso}
   return (
     <div className="flex justify-end gap-4">
       {accionesObjs.map(({ roles, permiso, icono, variant, tooltip, onClick }, index) =>
