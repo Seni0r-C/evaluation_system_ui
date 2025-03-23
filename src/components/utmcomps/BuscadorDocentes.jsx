@@ -7,6 +7,7 @@ const BuscadorDocentes = ({ setSelectedDocentes, initialSelectedItems = [], allo
     const handleBuscarNombre = (query, setResults, setShowSpinner) => {
         setShowSpinner(true);  // Mostrar el spinner
         setTimeout(() => {
+            // Creao que 3 es el rol de docente xd
             buscarUsuariosService(query, setResults, 3);
             setShowSpinner(false);  // Ocultar el spinner cuando se obtienen los resultados
         }, 500);  // Simulamos un retraso en la búsqueda

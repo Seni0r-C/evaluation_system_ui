@@ -39,7 +39,7 @@ const SelectorTribunalView = ({ selectedTribunal, setSelectedTribunal }) => {
         // DELEGADO H. CONSEJO DIRECTIVO (consejo), 
         // DOCENTE DEL ÁREA (docente), 
         // DELEGADO COM. INVESTIGACIÓN CIENTIFÍCA (comision)
-        alert(JSON.stringify(selectedTribunal, null, 2));
+        // alert(JSON.stringify(selectedTribunal, null, 2));
         if (selectedTribunal.length === 4) {
             const [qpreside, consejo, docente, comision] = selectedTribunal;
 
