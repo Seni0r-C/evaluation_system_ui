@@ -35,10 +35,20 @@ const SelectorTribunalView = ({ selectedTribunal, setSelectedTribunal }) => {
     ]);
 
     useEffect(() => {
-        if (selectedTribunal.length === 3) {
-            const [consejo, docente, comision] = selectedTribunal;
+        // Quien Preside (qpreside, usually vicedecano), 
+        // DELEGADO H. CONSEJO DIRECTIVO (consejo), 
+        // DOCENTE DEL ÁREA (docente), 
+        // DELEGADO COM. INVESTIGACIÓN CIENTIFÍCA (comision)
+        alert(JSON.stringify(selectedTribunal, null, 2));
+        if (selectedTribunal.length === 4) {
+            const [qpreside, consejo, docente, comision] = selectedTribunal;
 
             // Actualiza solo si los valores realmente cambiaron
+            if (
+                JSON.stringify(selectedquienPrecide) !== JSON.stringify([qpreside])
+            ) {
+                setSelectedQuienPrecide([qpreside]);
+            }
             if (
                 JSON.stringify(selectedDelegadoConsejoDirectivo) !== JSON.stringify([consejo])
             ) {

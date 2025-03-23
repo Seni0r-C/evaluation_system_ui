@@ -29,7 +29,7 @@ const AsignarTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
                 setInitialDateDefensa(fetchedTrabajo?.fecha_defensa || "");
                 setSelectedDate(fetchedTrabajo?.fecha_defensa || "");
             };
-            await obtenerUnTrabajo(setResults, trabajoId);
+            obtenerUnTrabajo(setResults, trabajoId);
             // alert(JSON.stringify(trabajoSelected, null, 2));
 
         } catch (error) {
@@ -58,7 +58,7 @@ const AsignarTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
     }, [isOpen, trabajoData?.id, trabajoData?.fecha_defensa]);
 
 
-    if (!isOpen) return null;
+    if (!isOpen) return null;   
 
     const onCloseAsignarTribunal = async () => {
         if (!selectedDate) {

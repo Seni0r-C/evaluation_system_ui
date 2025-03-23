@@ -1,7 +1,6 @@
 import SearchDropdown from '../common/BuscadorGenerico';
 import { buscarUsuarios as buscarUsuariosService } from '../../services/usuarioService';
 import PropTypes from 'prop-types';
-import { useMessage } from "../../hooks/useMessage";
 
 
 const BuscadorDocentes = ({ setSelectedDocentes, initialSelectedItems = [], allowDuplicates = false, maxSelections = -1, required = false, label="Buscar Docentes" }) => {
