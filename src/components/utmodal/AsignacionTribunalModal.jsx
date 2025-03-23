@@ -81,7 +81,13 @@ const AsignarTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
             onClose();
             return;
         }
-        else if (!selectedDocentes || selectedDocentes.length < 3) {
+        else if (!selectedDocentes || selectedDocentes[0] === null) {
+            showWarning(
+                "Debe seleccionar a 'quien preside' para asignar el tribunal."
+            );
+            return;
+        }
+        else if (!selectedDocentes || selectedDocentes.length < 4) {
             showWarning(
                 "Debe seleccionar 3 docentes para asignar el tribunal."
             );
@@ -118,7 +124,13 @@ const AsignarTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
             onClose();
             return;
         }
-        else if (!selectedDocentes || selectedDocentes.length < 3) {
+        else if (!selectedDocentes || selectedDocentes[0] === null) {
+            showWarning(
+                "Debe seleccionar a 'quien preside' para asignar el tribunal."
+            );
+            return;
+        }
+        else if (!selectedDocentes || selectedDocentes.length < 4) {
             showWarning(
                 "Debe seleccionar 3 docentes para reasignar el tribunal."
             );

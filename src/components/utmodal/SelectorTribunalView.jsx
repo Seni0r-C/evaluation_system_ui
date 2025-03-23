@@ -5,6 +5,8 @@ import PropTypes from "prop-types";
 
 const SelectorTribunalView = ({ selectedTribunal, setSelectedTribunal }) => {
     // Selector Docentes
+    const quienPrecideKey = "Quien precide";
+    const [selectedquienPrecide, setSelectedQuienPrecide] = useState([]);
     const delgadoConsejoDirectivoKey = "DELEGADO H. CONSEJO DIRECTIVO";
     const [selectedDelegadoConsejoDirectivo, setSelectedDocenteDelegadoConsejoDirectivo] = useState([]);
     const docenteDelAreaKey = "DOCENTE DEL ÁREA";
@@ -15,6 +17,7 @@ const SelectorTribunalView = ({ selectedTribunal, setSelectedTribunal }) => {
 
     useEffect(() => {
         const combinedTribunal = [
+            ...selectedquienPrecide,
             ...selectedDelegadoConsejoDirectivo,
             ...selectedDocenteDelArea,
             ...selectedDelegadoComisionInvestigacion
@@ -25,6 +28,7 @@ const SelectorTribunalView = ({ selectedTribunal, setSelectedTribunal }) => {
             setSelectedTribunal(combinedTribunal);
         }
     }, [
+        selectedquienPrecide,
         selectedDelegadoConsejoDirectivo,
         selectedDocenteDelArea,
         selectedDelegadoComisionInvestigacion
@@ -54,36 +58,50 @@ const SelectorTribunalView = ({ selectedTribunal, setSelectedTribunal }) => {
     }, [selectedTribunal]);
 
     return (
-        <>
-            <BuscadorDocentes
-                key={delgadoConsejoDirectivoKey}
-                label="Delegado H. Consejo Directivo"
-                setSelectedDocentes={setSelectedDocenteDelegadoConsejoDirectivo}
-                initialSelectedItems={selectedDelegadoConsejoDirectivo}
-                allowDuplicates={false}
-                maxSelections={1}
-                required={true}
-            />
-            <BuscadorDocentes
-                key={docenteDelAreaKey}
-                label="Docente del Área"
-                setSelectedDocentes={setSelectedDocenteDelArea}
-                initialSelectedItems={selectedDocenteDelArea}
-                allowDuplicates={false}
-                maxSelections={1}
-                required={true}
-            />
-            <BuscadorDocentes
-                key={delegadoComisionInvestigacionKey}
-                label="Delegado Com. Investigación Científica"
-                setSelectedDocentes={setSelectedDelegadoComisionInvestigacion}
-                initialSelectedItems={selectedDelegadoComisionInvestigacion}
-                allowDuplicates={false}
-                maxSelections={1}
-                required={true}
-            />
-        </>
-    );
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div style={{ display: 'flex', gap: '10px' }}>
+                <BuscadorDocentes
+                    key={quienPrecideKey}
+                    label="Quien precide el tribunal"
+                    setSelectedDocentes={setSelectedQuienPrecide}
+                    initialSelectedItems={selectedquienPrecide}
+                    allowDuplicates={false}
+                    maxSelections={1}
+                    required={true}
+                />
+                <BuscadorDocentes
+                    key={delgadoConsejoDirectivoKey}
+                    label="Delegado H. Consejo Directivo"
+                    setSelectedDocentes={setSelectedDocenteDelegadoConsejoDirectivo}
+                    initialSelectedItems={selectedDelegadoConsejoDirectivo}
+                    allowDuplicates={false}
+                    maxSelections={1}
+                    required={true}
+                />
+            </div>
+    
+            <div style={{ display: 'flex', gap: '10px' }}>
+                <BuscadorDocentes
+                    key={docenteDelAreaKey}
+                    label="Docente del Área"
+                    setSelectedDocentes={setSelectedDocenteDelArea}
+                    initialSelectedItems={selectedDocenteDelArea}
+                    allowDuplicates={false}
+                    maxSelections={1}
+                    required={true}
+                />
+                <BuscadorDocentes
+                    key={delegadoComisionInvestigacionKey}
+                    label="Delegado Com. Investigación Científica"
+                    setSelectedDocentes={setSelectedDelegadoComisionInvestigacion}
+                    initialSelectedItems={selectedDelegadoComisionInvestigacion}
+                    allowDuplicates={false}
+                    maxSelections={1}
+                    required={true}
+                />
+            </div>
+        </div>
+    );    
 };
 
 SelectorTribunalView.propTypes = {
