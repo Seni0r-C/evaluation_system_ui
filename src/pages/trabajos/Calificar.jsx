@@ -14,7 +14,9 @@ const Calificar = () => {
     const location = useLocation();
     const trabajo = location.state.trabajo ?? null;
     const [selectedStudent, setSelectedStudent] = useState(null);
-    const [selectedRubricaType, setSelectedRubricaType] = useState(null);
+    const [selectedStudents, setSelectedStudents] = useState([]);
+    // const [selectedRubricaType, setSelectedRubricaType] = useState(null);
+    const [selectedRubricaType, setSelectedRubricaType] = useState("INFORME FINAL");
     const [estudiantes, setEstudiantes] = useState([]);
     const [photos, setPhotos] = useState({}); // Estado para las fotos, { [id]: fotoBase64 }
     const [rubricas, setRubricas] = useState(null);
@@ -26,6 +28,26 @@ const Calificar = () => {
     const [indexacionSelected, setIndexacionSelected] = useState(null);
 
     const navigate = useNavigate();
+
+    const handleSelectedStudent = (studentId) => {
+        if (selectedRubricaType === "INFORME FINAL") {
+            setSelectedStudents(estudiantes.map((student) => student.id));
+            return;
+        }
+        // setSelectedStudents([]);
+        setSelectedStudent(studentId);
+
+    };
+
+    const hadleStudentsOnChangeRubricType = () =>{
+        if (selectedRubricaType === "INFORME FINAL") {
+            setSelectedStudents(estudiantes.map((student) => student.id));
+            return;
+        }
+        if (!selectedStudent) {
+            setSelectedStudent(estudiantes[0].id);
+        }
+    }
 
     useEffect(() => {
         setShowFinalizar(isCalificacionCompleta());
@@ -42,6 +64,7 @@ const Calificar = () => {
         if (selectedRubricaType && rubricas) {
             const rubricaSeleccionada = rubricas[selectedRubricaType] ?? null;
             setCurrentRubrica(rubricaSeleccionada);
+            hadleStudentsOnChangeRubricType();
         }
     }, [selectedRubricaType, rubricas]);
 
@@ -97,7 +120,6 @@ const Calificar = () => {
                 const rubricasData = await Promise.all(rubricasPromises);
                 const rubricasFormatted = rubricasData.reduce((acc, item) => {
                     if (item.rubrica) {
-                        // Asegúrate de incluir el id de la rubrica junto con la rubrica misma
                         const { id } = item.rubrica.rubrica;  // Extraer el id de la rubrica
                         acc[item.tipo] = {
                             rubrica: item.rubrica,  // La información completa de la rubrica
@@ -119,13 +141,25 @@ const Calificar = () => {
     useEffect(() => {
         // Aquí puedes cargar los datos guardados desde el backend para el estudiante y rúbrica seleccionados.
         // Si no hay datos, simplemente asegura que se inicialicen correctamente.
+        if (selectedRubricaType === "INFORME FINAL") {
+            selectedStudents.forEach((selectedStudent) => {
+                setCalificacionesSeleccionadas((prev) => ({
+                    ...prev,
+                    [selectedStudent]: prev[selectedStudent] || {},
+                }));
+            })
+            return;
+        }
         setCalificacionesSeleccionadas((prev) => ({
             ...prev,
             [selectedStudent]: prev[selectedStudent] || {},
         }));
-    }, [selectedStudent, selectedRubricaType]);
+    }, [selectedStudent, selectedStudents, selectedRubricaType]);
+
 
     const isCalificacionCompleta = () => {
+        if (selectedStudents.length === 0 && selectedRubricaType === "INFORME FINAL")
+            return false;
         if (selectedStudent === null)
             return false;
 
@@ -141,6 +175,23 @@ const Calificar = () => {
                 });
             });
         });
+    };
+
+    const isStudentSelected = (studentId) => {
+        if (selectedRubricaType === "INFORME FINAL") {
+            return selectedStudents.includes(studentId)
+        }
+        return selectedStudent === studentId;
+    }
+    const handleSelectedRubricaType = (tipo_evaluacion_nombre) => {
+        setSelectedRubricaType(tipo_evaluacion_nombre);
+        if (selectedRubricaType === "INFORME FINAL") {
+            setSelectedStudents(estudiantes.map((student) => student.id));
+            return;
+        }
+        if (!selectedStudent) {
+            setSelectedStudent(estudiantes[0].id);
+        }
     };
 
     const handleFinalizar = async () => {
@@ -191,27 +242,43 @@ const Calificar = () => {
         }
     };
 
-    const hendelCalificacion = (e, criterioIndex, criterio) => {
+    const handleCalificacion = (e, criterioIndex, criterio) => {
         let valor = 0
         if (e) {
             valor = e.target?.value || e.value;
         }
         // const value = Math.min(criterio.puntaje_maximo, Math.max(0, e.target.value));
         const value = Math.min(criterio.puntaje_maximo, Math.max(0, valor));
-        setCalificacionesSeleccionadas((prev) => ({
-            ...prev,
-            [selectedStudent]: {
-                ...prev[selectedStudent],
-                [selectedRubricaType]: {
-                    ...prev[selectedStudent]?.[selectedRubricaType],
-                    [criterioIndex]: value,
+        if (selectedRubricaType === "INFORME FINAL") {
+            selectedStudents.forEach((selectedStudent) => {
+                setCalificacionesSeleccionadas((prev) => ({
+                    ...prev,
+                    [selectedStudent]: {
+                        ...prev[selectedStudent],
+                        [selectedRubricaType]: {
+                            ...prev[selectedStudent]?.[selectedRubricaType],
+                            [criterioIndex]: value,
+                        },
+                    },
+                }));
+            });
+        } else {
+            setCalificacionesSeleccionadas((prev) => ({
+                ...prev,
+                [selectedStudent]: {
+                    ...prev[selectedStudent],
+                    [selectedRubricaType]: {
+                        ...prev[selectedStudent]?.[selectedRubricaType],
+                        [criterioIndex]: value,
+                    },
                 },
-            },
-        }));
+            }));
+        }
     };
 
     const calificacionValue = (minimo, maximo, criterioIndex) => {
-        const value = calificacionesSeleccionadas[selectedStudent]?.[selectedRubricaType]?.[criterioIndex];
+        const sStudent = selectedRubricaType === "INFORME FINAL" ? selectedStudents[0] : selectedStudent;
+        const value = calificacionesSeleccionadas[sStudent]?.[selectedRubricaType]?.[criterioIndex];
         return Math.max(minimo, value ?? 0);
         // return Math.max(minimo, minimo==0?Number(maximo)/(getIndexPercent()*Number(maximo)):value);
     };
@@ -238,6 +305,11 @@ const Calificar = () => {
     const calculateMaxScore = (criterio) => {
         if (!isArticuloAcademico() || !indexacionSelected) return criterio.puntaje_maximo;
         return calculateMinScore(criterio) + (Number(criterio.puntaje_maximo) * (1 - getIndexPercent()));
+    };
+
+    const hasStudentSelected = () => {
+        if (selectedRubricaType === "INFORME FINAL") { return selectedStudents.length > 0; }
+        return selectedStudent !== null;
     };
 
     return (
@@ -267,28 +339,29 @@ const Calificar = () => {
                 )}
                 <span className="block border-b-2 mb-4 border-gray-500" />
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-5">
-                    {selectedStudent && (
-                        <div className="lg:col-span-3 mt-6 lg:mt-0">
-                            <div className="flex justify-center mb-4">
-                                {tipoEvaluacion.map((tipo) => {
+                    <div className="lg:col-span-3 mt-6 lg:mt-0">
+                        <div className="flex justify-center mb-4">
+                            {tipoEvaluacion
+                                .sort((a, b) => b.tipo_evaluacion_nombre.localeCompare(a.tipo_evaluacion_nombre))
+                                .map((tipo) => {
                                     const isSelected = selectedRubricaType === tipo.tipo_evaluacion_nombre;
 
                                     return (
                                         <button
                                             key={tipo.tipo_evaluacion_id}
-                                            onClick={() => setSelectedRubricaType(tipo.tipo_evaluacion_nombre)}
+                                            onClick={() => handleSelectedRubricaType(tipo.tipo_evaluacion_nombre)}
                                             className={`px-6 py-2 font-semibold flex items-center ${isSelected
                                                 ? "bg-blue-600 text-white"
                                                 : "bg-gray-200 text-gray-800 hover:bg-gray-300"
-                                                } ${tipo.tipo_evaluacion_id === 1 ? "rounded-l-lg" : ""} ${tipo.tipo_evaluacion_id === tipoEvaluacion.length ? "rounded-r-lg" : ""
+                                                } ${tipo.tipo_evaluacion_id === 1 ? "" : "rounded-l-lg"} ${tipo.tipo_evaluacion_id === tipoEvaluacion.length ? "" : "rounded-r-lg"
                                                 }`}
                                         >
                                             {tipo.tipo_evaluacion_nombre}
                                         </button>
                                     );
                                 })}
-                            </div>
-
+                        </div>
+                        {(
                             <div className="overflow-x-auto">
                                 {/* Validaciones para evitar errores */}
                                 {currentRubrica ? (
@@ -315,7 +388,7 @@ const Calificar = () => {
                                                     className="odd:bg-white even:bg-gray-50"
                                                 >
                                                     <td className="border border-gray-300 px-4 py-3 font-medium">
-                                                        {criterio.nombre}
+                                                        {criterio.nombre.replace("::>", ': ')}
                                                     </td>
 
                                                     <td className="text-sm font-semibold text-blue-700 text-center border border-gray-300" >
@@ -326,7 +399,7 @@ const Calificar = () => {
                                                             <span className="flex justify-center text-lg font-medium text-center text-gray-700 mb-2">
                                                                 <ComboBoxIndexacionRevistas onSelect={(indexacion) => {
                                                                     setIndexacionSelected(indexacion);
-                                                                    hendelCalificacion(indexacion, criterioIndex, criterio)
+                                                                    handleCalificacion(indexacion, criterioIndex, criterio)
                                                                 }} />
                                                             </span>
                                                             : (
@@ -342,7 +415,7 @@ const Calificar = () => {
                                                                     }}
                                                                     placeholder={`${calculateMinScore(criterio)} - ${calculateMaxScore(criterio)}`}
                                                                     value={calificacionValue(calculateMinScore(criterio), calculateMaxScore(criterio), criterioIndex) ?? calculateMinScore(criterio)}
-                                                                    onChange={(e) => hendelCalificacion(e, criterioIndex, criterio)}
+                                                                    onChange={(e) => handleCalificacion(e, criterioIndex, criterio)}
                                                                 />
                                                             )}
                                                     </td>
@@ -369,7 +442,8 @@ const Calificar = () => {
                                                             (calificacionValue(
                                                                 calculateMinScore(criterio),
                                                                 calculateMaxScore(criterio),
-                                                                index
+                                                                index,
+                                                                selectedStudents[0]
                                                             ) ?? calculateMinScore(criterio)),
                                                         0
                                                     )}
@@ -378,30 +452,26 @@ const Calificar = () => {
                                         </tbody>
                                     </table>
                                 ) : (
-                                    <table>
-                                        <tbody>
-                                            <tr
-                                                className="odd:bg-white even:bg-gray-50"
-                                            >
-                                                <td className="text-md font-semibold text-blue-700 text-center border border-gray-300" >
-                                                    <p>Seleccione una rúbrica para visualizarla.</p>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    <div className="justify-center lg:col-start-2 col-span-1 mt-20">
+                                        <div className="text-center text-3xl font-semibold text-blue-600">
+                                            Seleccione una rúbrica para visualizarla.
+                                        </div>
+                                    </div>
                                 )}
-
                             </div>
-                        </div>
-                    )}
+                        )}
+                    </div>
+
+
+                    {/* <div className="col-span-1 lg:col-span-1 lg:col-start-4"> */}
                     <div className="col-span-1 lg:col-span-1 lg:col-start-4">
                         <h2 className="text-2xl font-semibold mb-4 text-blue-600">Estudiantes</h2>
                         <div className="space-y-4">
                             {estudiantes.map((student) => (
                                 <button
                                     key={student.id}
-                                    onClick={() => setSelectedStudent(student.id)}
-                                    className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg shadow-md transition-all duration-200 ${selectedStudent === student.id
+                                    onClick={() => handleSelectedStudent(student.id)}
+                                    className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg shadow-md transition-all duration-200 ${isStudentSelected(student.id)
                                         ? "bg-blue-600 text-white"
                                         : "bg-gray-100 text-gray-800 hover:bg-blue-200"
                                         }`}
