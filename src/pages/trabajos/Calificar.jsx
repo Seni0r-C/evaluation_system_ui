@@ -10,13 +10,20 @@ import ComboBoxIndexacionRevistas from "../../components/utmcomps/ComboBoxIndexa
 import { useMessage } from "../../hooks/useMessage";
 
 const Calificar = () => {
+
+    
     const { showMsg } = useMessage();
     const location = useLocation();
     const trabajo = location.state.trabajo ?? null;
+    const isArticuloAcademico = () => {
+        const ARTICULO_ACADEMICO_KEYS = ["ARTICULO CIENTIFICO", "ARTICULO ACADEMICO", "ARTÍCULO ACADÉMICO", "ARTÍCULO CIENTÍFICO"];
+        const modalidad = (trabajo.modalidad || "").toUpperCase();
+        return ARTICULO_ACADEMICO_KEYS.some(moda => moda === modalidad);
+    };
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [selectedStudents, setSelectedStudents] = useState([]);
     // const [selectedRubricaType, setSelectedRubricaType] = useState(null);
-    const [selectedRubricaType, setSelectedRubricaType] = useState("INFORME FINAL");
+    const [selectedRubricaType, setSelectedRubricaType] = useState(isArticuloAcademico() ? "DEFENSA" : "INFORME FINAL");
     const [estudiantes, setEstudiantes] = useState([]);
     const [photos, setPhotos] = useState({}); // Estado para las fotos, { [id]: fotoBase64 }
     const [rubricas, setRubricas] = useState(null);
@@ -242,13 +249,42 @@ const Calificar = () => {
         }
     };
 
+    const handleCalificacionPorcentaje = (percentage, rubricaType) => {
+        if (!rubricaType || percentage < 0 || percentage > 100) {
+            console.error("Invalid rubric type or percentage");
+            return;
+        }
+
+        setCalificacionesSeleccionadas((prev) => {
+            const updatedCalificaciones = { ...prev };
+
+            estudiantes.forEach((student) => {
+                const newCalificaciones = { ...updatedCalificaciones[student.id]?.[rubricaType] };
+
+                // Apply the percentage to each criterion
+                rubricas[rubricaType].rubrica.criterios.forEach((criterio, criterioIndex) => {
+                    const calculatedGrade = Math.round((criterio.puntaje_maximo * percentage) / 100);
+                    newCalificaciones[criterioIndex] = calculatedGrade;
+                });
+
+                updatedCalificaciones[student.id] = {
+                    ...updatedCalificaciones[student.id],
+                    [rubricaType]: newCalificaciones,
+                };
+            });
+
+            return updatedCalificaciones;
+        });
+    };
+
+
     const handleCalificacion = (e, criterioIndex, criterio) => {
         let valor = 0
         if (e) {
             valor = e.target?.value || e.value;
         }
         // const value = Math.min(criterio.puntaje_maximo, Math.max(0, e.target.value));
-        valor = calificacionValue(calculateMinScore(criterio), calculateMaxScore(criterio), criterioIndex) ?? calculateMinScore(criterio);
+        // valor = calificacionValue(calculateMinScore(criterio), calculateMaxScore(criterio), criterioIndex) ?? calculateMinScore(criterio);
         const value = Math.min(criterio.puntaje_maximo, Math.max(0, valor));
         if (selectedRubricaType === "INFORME FINAL") {
             selectedStudents.forEach((selectedStudent) => {
@@ -288,12 +324,6 @@ const Calificar = () => {
         // return Math.max(minimo, minimo==0?Number(maximo)/(getIndexPercent()*Number(maximo)):value);
     };
 
-    const isArticuloAcademico = () => {
-        const ARTICULO_ACADEMICO_KEYS = ["ARTICULO CIENTIFICO", "ARTICULO ACADEMICO", "ARTÍCULO ACADÉMICO", "ARTÍCULO CIENTÍFICO"];
-        const modalidad = (trabajo.modalidad || "").toUpperCase();
-        return ARTICULO_ACADEMICO_KEYS.some(moda => moda === modalidad);
-    };
-
     const getIndexPercent = () => {
         if (!indexacionSelected) {
             return 1;
@@ -303,11 +333,13 @@ const Calificar = () => {
 
 
     const calculateMinScore = (criterio) => {
+        return 0;
         if (!isArticuloAcademico() || !indexacionSelected) return 0;
         return Number(criterio.puntaje_maximo) * getIndexPercent();
     };
 
     const calculateMaxScore = (criterio) => {
+        return criterio.puntaje_maximo;
         if (!isArticuloAcademico() || !indexacionSelected) return criterio.puntaje_maximo;
         return calculateMinScore(criterio) + (Number(criterio.puntaje_maximo) * (1 - getIndexPercent()));
     };
@@ -385,28 +417,19 @@ const Calificar = () => {
         if (evals.length === 0) return "N/A"; // Handle case when no evaluations exist
         // alert(JSON.stringify(evals, null, 2));
         // valor = calificacionValue(calculateMinScore(criterio), calculateMaxScore(criterio), criterioIndex) ?? calculateMinScore(criterio);
-        const totalSum = evals.reduce((pre, evalValue) =>{
+        const totalSum = evals.reduce((pre, evalValue) => {
             const [evalType, evalData] = evalValue;
-            if(isArticuloAcademico() && evalType === "INFORME FINAL"){
+            if (isArticuloAcademico() && evalType === "INFORME FINAL") {
                 evalData.sum = indexacionSelected?.value ?? 0;
             }
             if (isArticuloAcademico() && evalType !== "INFORME FINAL") {
-                // !indexacionSelected ? "N/A" : (evalData.sum/100) *100 - indexacionSelected?.value+ indexacionSelected?.value;
-                evalData.sum = (evalData.sum/100) *(100 - indexacionSelected?.value)+ indexacionSelected?.value;
+                evalData.sum = (evalData.sum / 100) * (100 - indexacionSelected?.value) + indexacionSelected?.value;
             }
-            // if (!isArticuloAcademico()) {
-                //     overallGradeData.sum;
-                // }
-            alert(JSON.stringify({evalType, sum: evalData.sum}, null, 2));
             return pre + evalData.sum;
         }, 0);
         const percentGrade = (totalSum / (evals.length * 100)) * 100;
-
-
-        console.log("percentGrade");
-        console.log(percentGrade);
-        // return percentGrade; // Calculate mean and format to 2 decimals
-        return parseInt(percentGrade + ""); // Calculate mean and format to 2 decimals
+        const percentGradeStr = parseInt(percentGrade + "") + "";
+        return percentGradeStr === "NaN" ? "N/A" : percentGradeStr; // Calculate mean and format to 2 decimals
         // return ((totalSum / evals.length).toFixed(2))*100; // Calculate mean and format to 2 decimals
     }
 
@@ -437,6 +460,9 @@ const Calificar = () => {
                         </td>
                         <td className="text-sm font-semibold text-blue-700 text-center border border-gray-300">
                             {calcOverallGrades(studentData)}
+                        </td>
+                        <td className="text-sm font-semibold text-blue-700 text-center border border-gray-300">
+                            100
                         </td>
                     </tr>
 
@@ -471,14 +497,14 @@ const Calificar = () => {
                         </button>
                     </div>
                 )}
-                {isArticuloAcademico() && (
+                {/* {isArticuloAcademico() && (
                     <span className="flex justify-center text-lg font-medium text-center text-gray-700 mb-2">
                         <ComboBoxIndexacionRevistas onSelect={(indexacion) => {
                             setIndexacionSelected(indexacion);
                             // alert("Indexación seleccionada:" + JSON.stringify(indexacion));
                         }} />
                     </span>
-                )}
+                )} */}
                 <span className="block border-b-2 mb-4 border-gray-500" />
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-5">
                     <div className="lg:col-span-3 mt-6 lg:mt-0">
@@ -486,9 +512,14 @@ const Calificar = () => {
                         <div className="flex justify-center mb-4">
                             {tipoEvaluacion
                                 .sort((a, b) => b.tipo_evaluacion_nombre.localeCompare(a.tipo_evaluacion_nombre))
+                                .filter((tipo) => 
+                                    (isArticuloAcademico() && 
+                                    tipo.tipo_evaluacion_nombre !== "INFORME FINAL") || 
+                                    (!isArticuloAcademico())
+                                )
                                 .map((tipo) => {
                                     const isSelected = selectedRubricaType === tipo.tipo_evaluacion_nombre;
-
+                                    
                                     return (
                                         <button
                                             key={tipo.tipo_evaluacion_id}
@@ -640,7 +671,7 @@ const Calificar = () => {
                         <table className="table-auto mb-4 bg-gray-100 text-blue-600">
                             <tbody>
                                 <tr>
-                                    <th className="border border-gray-300 px-4 py-3 text-center font-semibold">
+                                    <th className=" border border-gray-300 px-4 py-3 text-center font-bold">
                                         Indexación
                                     </th>
                                     <th className="border border-gray-300 px-4 py-3 text-center font-semibold">
