@@ -39,7 +39,7 @@ const Calificar = () => {
 
     };
 
-    const hadleStudentsOnChangeRubricType = () =>{
+    const hadleStudentsOnChangeRubricType = () => {
         if (selectedRubricaType === "INFORME FINAL") {
             setSelectedStudents(estudiantes.map((student) => student.id));
             return;
@@ -64,7 +64,7 @@ const Calificar = () => {
         if (selectedRubricaType && rubricas) {
             const rubricaSeleccionada = rubricas[selectedRubricaType] ?? null;
             setCurrentRubrica(rubricaSeleccionada);
-            hadleStudentsOnChangeRubricType();
+            hadleStudentsOnChangeRubricType(rubricaSeleccionada);
         }
     }, [selectedRubricaType, rubricas]);
 
@@ -276,8 +276,12 @@ const Calificar = () => {
         }
     };
 
+    const getSelectedStudent = () => {
+        return selectedRubricaType === "INFORME FINAL" ? selectedStudents[0] : selectedStudent
+    };
+
     const calificacionValue = (minimo, maximo, criterioIndex) => {
-        const sStudent = selectedRubricaType === "INFORME FINAL" ? selectedStudents[0] : selectedStudent;
+        const sStudent = getSelectedStudent();
         const value = calificacionesSeleccionadas[sStudent]?.[selectedRubricaType]?.[criterioIndex];
         return Math.max(minimo, value ?? 0);
         // return Math.max(minimo, minimo==0?Number(maximo)/(getIndexPercent()*Number(maximo)):value);
@@ -337,6 +341,14 @@ const Calificar = () => {
                         </button>
                     </div>
                 )}
+                {isArticuloAcademico() && (
+                    <span className="flex justify-center text-lg font-medium text-center text-gray-700 mb-2">
+                        <ComboBoxIndexacionRevistas onSelect={(indexacion) => {
+                            setIndexacionSelected(indexacion);
+                            alert("Indexación seleccionada:" + JSON.stringify(indexacion));
+                        }} />
+                    </span>
+                )}
                 <span className="block border-b-2 mb-4 border-gray-500" />
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-5">
                     <div className="lg:col-span-3 mt-6 lg:mt-0">
@@ -395,29 +407,32 @@ const Calificar = () => {
                                                         {criterio.puntaje_maximo}
                                                     </td>
                                                     <td className="text-sm font-semibold text-blue-700 text-center border border-gray-300" >
-                                                        {isArticuloAcademico() && selectedRubricaType == "INFORME FINAL" ?
-                                                            <span className="flex justify-center text-lg font-medium text-center text-gray-700 mb-2">
-                                                                <ComboBoxIndexacionRevistas onSelect={(indexacion) => {
-                                                                    setIndexacionSelected(indexacion);
-                                                                    handleCalificacion(indexacion, criterioIndex, criterio)
-                                                                }} />
-                                                            </span>
-                                                            : (
-                                                                <input
-                                                                    type="number"
-                                                                    className="w-full border border-gray-300 rounded-md px-2 py-1 text-center focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                                                                    max={calculateMaxScore(criterio)}
-                                                                    min={calculateMinScore(criterio)}
-                                                                    onKeyPress={(e) => {
-                                                                        if (!/[0-9.]/.test(e.key)) {
-                                                                            e.preventDefault();
-                                                                        }
-                                                                    }}
-                                                                    placeholder={`${calculateMinScore(criterio)} - ${calculateMaxScore(criterio)}`}
-                                                                    value={calificacionValue(calculateMinScore(criterio), calculateMaxScore(criterio), criterioIndex) ?? calculateMinScore(criterio)}
-                                                                    onChange={(e) => handleCalificacion(e, criterioIndex, criterio)}
-                                                                />
-                                                            )}
+                                                        {
+                                                            // isArticuloAcademico() && selectedRubricaType == "INFORME FINAL" ?
+                                                            //     <span className="flex justify-center text-lg font-medium text-center text-gray-700 mb-2">
+                                                            //         <ComboBoxIndexacionRevistas onSelect={(indexacion) => {
+                                                            //             setIndexacionSelected(indexacion);
+                                                            //             handleCalificacion(indexacion, criterioIndex, criterio)
+                                                            //         }} />
+                                                            //     </span>
+                                                            //     : (
+                                                            
+                                                            <input
+                                                                type="number"
+                                                                className="w-full border border-gray-300 rounded-md px-2 py-1 text-center focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                                                max={calculateMaxScore(criterio)}
+                                                                min={calculateMinScore(criterio)}
+                                                                onKeyPress={(e) => {
+                                                                    if (!/[0-9.]/.test(e.key)) {
+                                                                        e.preventDefault();
+                                                                    }
+                                                                }}
+                                                                placeholder={`${calculateMinScore(criterio)} - ${calculateMaxScore(criterio)}`}
+                                                                value={calificacionValue(calculateMinScore(criterio), calculateMaxScore(criterio), criterioIndex) ?? calculateMinScore(criterio)}
+                                                                onChange={(e) => handleCalificacion(e, criterioIndex, criterio)}
+                                                            />
+                                                            // )
+                                                        }
                                                     </td>
                                                 </tr>
                                             ))}
@@ -443,7 +458,7 @@ const Calificar = () => {
                                                                 calculateMinScore(criterio),
                                                                 calculateMaxScore(criterio),
                                                                 index,
-                                                                selectedStudents[0]
+                                                                getSelectedStudent()
                                                             ) ?? calculateMinScore(criterio)),
                                                         0
                                                     )}

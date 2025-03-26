@@ -2,8 +2,8 @@
 import ComboBox from "../common/ComboBox";
 
 const indexaciones = [
-    { id: 1, name: "LatinIndex 60%", value: 60, porcentaje: 0.75 },
-    { id: 2, name: "Scopus 80%", value: 80 , porcentaje: 1},
+    { id: 1, name: "LatinIndex 60%", value: 60, porcentaje: 0.6 },
+    { id: 2, name: "Scopus 80%", value: 80 , porcentaje: 0.8},
 ];
 
 const ComboBoxIndexacionRevistas = ({ onSelect }) => {
