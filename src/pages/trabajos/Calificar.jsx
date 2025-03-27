@@ -15,15 +15,9 @@ const Calificar = () => {
     const { showMsg } = useMessage();
     const location = useLocation();
     const trabajo = location.state.trabajo ?? null;
-    const isArticuloAcademico = () => {
-        const ARTICULO_ACADEMICO_KEYS = ["ARTICULO CIENTIFICO", "ARTICULO ACADEMICO", "ARTÍCULO ACADÉMICO", "ARTÍCULO CIENTÍFICO"];
-        const modalidad = (trabajo.modalidad || "").toUpperCase();
-        return ARTICULO_ACADEMICO_KEYS.some(moda => moda === modalidad);
-    };
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [selectedStudents, setSelectedStudents] = useState([]);
-    // const [selectedRubricaType, setSelectedRubricaType] = useState(null);
-    const [selectedRubricaType, setSelectedRubricaType] = useState(isArticuloAcademico() ? "DEFENSA" : "INFORME FINAL");
+    const [selectedRubricaType, setSelectedRubricaType] = useState("INFORME FINAL");
     const [estudiantes, setEstudiantes] = useState([]);
     const [photos, setPhotos] = useState({}); // Estado para las fotos, { [id]: fotoBase64 }
     const [rubricas, setRubricas] = useState(null);
@@ -35,6 +29,12 @@ const Calificar = () => {
     const [indexacionSelected, setIndexacionSelected] = useState(null);
 
     const navigate = useNavigate();
+
+    const isArticuloAcademico = () => {
+        const ARTICULO_ACADEMICO_KEYS = ["ARTICULO CIENTIFICO", "ARTICULO ACADEMICO", "ARTÍCULO ACADÉMICO", "ARTÍCULO CIENTÍFICO"];
+        const modalidad = (trabajo.modalidad || "").toUpperCase();
+        return ARTICULO_ACADEMICO_KEYS.some(moda => moda === modalidad);
+    };
 
     const handleSelectedStudent = (studentId) => {
         if (selectedRubricaType === "INFORME FINAL") {
@@ -64,6 +64,7 @@ const Calificar = () => {
     useEffect(() => {
         if (trabajo) {
             getEstudiantesByTrabajoId(trabajo.id, setEstudiantes);
+            setSelectedRubricaType(isArticuloAcademico() ? "DEFENSA": "INFORME FINAL" );
         }
     }, [trabajo]);
 
@@ -173,13 +174,23 @@ const Calificar = () => {
         return estudiantes.every((student) => {
             return tipoEvaluacion.every((tipo) => {
                 const rubrica = rubricas[tipo.tipo_evaluacion_nombre];
-                if (!rubrica) return false; // Verifica que la rúbrica exista
-
-                return rubrica.rubrica.criterios.every((criterio, criterioIndex) => {
-                    return (
-                        calificacionesSeleccionadas[student.id]?.[tipo.tipo_evaluacion_nombre]?.[criterioIndex] !== undefined
-                    );
+                if (isArticuloAcademico() && !rubrica && tipo.tipo_evaluacion_nombre !== "INFORME FINAL") return false;
+                if (!isArticuloAcademico() && !rubrica) return false; // Verifica que la rúbrica exista
+                
+                const everySetGrades =  rubrica.rubrica.criterios.every((criterio, criterioIndex) => {
+                    const isSetGrade = calificacionesSeleccionadas[student.id]?.[tipo.tipo_evaluacion_nombre]?.[criterioIndex] !== undefined;
+                    if (isArticuloAcademico() && !isSetGrade && tipo.tipo_evaluacion_nombre === "INFORME FINAL") {
+                        if (!indexacionSelected) {
+                            showMsg({ typeMsg: 'info', message: 'Por favor seleccione una indexación' });
+                            return false;
+                        }
+                        handleCalificacionPorcentaje(indexacionSelected.value, "INFORME FINAL");
+                        return true;
+                    }
+                    return isSetGrade;
                 });
+
+                return everySetGrades;
             });
         });
     };
