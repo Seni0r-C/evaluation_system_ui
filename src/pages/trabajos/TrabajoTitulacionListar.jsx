@@ -1,4 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+//TODO: Eliminar el componente porque nos e utiliza en ningún lado.
+
 import { useState, useEffect } from 'react';
 import axiosInstance from '../../services/axiosConfig';
 import { obtenerCarreras } from '../../services/carreraService';
@@ -11,7 +13,7 @@ import InputField from '../../components/common/InputField';
 import { useNavigate } from 'react-router-dom';
 import { capitalizeWords } from '../../utils/constants';
 
-const TrabajoTitulacionListar = () => {
+const TrabajoTitulacionListar = ({title = 'Trabajos de Titulación'}) => {
   const [trabajos, setTrabajos] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -161,7 +163,7 @@ const TrabajoTitulacionListar = () => {
 
   return (
     <div className="container mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Trabajos de Titulación</h1>
+      <h1 className="text-2xl font-bold mb-4">{title}</h1>
 
       {/* Filtros */}
       <div className="mb-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

@@ -10,7 +10,7 @@ import InputField from '../../components/common/InputField';
 import UserContext from '../../context/UserContext';
 import PropTypes from 'prop-types';
 
-const TrabajoTitulacionCrear = () => {
+const TrabajoAnteproyectoCrear = () => {
   // Datos de la base de datos
   const { user } = useContext(UserContext);
   const [carreras, setCarreras] = useState([]);
@@ -383,8 +383,8 @@ const TrabajoTitulacionCrear = () => {
   );
 };
 
-TrabajoTitulacionCrear.propTypes = {
+TrabajoAnteproyectoCrear.propTypes = {
   iamTutor: PropTypes.bool,
 };
 
-export default TrabajoTitulacionCrear;
+export default TrabajoAnteproyectoCrear;

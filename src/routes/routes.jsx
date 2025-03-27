@@ -1,5 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { RutaRaiz } from '../utils/constants';
+import { baseRoute } from '../utils/constants';
 
 // Componentes compartidos
 import ErrorBoundary from '../components/shared/ErrorBoundary';
@@ -10,17 +10,17 @@ import CustomTrabajoTitulacionListar from '../components/Listar_trabajos';
 // Páginas
 import Login from '../pages/usuario/Login';
 import NotFound from '../pages/usuario/NotFound';
-import ModalidadesTitulacion from '../pages/admin/ModalidadesTitulacion';
+import Modalidades from '../pages/admin/ModalidadesTitulacion';
 import ItemsRubrica from '../pages/admin/ItemsRubrica';
 import Calificar from '../pages/trabajos/Calificar';
-import TrabajoTitulacionListar from '../pages/trabajos/TrabajoTitulacionListar';
 import UserProfile from '../pages/usuario/Perfil';
 import Home from '../pages/usuario/Home';
 import CalendarioEventos from '../pages/usuario/Calendario';
-import TrabajoTitulacionCrear from '../pages/trabajos/TrabajoTitulacionCrear';
+import TrabajoAnteproyectoCrear from '../pages/trabajos/TrabajoAnteproyectoCrear';
 import AdministrarCarreras from '../pages/admin/Carreras';
 import AdminRutas from '../pages/admin/Rutas';
 import AdminMenu from '../pages/admin/AdminMenu';
+// import ReportsPage from '../pages/Reportes';
 
 export const routes = [
   {
@@ -40,24 +40,12 @@ export const routes = [
     ),
   },
   {
-    path: RutaRaiz,
+    path: baseRoute,
     element: (
       <ErrorBoundary>
         <Layout>
           <ProtectedRoute>
             <Home />
-          </ProtectedRoute>
-        </Layout>
-      </ErrorBoundary>
-    ),
-  },
-  {
-    path: '/trabajos-titulacion',
-    element: (
-      <ErrorBoundary>
-        <Layout>
-          <ProtectedRoute>
-            <TrabajoTitulacionListar />
           </ProtectedRoute>
         </Layout>
       </ErrorBoundary>
@@ -117,7 +105,7 @@ export const routes = [
       <ErrorBoundary>
         <Layout>
           <ProtectedRoute>
-            <ModalidadesTitulacion />
+            <Modalidades />
           </ProtectedRoute>
         </Layout>
       </ErrorBoundary>
@@ -141,7 +129,7 @@ export const routes = [
       <ErrorBoundary>
         <Layout>
           <ProtectedRoute>
-            <TrabajoTitulacionCrear />
+            <TrabajoAnteproyectoCrear />
           </ProtectedRoute>
         </Layout>
       </ErrorBoundary>
@@ -154,6 +142,7 @@ export const routes = [
         <Layout>
           <ProtectedRoute>
             <CustomTrabajoTitulacionListar
+              titulo="Registro de Trabajo Final"
               permisosAcciones={[
                 'detallesTrabajo',
                 'subirTrabajoFinal',
@@ -173,11 +162,13 @@ export const routes = [
         <Layout>
           <ProtectedRoute>
             <CustomTrabajoTitulacionListar
+              titulo="Calificación de Trabajo Titulación"
               permisosAcciones={[
                 'detallesTrabajo',
                 'calificar',
               ]}
               firstStates={["CON TRIBUNAL"]}
+              endpoint='listar-tri'
             />
           </ProtectedRoute>
         </Layout>
@@ -191,6 +182,7 @@ export const routes = [
         <Layout>
           <ProtectedRoute>
             <CustomTrabajoTitulacionListar
+              titulo="Trabajos Titulación Defendidos"
               permisosAcciones={[
                 'detallesTrabajo',
               ]}
@@ -226,7 +218,7 @@ export const routes = [
                 'asignarTribunal',
               ]}
               includeStateFiltter={true}
-              firstStates={["SIN TRIBUNAL", "CON TRIBUNAL"]}  
+              firstStates={["SIN TRIBUNAL", "CON TRIBUNAL"]}
             />
           </ProtectedRoute>
         </Layout>
@@ -240,6 +232,7 @@ export const routes = [
         <Layout>
           <ProtectedRoute>
             <CustomTrabajoTitulacionListar
+              titulo="Generación de Documentos"
               permisosAcciones={[
                 'detallesTrabajo',
                 'generarReporte',
@@ -263,6 +256,18 @@ export const routes = [
       </ErrorBoundary>
     ),
   },
+  // {
+  //   path: '/reportes',
+  //   element: (
+  //     <ErrorBoundary>
+  //       <Layout>
+  //         <ProtectedRoute>
+  //           <ReportsPage />
+  //         </ProtectedRoute>
+  //       </Layout>
+  //     </ErrorBoundary>
+  //   ),
+  // },
   {
     path: '*',
     element: (

@@ -65,7 +65,7 @@ const RubricaList = ({ rubricas, onDelete, onSelect }) => {
                                         Editar
                                     </button>
                                     <button
-                                        onClick={() => onDelete(groupedRubricas[modalidad][tipoEvaluacion])}
+                                        onClick={() => onDelete(groupedRubricas[modalidad][tipoEvaluacion][0].rubrica_id)}
                                         className="bg-red-500 text-white px-2 py-1"
                                     >
                                         Eliminar
@@ -82,13 +82,19 @@ const RubricaList = ({ rubricas, onDelete, onSelect }) => {
                 <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50">
                     <div className="bg-white p-6 rounded-lg shadow-lg max-w-7xl">
                         <h3 className="text-xl font-bold mb-4">Criterios</h3>
-                        <ul className="mb-4">
-                            {selectedRubrica.map((criterio, index) => (
-                                <li key={index} className="mb-2">
-                                    <strong>{criterio.criterio_nombre}:</strong> {criterio.puntaje_maximo} puntos
-                                </li>
-                            ))}
-                        </ul>
+                        {selectedRubrica.every(criterio => criterio.criterio_nombre === null) ? (
+                            <p className="mb-4">No hay criterios disponibles.</p>
+                        ) : (
+                            <ul className="mb-4">
+                                {selectedRubrica.map((criterio, index) => (
+                                    criterio.criterio_nombre !== null && (
+                                        <li key={index} className="mb-2">
+                                            <strong>{criterio.criterio_nombre}:</strong> {criterio.puntaje_maximo} puntos
+                                        </li>
+                                    )
+                                ))}
+                            </ul>
+                        )}
                         <button
                             onClick={closeModal}
                             className="bg-red-500 text-white px-4 py-2 rounded"

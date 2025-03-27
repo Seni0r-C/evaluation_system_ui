@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getTiposEvaluacion, createTipoEvaluacion, updateTipoEvaluacion, deleteTipoEvaluacion } from '../../services/rubricaService';
+import { getTiposEvaluacion, createTipoEvaluacion, updateTipoEvaluacion, deleteTipoEvaluacion, createTipoEvaluacionJerarquia, updateTipoEvaluacionJerarquia, deleteTipoEvaluacionJerarquia, getTiposEvaluacionJerarquia } from '../../services/rubricaService';
 import { getRubricas, createRubrica, updateRubrica, deleteRubrica } from '../../services/rubricaService';
 import { getRubricaCriterios, createRubricaCriterio, updateRubricaCriterio, deleteRubricaCriterio } from '../../services/rubricaService';
 import TipoEvaluacionForm from '../../components/formularios/TipoEvaluacionForm';
@@ -10,14 +10,18 @@ import RubricaCriterioForm from '../../components/formularios/RubricaCriterioFor
 import RubricaCriterioList from '../../components/listas/RubricaCriterioList';
 import RubricaCriterios from '../Admin/RubricaCriterios';
 import axiosInstance from '../../services/axiosConfig';
+import TipoEvaluacionJerarquiaForm from '../../components/formularios/TipoEvaluacionJerarquiaForm';
+import TipoEvaluacionJerarquiaList from '../../components/listas/TipoEvaluacionJerarquiaList';
 
 function App() {
     const [tiposEvaluacion, setTiposEvaluacion] = useState([]);
+    const [tiposEvaluacionJerarquia, setTiposEvaluacionJerarquia] = useState([]);
     const [rubricas, setRubricas] = useState([]);
     const [rubricaCriterios, setRubricaCriterios] = useState([]);
     const [modalidades, setModalidades] = useState([]);
 
     const [selectedTipoEvaluacion, setSelectedTipoEvaluacion] = useState(null);
+    const [selectedTipoEvaluacionJerarquia, setSelectedTipoEvaluacionJerarquia] = useState(null);
     const [selectedRubrica, setSelectedRubrica] = useState(null);
     const [selectedRubricaCriterio, setSelectedRubricaCriterio] = useState(null);
 
@@ -27,6 +31,15 @@ function App() {
         try {
             const response = await getTiposEvaluacion();
             setTiposEvaluacion(response.data);
+        } catch (error) {
+            console.error('Error al cargar los tipos de evaluación', error);
+        }
+    };
+
+    const fetchTiposEvaluacionJerarquia = async () => {
+        try {
+            const response = await getTiposEvaluacionJerarquia();
+            setTiposEvaluacionJerarquia(response.data);
         } catch (error) {
             console.error('Error al cargar los tipos de evaluación', error);
         }
@@ -64,6 +77,7 @@ function App() {
         fetchTiposEvaluacion();
         fetchRubricas();
         fetchRubricaCriterios();
+        fetchTiposEvaluacionJerarquia();
     }, []);
 
     // Métodos para manejar los Tipos de Evaluación
@@ -90,6 +104,35 @@ function App() {
         try {
             await deleteTipoEvaluacion(id);
             setTiposEvaluacion(tiposEvaluacion.filter(item => item.id !== id));
+        } catch (error) {
+            console.error('Error al eliminar el tipo de evaluación', error);
+        }
+    };
+
+    // Métodos para manejar las Jerarquías de los Tipos de Evaluación
+    const handleCreateTipoEvaluacionJerarquia = async (data) => {
+        try {
+            const response = await createTipoEvaluacionJerarquia(data);
+            setTiposEvaluacionJerarquia([...tiposEvaluacion, response.data]);
+            fetchTiposEvaluacionJerarquia();
+        } catch (error) {
+            console.error('Error al crear el tipo de evaluación', error);
+        }
+    };
+
+    const handleUpdateTipoEvaluacionJerarquia = async (id, data) => {
+        try {
+            const response = await updateTipoEvaluacionJerarquia(id, data);
+            setTiposEvaluacionJerarquia(tiposEvaluacion.map(item => item.id === id ? response.data : item));
+        } catch (error) {
+            console.error('Error al actualizar el tipo de evaluación', error);
+        }
+    };
+
+    const handleDeleteTipoEvaluacionJerarquia = async (id) => {
+        try {
+            await deleteTipoEvaluacionJerarquia(id);
+            setTiposEvaluacionJerarquia(tiposEvaluacion.filter(item => item.id !== id));
         } catch (error) {
             console.error('Error al eliminar el tipo de evaluación', error);
         }
@@ -163,35 +206,44 @@ function App() {
                 <nav className="flex space-x-4">
                     <button
                         className={`px-4 py-2 text-sm font-medium ${activeTab === "tipoEvaluacion"
-                                ? "border-b-2 border-blue-500 text-blue-500"
-                                : "text-gray-600 hover:text-blue-500"
+                            ? "border-b-2 border-blue-500 text-blue-500"
+                            : "text-gray-600 hover:text-blue-500"
                             }`}
                         onClick={() => setActiveTab("tipoEvaluacion")}
                     >
                         Tipos de Evaluación
                     </button>
                     <button
+                        className={`px-4 py-2 text-sm font-medium ${activeTab === "tipoEvaluacionJerarquia"
+                            ? "border-b-2 border-blue-500 text-blue-500"
+                            : "text-gray-600 hover:text-blue-500"
+                            }`}
+                        onClick={() => setActiveTab("tipoEvaluacionJerarquia")}
+                    >
+                        Tipos de Evaluación Jerarquía
+                    </button>
+                    <button
                         className={`px-4 py-2 text-sm font-medium ${activeTab === "rubricas"
-                                ? "border-b-2 border-blue-500 text-blue-500"
-                                : "text-gray-600 hover:text-blue-500"
+                            ? "border-b-2 border-blue-500 text-blue-500"
+                            : "text-gray-600 hover:text-blue-500"
                             }`}
                         onClick={() => setActiveTab("rubricas")}
                     >
                         Rúbricas
                     </button>
-                    <button
+                    {/* <button
                         className={`px-4 py-2 text-sm font-medium ${activeTab === "criterios"
-                                ? "border-b-2 border-blue-500 text-blue-500"
-                                : "text-gray-600 hover:text-blue-500"
+                            ? "border-b-2 border-blue-500 text-blue-500"
+                            : "text-gray-600 hover:text-blue-500"
                             }`}
                         onClick={() => setActiveTab("criterios")}
                     >
                         Criterios de Rúbrica
-                    </button>
+                    </button> */}
                     <button
                         className={`px-4 py-2 text-sm font-medium ${activeTab === "criterios2"
-                                ? "border-b-2 border-blue-500 text-blue-500"
-                                : "text-gray-600 hover:text-blue-500"
+                            ? "border-b-2 border-blue-500 text-blue-500"
+                            : "text-gray-600 hover:text-blue-500"
                             }`}
                         onClick={() => setActiveTab("criterios2")}
                     >
@@ -215,6 +267,24 @@ function App() {
                             tiposEvaluacion={tiposEvaluacion}
                             onDelete={handleDeleteTipoEvaluacion}
                             onSelect={setSelectedTipoEvaluacion}
+                        />
+                    </section>
+                )}
+                {activeTab === "tipoEvaluacionJerarquia" && (
+                    <section>
+                        <h2 className="text-xl font-semibold mb-4">Tipos de Evaluación</h2>
+                        <TipoEvaluacionJerarquiaForm
+                            onCreate={handleCreateTipoEvaluacionJerarquia}
+                            onUpdate={handleUpdateTipoEvaluacionJerarquia}
+                            selected={selectedTipoEvaluacionJerarquia}
+                            setSelected={setSelectedTipoEvaluacionJerarquia}
+                            tiposEvaluacion={tiposEvaluacion}
+                            modalidades={modalidades}
+                        />
+                        <TipoEvaluacionJerarquiaList
+                            jerarquias={tiposEvaluacionJerarquia}
+                            onDelete={handleDeleteTipoEvaluacionJerarquia}
+                            onSelect={setSelectedTipoEvaluacionJerarquia}
                         />
                     </section>
                 )}

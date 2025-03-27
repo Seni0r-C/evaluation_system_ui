@@ -1,26 +1,33 @@
 import { Link } from 'react-router-dom';
-import { RutaRaiz } from '../../utils/constants';
+import { baseRoute } from '../../utils/constants';
+import { motion } from 'framer-motion';
 
 const NotFound = () => {
     return (
-        <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
-            <div className="text-center p-6 max-w-lg bg-white shadow-lg rounded-lg hover:scale-105 transition-transform transform">
-                <h1 className="text-8xl font-bold text-[#0e9343]">404</h1>
-                <p className="text-2xl font-semibold text-gray-800 mt-4">
-                    ¡Lo sentimos! Página no encontrada.
+        <div className="flex items-center justify-center min-h-screen bg-[#0e9343]">
+            <motion.div 
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, ease: 'easeOut' }}
+                className="text-center p-10 max-w-md bg-white shadow-xl rounded-2xl backdrop-blur-lg bg-opacity-90 hover:shadow-2xl hover:scale-105 transition-transform duration-300">
+                <h1 className="text-9xl font-extrabold text-[#0e9343] tracking-widest">404</h1>
+                <p className="text-xl font-medium text-gray-700 mt-4">
+                    Página no encontrada.
                 </p>
-                <p className="text-gray-600 mt-2">
-                    Es posible que el enlace esté roto o que la página ya no exista.
+                <p className="text-gray-500 mt-2">
+                    Parece que te has perdido en la inmensidad del internet.
                 </p>
-                <div className="mt-6">
+                <motion.div
+                    whileHover={{ scale: 1.1 }}
+                    className="mt-6"
+                >
                     <Link
-                        to={RutaRaiz}
-                        className="inline-block px-6 py-3 text-white bg-blue-500 hover:bg-blue-600 rounded-full text-lg font-medium shadow-md duration-300 ease-in-out transition-colors"
-                    >
+                        to={baseRoute}
+                        className="px-6 py-3 text-lg font-semibold text-white bg-[#0e9343] rounded-full shadow-md hover:bg-opacity-90 transition-colors">
                         Volver al inicio
                     </Link>
-                </div>
-            </div>
+                </motion.div>
+            </motion.div>
         </div>
     );
 };

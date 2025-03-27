@@ -4,7 +4,7 @@ import { IoMdClose, IoMdMenu, IoIosLogOut } from "react-icons/io";
 import { FaUserCircle } from "react-icons/fa";
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import { capitalizeWords, RutaRaiz } from '../../utils/constants';
+import { capitalizeWords, baseRoute } from '../../utils/constants';
 import UserContext from '../../context/UserContext';
 import SidebarMenu from './menu/SidebarMenu';
 import axiosInstance from '../../services/axiosConfig';
@@ -90,7 +90,7 @@ const Layout = ({ children }) => {
                             <IoMdMenu className="h-6 w-6" />
                         )}
                     </button>
-                    <Link to={RutaRaiz}>
+                    <Link to={baseRoute}>
                         <img src={logo} alt="Logo del Sistema" className="h-12 w-auto" />
                     </Link>
 

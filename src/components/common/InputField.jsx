@@ -1,6 +1,21 @@
 import PropTypes from 'prop-types';
 import { capitalizeWords } from '../../utils/constants';
 
+/**
+ * Componente de campo de entrada de formulario que puede ser de tipo text, checkbox, select, etc.
+ * 
+ * @param {string} label Etiqueta del campo, opcional
+ * @param {string} type Tipo de campo, predeterminado 'text'
+ * @param {string} value Valor actual del campo
+ * @param {string} name Nombre del campo
+ * @param {Function} onChange Función que se llama cuando se produce un cambio en el campo
+ * @param {string} placeholder Texto que se muestra en el campo cuando no tiene valor, opcional
+ * @param {Array} options Arreglo de opciones que se muestran cuando type es 'select', predeterminado []
+ * @param {boolean} required Indica si el campo es requerido, predeterminado false
+ * @param {boolean} capitalize Indica si se deben capitalizar las palabras de las opciones del select, predeterminado false
+ * 
+ * @returns {ReactElement} - Un ReactElement que representa el campo de entrada
+ */
 const InputField = ({
     label,
     type = 'text',

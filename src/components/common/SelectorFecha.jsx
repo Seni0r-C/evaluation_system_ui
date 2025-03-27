@@ -36,12 +36,13 @@ const SelectorFecha = ({ onDateChange, required = false, trabajoData }) => {
         setError(''); // Limpiar error al cambiar la fecha
 
         // Validar si es futura (opcional)
-        const today = new Date().toISOString().split('T')[0];
-        if (newDate < today) {
-            setError('La fecha no puede ser anterior a hoy.');
-        } else {
-            onDateChange(newDate); // Enviar la fecha al componente padre
-        }
+        // const today = new Date().toISOString().split('T')[0];
+        // if (newDate < today) {
+        //     setError('La fecha no puede ser anterior a hoy.');
+        // } else {
+        //     onDateChange(newDate); // Enviar la fecha al componente padre
+        // }
+        onDateChange(newDate); // Enviar la fecha al componente padre
     };
 
     return (

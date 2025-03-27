@@ -1,13 +1,13 @@
-import BuscadorGenerico from '../common/BuscadorGenerico';
+import SearchDropdown from '../common/BuscadorGenerico';
 import { buscarUsuarios as buscarUsuariosService } from '../../services/usuarioService';
 import PropTypes from 'prop-types';
-import { useMessage } from "../../hooks/useMessage";
 
 
 const BuscadorDocentes = ({ setSelectedDocentes, initialSelectedItems = [], allowDuplicates = false, maxSelections = -1, required = false, label="Buscar Docentes" }) => {
     const handleBuscarNombre = (query, setResults, setShowSpinner) => {
         setShowSpinner(true);  // Mostrar el spinner
         setTimeout(() => {
+            // Creao que 3 es el rol de docente xd
             buscarUsuariosService(query, setResults, 3);
             setShowSpinner(false);  // Ocultar el spinner cuando se obtienen los resultados
         }, 500);  // Simulamos un retraso en la búsqueda
@@ -15,7 +15,7 @@ const BuscadorDocentes = ({ setSelectedDocentes, initialSelectedItems = [], allo
     return (
         <div className="p-1">
             {/* Buscador de Docentes */}
-            <BuscadorGenerico
+            <SearchDropdown
                 label={label}
                 placeholder="Ingrese el nombre del docente"
                 handlerBuscar={handleBuscarNombre}
