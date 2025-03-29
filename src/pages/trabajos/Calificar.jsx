@@ -11,7 +11,6 @@ import { useMessage } from "../../hooks/useMessage";
 
 const Calificar = () => {
 
-    
     const { showMsg } = useMessage();
     const location = useLocation();
     const trabajo = location.state.trabajo ?? null;
@@ -21,6 +20,7 @@ const Calificar = () => {
     const [estudiantes, setEstudiantes] = useState([]);
     const [photos, setPhotos] = useState({}); // Estado para las fotos, { [id]: fotoBase64 }
     const [rubricas, setRubricas] = useState(null);
+    const [rubricGradesData, setRubricGradesData] = useState(null);
     const [tipoEvaluacion, setTipoEvaluacion] = useState([]);
     const [currentRubrica, setCurrentRubrica] = useState(null);
     const [calificacionesSeleccionadas, setCalificacionesSeleccionadas] = useState({});
@@ -60,11 +60,10 @@ const Calificar = () => {
         setShowFinalizar(isCalificacionCompleta());
     }, [calificacionesSeleccionadas]);
 
-
     useEffect(() => {
         if (trabajo) {
             getEstudiantesByTrabajoId(trabajo.id, setEstudiantes);
-            setSelectedRubricaType(isArticuloAcademico() ? "DEFENSA": "INFORME FINAL" );
+            setSelectedRubricaType(isArticuloAcademico() ? "DEFENSA" : "INFORME FINAL");
         }
     }, [trabajo]);
 
@@ -96,72 +95,111 @@ const Calificar = () => {
     }, [estudiantes]);
 
 
-    useEffect(() => {
-        const fetchRubricas = async () => {
-            try {
-                const tiposResponse = await obtenerTiposEvaluacionByModalidadList(trabajo?.modalidad_id);
-                const tiposEvaluacion = tiposResponse.map((tipo) => {
+
+    const fetchRubricas = async () => {
+        try {
+            const tiposResponse = await obtenerTiposEvaluacionByModalidadList(trabajo?.modalidad_id);
+            const tiposEvaluacion = tiposResponse.map((tipo) => {
+                return {
+                    tipo_evaluacion_id: tipo.id,
+                    tipo_evaluacion_nombre: tipo.nombre
+                }
+            });
+            setTipoEvaluacion(tiposEvaluacion);
+            const rubricasPromises = tiposEvaluacion.map(async (tipo) => {
+                try {
+                    const response = await axiosInstance.get("/calificacion/rubrica", {
+                        params: {
+                            id_tipo_evaluacion: tipo.tipo_evaluacion_id,
+                            id_modalidad: trabajo?.modalidad_id,
+                        },
+                    });
                     return {
-                        tipo_evaluacion_id: tipo.id,
-                        tipo_evaluacion_nombre: tipo.nombre
-                    }
-                });
-                setTipoEvaluacion(tiposEvaluacion);
-                const rubricasPromises = tiposEvaluacion.map(async (tipo) => {
-                    try {
-                        const response = await axiosInstance.get("/calificacion/rubrica", {
-                            params: {
-                                id_tipo_evaluacion: tipo.tipo_evaluacion_id,
-                                id_modalidad: trabajo?.modalidad_id,
-                            },
-                        });
-                        return {
-                            tipo: tipo.tipo_evaluacion_nombre,
-                            rubrica: response.data,
-                        };
-                    } catch (error) {
-                        console.error(`Error fetching rubrica for ${tipo.tipo_evaluacion_nombre}:`, error);
-                        return { tipo: tipo.tipo_evaluacion_nombre, rubrica: null };
-                    }
-                });
+                        tipo: tipo.tipo_evaluacion_nombre,
+                        rubrica: response.data,
+                    };
+                } catch (error) {
+                    console.error(`Error fetching rubrica for ${tipo.tipo_evaluacion_nombre}:`, error);
+                    return { tipo: tipo.tipo_evaluacion_nombre, rubrica: null };
+                }
+            });
 
-                const rubricasData = await Promise.all(rubricasPromises);
-                const rubricasFormatted = rubricasData.reduce((acc, item) => {
-                    if (item.rubrica) {
-                        const { id } = item.rubrica.rubrica;  // Extraer el id de la rubrica
-                        acc[item.tipo] = {
-                            rubrica: item.rubrica,  // La información completa de la rubrica
-                            rubrica_id: id          // El id de la rubrica
-                        };
-                    }
-                    return acc;
-                }, {});
+            const rubricasData = await Promise.all(rubricasPromises);
+            const rubricasFormatted = rubricasData.reduce((acc, item) => {
+                if (item.rubrica) {
+                    const { id } = item.rubrica.rubrica;  // Extraer el id de la rubrica
+                    acc[item.tipo] = {
+                        rubrica: item.rubrica,  // La información completa de la rubrica
+                        rubrica_id: id          // El id de la rubrica
+                    };
+                }
 
-                setRubricas(rubricasFormatted);
+                return acc;
+            }, {});
+            alert(JSON.stringify(rubricasFormatted, null, 2));
+            setRubricas(rubricasFormatted);
+        } catch (error) {
+            console.error("Error al obtener las rúbricas:", error);
+        }
+    };
+
+    const fetchRubricGrades = async () => {
+        const getGrades = async () => {
+            const info = localStorage.getItem('userInfo');
+            const user = JSON.parse(info);
+            try {
+                const response = await axiosInstance.get("/calificacion/rubrica-evaluacion-notas", {
+                    params: {
+                        trabajo_id: trabajo?.id,
+                        docente_id: user?.id,
+                    },
+                });
+                return response.data;
             } catch (error) {
-                console.error("Error al obtener las rúbricas:", error);
+                console.error(`Error fetching rubric grades:`, error.message);
+                return {};
             }
         };
 
+        const rubricGrades = await getGrades();
+        setRubricGradesData(rubricGrades);
+    };
+
+
+    useEffect(() => {
+        fetchRubricGrades();
         fetchRubricas();
     }, [trabajo]);
+
+    const defaultGrade = (selectedStudentId) => {
+        if (!selectedStudentId || !rubricGradesData) {
+            return {};
+        }
+        return rubricGradesData[selectedStudentId];
+    };
 
     useEffect(() => {
         // Aquí puedes cargar los datos guardados desde el backend para el estudiante y rúbrica seleccionados.
         // Si no hay datos, simplemente asegura que se inicialicen correctamente.
         if (selectedRubricaType === "INFORME FINAL") {
-            selectedStudents.forEach((selectedStudent) => {
-                setCalificacionesSeleccionadas((prev) => ({
-                    ...prev,
-                    [selectedStudent]: prev[selectedStudent] || {},
-                }));
-            })
+            selectedStudents
+                .filter((v) => v || v === "null")
+                .forEach((selectedStudent) => {
+                    setCalificacionesSeleccionadas((prev) => ({
+                        ...prev,
+                        [selectedStudent]: prev[selectedStudent] || defaultGrade(selectedStudent),
+                    }));
+                })
+            alert("calificacionesSeleccionadas: <br>" + JSON.stringify(calificacionesSeleccionadas, null, 2));
             return;
         }
-        setCalificacionesSeleccionadas((prev) => ({
-            ...prev,
-            [selectedStudent]: prev[selectedStudent] || {},
-        }));
+        if (selectedStudent) {
+            setCalificacionesSeleccionadas((prev) => ({
+                ...prev,
+                [selectedStudent]: prev[selectedStudent] || defaultGrade(selectedStudent),
+            }));
+        }
+        alert(JSON.stringify(calificacionesSeleccionadas, null, 2));
     }, [selectedStudent, selectedStudents, selectedRubricaType]);
 
 
@@ -176,8 +214,8 @@ const Calificar = () => {
                 const rubrica = rubricas[tipo.tipo_evaluacion_nombre];
                 if (isArticuloAcademico() && !rubrica && tipo.tipo_evaluacion_nombre !== "INFORME FINAL") return false;
                 if (!isArticuloAcademico() && !rubrica) return false; // Verifica que la rúbrica exista
-                
-                const everySetGrades =  rubrica.rubrica.criterios.every((criterio, criterioIndex) => {
+
+                const everySetGrades = rubrica.rubrica.criterios.every((criterio, criterioIndex) => {
                     const isSetGrade = calificacionesSeleccionadas[student.id]?.[tipo.tipo_evaluacion_nombre]?.[criterioIndex] !== undefined;
                     if (isArticuloAcademico() && !isSetGrade && tipo.tipo_evaluacion_nombre === "INFORME FINAL") {
                         if (!indexacionSelected) {
@@ -407,7 +445,10 @@ const Calificar = () => {
                 <td className="py-2 text-sm font-bold text-gray-700 text-left border border-gray-300">
                     <span className="ml-5">{overallEvalType}</span>
                 </td>
-                <td className="px-2 text-sm font-semibold text-gray-700 text-center border border-gray-300">
+                <td className="text-sm font-semibold text-gray-700 text-center border border-gray-300">
+                    100
+                </td>
+                <td className="px-2 text-lg text-blue-600  text-center border border-gray-300 bg-gray-50">
                     {isArticuloAcademico() && overallEvalType === "INFORME FINAL" && (
                         indexacionSelected?.value ?? "N/A"
                     )}
@@ -415,9 +456,6 @@ const Calificar = () => {
                         !indexacionSelected ? "N/A" : ` ( ${overallGradeData.sum}/100 ) x ${100 - indexacionSelected?.value} + ${indexacionSelected?.value} `
                     )}
                     {!isArticuloAcademico() ? overallGradeData.sum : null}
-                </td>
-                <td className="text-sm font-semibold text-gray-700 text-center border border-gray-300">
-                    100
                 </td>
             </tr>
         )
@@ -446,20 +484,22 @@ const Calificar = () => {
 
     const renderOverallGradeTable = (studentData) => {
         return (
-            <table className="min-w-10 border border-gray-300 rounded-lg shadow-sm">
+            // <table className="min-w-full max-w-4xl border border-gray-300 rounded-lg shadow-sm">
+            <table className="min-w-[75%] border border-gray-300 rounded-lg shadow-sm mb-4">
                 <thead className="bg-blue-50 text-blue-700">
                     <tr>
-                        <th className="border border-gray-300 px-4 py-3 text-left">{studentData.nombre}</th>
-
-                        <th className="border border-gray-300 px-4 py-3 text-center font-semibold">
-                            Nota
+                        <th className="border border-gray-300 px-4 py-3 text-left w-[300px] min-w-[300px] max-w-[300px] whitespace-nowrap">
+                            {studentData.nombre}
                         </th>
-
-                        <th className="border border-gray-300 px-4 py-3 text-center font-semibold">
+                        <th className="border border-gray-300 px-4 py-3 text-center font-semibold w-[100px]">
                             Base
+                        </th>
+                        <th className="border border-gray-300 px-4 py-3 text-center font-semibold w-[100px]">
+                            Nota
                         </th>
                     </tr>
                 </thead>
+
                 <tbody>
                     {/* Fila de Totales */}
                     {Object.entries(studentData.evaluaciones).map(([evalType, evalData]) => {
@@ -470,10 +510,10 @@ const Calificar = () => {
                             <span className="ml-5">PROMEDIO</span>
                         </td>
                         <td className="text-sm font-semibold text-blue-700 text-center border border-gray-300">
-                            {calcOverallGrades(studentData)}
-                        </td>
-                        <td className="text-sm font-semibold text-blue-700 text-center border border-gray-300">
                             100
+                        </td>
+                        <td className="text-lg text-blue-600 text-center border border-gray-300 bg-gray-50">
+                            {calcOverallGrades(studentData)}
                         </td>
                     </tr>
 
@@ -523,14 +563,14 @@ const Calificar = () => {
                         <div className="flex justify-center mb-4">
                             {tipoEvaluacion
                                 .sort((a, b) => b.tipo_evaluacion_nombre.localeCompare(a.tipo_evaluacion_nombre))
-                                .filter((tipo) => 
-                                    (isArticuloAcademico() && 
-                                    tipo.tipo_evaluacion_nombre !== "INFORME FINAL") || 
+                                .filter((tipo) =>
+                                    (isArticuloAcademico() &&
+                                        tipo.tipo_evaluacion_nombre !== "INFORME FINAL") ||
                                     (!isArticuloAcademico())
                                 )
                                 .map((tipo) => {
                                     const isSelected = selectedRubricaType === tipo.tipo_evaluacion_nombre;
-                                    
+
                                     return (
                                         <button
                                             key={tipo.tipo_evaluacion_id}
