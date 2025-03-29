@@ -40,6 +40,7 @@ const CustomTrabajoTitulacionListar = ({
   useEffect(() => {
     obtenerCarreras(setCarreras);
     if (firstStates && includeStateFiltter) {
+    // if (JSON.stringify(firstStates)!==JSON.stringify(estados) && firstStates && includeStateFiltter) {
       setEstados(firstStates);
     } else if (firstStates === '' && includeStateFiltter) {
       obtenerEstados(setEstados);
@@ -50,6 +51,7 @@ const CustomTrabajoTitulacionListar = ({
   useEffect(() => {
     if (firstStates) {
       setFilters((prevFilters) => ({ ...prevFilters, estado: firstStates }));
+      // setFilters((prevFilters) => ({ ...prevFilters, estado: firstStates }));
     }
   }, [firstStates]);
 
@@ -80,6 +82,12 @@ const CustomTrabajoTitulacionListar = ({
     }
   }, [filters.carrera_id]);
 
+  useEffect(() => {
+    if ((firstStates && includeStateFiltter) && !firstStates.includes(filters.estado)) {
+      setFilters((prevFilters) => ({ ...prevFilters, estado: firstStates }));
+    }
+  }, [filters.estado]);
+
 
   const fetchTrabajos = async () => {
     try {
@@ -108,13 +116,13 @@ const CustomTrabajoTitulacionListar = ({
 
   return (
     <div className="container mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">{titulo}</h1>
+      <h1 className="text-2xl font-bold mb-4">{titulo} {JSON.stringify(includeStateFiltter)} {JSON.stringify(firstStates)}</h1>
       {includeStateFiltter ?
-        (<FiltroTrabajoTitulacion {...{ filters, onFilterChange: handleFilterChange, carreras, estados, modalidades, verTodo, user }} />)
+        (<FiltroTrabajoTitulacion key={user.id} {...{ filters, onFilterChange: handleFilterChange, carreras, estados, modalidades, verTodo, user }} />)
         :
-        (<FiltroTrabajoTitulacion {...{ filters, onFilterChange: handleFilterChange, carreras, modalidades, verTodo, user }} />)
+        (<FiltroTrabajoTitulacion key={user.id} {...{ filters, onFilterChange: handleFilterChange, carreras, modalidades, verTodo, user }} />)
       }
-      <ListaTrabajosTitulacion trabajos={trabajos} user={user} permisosAcciones={permisosAcciones} />
+      <ListaTrabajosTitulacion key={`trabajos-${user.id}`} trabajos={trabajos} user={user} permisosAcciones={permisosAcciones} />
       <Paginacion {...{ page, total, limit, onPageChange: setPage, onLimitChange: (e) => setLimit(e.target.value) }} />
     </div>
   );

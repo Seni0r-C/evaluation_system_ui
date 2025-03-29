@@ -135,6 +135,14 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user }) => {
       onClick: handleCalificar,
     },
     {
+      roles: permisos.ROLES_CALIFICACION_TRABAJOS,
+      permiso: 'ver-calificar',
+      icono: MdChecklist,
+      variant: 'primary',
+      tooltip: 'Calificar',
+      onClick: handleCalificar,
+    },
+    {
       roles: permisos.ROLES_REGISTRO_TRABAJO,
       permiso: 'subirTrabajoFinal',
       icono: GrDocumentUser,

@@ -162,13 +162,38 @@ export const routes = [
         <Layout>
           <ProtectedRoute>
             <CustomTrabajoTitulacionListar
+              key="Calificación de Trabajo Titulación"
               titulo="Calificación de Trabajo Titulación"
               permisosAcciones={[
                 'detallesTrabajo',
                 'calificar',
               ]}
-              firstStates={["CON TRIBUNAL"]}
+              firstStates={["CON TRIBUNAL", "DEFENDIDO"]}
               endpoint='listar-tri'
+              includeStateFiltter={true}
+            />
+          </ProtectedRoute>
+        </Layout>
+      </ErrorBoundary>
+    ),
+  },
+  {
+    path: '/ver-calificacion-de-trabajo-titulacion',
+    element: (
+      <ErrorBoundary>
+        <Layout>
+          <ProtectedRoute>
+            <CustomTrabajoTitulacionListar
+              key="Ver Calificación de Trabajo Titulación"
+              titulo="Ver Calificación de Trabajo Titulación"
+              permisosAcciones={[
+                'detallesTrabajo',
+                'ver-calificar',
+              ]}
+              includeStateFiltter={true}
+              // firstStates={["CON TRIBUNAL"]}
+              firstStates={["CON TRIBUNAL", "DEFENDIDO"]}
+            // endpoint='listar-tri'
             />
           </ProtectedRoute>
         </Layout>
@@ -212,6 +237,7 @@ export const routes = [
         <Layout>
           <ProtectedRoute>
             <CustomTrabajoTitulacionListar
+              key="Asignación de Tribunal y fecha de Defensa"
               titulo="Asignación de Tribunal y fecha de Defensa"
               permisosAcciones={[
                 'detallesTrabajo',
@@ -232,6 +258,7 @@ export const routes = [
         <Layout>
           <ProtectedRoute>
             <CustomTrabajoTitulacionListar
+              key="Generación de Documentos"
               titulo="Generación de Documentos"
               permisosAcciones={[
                 'detallesTrabajo',
