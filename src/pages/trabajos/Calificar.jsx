@@ -7,6 +7,7 @@ import { MdDoneOutline } from "react-icons/md";
 import axiosInstance from "../../services/axiosConfig";
 import { obtenerTiposEvaluacionByModalidadList } from "../../services/rubricaCriterioService";
 import ComboBoxIndexacionRevistas from "../../components/utmcomps/ComboBoxIndexacionRevistas";
+import { indexaciones } from "../../components/utmcomps/ComboBoxIndexacionRevistas";
 import { useMessage } from "../../hooks/useMessage";
 
 const Calificar = () => {
@@ -162,6 +163,17 @@ const Calificar = () => {
         };
 
         const rubricGrades = await getGrades();
+        if (isArticuloAcademico() && rubricGrades) {
+            const informeFinalGrades = Object.values(rubricGrades)[0]["INFORME FINAL"];
+            const sumInformeFinal = Object.values(informeFinalGrades).reduce((prev, current) => prev + current, 0);
+            const indexItem = indexaciones.find((indexItem) => indexItem.value === sumInformeFinal);
+            if (indexItem) {
+                setIndexacionSelected(indexItem);                
+                alert(indexacionSelected?.id)
+            }
+            // rubricGrades[]
+        }
+        alert(JSON.stringify(rubricGrades, null, 2));
         setRubricGradesData(rubricGrades);
     };
 
@@ -190,7 +202,7 @@ const Calificar = () => {
                         [selectedStudent]: prev[selectedStudent] || defaultGrade(selectedStudent),
                     }));
                 })
-            alert("calificacionesSeleccionadas: <br>" + JSON.stringify(calificacionesSeleccionadas, null, 2));
+            // alert("calificacionesSeleccionadas: <br>" + JSON.stringify(calificacionesSeleccionadas, null, 2));
             return;
         }
         if (selectedStudent) {
@@ -199,7 +211,7 @@ const Calificar = () => {
                 [selectedStudent]: prev[selectedStudent] || defaultGrade(selectedStudent),
             }));
         }
-        alert(JSON.stringify(calificacionesSeleccionadas, null, 2));
+        // alert(JSON.stringify(calificacionesSeleccionadas, null, 2));
     }, [selectedStudent, selectedStudents, selectedRubricaType]);
 
 
@@ -728,8 +740,9 @@ const Calificar = () => {
                                     <th className="border border-gray-300 px-4 py-3 text-center font-semibold">
                                         <ComboBoxIndexacionRevistas onSelect={(indexacion) => {
                                             setIndexacionSelected(indexacion);
-                                            // alert("Indexación seleccionada:" + JSON.stringify(indexacion));
-                                        }} />
+                                        }}
+                                        selectedId = {indexacionSelected}
+                                         />
                                     </th>
                                 </tr>
                             </tbody>

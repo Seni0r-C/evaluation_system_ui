@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 /**
@@ -20,12 +20,20 @@ const ComboBox = ({
     displayFn = null,
     onSelect,
     placeholder = "Seleccione una opción",
-    required = false
+    required = false,
+    selectedInitialItem = null // New prop to set selected item programmatically
 }) => {
     const [selectedItem, setSelectedItem] = useState(null);
 
+    useEffect(() => {
+        if (selectedInitialItem?.id??null !== null) {
+            const item = items.find(i => String(i.id) === String(selectedInitialItem.id));
+            setSelectedItem(item || null);
+        }
+    }, [selectedInitialItem, items]);
+
     const handleChange = (event) => {
-        const selectedId = event.target?.value || "";
+        const selectedId = event.target.value || "";
         const item = items.find(i => String(i.id) === selectedId);
         setSelectedItem(item);
         onSelect && onSelect(item);
@@ -47,7 +55,6 @@ const ComboBox = ({
                     </option>
                 ))}
             </select>
-
         </div>
     );
 };
