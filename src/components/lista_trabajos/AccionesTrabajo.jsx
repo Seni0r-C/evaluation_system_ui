@@ -34,6 +34,10 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user }) => {
     navigate('/calificar', { state: { trabajo } });
   };
 
+  const handleVerCalificar = (trabajo) => {
+    navigate('/ver-calificar', { state: { trabajo } });
+  };
+
   const handleAsignarTribunal = (trabajo) => {
     showMsg({ typeMsg: 'wait', message: 'Cargando datos de tribunal...' });
     fectchTrabajoFull(trabajo).then(showIfError);
@@ -136,11 +140,11 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user }) => {
     },
     {
       roles: permisos.ROLES_CALIFICACION_TRABAJOS,
-      permiso: 'ver-calificar',
+      permiso: 'verCalificarMiembrosTribunal',
       icono: MdChecklist,
       variant: 'primary',
-      tooltip: 'Calificar',
-      onClick: handleCalificar,
+      tooltip: 'Ver calificar',
+      onClick: handleVerCalificar,
     },
     {
       roles: permisos.ROLES_REGISTRO_TRABAJO,
