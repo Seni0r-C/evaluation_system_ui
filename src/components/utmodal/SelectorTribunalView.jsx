@@ -110,7 +110,7 @@ const SelectorTribunalView = ({ selectedTribunal, setSelectedTribunal }) => {
                     required={true}
                 />
             </div>
-            <div style={{ display: 'flex', gap: '10px', marginBottom: '50px'}}>
+            <div style={{ display: 'flex', gap: '10px', marginBottom: '30px'}}>
                 <BuscadorDocentes
                     key={delegadoComisionInvestigacionKey}
                     label="Delegado Com. Investigación Científica"
@@ -121,17 +121,6 @@ const SelectorTribunalView = ({ selectedTribunal, setSelectedTribunal }) => {
                     required={true}
                 />
             </div>
-            {/* <div style={{ display: 'flex', gap: '10px' }}>
-                <BuscadorDocentes
-                    key={delegadoComisionInvestigacionKey}
-                    label="Suplente Miembro"
-                    setSelectedDocentes={setSelectedDelegadoComisionInvestigacion}
-                    initialSelectedItems={selectedDelegadoComisionInvestigacion}
-                    allowDuplicates={false}
-                    maxSelections={1}
-                    required={true}
-                />
-            </div> */}
         </div>
     );
 };
