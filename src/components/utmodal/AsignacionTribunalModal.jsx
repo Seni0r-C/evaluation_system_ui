@@ -51,14 +51,15 @@ const AsignarTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
 
     // Efecto para cargar datos cuando el modal está abierto y hay un trabajo seleccionado
     useEffect(() => {
-        if (isOpen && trabajoData?.id) {
+        if (trabajoData?.id) {
+            // if (isOpen && trabajoData?.id) {
             fetchTrabajoFull(trabajoData.id);
             fetchTribunalMembers(trabajoData.id);
         }
     }, [isOpen, trabajoData?.id, trabajoData?.fecha_defensa]);
 
 
-    if (!isOpen) return null;   
+    if (!isOpen) return null;
 
     const onCloseAsignarTribunal = async () => {
         if (!selectedDate) {
@@ -173,10 +174,11 @@ const AsignarTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
                     hasNestedData={!!nestedData}
                     onBack={() => setNestedData(null)}
                     btnActions={
-                        initialSelectedItems.length > 0 ? [
-                            { label: "Reasignar", color: "blue", onClick: onCloseReasignarTribunal },
-                            { label: "Cancelar", color: "gray", onClick: onClose },
-                        ]
+                        initialSelectedItems.length > 1 ?
+                            [
+                                { label: "Reasignar", color: "blue", onClick: onCloseReasignarTribunal },
+                                { label: "Cancelar", color: "gray", onClick: onClose },
+                            ]
                             :
                             [
                                 { label: "Asignar", color: "green", onClick: onCloseAsignarTribunal },

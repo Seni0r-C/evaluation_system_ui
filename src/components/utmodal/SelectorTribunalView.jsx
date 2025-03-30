@@ -68,7 +68,16 @@ const SelectorTribunalView = ({ selectedTribunal, setSelectedTribunal }) => {
     }, [selectedTribunal]);
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        // <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'center' }}>
+        <div style={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            gap: '10px', 
+            alignItems: 'center', 
+            maxHeight: '400px',  
+            overflowY: 'auto', 
+            padding: '10px',
+        }}>
             <div style={{ display: 'flex', gap: '10px' }}>
                 <BuscadorDocentes
                     key={quienPrecideKey}
@@ -79,6 +88,9 @@ const SelectorTribunalView = ({ selectedTribunal, setSelectedTribunal }) => {
                     maxSelections={1}
                     required={true}
                 />
+            </div>
+
+            <div style={{ display: 'flex', gap: '10px' }}>
                 <BuscadorDocentes
                     key={delgadoConsejoDirectivoKey}
                     label="Delegado H. Consejo Directivo"
@@ -88,9 +100,6 @@ const SelectorTribunalView = ({ selectedTribunal, setSelectedTribunal }) => {
                     maxSelections={1}
                     required={true}
                 />
-            </div>
-    
-            <div style={{ display: 'flex', gap: '10px' }}>
                 <BuscadorDocentes
                     key={docenteDelAreaKey}
                     label="Docente del Área"
@@ -100,6 +109,8 @@ const SelectorTribunalView = ({ selectedTribunal, setSelectedTribunal }) => {
                     maxSelections={1}
                     required={true}
                 />
+            </div>
+            <div style={{ display: 'flex', gap: '10px', marginBottom: '50px'}}>
                 <BuscadorDocentes
                     key={delegadoComisionInvestigacionKey}
                     label="Delegado Com. Investigación Científica"
@@ -110,8 +121,19 @@ const SelectorTribunalView = ({ selectedTribunal, setSelectedTribunal }) => {
                     required={true}
                 />
             </div>
+            {/* <div style={{ display: 'flex', gap: '10px' }}>
+                <BuscadorDocentes
+                    key={delegadoComisionInvestigacionKey}
+                    label="Suplente Miembro"
+                    setSelectedDocentes={setSelectedDelegadoComisionInvestigacion}
+                    initialSelectedItems={selectedDelegadoComisionInvestigacion}
+                    allowDuplicates={false}
+                    maxSelections={1}
+                    required={true}
+                />
+            </div> */}
         </div>
-    );    
+    );
 };
 
 SelectorTribunalView.propTypes = {
