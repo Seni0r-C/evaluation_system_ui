@@ -137,7 +137,6 @@ const Calificar = () => {
 
                 return acc;
             }, {});
-            alert(JSON.stringify(rubricasFormatted, null, 2));
             setRubricas(rubricasFormatted);
         } catch (error) {
             console.error("Error al obtener las rúbricas:", error);
@@ -169,11 +168,9 @@ const Calificar = () => {
             const indexItem = indexaciones.find((indexItem) => indexItem.value === sumInformeFinal);
             if (indexItem) {
                 setIndexacionSelected(indexItem);                
-                alert(indexacionSelected?.id)
             }
             // rubricGrades[]
         }
-        alert(JSON.stringify(rubricGrades, null, 2));
         setRubricGradesData(rubricGrades);
     };
 
@@ -202,7 +199,6 @@ const Calificar = () => {
                         [selectedStudent]: prev[selectedStudent] || defaultGrade(selectedStudent),
                     }));
                 })
-            // alert("calificacionesSeleccionadas: <br>" + JSON.stringify(calificacionesSeleccionadas, null, 2));
             return;
         }
         if (selectedStudent) {
@@ -211,7 +207,6 @@ const Calificar = () => {
                 [selectedStudent]: prev[selectedStudent] || defaultGrade(selectedStudent),
             }));
         }
-        // alert(JSON.stringify(calificacionesSeleccionadas, null, 2));
     }, [selectedStudent, selectedStudents, selectedRubricaType]);
 
 
@@ -476,8 +471,6 @@ const Calificar = () => {
     const calcOverallGrades = (studentData) => {
         const evals = Object.entries(studentData.evaluaciones);
         if (evals.length === 0) return "N/A"; // Handle case when no evaluations exist
-        // alert(JSON.stringify(evals, null, 2));
-        // valor = calificacionValue(calculateMinScore(criterio), calculateMaxScore(criterio), criterioIndex) ?? calculateMinScore(criterio);
         const totalSum = evals.reduce((pre, evalValue) => {
             const [evalType, evalData] = evalValue;
             if (isArticuloAcademico() && evalType === "INFORME FINAL") {
@@ -560,14 +553,7 @@ const Calificar = () => {
                         </button>
                     </div>
                 )}
-                {/* {isArticuloAcademico() && (
-                    <span className="flex justify-center text-lg font-medium text-center text-gray-700 mb-2">
-                        <ComboBoxIndexacionRevistas onSelect={(indexacion) => {
-                            setIndexacionSelected(indexacion);
-                            // alert("Indexación seleccionada:" + JSON.stringify(indexacion));
-                        }} />
-                    </span>
-                )} */}
+
                 <span className="block border-b-2 mb-4 border-gray-500" />
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-5">
                     <div className="lg:col-span-3 mt-6 lg:mt-0">
