@@ -116,11 +116,11 @@ const CustomTrabajoTitulacionListar = ({
 
   return (
     <div className="container mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">{titulo} {JSON.stringify(includeStateFiltter)} {JSON.stringify(firstStates)}</h1>
+      <h1 className="text-2xl font-bold mb-4">{titulo}</h1>
       {includeStateFiltter ?
-        (<FiltroTrabajoTitulacion key={user.id} {...{ filters, onFilterChange: handleFilterChange, carreras, estados, modalidades, verTodo, user }} />)
+        (<FiltroTrabajoTitulacion key={`filtro-${user.id}`} {...{ filters, onFilterChange: handleFilterChange, carreras, estados, modalidades, verTodo, user }} />)
         :
-        (<FiltroTrabajoTitulacion key={user.id} {...{ filters, onFilterChange: handleFilterChange, carreras, modalidades, verTodo, user }} />)
+        (<FiltroTrabajoTitulacion key={`filtro-${user.id}`} {...{ filters, onFilterChange: handleFilterChange, carreras, modalidades, verTodo, user }} />)
       }
       <ListaTrabajosTitulacion key={`trabajos-${user.id}`} trabajos={trabajos} user={user} permisosAcciones={permisosAcciones} />
       <Paginacion {...{ page, total, limit, onPageChange: setPage, onLimitChange: (e) => setLimit(e.target.value) }} />
