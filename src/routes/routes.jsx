@@ -20,7 +20,6 @@ import TrabajoAnteproyectoCrear from '../pages/trabajos/TrabajoAnteproyectoCrear
 import AdministrarCarreras from '../pages/admin/Carreras';
 import AdminRutas from '../pages/admin/Rutas';
 import AdminMenu from '../pages/admin/AdminMenu';
-import ListThesisAllGradesTribunalMember from '../components/ListThesisAllGradesTribunalMember';
 import VerCalificar from '../pages/trabajos/VerCalificar';
 // import ReportsPage from '../pages/Reportes';
 
@@ -196,17 +195,6 @@ export const routes = [
               // endpoint='listar-tri'
               includeStateFiltter={true}
             />
-            {/* <ListThesisAllGradesTribunalMember
-              key="Ver Calificación de Trabajo Titulación"
-              titulo="Ver Calificación de Trabajo Titulación"
-              permisosAcciones={[
-                'detallesTrabajo',
-                'calificar',
-              ]}
-              firstStates={["CON TRIBUNAL", "DEFENDIDO"]}
-              // endpoint='listar-tri-all'
-              includeStateFiltter={true}
-            /> */}
           </ProtectedRoute>
         </Layout>
       </ErrorBoundary>

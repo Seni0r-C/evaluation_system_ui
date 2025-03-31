@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { FaFilePdf } from "react-icons/fa"; // Importamos los íconos de react-icons
 import { useLocation, useNavigate } from 'react-router-dom';
-import { getEstudiantesByTrabajoId, getUserPhoto } from "../../services/usuarioService";
+import { getEstudiantesByTrabajoId, getTribunalMembersByTrabajoId, getUserPhoto } from "../../services/usuarioService";
 import { MdDoneOutline } from "react-icons/md";
 import axiosInstance from "../../services/axiosConfig";
 import { obtenerTiposEvaluacionByModalidadList } from "../../services/rubricaCriterioService";
@@ -18,6 +18,8 @@ const VerCalificar = () => {
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [selectedStudents, setSelectedStudents] = useState([]);
     const [selectedRubricaType, setSelectedRubricaType] = useState("INFORME FINAL");
+    const [selectedTribunalMember, setSelectedTribunalMember] = useState(null);
+    const [tribunalMembers, setTribunalMembers] = useState([]);
     const [estudiantes, setEstudiantes] = useState([]);
     const [photos, setPhotos] = useState({}); // Estado para las fotos, { [id]: fotoBase64 }
     const [rubricas, setRubricas] = useState(null);
@@ -167,7 +169,7 @@ const VerCalificar = () => {
             const sumInformeFinal = Object.values(informeFinalGrades).reduce((prev, current) => prev + current, 0);
             const indexItem = indexaciones.find((indexItem) => indexItem.value === sumInformeFinal);
             if (indexItem) {
-                setIndexacionSelected(indexItem);                
+                setIndexacionSelected(indexItem);
             }
             // rubricGrades[]
         }
@@ -255,6 +257,20 @@ const VerCalificar = () => {
         if (!selectedStudent) {
             setSelectedStudent(estudiantes[0].id);
         }
+    };
+
+    useEffect(() => {
+        const data = [
+            { nombre: "ANDRES CEPEDA ALEJANDRO", id: 1 },
+            { nombre: "JUAN CICLO BENAVIDES", id: 2 },
+        ];
+        if (trabajo?.id) {
+            getTribunalMembersByTrabajoId(trabajo.id, setTribunalMembers);
+        }
+    }, [trabajo])
+
+    const handleSelectedTribunalMember = (member_nombre) => {
+        setSelectedTribunalMember(member_nombre);
     };
 
     const handleFinalizar = async () => {
@@ -557,6 +573,26 @@ const VerCalificar = () => {
                 <span className="block border-b-2 mb-4 border-gray-500" />
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-5">
                     <div className="lg:col-span-3 mt-6 lg:mt-0">
+                        {/* Panel superior de miembros de tribunal */}
+                        <div className="flex justify-center mb-4">
+                            {tribunalMembers && tribunalMembers
+                                .map((member) => {
+                                    const isSelected = selectedTribunalMember === member.nombre;
+                                    return (
+                                        <button
+                                            key={member.id}
+                                            onClick={() => handleSelectedTribunalMember(member.nombre)}
+                                            className={`px-6 py-2 font-semibold flex items-center ${isSelected
+                                                ? "bg-blue-600 text-white"
+                                                : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                                                } ${member.id === 1 ? "rounded-l-lg" : ""} ${member.id === tipoEvaluacion.length ? "rounded-r-lg" : ""
+                                                }`}
+                                        >
+                                            {member.nombre}
+                                        </button>
+                                    );
+                                })}
+                        </div>
                         {/* Panel superior de tipo de calificación */}
                         <div className="flex justify-center mb-4">
                             {tipoEvaluacion
@@ -727,8 +763,8 @@ const VerCalificar = () => {
                                         <ComboBoxIndexacionRevistas onSelect={(indexacion) => {
                                             setIndexacionSelected(indexacion);
                                         }}
-                                        selectedId = {indexacionSelected}
-                                         />
+                                            selectedId={indexacionSelected}
+                                        />
                                     </th>
                                 </tr>
                             </tbody>

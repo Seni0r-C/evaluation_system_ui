@@ -13,6 +13,12 @@ export const getEstudiantesByTrabajoId = (idTrabajo, setEstudiantes) => {
     .catch(error => console.error('Error al buscar estudiantes:', error))
 }
 
+export const getTribunalMembersByTrabajoId = (idTrabajo, setTribunalMembers) => {  
+  axiosInstance.get(`/trabajo-titulacion/tribunal/${idTrabajo}`)
+    .then(response => setTribunalMembers(response.data.data))
+    .catch(error => console.error('Error al buscar miembros de tribunal:', error))
+}
+
 export const getUserPhoto = async (id) => {
   try {
     const response = await axiosInstance.get(`/usuarios/foto/${id}`);
@@ -22,3 +28,4 @@ export const getUserPhoto = async (id) => {
     return null; // Maneja errores devolviendo un valor por defecto
   }
 };
+
