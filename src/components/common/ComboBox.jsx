@@ -21,7 +21,8 @@ const ComboBox = ({
     onSelect,
     placeholder = "Seleccione una opción",
     required = false,
-    selectedInitialItem = null // New prop to set selected item programmatically
+    selectedInitialItem = null,
+    disabled = false 
 }) => {
     const [selectedItem, setSelectedItem] = useState(null);
 
@@ -43,6 +44,7 @@ const ComboBox = ({
         <div className="my-2">
             {label && <label className="text-sm font-medium text-gray-700">{label}</label>}
             <select
+                disabled={disabled}
                 onChange={handleChange}
                 value={selectedItem?.id || ""}
                 className="w-full border border-gray-300 rounded-md px-2 py-1 text-center focus:ring-2 focus:ring-blue-500 focus:outline-none"
@@ -67,6 +69,7 @@ ComboBox.propTypes = {
     onSelect: PropTypes.func,
     placeholder: PropTypes.string,
     required: PropTypes.bool,
+    disabled: PropTypes.bool,
 };
 
 export default ComboBox;

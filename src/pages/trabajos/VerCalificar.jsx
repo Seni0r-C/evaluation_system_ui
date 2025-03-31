@@ -97,6 +97,19 @@ const VerCalificar = () => {
         fetchPhotos();
     }, [estudiantes]);
 
+    useEffect(() => {
+        if (trabajo?.id) {
+            const setTriMembers = (members) => {
+                setTribunalMembers(members);
+                setSelectedTribunalMember(members[0]);
+            }
+            getTribunalMembersByTrabajoId(trabajo.id, setTriMembers);
+        }
+    }, [trabajo])
+
+    const handleSelectedTribunalMember = async (member) => {
+        setSelectedTribunalMember(member);
+    };
 
 
     const fetchRubricas = async () => {
@@ -147,13 +160,11 @@ const VerCalificar = () => {
 
     const fetchRubricGrades = async () => {
         const getGrades = async () => {
-            const info = localStorage.getItem('userInfo');
-            const user = JSON.parse(info);
             try {
                 const response = await axiosInstance.get("/calificacion/rubrica-evaluacion-notas", {
                     params: {
                         trabajo_id: trabajo?.id,
-                        docente_id: user?.id,
+                        docente_id: selectedTribunalMember?.id,
                     },
                 });
                 return response.data;
@@ -164,6 +175,11 @@ const VerCalificar = () => {
         };
 
         const rubricGrades = await getGrades();
+        if (!rubricGrades) {
+            alert("No se encontraron notas XD");
+            return;
+        }
+        setRubricGradesData(rubricGrades);
         if (isArticuloAcademico() && rubricGrades) {
             const informeFinalGrades = Object.values(rubricGrades)[0]["INFORME FINAL"];
             const sumInformeFinal = Object.values(informeFinalGrades).reduce((prev, current) => prev + current, 0);
@@ -171,14 +187,10 @@ const VerCalificar = () => {
             if (indexItem) {
                 setIndexacionSelected(indexItem);
             }
-            // rubricGrades[]
         }
-        setRubricGradesData(rubricGrades);
     };
 
-
     useEffect(() => {
-        fetchRubricGrades();
         fetchRubricas();
     }, [trabajo]);
 
@@ -189,16 +201,14 @@ const VerCalificar = () => {
         return rubricGradesData[selectedStudentId];
     };
 
-    useEffect(() => {
-        // Aquí puedes cargar los datos guardados desde el backend para el estudiante y rúbrica seleccionados.
-        // Si no hay datos, simplemente asegura que se inicialicen correctamente.
+    const setGradesByTribunalMember = async () => {
         if (selectedRubricaType === "INFORME FINAL") {
             selectedStudents
                 .filter((v) => v || v === "null")
                 .forEach((selectedStudent) => {
                     setCalificacionesSeleccionadas((prev) => ({
                         ...prev,
-                        [selectedStudent]: prev[selectedStudent] || defaultGrade(selectedStudent),
+                        [selectedStudent]: defaultGrade(selectedStudent),
                     }));
                 })
             return;
@@ -206,11 +216,18 @@ const VerCalificar = () => {
         if (selectedStudent) {
             setCalificacionesSeleccionadas((prev) => ({
                 ...prev,
-                [selectedStudent]: prev[selectedStudent] || defaultGrade(selectedStudent),
+                [selectedStudent]: defaultGrade(selectedStudent),
             }));
         }
-    }, [selectedStudent, selectedStudents, selectedRubricaType]);
+    }
 
+    useEffect(() => {
+        fetchRubricGrades();
+    }, [selectedTribunalMember]);
+
+    useEffect(() => {
+        setGradesByTribunalMember();
+    }, [selectedStudent, selectedStudents, selectedTribunalMember, rubricGradesData, selectedRubricaType]);
 
     const isCalificacionCompleta = () => {
         if (selectedStudents.length === 0 && selectedRubricaType === "INFORME FINAL")
@@ -257,20 +274,6 @@ const VerCalificar = () => {
         if (!selectedStudent) {
             setSelectedStudent(estudiantes[0].id);
         }
-    };
-
-    useEffect(() => {
-        const data = [
-            { nombre: "ANDRES CEPEDA ALEJANDRO", id: 1 },
-            { nombre: "JUAN CICLO BENAVIDES", id: 2 },
-        ];
-        if (trabajo?.id) {
-            getTribunalMembersByTrabajoId(trabajo.id, setTribunalMembers);
-        }
-    }, [trabajo])
-
-    const handleSelectedTribunalMember = (member_nombre) => {
-        setSelectedTribunalMember(member_nombre);
     };
 
     const handleFinalizar = async () => {
@@ -558,7 +561,7 @@ const VerCalificar = () => {
 
                 </div>
 
-                {showFinalizar && (
+                {/* {showFinalizar && (
                     <div className="flex justify-center mt-6">
                         <button
                             onClick={handleFinalizar}
@@ -568,30 +571,58 @@ const VerCalificar = () => {
                             Finalizar Calificación
                         </button>
                     </div>
-                )}
+                )} */}
 
                 <span className="block border-b-2 mb-4 border-gray-500" />
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-5">
                     <div className="lg:col-span-3 mt-6 lg:mt-0">
                         {/* Panel superior de miembros de tribunal */}
                         <div className="flex justify-center mb-4">
-                            {tribunalMembers && tribunalMembers
-                                .map((member) => {
-                                    const isSelected = selectedTribunalMember === member.nombre;
+                            {tribunalMembers.length === 0 && (
+                                <button
+                                    key={"notribunal"}
+                                    // onClick={async () => await handleSelectedTribunalMember(member)}
+                                    className="px-6 py-2 font-semibold flex items-center bg-gray-200 text-gray-800 hover:bg-gray-300"
+                                >
+                                    {"No hay miembros de tribunal asignados :'("}
+                                </button>
+                            )}
+                            {tribunalMembers
+                                .map((member, index) => {
+                                    const isSelected = selectedTribunalMember?.nombre === member.nombre;
+                                    // const isEvaluated = selectedTribunalMember?.nombre === member.nombre;
                                     return (
                                         <button
                                             key={member.id}
-                                            onClick={() => handleSelectedTribunalMember(member.nombre)}
-                                            className={`px-6 py-2 font-semibold flex items-center ${isSelected
-                                                ? "bg-blue-600 text-white"
-                                                : "bg-gray-200 text-gray-800 hover:bg-gray-300"
-                                                } ${member.id === 1 ? "rounded-l-lg" : ""} ${member.id === tipoEvaluacion.length ? "rounded-r-lg" : ""
-                                                }`}
+                                            onClick={async () => await handleSelectedTribunalMember(member)}
+                                            className={`px-6 py-2 font-semibold flex flex-col items-center first:rounded-l-lg last:rounded-r-lg 
+                                                ${isSelected ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-800 hover:bg-gray-300"} 
+                                                ${!isSelected && index !== tipoEvaluacion.length ? "border-r border-gray-400" : isSelected ? "border-l border-gray-300" : ""} 
+                                            `}
                                         >
-                                            {member.nombre}
+                                            <span>{member.nombre}</span>
+                                            <span
+                                                className={`mt-1 px-4 py-1 text-sm font-semibold rounded-md ${isSelected
+                                                    ? "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                                                    : "bg-blue-600 text-white"
+                                                    }`}
+                                            >
+                                                {member.estado}
+                                            </span>
                                         </button>
+
                                     );
                                 })}
+                            {/* <button
+                                key={"resumen"}
+                                onClick={()=>{}}
+                                className={`px-6 py-2 font-semibold flex items-center ${false
+                                    ? "bg-blue-600 text-white"
+                                    : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                                    } rounded-r-lg`}
+                            >
+                                {"Resumen"}
+                            </button> */}
                         </div>
                         {/* Panel superior de tipo de calificación */}
                         <div className="flex justify-center mb-4">
@@ -657,6 +688,7 @@ const VerCalificar = () => {
                                                     <td className="text-sm font-semibold text-blue-700 text-center border border-gray-300" >
                                                         {
                                                             <input
+                                                                disabled
                                                                 type="number"
                                                                 className="w-full border border-gray-300 rounded-md px-2 py-1 text-center focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                                                 max={calculateMaxScore(criterio)}
@@ -705,9 +737,11 @@ const VerCalificar = () => {
                                         </tbody>
                                     </table>
                                 ) : (
-                                    <div className="justify-center lg:col-start-2 col-span-1 mt-20">
-                                        <div className="text-center text-3xl font-semibold text-blue-600">
-                                            Seleccione una rúbrica para visualizarla.
+                                    <div className="justify-center lg:col-start-2 col-span-1 mt-20 mb-20">
+                                        <div className="text-center text-2xl font-semibold text-blue-600">
+                                            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-4 border-blue-600">
+                                            </div>
+                                            <span className="ml-2 text-blue-700">Cargando datos...</span>
                                         </div>
                                     </div>
                                 )}
@@ -760,7 +794,7 @@ const VerCalificar = () => {
                                         Indexación
                                     </th>
                                     <th className="border border-gray-300 px-4 py-3 text-center font-semibold">
-                                        <ComboBoxIndexacionRevistas onSelect={(indexacion) => {
+                                        <ComboBoxIndexacionRevistas disabled={true} onSelect={(indexacion) => {
                                             setIndexacionSelected(indexacion);
                                         }}
                                             selectedId={indexacionSelected}
@@ -775,9 +809,11 @@ const VerCalificar = () => {
                         Object.values(getRubricaSummary()).map((rubrica) => renderOverallGradeTable(rubrica)
                         )
                     ) : (
-                        <div className="justify-center lg:col-start-2 col-span-1 mt-20">
-                            <div className="text-center text-3xl font-semibold text-blue-600">
-                                Seleccione una rúbrica para visualizarla.
+                        <div className="justify-center lg:col-start-2 col-span-1 mt-20 mb-20">
+                            <div className="text-center text-2xl font-semibold text-blue-600">
+                                <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-4 border-blue-600">
+                                </div>
+                                <span className="ml-2 text-blue-700">Cargando datos...</span>
                             </div>
                         </div>
                     )}

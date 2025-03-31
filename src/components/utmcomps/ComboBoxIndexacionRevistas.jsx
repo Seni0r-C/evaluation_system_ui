@@ -7,7 +7,7 @@ export const indexaciones = [
     { id: 2, name: "Scopus 80%", value: 80 , porcentaje: 0.8},
 ];
 
-const ComboBoxIndexacionRevistas = ({ onSelect, selectedId=null }) => {
+const ComboBoxIndexacionRevistas = ({ onSelect, selectedId=null, disabled=false }) => {
 
     const handleSelection = (item) => {
         onSelect && onSelect(item); // Devuelve el objeto seleccionado
@@ -24,6 +24,7 @@ const ComboBoxIndexacionRevistas = ({ onSelect, selectedId=null }) => {
             bgColor="bg-gray-200"  // Asegura que el fondo sea consistente con los botones
             ringColor="focus:ring-gray-300" // Cambiar color del foco
             selectedInitialItem = {selectedId}
+            disabled={disabled}
         />
     );
 };
