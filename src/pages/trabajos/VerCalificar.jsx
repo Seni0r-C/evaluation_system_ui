@@ -11,15 +11,16 @@ import { indexaciones } from "../../components/utmcomps/ComboBoxIndexacionRevist
 import { useMessage } from "../../hooks/useMessage";
 
 
-const ExamenTeoricoInput = () => {
-    const [value, setValue] = useState(30);
+const ExamenTeoricoInput = ({ onValueChange }) => {
+    const [value, setValue] = useState(0);
 
     const handleChange = (e) => {
         let newValue = e.target.value;
 
         // Convert input to a number and validate the range
         if (newValue === "") {
-            setValue("");
+            setValue(0);
+            onValueChange(0);
             return;
         }
 
@@ -27,6 +28,7 @@ const ExamenTeoricoInput = () => {
 
         if (!isNaN(newValue) && newValue >= 0 && newValue <= 40) {
             setValue(newValue);
+            onValueChange(newValue);
         }
     };
 
@@ -76,6 +78,7 @@ const VerCalificar = () => {
     const [currentRubrica, setCurrentRubrica] = useState(null);
     const [calificacionesSeleccionadas, setCalificacionesSeleccionadas] = useState({});
     const [showFinalizar, setShowFinalizar] = useState(false);
+    const [teoricExamGrade, setTeoricExamGrade] = useState(0);
     // 
     const [indexacionSelected, setIndexacionSelected] = useState(null);
     const [overallSummary, setOverallSummary] = useState({});
@@ -786,22 +789,31 @@ const VerCalificar = () => {
                     <span className="ml-5">{overallEvalType}</span>
                 </td>
 
-                {/* Valor fijo de 100 */}
                 <td className="text-sm font-semibold text-gray-700 text-center border border-gray-300">
-                    100
+                    {
+                        isComplexivo() && overallEvalType === "EXAMEN PRÁCTICO" ? 60:
+                        isComplexivo() && overallEvalType === "EXAMEN TEÓRICO" ? 40: 
+                        100
+                    }
                 </td>
 
                 {/* Cálculo del promedio o formato especial para Artículo Académico */}
                 <td className="px-2 text-lg text-blue-600 text-center border border-gray-300 bg-gray-50">
-                    {isArticuloAcademico() && isInformeFinal(overallEvalType) ? (
-                        indexacionSelected?.value ?? "N/A"
-                    ) : isArticuloAcademico() && !isInformeFinal(overallEvalType) ? (
-                        !indexacionSelected
-                            ? "N/A"
-                            : ` ( ${customRound(overallGradeData.mean)}/100 ) x ${100 - indexacionSelected?.value} + ${indexacionSelected?.value} `
-                    ) : (
-                        customRound(overallGradeData.mean)
-                    )}
+                    {
+                        isArticuloAcademico() && isInformeFinal(overallEvalType) ? (
+                            indexacionSelected?.value ?? "N/A"
+                        ) : isArticuloAcademico() && !isInformeFinal(overallEvalType) ? (
+                            !indexacionSelected
+                                ? "N/A"
+                                : ` ( ${customRound(overallGradeData.mean)}/100 ) x ${100 - indexacionSelected?.value} + ${indexacionSelected?.value} `
+                        ) : (
+                            isComplexivo() && overallEvalType === "EXAMEN PRÁCTICO" ? (
+                                overallGradeData.mean ?? false ?
+                                    `60 x ${customRound(overallGradeData.mean)}%` : "N/A"
+                            ) :
+                                customRound(overallGradeData.mean)
+                        )
+                    }
                 </td>
             </tr>
         );
@@ -809,6 +821,53 @@ const VerCalificar = () => {
 
 
     const renderOverallTriGradeTable = (studentData) => {
+        // return "XD";
+        // if(!studentData) return "N/A";
+        studentData.nombre = estudiantes.find(estudiante => estudiante?.id == studentData.nombre)?.nombre;
+        return (
+            <table className="min-w-[75%] border border-gray-300 rounded-lg shadow-sm mb-4">
+                <thead className="bg-blue-50 text-blue-700">
+                    <tr>
+                        {/* Nombre del estudiante */}
+                        <th className="border border-gray-300 px-4 py-3 text-left w-[300px] min-w-[300px] max-w-[300px] whitespace-nowrap">
+                            {studentData?.nombre}
+                        </th>
+                        {/* Columna Base */}
+                        <th className="border border-gray-300 px-4 py-3 text-center font-semibold w-[100px]">
+                            Base
+                        </th>
+                        {/* Columna Nota */}
+                        <th className="border border-gray-300 px-4 py-3 text-center font-semibold w-[100px]">
+                            Nota
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {/* Filas de Evaluaciones */}
+                    {studentData?.evaluaciones && Object.entries(studentData.evaluaciones).map(([evalType, evalData]) =>
+                        renderOverallTriGradeRow(evalType, evalData)
+                    )
+                    }
+
+                    {/* Fila de Promedio Total */}
+                    <tr className="bg-gray-100 font-bold">
+                        <td className="py-2 text-sm font-bold text-blue-700 text-left border border-gray-300">
+                            <span className="ml-5">{!studentData?.complexivo ? "PROMEDIO" : "TOTAL"}</span>
+                        </td>
+                        <td className="text-sm font-semibold text-blue-700 text-center border border-gray-300">
+                            100
+                        </td>
+                        <td className="text-lg text-blue-600 text-center border border-gray-300 bg-gray-50">
+                            {studentData?.totalMean && customRound(studentData.totalMean)}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        );
+    };
+
+    const renderOverallTriGradeTableComplexivo = (studentData) => {
         // return "XD";
         // if(!studentData) return "N/A";
         studentData.nombre = estudiantes.find(estudiante => estudiante?.id == studentData.nombre)?.nombre;
@@ -855,6 +914,24 @@ const VerCalificar = () => {
         );
     };
 
+    const calcOverallComplexive = (data) => {
+        const [key, value] = Object.entries(data)[0];
+        const totalMean = value.totalMean;
+        const examenTeorico = teoricExamGrade;
+
+        value.evaluaciones = {
+            "EXAMEN PRÁCTICO": {
+                "mean": totalMean
+            }, "EXAMEN TEÓRICO": {
+                "mean": examenTeorico
+            }
+        };
+        value.totalMean = examenTeorico + (totalMean / 100) * 60;
+        value.complexivo = true;
+        return {
+            [key]: value
+        };
+    }
 
     return (
         <div className="w-full overflow-hidden relative h-full">
@@ -935,19 +1012,43 @@ const VerCalificar = () => {
                                 {
                                     isComplexivo() && (
                                         <div className="flex items-center space-x-2 mb-4">
-                                           <ExamenTeoricoInput />
+                                            <span className="text-lg font-semibold text-blue-700">EXAMEN PRÁCTICO</span>
                                         </div>
                                     )
                                 }
 
 
                                 {
-                                    calcularPromedios(overallSummary)?.promedioPorEstudiante &&
-                                    Object.values(calcularPromedios(overallSummary).promedioPorEstudiante).map((rubrica) => (
-                                        <div key={rubrica.nombre} className="w-full flex justify-center">
-                                            {renderOverallTriGradeTable(rubrica)}
+                                    calcularPromedios(overallSummary)?.promedioPorEstudiante ? (
+                                        Object.values(calcularPromedios(overallSummary).promedioPorEstudiante).map((rubrica) => (
+                                            <div key={rubrica.nombre} className="w-full flex justify-center">
+                                                {renderOverallTriGradeTable(rubrica)}
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="text-center text-2xl font-semibold text-blue-600">
+                                            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-4 border-blue-600">
+                                            </div>
+                                            <span className="ml-2 text-blue-700">Cargando datos...</span>
                                         </div>
-                                    ))
+                                    )
+                                }
+                                {
+                                    isComplexivo() && (
+                                        <>
+                                            <div className="flex items-center space-x-2 mb-4">
+                                                <ExamenTeoricoInput onValueChange={setTeoricExamGrade} />
+                                            </div>
+                                            {
+                                                Object.values(calcOverallComplexive(calcularPromedios(overallSummary).promedioPorEstudiante)).map((rubrica) => (
+                                                    <div key={rubrica.nombre} className="w-full flex justify-center">
+                                                        {renderOverallTriGradeTable(rubrica)}
+                                                    </div>
+                                                ))
+                                            }
+                                        </>
+
+                                    )
                                 }
                             </div>
                         )}
