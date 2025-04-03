@@ -11,8 +11,8 @@ import { indexaciones } from "../../components/utmcomps/ComboBoxIndexacionRevist
 import { useMessage } from "../../hooks/useMessage";
 
 
-const ExamenTeoricoInput = ({ onValueChange }) => {
-    const [value, setValue] = useState(0);
+const GradeInput = ({ gradeCategory, initialValue=0, minGradeValue=0, maxGradeValue=100,  onValueChange, onSubmit }) => {
+    const [value, setValue] = useState(initialValue);
 
     const handleChange = (e) => {
         let newValue = e.target.value;
@@ -34,17 +34,17 @@ const ExamenTeoricoInput = ({ onValueChange }) => {
 
     return (
         <div className="flex items-center space-x-2">
-            <span className="text-lg font-semibold text-blue-700">EXAMEN TEÓRICO</span>
+            <span className="text-lg font-semibold text-blue-700">{gradeCategory}</span>
             <input
                 type="number"
-                min="0"
-                max="40"
+                min={minGradeValue}
+                max={maxGradeValue}
                 value={value}
                 onChange={handleChange}
                 className="w-16 px-2 py-2 text-center border border-gray-300 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <button
-                onClick={() => alert(`Value submitted: ${value}`)}
+                onClick={() => onSubmit && onSubmit(value)}
                 className="px-4 py-2 text-lg bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none"
             >
                 Guardar
@@ -270,6 +270,9 @@ const VerCalificar = () => {
 
     useEffect(() => {
         fetchRubricas();
+        if (!trabajo?.id) return;
+        if(!isComplexivo()) return;
+        fetchGetExamenTeoricoGrade();
     }, [trabajo]);
 
     const defaultGrade = (selectedStudentId) => {
@@ -401,6 +404,37 @@ const VerCalificar = () => {
             showMsg({ typeMsg: 'error', message: 'Error al finalizar las calificaciones.' });
         }
     };
+
+    const handleExamenTeoricoGrade = async () => {
+        if (isArticuloAcademico() && !indexacionSelected) {
+            showMsg({ typeMsg: 'warning', message: 'Por favor seleccione una indexación' });
+            return;
+        }
+        try {
+            // Enviar el array completo al servidor
+            await axiosInstance.post(`/calificacion/rubrica-evaluacion-examen-teorico`, { trabajo_id: trabajo.id, docents: tribunalMembers, students: estudiantes, teoricExamGrade: teoricExamGrade });
+            showMsg({ typeMsg: 'success', message: 'Calificacion de EXAMEN TEORICO  guardada correctamente.' });
+            // navigate("/ver-calificacion-de-trabajo-titulacion");
+        } catch (error) {
+            console.error("Error al finalizar las calificaciones:", error);
+            showMsg({ typeMsg: 'error', message: 'Error al guardar calificaciones de EXAMEN TEORICO.' });
+        }
+    };
+
+    const fetchGetExamenTeoricoGrade = async () => {
+        try {
+            // Enviar el array completo al servidor
+            const response = await axiosInstance.get(`/calificacion/rubrica-evaluacion-examen-teorico/${trabajo.id}`);
+            setTeoricExamGrade(response?.data?.grade??0);
+            showMsg({ typeMsg: 'success', message: JSON.stringify(response, null, 2) });
+            // showMsg({ typeMsg: 'success', message: 'Calificacion de EXAMEN TEORICO  guardada correctamente.' });
+            // navigate("/ver-calificacion-de-trabajo-titulacion");
+        } catch (error) {
+            console.error("Error al finalizar las calificaciones:", error);
+            showMsg({ typeMsg: 'error', message: 'Error al guardar calificaciones de EXAMEN TEORICO.' });
+        }
+    };
+
 
     const handleCalificacionPorcentaje = (percentage, rubricaType) => {
         if (!rubricaType || percentage < 0 || percentage > 100) {
@@ -791,9 +825,9 @@ const VerCalificar = () => {
 
                 <td className="text-sm font-semibold text-gray-700 text-center border border-gray-300">
                     {
-                        isComplexivo() && overallEvalType === "EXAMEN PRÁCTICO" ? 60:
-                        isComplexivo() && overallEvalType === "EXAMEN TEÓRICO" ? 40: 
-                        100
+                        isComplexivo() && overallEvalType === "EXAMEN PRÁCTICO" ? 60 :
+                            isComplexivo() && overallEvalType === "EXAMEN TEÓRICO" ? 40 :
+                                100
                     }
                 </td>
 
@@ -1037,7 +1071,13 @@ const VerCalificar = () => {
                                     isComplexivo() && (
                                         <>
                                             <div className="flex items-center space-x-2 mb-4">
-                                                <ExamenTeoricoInput onValueChange={setTeoricExamGrade} />
+                                                <GradeInput
+                                                    gradeCategory={"EXAMEN TEÓRICO"}
+                                                    initialValue={teoricExamGrade}
+                                                    maxGradeValue={40}
+                                                    onValueChange={setTeoricExamGrade}
+                                                    onSubmit={async (_) => await handleExamenTeoricoGrade()}
+                                                />
                                             </div>
                                             {
                                                 Object.values(calcOverallComplexive(calcularPromedios(overallSummary).promedioPorEstudiante)).map((rubrica) => (
