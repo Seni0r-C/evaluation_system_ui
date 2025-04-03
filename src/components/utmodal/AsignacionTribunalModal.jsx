@@ -8,6 +8,7 @@ import { asignarTribunalService, reasignarTribunalService, obtenerTribunalServic
 import { obtenerUnTrabajo } from "../../services/trabajosTitulacion";
 import PropTypes from "prop-types";
 import { useMessage } from "../../hooks/useMessage";
+import { hourAndDateFromDateTimeMySQL, unhourAndDateFromDateTimeMySQL } from "../../utils/constants";
 
 const AsignarTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
     const { showError, showWarning, showMsg } = useMessage();
@@ -21,13 +22,30 @@ const AsignarTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
 
     const [initialDateDefensa, setInitialDateDefensa] = useState("");
     const [trabajoSelected, setTrabajoSelected] = useState(null);
+
+    const handeDateFormat = (fecha, type) => { 
+        if (fecha.trim()=="") return '';
+        if (type==="t" && fecha.includes(",")) {
+            //"09/04/2025, 10:07" -> "2025-04-09T10:07"
+            fecha = hourAndDateFromDateTimeMySQL(fecha);
+        }
+        if (type==="f" && fecha.includes("T")) {
+            // "2025-04-09T10:07"->"09/04/2025, 10:07"
+            fecha = unhourAndDateFromDateTimeMySQL(fecha);            
+        }
+        return fecha;
+    }
+    const formatDate = (fecha, type) => (fecha && handeDateFormat(fecha, type)) || "";
+
     // Función para obtener el trabajo completo
     const fetchTrabajoFull = async (trabajoId) => {
         try {
             const setResults = (fetchedTrabajo) => {
                 setTrabajoSelected(fetchedTrabajo);
-                setInitialDateDefensa(fetchedTrabajo?.fecha_defensa || "");
-                setSelectedDate(fetchedTrabajo?.fecha_defensa || "");
+
+                // "2025-04-08T10:07""09/04/2025, 09:57"                
+                setInitialDateDefensa(formatDate(fetchedTrabajo?.fecha_defensa, "f"));
+                setSelectedDate(formatDate(fetchedTrabajo?.fecha_defensa, "f"));
             };
             obtenerUnTrabajo(setResults, trabajoId);
             // alert(JSON.stringify(trabajoSelected, null, 2));
@@ -97,7 +115,9 @@ const AsignarTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
         const msgData = await asignarTribunalService(null, trabajoData?.id, selectedDocentes, selectedDate);
 
         if (showMsg(msgData)) {
-            trabajoData.fecha_defensa = selectedDate;
+            if (!(!selectedDate || selectedDate?.trim() === "") && selectedDate !== formatDate(trabajoData.fecha_defensa, "f")) {
+                trabajoData.fecha_defensa = formatDate(selectedDate, "t");
+            }
             trabajoData.estado = "CON TRIBUNAL";
             onClose();
         }
@@ -140,7 +160,9 @@ const AsignarTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
         const msgData = await reasignarTribunalService(null, trabajoData?.id, selectedDocentes, selectedDate);
 
         if (showMsg(msgData)) {
-            trabajoData.fecha_defensa = selectedDate;
+            if (!(!selectedDate || selectedDate?.trim() === "") && selectedDate !== formatDate(trabajoData.fecha_defensa, "f")) {
+                trabajoData.fecha_defensa = formatDate(selectedDate, "t");
+            }
             trabajoData.estado = "CON TRIBUNAL";
             onClose();
         }

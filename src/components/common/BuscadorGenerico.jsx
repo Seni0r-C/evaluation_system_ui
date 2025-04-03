@@ -52,7 +52,9 @@ const SearchDropdown = ({
   const { showMsg } = useMessage();
 
   useEffect(() => {
-    setSelectedItems(initialSelectedItems);
+    if (initialSelectedItems.length > 0) {
+      setSelectedItems(initialSelectedItems.filter((item) => item));
+    }
   }, [initialSelectedItems]);
 
   const clearSearchFields = () => {
@@ -190,7 +192,7 @@ const SearchDropdown = ({
       {
         showDropdown && searchResults.length > 0 && (
           <ul className="absolute border rounded-lg bg-white w-full max-h-40 overflow-auto z-10 mt-1 shadow-lg">
-            {searchResults.map((item, index) => (
+            {searchResults.filter(item => item).map((item, index) => (
               <li
                 key={`${item.id}-${index}`}
                 className={`px-3 py-2 cursor-pointer hover:bg-gray-100 ${highlightedIndex === index ? 'bg-gray-100' : ''
@@ -220,7 +222,7 @@ const SearchDropdown = ({
       {
         selectedItems.length > 0 && (
           <div className="mt-2 flex flex-wrap gap-2">
-            {selectedItems.map((item, index) => (
+            {selectedItems.filter(item => item).map((item, index) => (
               <div
                 key={`${item.id}-${index}`}
                 className="flex items-center bg-green-100 text-gray-700 px-3 py-1 rounded-full"

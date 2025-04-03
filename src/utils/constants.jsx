@@ -33,3 +33,19 @@ export const hourAndDateFromDateTimeMySQL = (date) => {
         return '';
     }
 };
+
+export const unhourAndDateFromDateTimeMySQL = (date) => {
+    try {
+        // "2025-04-09T10:07"->"09/04/2025, 10:07"
+        const parts = date.split("T");
+        const dateParts = parts[0].trim().split("-");
+        const day = dateParts[2];
+        const month = dateParts[1];
+        const year = dateParts[0];
+        const time = parts[1].trim();
+        return `${day}-${month}-${year}, ${time}`;
+    } catch (Exception) {
+        console.log(Exception);
+        return '';
+    }
+};
