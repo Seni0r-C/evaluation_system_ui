@@ -423,12 +423,8 @@ const VerCalificar = () => {
 
     const fetchGetExamenTeoricoGrade = async () => {
         try {
-            // Enviar el array completo al servidor
             const response = await axiosInstance.get(`/calificacion/rubrica-evaluacion-examen-teorico/${trabajo.id}`);
-            setTeoricExamGrade(response?.data?.grade??0);
-            showMsg({ typeMsg: 'success', message: JSON.stringify(response, null, 2) });
-            // showMsg({ typeMsg: 'success', message: 'Calificacion de EXAMEN TEORICO  guardada correctamente.' });
-            // navigate("/ver-calificacion-de-trabajo-titulacion");
+            setTeoricExamGrade(parseInt(response?.data?.grade??0));
         } catch (error) {
             console.error("Error al finalizar las calificaciones:", error);
             showMsg({ typeMsg: 'error', message: 'Error al guardar calificaciones de EXAMEN TEORICO.' });
@@ -613,7 +609,7 @@ const VerCalificar = () => {
                 }
 
                 // Process each evaluation type
-                Object.entries(info).forEach(([evaluacion, notas]) => {
+                Object.entries(info).filter(([evalType, _])=> evalType!=="EXAMEN TEORICO").forEach(([evaluacion, notas]) => {
                     if (!resultadoPorEstudiante[idEstudiante].evaluaciones[evaluacion]) {
                         resultadoPorEstudiante[idEstudiante].evaluaciones[evaluacion] = { sum: 0, count: 0 };
                     }
@@ -883,7 +879,6 @@ const VerCalificar = () => {
                         renderOverallTriGradeRow(evalType, evalData)
                     )
                     }
-
                     {/* Fila de Promedio Total */}
                     <tr className="bg-gray-100 font-bold">
                         <td className="py-2 text-sm font-bold text-blue-700 text-left border border-gray-300">
