@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext';
 import { UserProvider } from './context/UserContext';
+import { PermissionProvider } from './context/PermissionContext';
 import { MessageProvider } from './context/MessageContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -14,7 +15,9 @@ root.render(
     <MessageProvider>
       <AuthProvider>
         <UserProvider>
-          <RouterProvider router={router} />
+          <PermissionProvider>
+              <RouterProvider router={router} />
+          </PermissionProvider>
         </UserProvider>
       </AuthProvider>
     </MessageProvider>

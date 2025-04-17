@@ -113,7 +113,8 @@ function App() {
     const handleCreateTipoEvaluacionJerarquia = async (data) => {
         try {
             const response = await createTipoEvaluacionJerarquia(data);
-            setTiposEvaluacionJerarquia([...tiposEvaluacion, response.data]);
+            // setTiposEvaluacionJerarquia([...tiposEvaluacion, response.data]);
+            setTiposEvaluacionJerarquia([...tiposEvaluacionJerarquia, response.data]);
             fetchTiposEvaluacionJerarquia();
         } catch (error) {
             console.error('Error al crear el tipo de evaluación', error);

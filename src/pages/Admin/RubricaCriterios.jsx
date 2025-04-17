@@ -152,14 +152,6 @@ const RubricaCriterios = () => {
                         <option key={te.id} value={te.id}>{te.nombre}</option>
                     ))}
                 </select>
-
-
-                {/* <button
-                    onClick={handleBuscarCriterios}
-                    className="bg-blue-500 text-white px-4 py-2 mt-2 w-full"
-                >
-                    Buscar Criterios
-                </button> */}
             </div>
 
             {/* Formulario para Crear o Editar un Criterio */}
