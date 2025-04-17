@@ -83,8 +83,8 @@ export const routes = [
     element: (
       <Layout>
         <ProtectedRoute>
-          {/* <AdminMenu permissionId="ver_panel_admin" /> */}
-          <AdminMenu />
+          <AdminMenu permissionId="ver_panel_admin_fallback" />
+          {/* <AdminMenu />  */}
         </ProtectedRoute>
       </Layout>
     ),

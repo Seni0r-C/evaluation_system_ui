@@ -34,8 +34,8 @@ function RolesPermisosManager() {
 
     const fetchPermisos = async () => {
         try {
-            const response = await getPermisos();
-            setPermisos(response.data);
+            const data = await getPermisos();
+            setPermisos(data);
         } catch (error) {
             console.error("Error al obtener permisos", error);
         }
@@ -126,7 +126,7 @@ function RolesPermisosManager() {
                             setSelected={setSelectedPermiso}
                         />
                         <PermisoLista
-                            items={permisos}
+                            permisos={permisos}
                             onDelete={handleDeletePermiso}
                             onSelect={setSelectedPermiso}
                         />

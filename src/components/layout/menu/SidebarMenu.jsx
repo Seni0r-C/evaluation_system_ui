@@ -25,6 +25,11 @@ import PermissionInterceptor from '../../../context/PermissionInterceptor';
 //     "ver_tabla_usuarios.ver_columna"
 // ] 
 
+const getPermissionId = (item) => {
+    // return item?.name == "Menu" || item?.name == "Administrar Sistema"? "ver_panel_admin_hide" : null;
+    return item?.name == "Menu"? "ver_panel_admin_hide" : null;
+};
+
 const SidebarMenu = ({ menuData }) => {
     const [openMenuIndex, setOpenMenuIndex] = useState(null);
 
@@ -32,12 +37,27 @@ const SidebarMenu = ({ menuData }) => {
         <nav className="space-y-2">
             {menuData.map((item, index) => (
                 <PermissionInterceptor>
-                    <MenuItem
-                        key={index}
-                        item={item}
-                        isOpen={openMenuIndex === index}
-                        toggle={() => setOpenMenuIndex(openMenuIndex === index ? null : index)}
-                    />
+                    {
+                        getPermissionId(item) &&
+                        <MenuItem
+                            permissionId={getPermissionId(item)}
+                            key={index}
+                            item={item}
+                            // permissionId={item.permissionId}
+                            isOpen={openMenuIndex === index}
+                            toggle={() => setOpenMenuIndex(openMenuIndex === index ? null : index)}
+                        />
+                    }
+                    {
+                        !getPermissionId(item) &&
+                        <MenuItem
+                            key={index}
+                            item={item}
+                            // permissionId={item.permissionId}
+                            isOpen={openMenuIndex === index}
+                            toggle={() => setOpenMenuIndex(openMenuIndex === index ? null : index)}
+                        />
+                    }
                 </PermissionInterceptor>
             ))}
         </nav>

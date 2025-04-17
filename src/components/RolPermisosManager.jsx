@@ -53,12 +53,12 @@ const RolPermisosManager = () => {
             <select
                 className="border p-2 w-full mb-4"
                 onChange={(e) => {
-                    const rol = roles.find(r => r.id == e.target.value);
+                    const rol = roles && roles.find(r => r.id == e.target.value);
                     setRolSeleccionado(rol || null);
                 }}
             >
                 <option value="">Seleccione un rol</option>
-                {roles.map(rol => (
+                {roles && roles.map(rol => (
                     <option key={rol.id} value={rol.id}>{rol.nombre}</option>
                 ))}
             </select>
@@ -94,7 +94,7 @@ const RolPermisosManager = () => {
                     {/* Permisos asignados */}
                     <div className="flex-1 border p-2">
                         <h3 className="font-bold mb-2">Permisos asignados al rol</h3>
-                        {permisosAsignados.map(p => (
+                        {permisosAsignados && permisosAsignados.map(p => (
                             <div key={p.id} className="flex justify-between items-center mb-2">
                                 <span>{p.nombre}</span>
                                 <button

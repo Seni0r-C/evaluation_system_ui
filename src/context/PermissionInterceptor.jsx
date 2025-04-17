@@ -1,56 +1,61 @@
 import React from "react";
 import { usePermission } from "../hooks/usePermission";
 
-const getPermissionBehavior = ({ permissionId, user }) => {
+const getPermissionBehavior = ({ permissionId, user, permissionIdBehavior=null }) => {
+  if (permissionIdBehavior) return permissionIdBehavior;
   if (!user) return "hide";
   // Lógica para decidir comportamiento por permiso, rol, etc.
-  if (permissionId === "ver_panel_admin") return "fallback";
-  return "disabled";
+  if (permissionId) return "fallback";
+  return "fallback";
+  // return "disabled";
 };
 
 const PermissionInterceptor = ({ children }) => {
   // Utiliza el hook usePermission
-  const { user, hasPermission } = usePermission();
+  const { user, hasPermission, permisos } = usePermission();
 
-  const processElement = (element) => {
-    console.log("Procesando elemento:", element);
-    console.log(element);
+  const processElement = (element, index) => {
     if (!React.isValidElement(element)) return element;
 
-    const { permissionId, children: innerChildren } = element.props || {};
+    const { permissionId: permissionIdBruto, children: innerChildren } = element.props || {};
     let processedChildren = innerChildren;
-
-    // Recursivamente procesa los hijos
+    const permissionId = permissionIdBruto?permissionIdBruto.substring(0, permissionIdBruto.lastIndexOf("_")): null; 
+    const permissionIdBehavior = permissionIdBruto?permissionIdBruto.substring(permissionIdBruto.lastIndexOf("_") + 1): null; 
+    // const [permissionId, behavior] = permissionIdBruto?permissionIdBruto.permissionIdBruto.lastIndexOf("_"): null;
     if (innerChildren) {
-      processedChildren = React.Children.map(innerChildren, processElement);
-    }
-
-    // Si no tiene permiso asociado, renderiza con hijos procesados
-    if (!permissionId) {
-      return React.cloneElement(element, { children: processedChildren });
+      processedChildren = React.Children.map(innerChildren, (child, i) => processElement(child, i));
     }
 
     const allowed = hasPermission(permissionId);
-    const behavior = getPermissionBehavior({ permissionId, user });
+    const behavior = getPermissionBehavior({ permissionId, user, permissionIdBehavior });
 
-    if (allowed) {
-      return React.cloneElement(element, { children: processedChildren });
+    const cloneProps = {
+      children: processedChildren,
+      key: element.key || index, // ✅ Aquí asignas una key única si no existe
+    };
+    // console.log(`!permissionId: ${!permissionId} || allowed: ${allowed} || behavior: ${behavior} || element: ${JSON.stringify(element)}`);
+    console.log(`permissionId: ${permissionId} || allowed: ${allowed} || behavior: ${behavior}`);
+    if (permissionId && allowed) {
+      return React.cloneElement(element, cloneProps);
+    }
+    if (!permissionId) {
+      return React.cloneElement(element, cloneProps);
     }
 
     switch (behavior) {
       case "disabled":
         return React.cloneElement(element, {
+          ...cloneProps,
           disabled: true,
           className: `${element.props.className || ""} opacity-50 pointer-events-none`,
-          children: processedChildren,
         });
       case "blur":
         return React.cloneElement(element, {
+          ...cloneProps,
           className: `${element.props.className || ""} blur pointer-events-none`,
-          children: processedChildren,
         });
       case "fallback":
-        return <span className="text-sm text-red-500">No tienes acceso</span>;
+        return <span key={`fallback-${index}`} className="text-sm text-red-500">No tienes acceso</span>;
       case "hide":
       default:
         return null;
@@ -58,6 +63,7 @@ const PermissionInterceptor = ({ children }) => {
   };
 
   return <>{React.Children.map(children, processElement)}</>;
+  // return <>{JSON.stringify(permisos, null, 2)}{React.Children.map(children, processElement)}</>;
 };
 
 export default PermissionInterceptor;

@@ -122,7 +122,7 @@ const AdminMenu = () => {
 
     const renderMenuItems = (items, isSubmenu = false) => {
         return (
-            <ul className="space-y-2">
+            <ul className="space-y-2" >
                 {items.filter((item) => item.name !== "Inicio").map((menu) => (
                     <li key={menu.id} className="p-2 border rounded">
                         <div className="flex  items-center">
