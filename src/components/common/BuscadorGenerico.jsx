@@ -126,102 +126,46 @@ const SearchDropdown = ({
 
   return (
     <div className="pl-4 pr-4 pt-2">
-
       {/* Etiqueta del campo */}
       <label className="block text-sm font-medium text-gray-700">
         {label}
         {required && <span className="text-red-500"> *</span>}
       </label>
-
-      {/* Campo principal con botón más grande */}
-      <div className="relative flex items-center border rounded-md overflow-hidden">
-        <input
-          type="text"
-          value={searchValue}
-          onChange={(e) => handleSearchChange(e.target.value, handlerBuscar)}
-          placeholder={placeholder}
-          className="w-full border-none px-3 py-2 focus:outline-none"
-          required={required}
-        />
-
-        {/* Botón para mostrar campos adicionales */}
-        {subSearchHandlers.length > 0 && (
-          <button
-            onClick={handleButtonAdvancedSearch}
-            className={`p-3 border-l text-lg ${showAdvancedSearch ? 'bg-green-700 text-green-100 hover:bg-green-700' : 'bg-green-300 hover:bg-green-400'}`}
-          >
-            <FaSearchPlus />
-          </button>
-        )}
-        {/* Botón para resultados de búsquedas */}
-        <button
-          onClick={handleButtonDropdown}
-          className="p-3 border-l bg-gray-100 hover:bg-gray-200 text-lg"
-        >
-          {showDropdown ? <FaChevronUp /> : <FaChevronDown />}
-        </button>
-
-      </div>
-
-      {/* Campos adicionales solo cuando showAdvancedSearch está activo */}
-      {
-        showAdvancedSearch &&
-        subSearchHandlers.map((search, index) => (
-          <div key={index} className={`mt-2 ${search.layout === 'inline' ? 'flex' : 'block'}`}>
-            <input
-              type="text"
-              placeholder={search.label}
-              value={subSearchValues[search.label]}
-              onChange={(e) => handleSubSearchChange(search.label, e.target.value, search.handler)}
-              className="w-full border px-3 py-2 rounded-md focus:outline-none"
-            />
-          </div>
-        ))
-      }
-
-      {/* Spinner de carga */}
-      {
-        showSpinner && (
-          <div className="absolute left-0 w-full p-3 text-center bg-white border">
-            <Spinner />
-          </div>
-        )
-      }
-
-      {/* Resultados del buscador */}
-      {
-        showDropdown && searchResults.length > 0 && (
-          <ul className="absolute border rounded-lg bg-white w-full max-h-40 overflow-auto z-10 mt-1 shadow-lg">
-            {searchResults.filter(item => item).map((item, index) => (
-              <li
-                key={`${item.id}-${index}`}
-                className={`px-3 py-2 cursor-pointer hover:bg-gray-100 ${highlightedIndex === index ? 'bg-gray-100' : ''
-                  }`}
-                onClick={() => handleItemSelect(item)}
-                onMouseEnter={() => setHighlightedIndex(index)}
-              >
-                {item.nombre || item.title || item.name}
-              </li>
-            ))}
-          </ul>
-        )
-      }
-      {
-        showDropdown && searchResults.length <= 0 && (
-          <ul className="absolute border rounded-lg bg-white w-full max-h-40 overflow-auto z-10 mt-1 shadow-lg">
-            <li
-              className={`px-3 py-2 cursor-pointer hover:bg-gray-100`}
+  
+      {/* Contenedor que agrupa input y seleccionados */}
+      <div className="flex flex-col md:flex-row md:items-start md:gap-4">
+        {/* Campo principal con botones */}
+        <div className="relative flex items-center border rounded-md overflow-hidden flex-1 min-w-[300px]">
+          <input
+            type="text"
+            value={searchValue}
+            onChange={(e) => handleSearchChange(e.target.value, handlerBuscar)}
+            placeholder={placeholder}
+            className="w-full border-none px-3 py-2 focus:outline-none"
+            required={required}
+          />
+  
+          {/* Botón para mostrar campos adicionales */}
+          {subSearchHandlers.length > 0 && (
+            <button
+              onClick={handleButtonAdvancedSearch}
+              className={`p-3 border-l text-lg ${showAdvancedSearch ? 'bg-green-700 text-green-100 hover:bg-green-700' : 'bg-green-300 hover:bg-green-400'}`}
             >
-              {searchedMessage}
-            </li>
-          </ul>
-        )
-      }
-
-      {/* Ítems seleccionados */}
-      {
-        selectedItems.length > 0 && (
-          <div className="mt-2 flex flex-wrap gap-2">
+              <FaSearchPlus />
+            </button>
+          )}
+          {/* Botón para resultados de búsquedas */}
+          <button
+            onClick={handleButtonDropdown}
+            className="p-3 border-l bg-gray-100 hover:bg-gray-200 text-lg"
+          >
+            {showDropdown ? <FaChevronUp /> : <FaChevronDown />}
+          </button>
+        </div>
+  
+        {/* Ítems seleccionados a la derecha en pantallas md+ */}
+        {selectedItems.length > 0 && (
+          <div className="mt-2 md:mt-0 flex flex-wrap gap-2 md:max-w-sm min-w-[300px]">
             {selectedItems.filter(item => item).map((item, index) => (
               <div
                 key={`${item.id}-${index}`}
@@ -237,10 +181,56 @@ const SearchDropdown = ({
               </div>
             ))}
           </div>
-        )
-      }
-    </div >
+        )}
+      </div>
+  
+      {/* Campos adicionales solo cuando showAdvancedSearch está activo */}
+      {showAdvancedSearch &&
+        subSearchHandlers.map((search, index) => (
+          <div key={index} className={`mt-2 ${search.layout === 'inline' ? 'flex' : 'block'}`}>
+            <input
+              type="text"
+              placeholder={search.label}
+              value={subSearchValues[search.label]}
+              onChange={(e) => handleSubSearchChange(search.label, e.target.value, search.handler)}
+              className="w-full border px-3 py-2 rounded-md focus:outline-none"
+            />
+          </div>
+        ))}
+  
+      {/* Spinner de carga */}
+      {showSpinner && (
+        <div className="relative left-0 w-full p-3 text-center bg-white border">
+          <Spinner />
+        </div>
+      )}
+  
+      {/* Resultados del buscador */}
+      {showDropdown && searchResults.length > 0 && (
+        <ul className="relative border rounded-lg bg-white w-full max-h-40 overflow-auto z-10 mt-1 shadow-lg">
+          {searchResults.filter(item => item).map((item, index) => (
+            <li
+              key={`${item.id}-${index}`}
+              className={`px-3 py-2 cursor-pointer hover:bg-gray-100 ${highlightedIndex === index ? 'bg-gray-100' : ''}`}
+              onClick={() => handleItemSelect(item)}
+              onMouseEnter={() => setHighlightedIndex(index)}
+            >
+              {item.nombre || item.title || item.name}
+            </li>
+          ))}
+        </ul>
+      )}
+  
+      {showDropdown && searchResults.length <= 0 && (
+        <ul className="relative border rounded-lg bg-white w-full max-h-40 overflow-auto z-10 mt-1 shadow-lg">
+          <li className="px-3 py-2 cursor-pointer hover:bg-gray-100">
+            {searchedMessage}
+          </li>
+        </ul>
+      )}
+    </div>
   );
+  
 };
 
 SearchDropdown.propTypes = {
