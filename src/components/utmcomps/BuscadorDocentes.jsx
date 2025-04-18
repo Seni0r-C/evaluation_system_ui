@@ -17,7 +17,7 @@ const BuscadorDocentes = ({ setSelectedDocentes, initialSelectedItems = [], allo
             {/* Buscador de Docentes */}
             <SearchDropdown
                 label={label}
-                placeholder="Ingrese el nombre del docente"
+                placeholder="Nombres apellidos del docente"
                 handlerBuscar={handleBuscarNombre}
                 onSelectionChange={(items) => setSelectedDocentes(items)}
                 allowDuplicates={allowDuplicates} 

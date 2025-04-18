@@ -23,15 +23,15 @@ const AsignarTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
     const [initialDateDefensa, setInitialDateDefensa] = useState("");
     const [trabajoSelected, setTrabajoSelected] = useState(null);
 
-    const handeDateFormat = (fecha, type) => { 
-        if (fecha.trim()=="") return '';
-        if (type==="t" && fecha.includes(",")) {
+    const handeDateFormat = (fecha, type) => {
+        if (fecha.trim() == "") return '';
+        if (type === "t" && fecha.includes(",")) {
             //"09/04/2025, 10:07" -> "2025-04-09T10:07"
             fecha = hourAndDateFromDateTimeMySQL(fecha);
         }
-        if (type==="f" && fecha.includes("T")) {
+        if (type === "f" && fecha.includes("T")) {
             // "2025-04-09T10:07"->"09/04/2025, 10:07"
-            fecha = unhourAndDateFromDateTimeMySQL(fecha);            
+            fecha = unhourAndDateFromDateTimeMySQL(fecha);
         }
         return fecha;
     }
@@ -93,23 +93,29 @@ const AsignarTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
             );
             return;
         }
-        if (changeLess && selectedDate === initialDateDefensa) {
-            showWarning(
-                "No se ha realizado ningún cambio para asignar el tribunal."
-            );
-            onClose();
-            return;
-        }
         else if (!selectedDocentes || selectedDocentes[0] === null) {
             showWarning(
                 "Debe seleccionar a 'quien preside' para asignar el tribunal."
             );
             return;
         }
-        else if (!selectedDocentes || selectedDocentes.length < 4) {
+        else if (selectedDocentes && selectedDocentes[1] === null) {
+            showWarning(
+                "Debe seleccionar a un suplente de miembro de tribunal."
+            );
+            return;
+        }
+        else if (!selectedDocentes || selectedDocentes.length < 5) {
             showWarning(
                 "Debe seleccionar 3 docentes para asignar el tribunal."
             );
+            return;
+        }
+        if (changeLess && selectedDate === initialDateDefensa) {
+            showWarning(
+                "No se ha realizado ningún cambio para asignar el tribunal."
+            );
+            onClose();
             return;
         }
         const msgData = await asignarTribunalService(null, trabajoData?.id, selectedDocentes, selectedDate);
@@ -137,24 +143,31 @@ const AsignarTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
             );
             return;
         }
-        if (changeLess && selectedDate === initialDateDefensa) {
-            showMsg({
-                typeMsg: "info",
-                message: "No se ha realizado ningún cambio para reasignar el tribunal."
-            });
-            onClose();
-            return;
-        }
+
         else if (!selectedDocentes || selectedDocentes[0] === null) {
             showWarning(
                 "Debe seleccionar a 'quien preside' para asignar el tribunal."
             );
             return;
         }
-        else if (!selectedDocentes || selectedDocentes.length < 4) {
+        else if (!selectedDocentes || selectedDocentes[1] === null) {
+            showWarning(
+                "Debe seleccionar a un suplente de miembro de tribunal."
+            );
+            return;
+        }
+        else if (!selectedDocentes || selectedDocentes.length < 5) {
             showWarning(
                 "Debe seleccionar 3 docentes para reasignar el tribunal."
             );
+            return;
+        }
+        if (changeLess && selectedDate === initialDateDefensa) {
+            showMsg({
+                typeMsg: "info",
+                message: "No se ha realizado ningún cambio para reasignar el tribunal."
+            });
+            onClose();
             return;
         }
         const msgData = await reasignarTribunalService(null, trabajoData?.id, selectedDocentes, selectedDate);
@@ -170,33 +183,34 @@ const AsignarTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
 
     return (
         <div className="fixed inset-0 z-50 bg-gray-800 bg-opacity-75 flex items-center justify-center">
-            <div className="relative bg-white w-full max-w-lg rounded shadow-lg">
+            <div className="relative bg-white w-full max-w-lg rounded shadow-lg min-w-[700px]">
                 <ModalHeader onClose={onClose} title={title} />
-                <div className="py-1 px-4">
-                    <div className="relative">
-                        {/* Etiqueta del campo */}
-                        <label className="block text-sm font-medium text-gray-700 ">
-                            Fecha defensa
-                            <span className="text-red-500"> *</span>
-                        </label>
-
-                        {/* Campo principal con botón más grande */}
-                        <div className="relative flex items-center  rounded-md overflow-hidden">
-                            <SelectorFecha onDateChange={setSelectedDate} required={true} trabajoData={trabajoData} />
-                        </div>
-                    </div>
-                </div>
 
                 <SelectorTribunalView
                     selectedTribunal={selectedDocentes}
                     setSelectedTribunal={setSelectedDocentes}
-                />
+                >
+                    <div className="py-1 px-5">
+                        <div className="relative">
+                            {/* Etiqueta del campo */}
+                            <label className="text-sm font-medium text-gray-700">
+                                Fecha defensa
+                                <span className="text-red-500"> *</span>
+                            </label>
+
+                            {/* Campo principal con botón más grande */}
+                            <div className="relative flex items-center  rounded-md overflow-hidden">
+                                <SelectorFecha onDateChange={setSelectedDate} required={true} trabajoData={trabajoData} />
+                            </div>
+                        </div>
+                    </div>
+                </ SelectorTribunalView>
 
                 <ModalFooter
                     hasNestedData={!!nestedData}
                     onBack={() => setNestedData(null)}
                     btnActions={
-                        initialSelectedItems.length > 1 ?
+                        initialSelectedItems.length > 2 ?
                             [
                                 { label: "Reasignar", color: "blue", onClick: onCloseReasignarTribunal },
                                 { label: "Cancelar", color: "gray", onClick: onClose },
