@@ -7,8 +7,8 @@ import { MdDoneOutline } from "react-icons/md";
 import axiosInstance from "../../services/axiosConfig";
 import { obtenerTiposEvaluacionByModalidadList } from "../../services/rubricaCriterioService";
 import ComboBoxIndexacionRevistas from "../../components/utmcomps/ComboBoxIndexacionRevistas";
-import { indexaciones } from "../../components/utmcomps/ComboBoxIndexacionRevistas";
 import { useMessage } from "../../hooks/useMessage";
+import { getIndicesRevistasService } from "../../services/indiceRevistasService";
 
 
 const GradeInput = ({ gradeCategory, initialValue = 0, minGradeValue = 0, maxGradeValue = 100, onValueChange, onSubmit }) => {
@@ -253,6 +253,12 @@ const VerCalificar = () => {
 
     const fetchRubricGrades = async (selectedTribunalMember) => {
 
+        const indexaciones = await getIndicesRevistasService();
+        if (indexaciones.typeMsg === 'error') {
+            showMsg({ typeMsg: 'error', message: indexaciones.message });
+            return;
+        }
+
         const rubricGrades = await getGrades(selectedTribunalMember);
         if (!rubricGrades) {
             return;
@@ -260,6 +266,10 @@ const VerCalificar = () => {
         setRubricGradesData(rubricGrades);
         if (isArticuloAcademico() && rubricGrades) {
             const informeFinalGrades = Object.values(rubricGrades)[0][getInformeFinalKey()];
+            // alert(rubricGrades[getInformeFinalKey()]);            
+            const firstStudent = Object.keys(rubricGrades)[0];
+            // alert(JSON.stringify(rubricGrades[firstStudent][getInformeFinalKey()], null, 2));
+            // alert(JSON.stringify(rubricGrades[firstStudent][getInformeFinalKey()], null, 2));
             const sumInformeFinal = Object.values(informeFinalGrades).reduce((prev, current) => prev + current, 0);
             const indexItem = indexaciones.find((indexItem) => indexItem.value === sumInformeFinal);
             if (indexItem) {
@@ -402,6 +412,61 @@ const VerCalificar = () => {
         } catch (error) {
             console.error("Error al finalizar las calificaciones:", error);
             showMsg({ typeMsg: 'error', message: 'Error al finalizar las calificaciones.' });
+        }
+    };
+
+    const handleFinalizarInformeFinalArticuloAcademicoGradement = async () => {
+        if (isArticuloAcademico() && !indexacionSelected) {
+            showMsg({ typeMsg: 'warning', message: 'Por favor seleccione una indexación' });
+            return;
+        }
+        // const info = localStorage.getItem('userInfo');
+        // const user = JSON.parse(info);
+
+        try {
+            // Preparar datos en un solo array para enviar al servidor
+            const payload = [];
+            for (const docent of tribunalMembers) {
+                for (const studentId in calificacionesSeleccionadas) {
+                    for (const tipoEvaluacion in calificacionesSeleccionadas[studentId]) {
+                        if (isArticuloAcademico() && !isInformeFinal(tipoEvaluacion)) continue;
+                        const rubrica = rubricas[tipoEvaluacion];
+
+                        if (!rubrica) continue;
+
+                        const rubricaId = rubrica.rubrica_id;
+                        const criterios = rubrica.rubrica.criterios;
+
+                        const sumResult = Object.values(calificacionesSeleccionadas[studentId][tipoEvaluacion]).reduce((sum, val) => sum + val, 0);
+                        const newGradement = Object.values(calificacionesSeleccionadas[studentId][tipoEvaluacion]).map((value) => {
+                            return (value / sumResult) * indexacionSelected.value
+                        });
+                        calificacionesSeleccionadas[studentId][tipoEvaluacion] = newGradement;
+                        for (const [criterioIndex, puntajeObtenido] of Object.entries(calificacionesSeleccionadas[studentId][tipoEvaluacion])) {
+                            const criterio = criterios[criterioIndex];
+
+                            // Agregar cada calificación al array
+                            payload.push({
+                                trabajo_id: trabajo.id,
+                                rubrica_id: rubricaId,
+                                rubrica_criterio_id: criterio.id,
+                                docente_id: docent.id,
+                                estudiante_id: studentId,
+                                puntaje_obtenido: puntajeObtenido,
+                            });
+                        }
+                    }
+                }
+            }
+
+            // Enviar el array completo al servidor
+            await axiosInstance.post(`/calificacion/rubrica-evaluacion`, { calificaciones: payload });
+
+            showMsg({ typeMsg: 'success', message: 'El tipo de indexación ha sido guardado correctamente.' });
+            // navigate("/calificacion-de-trabajo-titulacion");
+        } catch (error) {
+            console.error("Error al guardar el tipo de indexación:", error);
+            showMsg({ typeMsg: 'error', message: 'Error al guardar el tipo de indexación.' });
         }
     };
 
@@ -1014,7 +1079,7 @@ const VerCalificar = () => {
                         {resumenRequired && (
                             <div className="flex flex-col items-center mt-16 mb-4 space-y-4">
 
-                                { isArticuloAcademico() && (
+                                {isArticuloAcademico() && (
                                     <table className="table-auto mb-4 bg-gray-100 text-blue-600">
                                         <tbody>
                                             <tr>
@@ -1027,6 +1092,14 @@ const VerCalificar = () => {
                                                     }}
                                                         selectedId={indexacionSelected}
                                                     />
+                                                </th>
+                                                <th className="border border-gray-300 px-4 py-3 text-center">
+                                                    <button
+                                                        onClick={() => handleFinalizarInformeFinalArticuloAcademicoGradement()}
+                                                        className="px-4 py-2 text-lg bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none"
+                                                    >
+                                                        Guardar
+                                                    </button>
                                                 </th>
                                             </tr>
                                         </tbody>

@@ -7,8 +7,8 @@ import { MdDoneOutline } from "react-icons/md";
 import axiosInstance from "../../services/axiosConfig";
 import { obtenerTiposEvaluacionByModalidadList } from "../../services/rubricaCriterioService";
 import ComboBoxIndexacionRevistas from "../../components/utmcomps/ComboBoxIndexacionRevistas";
-import { indexaciones } from "../../components/utmcomps/ComboBoxIndexacionRevistas";
 import { useMessage } from "../../hooks/useMessage";
+import { getIndicesRevistasService } from "../../services/indiceRevistasService";
 
 function customRound(num) {
     return (num % 1 >= 0.5) ? Math.ceil(num) : Math.floor(num);
@@ -83,8 +83,7 @@ const Calificar = () => {
     }
 
     useEffect(() => {
-        const isSetGrade = isCalificacionCompleta();
-        setShowFinalizar(isSetGrade);
+        setShowFinalizar(isCalificacionCompleta());
     }, [calificacionesSeleccionadas]);
 
     useEffect(() => {
@@ -177,6 +176,13 @@ const Calificar = () => {
     };
 
     const fetchRubricGrades = async () => {
+
+        const indexaciones = await getIndicesRevistasService();
+        if (indexaciones.typeMsg === 'error') {
+            showMsg({ typeMsg: 'error', message: indexaciones.message });
+            return;
+        }
+
         const getGrades = async () => {
             const info = localStorage.getItem('userInfo');
             const user = JSON.parse(info);
@@ -207,6 +213,7 @@ const Calificar = () => {
             }
             // rubricGrades[]
         }
+        console.log({rubricGrades});
         setRubricGradesData(rubricGrades);
     };
 
@@ -354,6 +361,7 @@ const Calificar = () => {
                 for (const tipoEvaluacion in calificacionesSeleccionadas[studentId]) {
                     // for (const tipoEvaluacionn in calificacionesSeleccionadas[studentId]) {
                     const tipoEvaluacionn = !isComplexivo() ? tipoEvaluacion : `${tipoEvaluacion} (EXAMEN PRACTICO)`;
+
                     const rubrica = rubricas[tipoEvaluacionn];
 
                     if (!rubrica) continue;
@@ -460,6 +468,7 @@ const Calificar = () => {
         // tipo_evaluacion_nombre = tipo_evaluacion_nombre?.replace("(EXAMEN PRACTICO)", "")?.replace("(EXÁMEN PRÁCTICO)", "")?.replace("(EXAMEN PRÁCTICO)", "").trim();
         const sStudent = getSelectedStudent();
         const keyRType = selectedRubricaType?.replace("(EXAMEN PRACTICO)", "")?.replace("(EXÁMEN PRÁCTICO)", "")?.replace("(EXAMEN PRÁCTICO)", "").trim();
+        // alert(JSON.stringify({ hola: "Hello", califica: calificacionesSeleccionadas[sStudent], selectedRubricaType}, null, 2));
         const value = calificacionesSeleccionadas[sStudent]?.[keyRType]?.[criterioIndex];
         return Math.max(minimo, value ?? 0);
         // return Math.max(minimo, minimo==0?Number(maximo)/(getIndexPercent()*Number(maximo)):value);
@@ -818,6 +827,7 @@ const Calificar = () => {
                                             setIndexacionSelected(indexacion);
                                         }}
                                             selectedId={indexacionSelected}
+                                            disabled={true}
                                         />
                                     </th>
                                 </tr>

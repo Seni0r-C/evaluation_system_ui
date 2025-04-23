@@ -27,7 +27,7 @@ const ComboBox = ({
     const [selectedItem, setSelectedItem] = useState(null);
 
     useEffect(() => {
-        if (selectedInitialItem?.id??null !== null) {
+        if (items && (selectedInitialItem?.id??null !== null)) {
             const item = items.find(i => String(i.id) === String(selectedInitialItem.id));
             setSelectedItem(item || null);
         }
@@ -51,7 +51,7 @@ const ComboBox = ({
                 required={required}
             >
                 <option value="">{placeholder}</option>
-                {items.map(item => (
+                {items && items.map(item => (
                     <option key={item.id} value={item.id}>
                         {displayFn ? displayFn(item) : item[displayKey]}
                     </option>
