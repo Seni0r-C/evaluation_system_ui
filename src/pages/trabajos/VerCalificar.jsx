@@ -1025,11 +1025,11 @@ const VerCalificar = () => {
                                     <div className="text-center text-2xl font-semibold text-blue-600">
                                         <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-4 border-blue-600">
                                         </div>
-                                        <span className="ml-2 text-blue-700">Cargando datos...</span>
+                                        <span className="ml-2 text-blue-700">Cargando miembros del tribunal...</span>
                                     </div>
                                 </div>
                             )}
-                            {tribunalMembers
+                            {tribunalMembers.length > 0 && tribunalMembers
                                 .map((member, index) => {
                                     const isSelected = selectedTribunalMember?.nombre === member.nombre;
                                     // const isEvaluated = selectedTribunalMember?.nombre === member.nombre;
@@ -1056,7 +1056,7 @@ const VerCalificar = () => {
                                     );
                                 })}
 
-                            <button
+                            {tribunalMembers.length > 0 && (<button
                                 key={"resumen"}
                                 onClick={() => {
                                     const isSummary = !resumenRequired && selectedTribunalMember;
@@ -1074,7 +1074,7 @@ const VerCalificar = () => {
                                 }
                             >
                                 {"TOTALES"}
-                            </button>
+                            </button>)}
                         </div>
                         {resumenRequired && (
                             <div className="flex flex-col items-center mt-16 mb-4 space-y-4">
