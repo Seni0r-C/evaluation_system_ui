@@ -1114,7 +1114,6 @@ const VerCalificar = () => {
                                     )
                                 }
 
-
                                 {
                                     calcularPromedios(overallSummary)?.promedioPorEstudiante ? (
                                         Object.values(calcularPromedios(overallSummary).promedioPorEstudiante).map((rubrica) => (
