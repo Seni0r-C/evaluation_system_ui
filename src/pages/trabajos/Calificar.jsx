@@ -31,6 +31,8 @@ const Calificar = () => {
     const [calificacionesSeleccionadas, setCalificacionesSeleccionadas] = useState({});
     const [showFinalizar, setShowFinalizar] = useState(false);
     const [indexacionSelected, setIndexacionSelected] = useState(null);
+    const [resumenRequired, setResumenRequired] = useState(false);
+
 
     const navigate = useNavigate();
 
@@ -213,7 +215,7 @@ const Calificar = () => {
             }
             // rubricGrades[]
         }
-        console.log({rubricGrades});
+        console.log({ rubricGrades });
         setRubricGradesData(rubricGrades);
     };
 
@@ -308,7 +310,7 @@ const Calificar = () => {
                     const isSetGrade = calificacionesSeleccionadas[student.id]?.[tipo.tipo_evaluacion_nombre]?.[criterioIndex] !== undefined;
                     if (isArticuloAcademico() && !isSetGrade && tipo.tipo_evaluacion_nombre === getInformeFinalKey()) {
                         if (!indexacionSelected) {
-                            showMsg({ typeMsg: 'info', message: 'Por favor seleccione una indexación' });
+                            // showMsg({ typeMsg: 'info', message: 'Por favor seleccione una indexación' });
                             return false;
                         }
                         handleCalificacionPorcentaje(indexacionSelected.value, getInformeFinalKey());
@@ -541,7 +543,7 @@ const Calificar = () => {
         });
         return summary;
     };
-    const renderOverallGradeRow = (overallEvalType, overallGradeData) => {
+    const renderOverallGradeRow2 = (overallEvalType, overallGradeData) => {
         return (
             <tr className="bg-gray-100 font-bold">
                 <td className="py-2 text-sm font-bold text-gray-700 text-left border border-gray-300">
@@ -563,28 +565,63 @@ const Calificar = () => {
         )
     }
 
+    const renderOverallGradeRow = (overallEvalType, overallGradeData) => {
+        return (
+            <tr className="bg-gray-100 font-bold">
+                <td className="py-2 text-sm font-bold text-gray-700 text-left border border-gray-300">
+                    <span className="ml-5">{overallEvalType}</span>
+                </td>
+                <td className="text-sm font-semibold text-gray-700 text-center border border-gray-300">
+                    {
+                        isComplexivo() && overallEvalType === "EXAMEN PRÁCTICO" ? 60 :
+                            isComplexivo() && overallEvalType === "EXAMEN TEÓRICO" ? 40 :
+                                isArticuloAcademico() && overallEvalType === "INFORME FINAL" ? `${indexacionSelected?.value}` :
+                                    isArticuloAcademico() && overallEvalType === "DEFENSA" ? `${100 - indexacionSelected?.value}` :
+                                        100
+                    }
+                </td>
+                <td className="px-2 text-lg text-blue-600  text-center border border-gray-300 bg-gray-50">
+                    {isArticuloAcademico() && isInformeFinal(overallEvalType) && (
+                        indexacionSelected?.value ?? "N/A"
+                    )}
+                    {isArticuloAcademico() && !isInformeFinal(overallEvalType) && (
+                        !indexacionSelected ? "N/A" : (overallGradeData.sum / 100) * (100 - indexacionSelected?.value)
+                    )}
+                    {!isArticuloAcademico() ? overallGradeData.sum : null}
+                </td>
+            </tr>
+        )
+    }
+
+
     const calcOverallGrades = (studentData) => {
         const evals = Object.entries(studentData.evaluaciones);
         if (evals.length === 0) return "N/A"; // Handle case when no evaluations exist
         const totalSum = evals.reduce((pre, evalValue) => {
             const [evalType, evalData] = evalValue;
-            if (isArticuloAcademico() && evalType === getInformeFinalKey()) {
+            if (isArticuloAcademico() && isInformeFinal(evalType)) {
                 evalData.sum = indexacionSelected?.value ?? 0;
             }
-            if (isArticuloAcademico() && evalType !== getInformeFinalKey()) {
-                evalData.sum = (evalData.sum / 100) * (100 - indexacionSelected?.value) + indexacionSelected?.value;
+            if (isArticuloAcademico() && !isInformeFinal(evalType)) {
+                evalData.sum = (evalData.sum / 100) * (100 - indexacionSelected?.value);
+                // evalData.sum = (evalData.sum / 100) * (100 - indexacionSelected?.value) + indexacionSelected?.value;
             }
             return pre + evalData.sum;
         }, 0);
-        // const percentGrade = (totalSum / (evals.length * 100)) * 100;
+        if (isArticuloAcademico()) {
+            return totalSum;
+        }
         const val = totalSum / (evals.length * 100);
         const percentGrade = customRound(val * 100);
-        const percentGradeStr = parseInt(percentGrade + "") + "";
+        const percentGradeStr = percentGrade;
         return percentGradeStr === "NaN" ? "N/A" : percentGradeStr; // Calculate mean and format to 2 decimals
         // return ((totalSum / evals.length).toFixed(2))*100; // Calculate mean and format to 2 decimals
     }
 
     const renderOverallGradeTable = (studentData) => {
+        if (!studentData) return null;
+        const nameStudentSelected = estudiantes.find(estudiante => estudiante?.id == selectedStudent)?.nombre;
+        if (studentData?.nombre !== nameStudentSelected) return null;
         return (
             // <table className="min-w-full max-w-4xl border border-gray-300 rounded-lg shadow-sm">
             <table className="min-w-[75%] border border-gray-300 rounded-lg shadow-sm mb-4">
@@ -609,7 +646,7 @@ const Calificar = () => {
                     })}
                     <tr className="bg-gray-100 font-bold">
                         <td className="py-2 text-sm font-bold text-blue-700 text-left border border-gray-300">
-                            <span className="ml-5">PROMEDIO</span>
+                            <span className="ml-5">{isComplexivo() || isArticuloAcademico() ? "TOTAL" : "PROMEDIO"} </span>
                         </td>
                         <td className="text-sm font-semibold text-blue-700 text-center border border-gray-300">
                             100
@@ -623,6 +660,69 @@ const Calificar = () => {
             </table>
         );
     }
+
+
+    // const calcOverallGrades = (studentData) => {
+    //     const evals = Object.entries(studentData.evaluaciones);
+    //     if (evals.length === 0) return "N/A"; // Handle case when no evaluations exist
+    //     const totalSum = evals.reduce((pre, evalValue) => {
+    //         const [evalType, evalData] = evalValue;
+    //         if (isArticuloAcademico() && evalType === getInformeFinalKey()) {
+    //             evalData.sum = indexacionSelected?.value ?? 0;
+    //         }
+    //         if (isArticuloAcademico() && evalType !== getInformeFinalKey()) {
+    //             evalData.sum = (evalData.sum / 100) * (100 - indexacionSelected?.value) + indexacionSelected?.value;
+    //         }
+    //         return pre + evalData.sum;
+    //     }, 0);
+    //     // const percentGrade = (totalSum / (evals.length * 100)) * 100;
+    //     const val = totalSum / (evals.length * 100);
+    //     const percentGrade = customRound(val * 100);
+    //     const percentGradeStr = parseInt(percentGrade + "") + "";
+    //     return percentGradeStr === "NaN" ? "N/A" : percentGradeStr; // Calculate mean and format to 2 decimals
+    //     // return ((totalSum / evals.length).toFixed(2))*100; // Calculate mean and format to 2 decimals
+    // }
+
+    // const renderOverallGradeTable = (studentData) => {
+    //     return (
+    //         // <table className="min-w-full max-w-4xl border border-gray-300 rounded-lg shadow-sm">
+    //         <table className="min-w-[75%] border border-gray-300 rounded-lg shadow-sm mb-4">
+    //             <thead className="bg-blue-50 text-blue-700">
+    //                 <tr>
+    //                     <th className="border border-gray-300 px-4 py-3 text-left w-[300px] min-w-[300px] max-w-[300px] whitespace-nowrap">
+    //                         {studentData.nombre}
+    //                     </th>
+    //                     <th className="border border-gray-300 px-4 py-3 text-center font-semibold w-[100px]">
+    //                         Base
+    //                     </th>
+    //                     <th className="border border-gray-300 px-4 py-3 text-center font-semibold w-[100px]">
+    //                         Nota
+    //                     </th>
+    //                 </tr>
+    //             </thead>
+
+    //             <tbody>
+    //                 {/* Fila de Totales */}
+    //                 {Object.entries(studentData.evaluaciones).map(([evalType, evalData]) => {
+    //                     return renderOverallGradeRow(evalType, evalData);
+    //                 })}
+    //                 <tr className="bg-gray-100 font-bold">
+    //                     <td className="py-2 text-sm font-bold text-blue-700 text-left border border-gray-300">
+    //                         <span className="ml-5">{isArticuloAcademico() ? "TOTAL" : "PROMEDIO"} </span>
+    //                     </td>
+    //                     <td className="text-sm font-semibold text-blue-700 text-center border border-gray-300">
+    //                         100
+    //                     </td>
+    //                     <td className="text-lg text-blue-600 text-center border border-gray-300 bg-gray-50">
+    //                         {calcOverallGrades(studentData)}
+    //                     </td>
+    //                 </tr>
+
+    //             </tbody>
+
+    //         </table>
+    //     );
+    // }
 
 
     return (
@@ -835,7 +935,7 @@ const Calificar = () => {
                         </table>
                     )}
                     {/* Validaciones para evitar errores */}
-                    {currentRubrica ? (
+                    {/* {currentRubrica ? (
                         Object.values(getRubricaSummary()).map((rubrica) => renderOverallGradeTable(rubrica)
                         )
                     ) : (
@@ -846,7 +946,33 @@ const Calificar = () => {
                                 <span className="ml-2 text-blue-700">Cargando datos...</span>
                             </div>
                         </div>
-                    )}
+                    )} */}
+
+                    {/* Promedios y totales de evaluaciones */}
+                    {
+                        selectedRubricaType !== getInformeFinalKey() && (
+                            <div className="overflow-x-auto">
+
+                                {/* Validaciones para evitar errores */}
+                                {
+                                    !resumenRequired && (currentRubrica ? (
+                                        Object.values(getRubricaSummary())
+                                            .map((rubrica) => renderOverallGradeTable(rubrica)
+                                            )
+                                    ) : (
+                                        <div className="justify-center lg:col-start-2 col-span-1 mb-20">
+                                            <div className="text-center text-2xl font-semibold text-blue-600">
+                                                <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-4 border-blue-600">
+                                                </div>
+                                                <span className="ml-2 text-blue-700">Cargando datos...</span>
+                                            </div>
+                                        </div>
+                                    ))
+                                }
+                            </div>
+
+                        )
+                    }
                 </div>
             </div>
         </div>
