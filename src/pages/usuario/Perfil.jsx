@@ -113,7 +113,7 @@ const UserProfile = () => {
                 </div>
 
                 {/* Lista de trabajos de titulación */}
-                <div className="mt-8">
+                {/* <div className="mt-8">
                     <h3 className="text-xl font-semibold text-gray-800 mb-4">Trabajos de Titulación</h3>
                     <ul className="space-y-6">
                         {thesisList.map((thesis, index) => (
@@ -128,7 +128,7 @@ const UserProfile = () => {
                             </li>
                         ))}
                     </ul>
-                </div>
+                </div> */}
             </div>
         </div>
     );

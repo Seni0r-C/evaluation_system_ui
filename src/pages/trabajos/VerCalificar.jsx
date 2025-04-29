@@ -1105,7 +1105,7 @@ const VerCalificar = () => {
                                         </tbody>
                                     </table>
                                 )}
-
+                               
                                 {
                                     isComplexivo() && (
                                         <div className="flex items-center space-x-2 mb-4">

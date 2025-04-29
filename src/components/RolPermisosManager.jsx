@@ -6,9 +6,11 @@ import {
     asignarPermisoARol,
     quitarPermisoDeRol
 } from "../services/rolesPermisosService";
+import { useMessage } from "../hooks/useMessage";
 
 const RolPermisosManager = () => {
     const [roles, setRoles] = useState([]);
+    const { showMsg, showQuestion, showIfError } = useMessage();
     const [rolSeleccionado, setRolSeleccionado] = useState(null);
 
     const [permisos, setPermisos] = useState([]);
@@ -42,9 +44,13 @@ const RolPermisosManager = () => {
     };
 
     const handleQuitarPermiso = async (id_permiso) => {
-        await quitarPermisoDeRol(rolSeleccionado.id, id_permiso);
-        const actualizados = await getPermisosByRol(rolSeleccionado.id);
-        setPermisosAsignados(actualizados);
+        const confirm = async () => {
+            showMsg({ typeMsg: "wait", message: "Quitando permiso..." });
+            showIfError(await quitarPermisoDeRol(rolSeleccionado.id, id_permiso));            
+            const actualizados = await getPermisosByRol(rolSeleccionado.id);
+            setPermisosAsignados(actualizados);
+        };
+        showQuestion("¿Seguro que desea eliminar este criterio?", confirm);
     };
 
     return (

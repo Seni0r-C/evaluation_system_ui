@@ -1,6 +1,19 @@
 import PropTypes from 'prop-types';
+import { useMessage } from '../../hooks/useMessage';
 
 const PermisoLista = ({ permisos, onDelete, onSelect }) => {
+
+    const { showMsg, showQuestion, showIfError } = useMessage();
+    
+
+    const handleOnDelete = (id) => {
+        const confirm = async () => {
+            showMsg({ typeMsg: "wait", message: "Eliminando permiso..." });
+            await onDelete(id);
+        };
+        showQuestion("¿Seguro que desea eliminar este permiso?", confirm);        
+    }
+
     return (
         <div className="overflow-x-auto">
             <table className="table-auto w-full border-collapse">
@@ -25,8 +38,8 @@ const PermisoLista = ({ permisos, onDelete, onSelect }) => {
                                 >
                                     Editar
                                 </button>
-                                <button
-                                    onClick={() => onDelete(permiso.id)}
+                                <button                                
+                                    onClick={() => handleOnDelete(permiso.id)}
                                     className="bg-red-500 text-white px-2 py-1"
                                 >
                                     Eliminar
