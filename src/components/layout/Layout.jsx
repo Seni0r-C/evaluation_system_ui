@@ -24,6 +24,7 @@ const Layout = ({ children }) => {
     const { setIsAuthenticated } = useAuth();
     const dropdownRef = useRef(null);
     const [menuData, setMenuData] = useState([]);
+    const [selectedRole, setSelectedRole] = useState(roles[0]?.nombre || "");
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -106,8 +107,11 @@ const Layout = ({ children }) => {
                                     {userName}
                                 </span>
                                 <span className="block font-semibold text-xs md:text-sm text-gray-200">
-                                    {roles.map(role => `${capitalizeWords(role.nombre)}`).join(', ')}
+                                    {capitalizeWords(selectedRole)}
                                 </span>
+                                {/* <span className="block font-semibold text-xs md:text-sm text-gray-200">
+                                    {roles.map(role => `${capitalizeWords(role.nombre)}`).join(', ')}
+                                </span> */}
                             </div>
                             <img
                                 src={userPhoto}
@@ -119,6 +123,21 @@ const Layout = ({ children }) => {
 
                     {isDropdownVisible && (
                         <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg py-2">
+                            <div
+                                className="w-full flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 text-gray-700"
+                            >
+                                <select
+                                    className=" block w-full py-2 px-3  text-pretty md:text-md font-medium rounded-md border border-gray-600 focus:outline-none focus:ring-1 focus:border-none"
+                                    value={selectedRole}
+                                    onChange={(e) => setSelectedRole(e.target.value)}
+                                >
+                                    {roles.map((role) => (
+                                        <option key={role.nombre} value={role.nombre}>
+                                            {capitalizeWords(role.nombre)}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
                             <button
                                 className="w-full flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 text-gray-700"
                                 onClick={() => { navigate("/profile"); setIsDropdownVisible(false); }}
