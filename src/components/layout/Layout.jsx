@@ -51,6 +51,7 @@ const Layout = ({ children }) => {
 
                 // Fusionar los menús
                 const allMenuItems = responses.flatMap(response => response.data);
+                setSelectedRole(roles[0]?.nombre || "");
                 // const uniqueMenuItems = mergeMenuItems(allMenuItems);
 
                 // Transformar los datos para el componente
