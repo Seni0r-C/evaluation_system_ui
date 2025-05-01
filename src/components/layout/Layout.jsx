@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { IoMdClose, IoMdMenu, IoIosLogOut } from "react-icons/io";
@@ -43,19 +44,21 @@ const Layout = ({ children }) => {
     }, []);
 
     useEffect(() => {
+        if (!selectedRole) {
+            setSelectedRole(roles[0]?.nombre || "");
+        }
+    }, [roles]);
+
+    useEffect(() => {
         const fetchMenuData = async () => {
             try {
-                // Hacer múltiples solicitudes para cada rol
-                const rolePromises = roles.map(role => axiosInstance.get(`/rutas/menu/${role.id}`));
-                const responses = await Promise.all(rolePromises);
+                if (roles.length === 0) return; // Si no hay roles, no hace la solicitud
 
-                // Fusionar los menús
-                const allMenuItems = responses.flatMap(response => response.data);
-                setSelectedRole(roles[0]?.nombre || "");
-                // const uniqueMenuItems = mergeMenuItems(allMenuItems);
+                // Realiza la solicitud solo para el rol seleccionado
+                const response = await axiosInstance.get(`/rutas/menu/${roles.find(role => role.nombre === selectedRole).id}`);
 
-                // Transformar los datos para el componente
-                const transformedData = transformMenuData(allMenuItems);
+                // Transforma los datos para el componente
+                const transformedData = transformMenuData(response.data);
                 setMenuData(transformedData);
             } catch (error) {
                 console.error('Error fetching menu data:', error);
@@ -63,7 +66,7 @@ const Layout = ({ children }) => {
         };
 
         fetchMenuData();
-    }, [roles]);
+    }, [selectedRole, roles]);
 
     const toggleSidebar = () => {
         setSidebarVisible((prevVisible) => {
