@@ -1,44 +1,45 @@
 import { useEffect, useState } from "react";
 import { FaCircle } from "react-icons/fa";
 import { HiMiniDocumentMagnifyingGlass } from "react-icons/hi2";
+import { useUser } from "../../hooks/useUser";
 
 const UserProfile = () => {
-    const [userPhoto, setUserPhoto] = useState(null);
-    const [info, setInfo] = useState({});
-    const [thesisList, setThesisList] = useState([]);
+    const {userPhoto, user: info} = useUser();
+    // const [info, setInfo] = useState({});
+    // const [thesisList, setThesisList] = useState([]);
 
-    useEffect(() => {
-        // Cargar información del usuario
-        const userInfo = localStorage.getItem("userInfo");
-        if (userInfo) {
-            const parsedInfo = JSON.parse(userInfo);
-            setInfo(parsedInfo);
-            setUserPhoto(`data:image/jpeg;base64,${parsedInfo.fotoBase64}`);
-        }
+    // useEffect(() => {
+    //     // Cargar información del usuario
+    //     const userInfo = localStorage.getItem("userInfo");
+    //     if (userInfo) {
+    //         const parsedInfo = JSON.parse(userInfo);
+    //         setInfo(parsedInfo);
+    //         setUserPhoto(`data:image/jpeg;base64,${parsedInfo.fotoBase64}`);
+    //     }
 
-        // Simulación de la lista de trabajos de titulación
-        const fetchedThesisList = [
-            {
-                title: "Sistema de Gestión Académica",
-                year: 2023,
-                advisor: "Dr. Carlos Pérez",
-                progress: ["Revisión", "Asignación de Fecha", "Defensa"]
-            },
-            {
-                title: "Plataforma de Comercio Electrónico",
-                year: 2022,
-                advisor: "Ing. María Torres",
-                progress: ["Revisión", "Asignación de Fecha"]
-            },
-            {
-                title: "Aplicación Móvil para Educación",
-                year: 2021,
-                advisor: "MSc. Juan López",
-                progress: ["Revisión"]
-            },
-        ];
-        setThesisList(fetchedThesisList);
-    }, []);
+    //     // Simulación de la lista de trabajos de titulación
+    //     const fetchedThesisList = [
+    //         {
+    //             title: "Sistema de Gestión Académica",
+    //             year: 2023,
+    //             advisor: "Dr. Carlos Pérez",
+    //             progress: ["Revisión", "Asignación de Fecha", "Defensa"]
+    //         },
+    //         {
+    //             title: "Plataforma de Comercio Electrónico",
+    //             year: 2022,
+    //             advisor: "Ing. María Torres",
+    //             progress: ["Revisión", "Asignación de Fecha"]
+    //         },
+    //         {
+    //             title: "Aplicación Móvil para Educación",
+    //             year: 2021,
+    //             advisor: "MSc. Juan López",
+    //             progress: ["Revisión"]
+    //         },
+    //     ];
+    //     setThesisList(fetchedThesisList);
+    // }, []);
 
     const renderProgress = (steps) => {
         const allSteps = ["Revisión", "Asignación de Fecha", "Defensa"];
@@ -88,7 +89,7 @@ const UserProfile = () => {
                         <img
                             src={userPhoto}
                             alt="Foto de perfil"
-                            className="w-32 h-32 rounded-lg border border-gray-300 object-cover mb-4"
+                            className={"w-32 h-32"  +`${info.fotoBase64?"rounded-lg border":""}`+ "border-gray-300 object-cover mb-4"}
                         />
                         <div>
                             <h2 className="text-lg font-semibold text-gray-800">{info.nombre}</h2>

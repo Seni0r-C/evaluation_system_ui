@@ -20,10 +20,15 @@ export const UserProvider = ({ children }) => {
   const [userPhoto, setUserPhoto] = useState(null);
 
   const initUser = (newUserData) => {
-    setUser(newUserData);
-    setUserPhoto(`data:image/jpeg;base64,${newUserData.fotoBase64}`);
+    setUser(newUserData);    
+    const userNameStr = getUserName(newUserData);
+    setUserName(userNameStr);
+    if (newUserData.fotoBase64) {
+      setUserPhoto(`data:image/jpeg;base64,${newUserData.fotoBase64}`);
+    } else {
+      setUserPhoto(`https://ui-avatars.com/api/?name=${userNameStr.replaceAll(' ', '+')}&rounded=true`);
+    }
     setRoles(newUserData.roles || []);
-    setUserName(getUserName(newUserData));
   };
 
   const updateUser = (newUserData) => {

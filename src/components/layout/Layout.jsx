@@ -1,20 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { IoMdClose, IoMdMenu, IoIosLogOut } from "react-icons/io";
 import { FaUserCircle } from "react-icons/fa";
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { capitalizeWords, baseRoute } from '../../utils/constants';
-import UserContext from '../../context/UserContext';
 import SidebarMenu from './menu/SidebarMenu';
 import axiosInstance from '../../services/axiosConfig';
 import { transformMenuData } from '../../utils/menuUtils';
 import logo from '../../assets/logo_claro.webp';
+import { useUser } from '../../hooks/useUser';
 
 
 const Layout = ({ children }) => {
-    const { userName, userPhoto, roles } = useContext(UserContext);
+    const { userName, userPhoto, roles } = useUser(); // Obtiene el nombre y foto del usuario desde el contexto
     // Lee el estado inicial de localStorage
     const [isSidebarVisible, setSidebarVisible] = useState(() => {
         const savedState = localStorage.getItem('isSidebarVisible');
