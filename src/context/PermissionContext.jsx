@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react/prop-types */
 import { createContext, useState, useEffect, useContext } from "react";
 import UserContext from "./UserContext";
 import { getPermisosByRol } from "../services/rolesPermisosService";
@@ -30,17 +32,13 @@ export const PermissionProvider = ({ children }) => {
     }
   }
 
-  // useEffect(() => {
-  //   console.log("Load roles");
-  //   loadPermisos();
-  // }, [roles, user]);
   useEffect(() => {
     if (roles && roles.length > 0 && user) {
-      console.log("Loading permisos para roles:", roles.map(r => r.nombre));
+      // console.log("Loading permisos para roles:", roles.map(r => r.nombre));
       loadPermisos();
     }
   }, [roles, user]);
-  
+
 
   return (
     <PermissionContext.Provider value={{ permisos }}>
