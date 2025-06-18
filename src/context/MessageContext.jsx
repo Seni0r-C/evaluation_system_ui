@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // MessageContext.js
 import { createContext, useState, useCallback, useRef } from 'react';
 import MessageDialog from '../components/shared/MessageDialog';
@@ -46,7 +47,6 @@ export const MessageProvider = ({ children }) => {
     const showIfError = useCallback(({ typeMsg, message }) => {
         if (typeMsg !== 'error') {
             setMessageState({
-                message: '',
                 message: '',
                 isOpen: false,
                 iconType: null,

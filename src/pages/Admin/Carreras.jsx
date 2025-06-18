@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import axiosInstance from '../../services/axiosConfig';
-
+import { useMessage } from '../../hooks/useMessage';
 
 const AdministrarCarreras = () => {
+    const { showMsg, showQuestion } = useMessage();
     const [carreras, setCarreras] = useState([]);
     const [nombreCarrera, setNombreCarrera] = useState('');
     const [editCarrera, setEditCarrera] = useState(null);
@@ -16,6 +17,7 @@ const AdministrarCarreras = () => {
             setCarreras(response.data.datos);
         } catch (error) {
             console.error('Error al obtener las carreras:', error);
+            showMsg({ typeMsg: "error", message: "Error al obtener carreras" });
         } finally {
             setLoading(false);
         }
@@ -25,37 +27,66 @@ const AdministrarCarreras = () => {
         fetchCarreras();
     }, []);
 
-    // Crear nueva carrera
-    const handleCreate = async () => {
-        try {
-            await axiosInstance.post('/carrera/crear', { nombre: nombreCarrera });
-            setNombreCarrera('');
-            fetchCarreras();
-        } catch (error) {
-            console.error('Error al crear la carrera:', error);
+    // Crear nueva carrera con confirmación
+    const handleCreate = () => {
+        if (!nombreCarrera.trim()) {
+            showMsg({ typeMsg: "warning", message: "Nombre de carrera vacío" });
+            return;
         }
+
+        const crear = async () => {
+            showMsg({ typeMsg: "wait", message: "Creando carrera..." });
+            try {
+                await axiosInstance.post('/carrera/crear', { nombre: nombreCarrera });
+                setNombreCarrera('');
+                await fetchCarreras();
+                showMsg({ typeMsg: "success", message: "Carrera creada exitosamente" });
+            } catch (error) {
+                console.error('Error al crear la carrera:', error);
+                showMsg({ typeMsg: "error", message: "Error al crear carrera" });
+            }
+        };
+
+        showQuestion("¿Seguro que desea crear esta nueva carrera?", crear);
     };
 
-    // Actualizar carrera
-    const handleUpdate = async () => {
+    // Actualizar carrera con confirmación
+    const handleUpdate = () => {
         if (!editCarrera) return;
-        try {
-            await axiosInstance.put(`/carrera/actualizar/${editCarrera.id}`, { nombre: editCarrera.nombre });
-            setEditCarrera(null);
-            fetchCarreras();
-        } catch (error) {
-            console.error('Error al actualizar la carrera:', error);
-        }
+
+        const actualizar = async () => {
+            showMsg({ typeMsg: "wait", message: "Actualizando carrera..." });
+            try {
+                await axiosInstance.put(`/carrera/actualizar/${editCarrera.id}`, {
+                    nombre: editCarrera.nombre
+                });
+                setEditCarrera(null);
+                await fetchCarreras();
+                showMsg({ typeMsg: "success", message: "Carrera actualizada exitosamente" });
+            } catch (error) {
+                console.error('Error al actualizar la carrera:', error);
+                showMsg({ typeMsg: "error", message: "Error al actualizar carrera" });
+            }
+        };
+
+        showQuestion("¿Seguro que desea actualizar esta carrera?", actualizar);
     };
 
-    // Eliminar carrera
-    const handleDelete = async (id) => {
-        try {
-            await axiosInstance.delete(`/carrera/eliminar/${id}`);
-            fetchCarreras();
-        } catch (error) {
-            console.error('Error al eliminar la carrera:', error);
-        }
+    // Eliminar carrera con confirmación
+    const handleDelete = (id) => {
+        const eliminar = async () => {
+            showMsg({ typeMsg: "wait", message: "Eliminando carrera..." });
+            try {
+                await axiosInstance.delete(`/carrera/eliminar/${id}`);
+                await fetchCarreras();
+                showMsg({ typeMsg: "success", message: "Carrera eliminada exitosamente" });
+            } catch (error) {
+                console.error('Error al eliminar la carrera:', error);
+                showMsg({ typeMsg: "error", message: "Error al eliminar carrera" });
+            }
+        };
+
+        showQuestion("¿Seguro que desea eliminar esta carrera?", eliminar);
     };
 
     return (
