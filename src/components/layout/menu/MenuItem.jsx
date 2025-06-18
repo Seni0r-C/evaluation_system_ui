@@ -44,7 +44,7 @@ const MenuItem = ({ item, isOpen, toggle }) => {
             {item.subOptions.length > 0 && isOpen && (
                 <div className="ml-4">
                     {item.subOptions.map((subItem, subIndex) => (
-                        <PermissionInterceptor>
+                        <PermissionInterceptor key={subIndex}>
                             <>
                                 {
                                     getPermissionIdSubItem(subItem) &&
