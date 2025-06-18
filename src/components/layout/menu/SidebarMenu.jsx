@@ -36,7 +36,7 @@ const SidebarMenu = ({ menuData }) => {
     return (
         <nav className="space-y-2">
             {menuData.map((item, index) => (
-                <PermissionInterceptor>
+                <PermissionInterceptor key={index}>
                     {
                         getPermissionId(item) &&
                         <MenuItem

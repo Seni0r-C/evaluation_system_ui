@@ -17,12 +17,12 @@ export const PermissionProvider = ({ children }) => {
     if (roles) {
       roles_ids = roles.map(rol => rol.id);
 
-      console.log(JSON.stringify({ user, roles }, null, 2));
+      // console.log(JSON.stringify({ user, roles }, null, 2));
       for (let i = 0; i < roles_ids.length; i++) {
         permisosList = await getPermisosByRol(roles_ids[i]);
         if (permisosList) {
           permisosList = permisosList.map(permiso => permiso.permiso);
-          console.log(JSON.stringify({ permisosList }, null, 2));
+          // console.log(JSON.stringify({ permisosList }, null, 2));
           permissions.push(...permisosList);
         }
       }
