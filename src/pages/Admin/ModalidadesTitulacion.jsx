@@ -1,14 +1,16 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 import axiosInstance from "../../services/axiosConfig";
+import { useMessage } from "../../hooks/useMessage";
 
 const Modalidades = () => {
+    const { showMsg, showQuestion } = useMessage();
     const [modalidades, setModalidades] = useState([]);
     const [formData, setFormData] = useState({ nombre: "", max_participantes: "" });
     const [selectedId, setSelectedId] = useState(null);
     const [carreras, setCarreras] = useState([]);
     const [selectedCarrera, setSelectedCarrera] = useState("");
     const [asociaciones, setAsociaciones] = useState([]);
-
     const [activeTab, setActiveTab] = useState("formulario");
 
     const fetchModalidades = async () => {
@@ -17,6 +19,7 @@ const Modalidades = () => {
             setModalidades(res.data);
         } catch (err) {
             console.error(err);
+            showMsg({ typeMsg: "error", message: "Error al cargar modalidades" });
         }
     };
 
@@ -26,6 +29,7 @@ const Modalidades = () => {
             setCarreras(res.data.datos);
         } catch (err) {
             console.error(err);
+            showMsg({ typeMsg: "error", message: "Error al cargar carreras" });
         }
     };
 
@@ -35,6 +39,7 @@ const Modalidades = () => {
             setAsociaciones(res.data);
         } catch (err) {
             console.error(err);
+            showMsg({ typeMsg: "error", message: "Error al cargar asociaciones" });
         }
     };
 
@@ -50,50 +55,93 @@ const Modalidades = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            if (selectedId) {
-                await axiosInstance.put(`/modalidad-titulacion/actualizar/${selectedId}`, formData);
-            } else {
-                await axiosInstance.post("/modalidad-titulacion/crear", formData);
+
+        const submitAction = async () => {
+            showMsg({ typeMsg: "wait", message: selectedId ? "Actualizando modalidad..." : "Creando modalidad..." });
+            try {
+                if (selectedId) {
+                    await axiosInstance.put(`/modalidad-titulacion/actualizar/${selectedId}`, formData);
+                    showMsg({ typeMsg: "success", message: "Modalidad actualizada exitosamente" });
+                } else {
+                    await axiosInstance.post("/modalidad-titulacion/crear", formData);
+                    showMsg({ typeMsg: "success", message: "Modalidad creada exitosamente" });
+                }
+                setFormData({ nombre: "", max_participantes: "" });
+                setSelectedId(null);
+                fetchModalidades();
+                setActiveTab("modalidades");
+            } catch (err) {
+                console.error(err);
+                showMsg({ typeMsg: "error", message: selectedId ? "Error al actualizar" : "Error al crear" });
             }
-            setFormData({ nombre: "", max_participantes: "" });
-            setSelectedId(null);
-            fetchModalidades();
-        } catch (err) {
-            console.error(err);
-        }
+        };
+
+        showQuestion(
+            `¿Seguro que desea ${selectedId ? "actualizar" : "crear"} esta modalidad?`,
+            submitAction
+        );
     };
 
     const handleEdit = (modalidad) => {
         setFormData({ nombre: modalidad.nombre, max_participantes: modalidad.max_participantes });
         setSelectedId(modalidad.id);
+        setActiveTab("formulario");
     };
 
-    const handleDelete = async (id) => {
-        try {
-            await axiosInstance.delete(`/modalidad-titulacion/eliminar/${id}`);
-            fetchModalidades();
-        } catch (err) {
-            console.error(err);
-        }
+    const handleDelete = (id) => {
+        const deleteAction = async () => {
+            showMsg({ typeMsg: "wait", message: "Eliminando modalidad..." });
+            try {
+                await axiosInstance.delete(`/modalidad-titulacion/eliminar/${id}`);
+                fetchModalidades();
+                showMsg({ typeMsg: "success", message: "Modalidad eliminada exitosamente" });
+            } catch (err) {
+                console.error(err);
+                showMsg({ typeMsg: "error", message: "Error al eliminar modalidad" });
+            }
+        };
+
+        showQuestion("¿Seguro que desea eliminar esta modalidad?", deleteAction);
     };
 
-    const handleAsociar = async (idModalidad) => {
-        try {
-            await axiosInstance.post("/modalidad-titulacion/asociar", { id_carrera: selectedCarrera, id_modalidad_titulacion: idModalidad });
-            fetchAsociaciones(selectedCarrera);
-        } catch (err) {
-            console.error(err);
-        }
+    const handleAsociar = (idModalidad) => {
+        const asociarAction = async () => {
+            showMsg({ typeMsg: "wait", message: "Asociando modalidad..." });
+            try {
+                await axiosInstance.post("/modalidad-titulacion/asociar", {
+                    id_carrera: selectedCarrera,
+                    id_modalidad_titulacion: idModalidad
+                });
+                showMsg({ typeMsg: "success", message: "Modalidad asociada exitosamente" });
+                fetchAsociaciones(selectedCarrera);
+            } catch (err) {
+                console.error(err);
+                showMsg({ typeMsg: "error", message: "Error al asociar modalidad" });
+            }
+        };
+
+        showQuestion("¿Asociar esta modalidad a la carrera?", asociarAction);
     };
 
-    const handleDesasociar = async (idModalidad) => {
-        try {
-            await axiosInstance.delete("/modalidad-titulacion/desasociar", { data: { id_carrera: selectedCarrera, id_modalidad_titulacion: idModalidad } });
-            fetchAsociaciones(selectedCarrera);
-        } catch (err) {
-            console.error(err);
-        }
+    const handleDesasociar = (idModalidad) => {
+        const desasociarAction = async () => {
+            showMsg({ typeMsg: "wait", message: "Desasociando modalidad..." });
+            try {
+                await axiosInstance.delete("/modalidad-titulacion/desasociar", {
+                    data: {
+                        id_carrera: selectedCarrera,
+                        id_modalidad_titulacion: idModalidad
+                    }
+                });
+                fetchAsociaciones(selectedCarrera);
+                showMsg({ typeMsg: "success", message: "Modalidad desasociada exitosamente" });
+            } catch (err) {
+                console.error(err);
+                showMsg({ typeMsg: "error", message: "Error al desasociar modalidad" });
+            }
+        };
+
+        showQuestion("¿Desasociar esta modalidad de la carrera?", desasociarAction);
     };
 
     return (

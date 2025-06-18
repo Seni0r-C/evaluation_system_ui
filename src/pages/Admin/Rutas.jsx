@@ -116,8 +116,8 @@ const AdminRutas = () => {
                             if (a.id == null) return 1; // Si a no tiene id, va al final
                             if (b.id == null) return -1; // Si b no tiene id, va al final
                             return a.id - b.id; // Orden normal por id
-                        }).map((ruta) => (
-                            <tr key={ruta.id}>
+                        }).map((ruta, index) => (
+                            <tr key={index} className="hover:bg-gray-100">
                                 <td className="px-4 py-2 border text-center">{ruta.id}</td>
                                 <td className="px-4 py-2 border">
                                     <Link to={ruta.path} className="text-blue-500 hover:underline">
