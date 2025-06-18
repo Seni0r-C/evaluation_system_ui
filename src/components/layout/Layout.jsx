@@ -1,6 +1,6 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef, useState } from 'react';
-import PropTypes from 'prop-types';
 import { IoMdClose, IoMdMenu, IoIosLogOut } from "react-icons/io";
 import { FaUserCircle } from "react-icons/fa";
 import { Link, useNavigate } from 'react-router-dom';
@@ -54,12 +54,16 @@ const Layout = ({ children }) => {
             try {
                 if (roles.length === 0) return; // Si no hay roles, no hace la solicitud
 
-                // Realiza la solicitud solo para el rol seleccionado
-                const response = await axiosInstance.get(`/rutas/menu/${roles.find(role => role.nombre === selectedRole).id}`);
+                const rolEncontrado = roles.find(role => role.nombre === selectedRole);
 
-                // Transforma los datos para el componente
-                const transformedData = transformMenuData(response.data);
-                setMenuData(transformedData);
+                if (rolEncontrado) {
+                    // Realiza la solicitud solo para el rol seleccionado
+                    const response = await axiosInstance.get(`/rutas/menu/${rolEncontrado.id}`);
+
+                    // Transforma los datos para el componente
+                    const transformedData = transformMenuData(response.data);
+                    setMenuData(transformedData);
+                }
             } catch (error) {
                 console.error('Error fetching menu data:', error);
             }
@@ -200,10 +204,6 @@ const Layout = ({ children }) => {
         </div >
 
     );
-};
-
-Layout.propTypes = {
-    children: PropTypes.node.isRequired,
 };
 
 export default Layout;

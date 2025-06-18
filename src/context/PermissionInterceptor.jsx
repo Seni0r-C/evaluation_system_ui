@@ -1,7 +1,8 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import { usePermission } from "../hooks/usePermission";
 
-const getPermissionBehavior = ({ permissionId, user, permissionIdBehavior=null }) => {
+const getPermissionBehavior = ({ permissionId, user, permissionIdBehavior = null }) => {
   if (permissionIdBehavior) return permissionIdBehavior;
   if (!user) return "hide";
   // Lógica para decidir comportamiento por permiso, rol, etc.
@@ -12,16 +13,16 @@ const getPermissionBehavior = ({ permissionId, user, permissionIdBehavior=null }
 
 const PermissionInterceptor = ({ children }) => {
   // Utiliza el hook usePermission
-  const { user, hasPermission, permisos } = usePermission();
+  const { user, hasPermission } = usePermission();
 
   const processElement = (element, index) => {
     if (!React.isValidElement(element)) return element;
 
     const { permissionId: permissionIdBruto, children: innerChildren } = element.props || {};
     let processedChildren = innerChildren;
-    const permissionId = permissionIdBruto?permissionIdBruto.substring(0, permissionIdBruto.lastIndexOf("_")): null; 
-    const permissionIdBehavior = permissionIdBruto?permissionIdBruto.substring(permissionIdBruto.lastIndexOf("_") + 1): null; 
-    // const [permissionId, behavior] = permissionIdBruto?permissionIdBruto.permissionIdBruto.lastIndexOf("_"): null;
+    const permissionId = permissionIdBruto ? permissionIdBruto.substring(0, permissionIdBruto.lastIndexOf("_")) : null;
+    const permissionIdBehavior = permissionIdBruto ? permissionIdBruto.substring(permissionIdBruto.lastIndexOf("_") + 1) : null;
+
     if (innerChildren) {
       processedChildren = React.Children.map(innerChildren, (child, i) => processElement(child, i));
     }
@@ -33,8 +34,7 @@ const PermissionInterceptor = ({ children }) => {
       children: processedChildren,
       key: element.key || index, // ✅ Aquí asignas una key única si no existe
     };
-    // console.log(`!permissionId: ${!permissionId} || allowed: ${allowed} || behavior: ${behavior} || element: ${JSON.stringify(element)}`);
-    console.log(`permissionId: ${permissionId} || allowed: ${allowed} || behavior: ${behavior}`);
+
     if (permissionId && allowed) {
       return React.cloneElement(element, cloneProps);
     }
@@ -63,7 +63,6 @@ const PermissionInterceptor = ({ children }) => {
   };
 
   return <>{React.Children.map(children, processElement)}</>;
-  // return <>{JSON.stringify(permisos, null, 2)}{React.Children.map(children, processElement)}</>;
 };
 
 export default PermissionInterceptor;
