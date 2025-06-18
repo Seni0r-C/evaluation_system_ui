@@ -27,7 +27,7 @@ const MenuItem = ({ item, isOpen, toggle }) => {
                     {item.icon}{item.name}
                 </Link>
             ) : (
-                // Opción principal sin href (con subopciones)
+                // Opción principal sin href (con sub-opciones)
                 <div
                     className={`flex items-center py-2 px-4 rounded-md cursor-pointer justify-start gap-4 hover:scale-105 hover:shadow-md hover:bg-gray-200 transition-transform ${isOpen ? 'bg-gray-200' : ''
                         }`}
@@ -40,7 +40,7 @@ const MenuItem = ({ item, isOpen, toggle }) => {
                 </div>
             )}
 
-            {/* Subopciones */}
+            {/* Sub-opciones */}
             {item.subOptions.length > 0 && isOpen && (
                 <div className="ml-4">
                     {item.subOptions.map((subItem, subIndex) => (
