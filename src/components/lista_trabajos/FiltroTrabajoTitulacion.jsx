@@ -48,11 +48,11 @@ const FiltroTrabajoTitulacion = ({ filters, onFilterChange, carreras, modalidade
         label="Estados"
         type="select"
         name="estado"
-        value={filters.estado}
+        value={(typeof filters.estado === 'string') ? filters.estado : ""}
         // value={filters.estado[0]}
         onChange={onFilterChange}
         options={estados}
-        placeholder="Seleccione un estado"
+        placeholder="Todos los estados"
       />)}
   </div>
 );
