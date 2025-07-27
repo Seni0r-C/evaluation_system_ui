@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import LoginForm from './LoginForm';
 import { describe, test, expect, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
+import React from 'react';
 
 describe('LoginForm', () => {
   test('renders LoginForm component', () => {
@@ -73,5 +74,49 @@ describe('LoginForm', () => {
     await userEvent.click(submitButton);
 
     expect(mockHandleSubmit).toHaveBeenCalledTimes(1);
+  });
+
+  test('simulates full login flow with state updates', async () => {
+    const mockHandleSubmit = vi.fn((e) => e.preventDefault());
+
+    // Create a wrapper component to manage state for LoginForm
+    const TestLoginFormWrapper = () => {
+      const [usuario, setUsuario] = React.useState('');
+      const [password, setPassword] = React.useState('');
+      const [showPassword, setShowPassword] = React.useState(false);
+
+      const toggleShowPassword = () => setShowPassword(!showPassword);
+
+      return (
+        <LoginForm
+          usuario={usuario}
+          setUsuario={setUsuario}
+          password={password}
+          setPassword={setPassword}
+          showPassword={showPassword}
+          toggleShowPassword={toggleShowPassword}
+          handleSubmit={mockHandleSubmit}
+        />
+      );
+    };
+
+    render(<TestLoginFormWrapper />);
+
+    const userInput = screen.getByLabelText(/usuario/i);
+    const passwordInput = screen.getByLabelText(/contraseña/i);
+    const submitButton = screen.getByRole('button', { name: /iniciar sesión/i });
+
+    await userEvent.type(userInput, 'admin@example.com');
+    await userEvent.type(passwordInput, 'password123');
+    await userEvent.click(submitButton);
+
+    // Verify that handleSubmit was called.
+    expect(mockHandleSubmit).toHaveBeenCalledTimes(1);
+    // If handleSubmit was expected to receive the form data, you would assert that here.
+    // For example, if handleSubmit received an event object and extracted data from it,
+    // you might need to inspect the mock call arguments more deeply.
+    // Since LoginForm passes the event to handleSubmit, we can't directly check username/password here
+    // unless LoginForm itself passes them as arguments to handleSubmit.
+    // The primary goal here is to ensure the form submission is triggered.
   });
 });
