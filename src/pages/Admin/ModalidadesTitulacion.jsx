@@ -174,8 +174,9 @@ const Modalidades = () => {
                     <h2 className="text-xl font-semibold mb-4">Crear o Editar Modalidad</h2>
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Nombre</label>
+                            <label htmlFor="nombre" className="block text-sm font-medium text-gray-700">Nombre</label>
                             <input
+                                id="nombre"
                                 type="text"
                                 name="nombre"
                                 value={formData.nombre}
@@ -185,8 +186,9 @@ const Modalidades = () => {
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Máximo de Participantes</label>
+                            <label htmlFor="max_participantes" className="block text-sm font-medium text-gray-700">Máximo de Participantes</label>
                             <input
+                                id="max_participantes"
                                 type="number"
                                 name="max_participantes"
                                 value={formData.max_participantes}
