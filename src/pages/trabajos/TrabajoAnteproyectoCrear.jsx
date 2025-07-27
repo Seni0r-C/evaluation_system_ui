@@ -142,10 +142,10 @@ const TrabajoAnteproyectoCrear = () => {
           });
           console.log(response.data);
         }
-        resetForm();
         setMessage('Trabajo de titulación creado exitosamente');
         setIconType('success');
         setIsOpen(true);
+        resetForm();
       } catch (error) {
         setMessage('Error al agregar estudiantes al trabajo');
         setIconType('error');
@@ -325,6 +325,7 @@ const TrabajoAnteproyectoCrear = () => {
                 highlightedIndex={highlightedIndexTutor}
                 handleBuscar={buscarUsuariosConRol}
                 required={true}
+                role={3} // Rol para tutores
               />)}
 
               {/* Buscar Co-tutor */}

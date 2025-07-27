@@ -21,14 +21,16 @@ const BuscadorYSelectorDeUsuarios = ({
   highlightedIndex,
   handleBuscar,
   required,
+  role, // New prop for role
 }) => {
+  const inputId = `search-input-${type}`;
   let showSpinner = false;
 
   const handleSearchChange = (e) => {
     const searchValue = e.target.value;
     setSearchValue(searchValue);
     showSpinner = true;
-    handleBuscar(searchValue, setSearchResults);
+    handleBuscar(searchValue, setSearchResults, role); // Pass role to handleBuscar
   };
 
   const handleButtonClick = () => {
@@ -38,18 +40,19 @@ const BuscadorYSelectorDeUsuarios = ({
       setHighlightedIndex(-1);
     } else {
       showSpinner = true;
-      handleBuscar(searchValue, setSearchResults);
+      handleBuscar(searchValue, setSearchResults, role); // Pass role to handleBuscar
     }
   };
 
   return (
     <div className="mb-4">
-      <label className="block text-sm font-medium text-gray-700 mb-2">
+      <label htmlFor={inputId} className="block text-sm font-medium text-gray-700 mb-2">
         {label}{optional && <span className="text-gray-500 text-sm">(Opcional)</span>}
       </label>
       <div className="relative">
         <div className="relative flex items-center">
           <input
+            id={inputId}
             type="text"
             value={searchValue}
             onChange={handleSearchChange}
@@ -146,6 +149,7 @@ BuscadorYSelectorDeUsuarios.propTypes = {
   highlightedIndex: PropTypes.number.isRequired,
   handleBuscar: PropTypes.func.isRequired,
   required: PropTypes.bool,
+  role: PropTypes.number, // New prop type
 };
 
 export default BuscadorYSelectorDeUsuarios;

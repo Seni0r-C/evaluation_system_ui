@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 // MessageDialog.js
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';

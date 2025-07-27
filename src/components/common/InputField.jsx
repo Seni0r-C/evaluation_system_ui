@@ -26,40 +26,46 @@ const InputField = ({
     options = [],
     required = false,
     capitalize = false
-}) => (
-    <div className="mb-4">
-        {label && <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>}
-        {type === 'select' ? (
-            <select
-                name={name}
-                value={value}
-                onChange={onChange}
-                className="w-full border rounded px-3 py-2"
-                required={required}
-            >
-                <option value="">{placeholder || 'Seleccione una opción'}</option>
-                {options.map((option) => (
-                    <option key={option.id || option} value={option.id || option}>
-                        {capitalize
-                            ? capitalizeWords(option.nombre || option)
-                            : option.nombre || option}
-                    </option>
-                ))}
-            </select>
+}) => {
+    const inputId = name;
 
-        ) : (
-            <input
-                type={type}
-                name={name}
-                value={value}
-                onChange={onChange}
-                placeholder={placeholder}
-                className="w-full border rounded px-3 py-2"
-                required={required}
-            />
-        )}
-    </div >
-);
+    return (
+        <div className="mb-4">
+            {label && <label htmlFor={inputId} className="block text-sm font-medium text-gray-700 mb-2">{label}</label>}
+            {type === 'select' ? (
+                <select
+                    id={inputId}
+                    name={name}
+                    value={value}
+                    onChange={onChange}
+                    className="w-full border rounded px-3 py-2"
+                    required={required}
+                >
+                    <option value="">{placeholder || 'Seleccione una opción'}</option>
+                    {options.map((option) => (
+                        <option key={option.id || option} value={option.id || option}>
+                            {capitalize
+                                ? capitalizeWords(option.nombre || option)
+                                : option.nombre || option}
+                        </option>
+                    ))}
+                </select>
+
+            ) : (
+                <input
+                    id={inputId}
+                    type={type}
+                    name={name}
+                    value={value}
+                    onChange={onChange}
+                    placeholder={placeholder}
+                    className="w-full border rounded px-3 py-2"
+                    required={required}
+                />
+            )}
+        </div >
+    );
+};
 
 InputField.propTypes = {
     label: PropTypes.string,
