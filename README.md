@@ -46,13 +46,7 @@ El proyecto sigue una estructura organizada por funcionalidades, lo que facilita
 
 Sigue estos pasos para configurar el entorno de desarrollo local:
 
-1. **Clonar el repositorio:**
-   ```bash
-   git clone <URL_DEL_REPOSITORIO>
-   cd evaluation_system_ui
-   ```
-
-2. **Instalar dependencias:**
+* **Instalar dependencias:**
    ```bash
    npm install
    ```
