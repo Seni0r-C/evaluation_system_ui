@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { FaFilePdf } from "react-icons/fa"; // Importamos los íconos de react-icons
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { getEstudiantesByTrabajoId, getTribunalMembersByTrabajoId, getUserPhoto } from "../../services/usuarioService";
 import axiosInstance from "../../services/axiosConfig";
 import { obtenerTiposEvaluacionByModalidadList } from "../../services/rubricaCriterioService";
@@ -77,15 +77,10 @@ const VerCalificar = () => {
     const [tipoEvaluacion, setTipoEvaluacion] = useState([]);
     const [currentRubrica, setCurrentRubrica] = useState(null);
     const [calificacionesSeleccionadas, setCalificacionesSeleccionadas] = useState({});
-    const [showFinalizar, setShowFinalizar] = useState(false);
     const [teoricExamGrade, setTeoricExamGrade] = useState(0);
     // 
     const [indexacionSelected, setIndexacionSelected] = useState(null);
     const [overallSummary, setOverallSummary] = useState({});
-
-
-    const navigate = useNavigate();
-
 
     const isArticuloAcademico = () => {
         const ARTICULO_ACADEMICO_KEYS = ["ARTICULO CIENTIFICO", "ARTICULO ACADEMICO", "ARTÍCULO ACADÉMICO", "ARTÍCULO CIENTÍFICO"];
@@ -129,10 +124,6 @@ const VerCalificar = () => {
             setSelectedStudent(estudiantes[0].id);
         }
     }
-
-    useEffect(() => {
-        setShowFinalizar(isCalificacionCompleta());
-    }, [calificacionesSeleccionadas]);
 
     useEffect(() => {
         if (trabajo) {
@@ -193,12 +184,6 @@ const VerCalificar = () => {
                     tipo_evaluacion_nombre: tipo.nombre
                 }
             }).filter(tipo => !isExamenTeoricoComplexivo(tipo.tipo_evaluacion_nombre));
-            const tiposEvaluacion2 = tiposResponse.map((tipo) => {
-                return {
-                    tipo_evaluacion_id: tipo.id,
-                    tipo_evaluacion_nombre: tipo.nombre
-                }
-            }).filter(tipo => isExamenTeoricoComplexivo(tipo.tipo_evaluacion_nombre));
             setTipoEvaluacion(tiposEvaluacion);
             const rubricasPromises = tiposEvaluacion.map(async (tipo) => {
                 try {
@@ -266,10 +251,6 @@ const VerCalificar = () => {
         setRubricGradesData(rubricGrades);
         if (isArticuloAcademico() && rubricGrades) {
             const informeFinalGrades = Object.values(rubricGrades)[0][getInformeFinalKey()];
-            // alert(rubricGrades[getInformeFinalKey()]);            
-            const firstStudent = Object.keys(rubricGrades)[0];
-            // alert(JSON.stringify(rubricGrades[firstStudent][getInformeFinalKey()], null, 2));
-            // alert(JSON.stringify(rubricGrades[firstStudent][getInformeFinalKey()], null, 2));
             const sumInformeFinal = Object.values(informeFinalGrades).reduce((prev, current) => prev + current, 0);
             const indexItem = indexaciones.find((indexItem) => indexItem.value === sumInformeFinal);
             if (indexItem) {
@@ -320,36 +301,6 @@ const VerCalificar = () => {
         setGradesByTribunalMember();
     }, [selectedStudent, selectedStudents, selectedTribunalMember, rubricGradesData, selectedRubricaType]);
 
-    const isCalificacionCompleta = () => {
-        if (selectedStudents.length === 0 && isInformeFinal(selectedRubricaType))
-            return false;
-        if (selectedStudent === null)
-            return false;
-
-        return estudiantes.every((student) => {
-            return tipoEvaluacion.every((tipo) => {
-                const rubrica = rubricas[tipo.tipo_evaluacion_nombre];
-                if (isArticuloAcademico() && !rubrica && !isInformeFinal(tipo.tipo_evaluacion_nombre)) return false;
-                if (!isArticuloAcademico() && !rubrica) return false; // Verifica que la rúbrica exista
-
-                const everySetGrades = rubrica.rubrica.criterios.every((criterio, criterioIndex) => {
-                    const isSetGrade = calificacionesSeleccionadas[student.id]?.[tipo.tipo_evaluacion_nombre]?.[criterioIndex] !== undefined;
-                    if (isArticuloAcademico() && !isSetGrade && isInformeFinal(tipo.tipo_evaluacion_nombre)) {
-                        if (!indexacionSelected) {
-                            // showMsg({ typeMsg: 'info', message: 'Por favor seleccione una indexación' });
-                            return false;
-                        }
-                        handleCalificacionPorcentaje(indexacionSelected.value, getInformeFinalKey());
-                        return true;
-                    }
-                    return isSetGrade;
-                });
-
-                return everySetGrades;
-            });
-        });
-    };
-
     const isStudentSelected = (studentId) => {
         if (isInformeFinal(selectedRubricaType)) {
             return selectedStudents.includes(studentId)
@@ -367,61 +318,11 @@ const VerCalificar = () => {
         }
     };
 
-    const handleFinalizar = async () => {
-        if (isArticuloAcademico() && !indexacionSelected) {
-            showMsg({ typeMsg: 'warning', message: 'Por favor seleccione una indexación' });
-            return;
-        }
-        const info = localStorage.getItem('userInfo');
-        const user = JSON.parse(info);
-
-        try {
-            // Preparar datos en un solo array para enviar al servidor
-            const payload = [];
-
-            for (const studentId in calificacionesSeleccionadas) {
-                for (const tipoEvaluacion in calificacionesSeleccionadas[studentId]) {
-                    const rubrica = rubricas[tipoEvaluacion];
-
-                    if (!rubrica) continue;
-
-                    const rubricaId = rubrica.rubrica_id;
-                    const criterios = rubrica.rubrica.criterios;
-
-                    for (const [criterioIndex, puntajeObtenido] of Object.entries(calificacionesSeleccionadas[studentId][tipoEvaluacion])) {
-                        const criterio = criterios[criterioIndex];
-
-                        // Agregar cada calificación al array
-                        payload.push({
-                            trabajo_id: trabajo.id,
-                            rubrica_id: rubricaId,
-                            rubrica_criterio_id: criterio.id,
-                            docente_id: user.id,
-                            estudiante_id: studentId,
-                            puntaje_obtenido: puntajeObtenido,
-                        });
-                    }
-                }
-            }
-
-            // Enviar el array completo al servidor
-            await axiosInstance.post(`/calificacion/rubrica-evaluacion`, { calificaciones: payload });
-
-            showMsg({ typeMsg: 'success', message: 'Calificaciones finalizadas y guardadas correctamente.' });
-            navigate("/calificacion-de-trabajo-titulacion");
-        } catch (error) {
-            console.error("Error al finalizar las calificaciones:", error);
-            showMsg({ typeMsg: 'error', message: 'Error al finalizar las calificaciones.' });
-        }
-    };
-
     const handleFinalizarInformeFinalArticuloAcademicoGradement = async () => {
         if (isArticuloAcademico() && !indexacionSelected) {
             showMsg({ typeMsg: 'warning', message: 'Por favor seleccione una indexación' });
             return;
         }
-        // const info = localStorage.getItem('userInfo');
-        // const user = JSON.parse(info);
 
         try {
             // Preparar datos en un solo array para enviar al servidor
@@ -496,43 +397,11 @@ const VerCalificar = () => {
         }
     };
 
-
-    const handleCalificacionPorcentaje = (percentage, rubricaType) => {
-        if (!rubricaType || percentage < 0 || percentage > 100) {
-            console.error("Invalid rubric type or percentage");
-            return;
-        }
-
-        setCalificacionesSeleccionadas((prev) => {
-            const updatedCalificaciones = { ...prev };
-
-            estudiantes.forEach((student) => {
-                const newCalificaciones = { ...updatedCalificaciones[student.id]?.[rubricaType] };
-
-                // Apply the percentage to each criterion
-                rubricas[rubricaType].rubrica.criterios.forEach((criterio, criterioIndex) => {
-                    const calculatedGrade = Math.round((criterio.puntaje_maximo * percentage) / 100);
-                    newCalificaciones[criterioIndex] = calculatedGrade;
-                });
-
-                updatedCalificaciones[student.id] = {
-                    ...updatedCalificaciones[student.id],
-                    [rubricaType]: newCalificaciones,
-                };
-            });
-
-            return updatedCalificaciones;
-        });
-    };
-
-
     const handleCalificacion = (e, criterioIndex, criterio) => {
         let valor = 0
         if (e) {
             valor = e.target?.value || e.value;
         }
-        // const value = Math.min(criterio.puntaje_maximo, Math.max(0, e.target.value));
-        // valor = calificacionValue(calculateMinScore(criterio), calculateMaxScore(criterio), criterioIndex) ?? calculateMinScore(criterio);
         const value = Math.min(criterio.puntaje_maximo, Math.max(0, valor));
         const selectedRubricaTypeLocal = selectedRubricaType?.replace("(EXAMEN PRACTICO)", "")?.replace("(EXÁMEN PRÁCTICO)", "")?.replace("(EXAMEN PRÁCTICO)", "").trim();
         if (isInformeFinal(selectedRubricaTypeLocal)) {
@@ -571,32 +440,14 @@ const VerCalificar = () => {
         const keyRType = selectedRubricaType?.replace("(EXAMEN PRACTICO)", "")?.replace("(EXÁMEN PRÁCTICO)", "")?.replace("(EXAMEN PRÁCTICO)", "").trim();
         const value = calificacionesSeleccionadas[sStudent]?.[keyRType]?.[criterioIndex];
         return Math.max(minimo, value ?? 0);
-        // return Math.max(minimo, minimo==0?Number(maximo)/(getIndexPercent()*Number(maximo)):value);
     };
 
-    const getIndexPercent = () => {
-        if (!indexacionSelected) {
-            return 1;
-        }
-        return indexacionSelected.porcentaje;
-    };
-
-
-    const calculateMinScore = (criterio) => {
+    const calculateMinScore = () => {
         return 0;
-        if (!isArticuloAcademico() || !indexacionSelected) return 0;
-        return Number(criterio.puntaje_maximo) * getIndexPercent();
     };
 
     const calculateMaxScore = (criterio) => {
         return criterio.puntaje_maximo;
-        if (!isArticuloAcademico() || !indexacionSelected) return criterio.puntaje_maximo;
-        return calculateMinScore(criterio) + (Number(criterio.puntaje_maximo) * (1 - getIndexPercent()));
-    };
-
-    const hasStudentSelected = () => {
-        if (isInformeFinal(selectedRubricaType)) { return selectedStudents.length > 0; }
-        return selectedStudent !== null;
     };
 
     const getRubricaSummary = () => {
@@ -645,7 +496,6 @@ const VerCalificar = () => {
         for (let i = 0; i < tribunalMembers.length; i++) {
             const tribunalMember = tribunalMembers[i];
             const rubricGrades = await getGrades(tribunalMember);
-            // const rubricaSummary = getRubricaSummary(tribunalMember);
             overallSummary[tribunalMember.id] = rubricGrades;
         }
         setOverallSummary(overallSummary);
@@ -674,7 +524,7 @@ const VerCalificar = () => {
                 }
 
                 // Process each evaluation type
-                Object.entries(info).filter(([evalType, _]) => evalType !== "EXAMEN TEORICO").forEach(([evaluacion, notas]) => {
+                Object.entries(info).filter(([evalType]) => evalType !== "EXAMEN TEORICO").forEach(([evaluacion, notas]) => {
                     if (!resultadoPorEstudiante[idEstudiante].evaluaciones[evaluacion]) {
                         resultadoPorEstudiante[idEstudiante].evaluaciones[evaluacion] = { sum: 0, count: 0 };
                     }
@@ -701,7 +551,7 @@ const VerCalificar = () => {
 
         // Calculate means per student
         Object.values(resultadoPorEstudiante).forEach(estudiante => {
-            Object.entries(estudiante.evaluaciones).forEach(([evaluacion, valores]) => {
+            Object.entries(estudiante.evaluaciones).forEach(([, valores]) => {
                 valores.mean = valores.sum / valores.count;
             });
             estudiante.totalMean = estudiante.totalSum / estudiante.totalCount;
@@ -746,18 +596,6 @@ const VerCalificar = () => {
                 </td>
             </tr>
         )
-    }
-
-    function calculateRoundedGrade(percentGrade) {
-        let roundedGrade = Math.floor(percentGrade); // Start by flooring the value
-
-        // Check if the grade has a decimal part greater than or equal to 0.5, and if so, round up
-        if (percentGrade % 1 >= 0.5) {
-            roundedGrade += 1; // Round up by adding 1 if the decimal part is 0.5 or more
-        }
-
-        const percentGradeStr = roundedGrade.toString();
-        return percentGradeStr === "NaN" ? "N/A" : percentGradeStr;
     }
 
     const calcOverallGrades = (studentData) => {
@@ -838,7 +676,7 @@ const VerCalificar = () => {
     }
 
     const getFinalGradeArticuloAcademico = (studentData) => {
-        const evalTypeDefensaGrade = Object.entries(studentData.evaluaciones).map(([evalType, evalData]) => [evalType, evalData.mean]).filter(([evalType, _]) => !isInformeFinal(evalType))[0][1]
+        const evalTypeDefensaGrade = Object.entries(studentData.evaluaciones).map(([evalType, evalData]) => [evalType, evalData.mean]).filter(([evalType]) => !isInformeFinal(evalType))[0][1]
         return customRound(evalTypeDefensaGrade * ((100 - indexacionSelected?.value) / 100)) + indexacionSelected?.value
     }
 
@@ -869,8 +707,6 @@ const VerCalificar = () => {
                             !indexacionSelected
                                 ? "N/A"
                                 : customRound(overallGradeData.mean * ((100 - indexacionSelected?.value) / 100))
-                            // : ` ( ${customRound(overallGradeData.mean)}/100 ) x ${100 - indexacionSelected?.value} + ${indexacionSelected?.value} `
-                            // : (customRound(overallGradeData.mean)/100 ) * 100 - indexacionSelected?.value + indexacionSelected?.value
                         ) : (
                             isComplexivo() && overallEvalType === "EXAMEN PRÁCTICO" ? (
                                 overallGradeData.mean ?? false ?
@@ -887,8 +723,6 @@ const VerCalificar = () => {
 
 
     const renderOverallTriGradeTable = (studentData) => {
-        // return "XD";
-        // if(!studentData) return "N/A";
         studentData.nombre = estudiantes.find(estudiante => estudiante?.id == studentData.nombre)?.nombre;
 
         return (
@@ -926,56 +760,8 @@ const VerCalificar = () => {
                         </td>
                         <td className="text-lg text-blue-600 text-center border border-gray-300 bg-gray-50">
                             {isArticuloAcademico() && JSON.stringify(getFinalGradeArticuloAcademico(studentData), 2, null)}
-                            {/* {isArticuloAcademico() &&customRound(overallGradeData.mean * ((100 - indexacionSelected?.value)/100))} */}
                             {!isArticuloAcademico() && studentData?.totalMean && customRound(studentData.totalMean)}
 
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        );
-    };
-
-    const renderOverallTriGradeTableComplexivo = (studentData) => {
-        // return "XD";
-        // if(!studentData) return "N/A";
-        studentData.nombre = estudiantes.find(estudiante => estudiante?.id == studentData.nombre)?.nombre;
-        return (
-            <table className="min-w-[75%] border border-gray-300 rounded-lg shadow-sm mb-4">
-                <thead className="bg-blue-50 text-blue-700">
-                    <tr>
-                        {/* Nombre del estudiante */}
-                        <th className="border border-gray-300 px-4 py-3 text-left w-[300px] min-w-[300px] max-w-[300px] whitespace-nowrap">
-                            {studentData?.nombre}
-                        </th>
-                        {/* Columna Base */}
-                        <th className="border border-gray-300 px-4 py-3 text-center font-semibold w-[100px]">
-                            Base
-                        </th>
-                        {/* Columna Nota */}
-                        <th className="border border-gray-300 px-4 py-3 text-center font-semibold w-[100px]">
-                            Nota
-                        </th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {/* Filas de Evaluaciones */}
-                    {studentData?.evaluaciones && Object.entries(studentData.evaluaciones).map(([evalType, evalData]) =>
-                        renderOverallTriGradeRow(evalType, evalData)
-                    )
-                    }
-
-                    {/* Fila de Promedio Total */}
-                    <tr className="bg-gray-100 font-bold">
-                        <td className="py-2 text-sm font-bold text-blue-700 text-left border border-gray-300">
-                            <span className="ml-5">PROMEDIO</span>
-                        </td>
-                        <td className="text-sm font-semibold text-blue-700 text-center border border-gray-300">
-                            100
-                        </td>
-                        <td className="text-lg text-blue-600 text-center border border-gray-300 bg-gray-50">
-                            {studentData?.totalMean && customRound(studentData.totalMean)}
                         </td>
                     </tr>
                 </tbody>
@@ -1032,7 +818,6 @@ const VerCalificar = () => {
                             {tribunalMembers.length > 0 && tribunalMembers
                                 .map((member, index) => {
                                     const isSelected = selectedTribunalMember?.nombre === member.nombre;
-                                    // const isEvaluated = selectedTribunalMember?.nombre === member.nombre;
                                     return (
                                         <button
                                             key={member.id}
@@ -1062,7 +847,6 @@ const VerCalificar = () => {
                                     const isSummary = !resumenRequired && selectedTribunalMember;
                                     if (isSummary) {
                                         setSelectedTribunalMember({})
-                                        // getOverallSummary();
                                     } else {
                                         setSelectedTribunalMember(tribunalMembers[0])
 
@@ -1138,7 +922,7 @@ const VerCalificar = () => {
                                                     initialValue={teoricExamGrade}
                                                     maxGradeValue={40}
                                                     onValueChange={setTeoricExamGrade}
-                                                    onSubmit={async (_) => await handleExamenTeoricoGrade()}
+                                                    onSubmit={async () => await handleExamenTeoricoGrade()}
                                                 />
                                             </div>
                                             {
@@ -1154,7 +938,6 @@ const VerCalificar = () => {
                                 }
                             </div>
                         )}
-
 
                         {!resumenRequired && (
                             <div>
@@ -1177,7 +960,6 @@ const VerCalificar = () => {
                                                     className={`px-6 py-2 font-semibold flex items-center ${isSelected
                                                         ? "bg-blue-600 text-white"
                                                         : "bg-gray-200 text-gray-800 hover:bg-gray-300"
-                                                        // } ${tipo.tipo_evaluacion_id === 1 ? "" : "rounded-l-lg"} ${tipo.tipo_evaluacion_id === tipoEvaluacion.length ? "" : "rounded-r-lg"
                                                         } ${index === 0 ? "rounded-l-lg" : ""} ${index === tipoEvaluacion.length - 1 ? "rounded-r-lg" : ""
 
                                                         }`}
@@ -1203,9 +985,6 @@ const VerCalificar = () => {
                                                         <th className="border border-gray-300 px-4 py-3 text-center font-semibold">
                                                             Calificación
                                                         </th>
-                                                        {/* <th className="text-sm font-semibold text-blue-700 text-center border border-gray-300 px-2" >
-                                                        min - max
-                                                    </th> */}
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -1248,7 +1027,6 @@ const VerCalificar = () => {
                                                             <span className="ml-5">TOTAL</span>
                                                         </td>
 
-                                                        {/* <td className="border border-gray-300"></td> */}
                                                         {/* Suma de puntajes máximos */}
                                                         <td className="text-sm font-semibold text-blue-700 text-center border border-gray-300">
                                                             {currentRubrica.rubrica.criterios.reduce(
@@ -1291,7 +1069,6 @@ const VerCalificar = () => {
                         <h2 className="text-2xl font-semibold mb-4 text-blue-600">Estudiantes</h2>
                         <div className="space-y-4">
                             {estudiantes.map((student) => (
-                                // {estudiantes.map((student) => (
                                 <button
                                     key={student.id}
                                     onClick={() => handleSelectedStudent(student.id)}
