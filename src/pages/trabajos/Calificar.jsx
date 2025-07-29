@@ -84,7 +84,7 @@ const Calificar = () => {
 
     useEffect(() => {
         setShowFinalizar(isCalificacionCompleta());
-    }, [calificacionesSeleccionadas]);
+    }, [calificacionesSeleccionadas, indexacionSelected]);
 
     useEffect(() => {
         if (trabajo) {
@@ -119,8 +119,6 @@ const Calificar = () => {
         fetchPhotos();
         handleSelectedRubricaType(isArticuloAcademico() ? "DEFENSA" : getInformeFinalKey());
     }, [estudiantes]);
-
-
 
     const fetchRubricas = async () => {
         try {
@@ -290,7 +288,7 @@ const Calificar = () => {
                 tipo = { ...tipo };
                 tipo.tipo_evaluacion_nombree = tipo.tipo_evaluacion_nombre;
                 tipo.tipo_evaluacion_nombre = tipo.tipo_evaluacion_nombre.replace("(EXAMEN PRACTICO)", "").replace("(EXÁMEN PRÁCTICO)", "").replace("(EXAMEN PRÁCTICO)", "").trim();
-                // alert(JSON.stringify(tipo, null, 2));
+
                 const rubrica = rubricas[tipo.tipo_evaluacion_nombree];
                 if (isArticuloAcademico() && !rubrica && tipo.tipo_evaluacion_nombree !== getInformeFinalKey()) return false;
                 if (!isArticuloAcademico() && !rubrica) return false; // Verifica que la rúbrica exista
@@ -495,7 +493,6 @@ const Calificar = () => {
                     }
                 });
 
-                // if (count > 0) {
                 summary[student.id] = summary[student.id] || { nombre: student.nombre, evaluaciones: {} };
                 summary[student.id].evaluaciones[tipo.tipo_evaluacion_nombre] = {
                     sum,
@@ -540,7 +537,6 @@ const Calificar = () => {
             </tr>
         )
     }
-
 
     const calcOverallGrades = (studentData) => {
         const evals = Object.entries(studentData.evaluaciones);
