@@ -15,7 +15,6 @@ import ItemsRubrica from '../pages/admin/ItemsRubrica';
 import Calificar from '../pages/trabajos/Calificar';
 import UserProfile from '../pages/usuario/Perfil';
 import Home from '../pages/usuario/Home';
-import CalendarioEventos from '../pages/usuario/Calendario';
 import TrabajoAnteproyectoCrear from '../pages/trabajos/TrabajoAnteproyectoCrear';
 import AdministrarCarreras from '../pages/admin/Carreras';
 import AdminRutas from '../pages/Admin/Rutas';
@@ -23,6 +22,7 @@ import AdminMenu from '../pages/Admin/AdminMenu';
 import VerCalificar from '../pages/trabajos/VerCalificar';
 import PermissionInterceptor from '../context/PermissionInterceptor';
 import RolesPermisosManager from '../pages/Admin/RolesPermisosManager';
+import UserPermissions from '../pages/admin/UserPermissions';
 // import ReportsPage from '../pages/Reportes';
 
 export const routes = [
@@ -44,16 +44,6 @@ export const routes = [
       <Layout>
         <ProtectedRoute>
           <Home />
-        </ProtectedRoute>
-      </Layout>
-    ),
-  },
-  {
-    path: '/calendario',
-    element: (
-      <Layout>
-        <ProtectedRoute>
-          <CalendarioEventos />
         </ProtectedRoute>
       </Layout>
     ),
@@ -115,6 +105,16 @@ export const routes = [
       <Layout>
         <ProtectedRoute>
         <RolesPermisosManager />
+        </ProtectedRoute>
+      </Layout>
+    ),
+  },
+  {
+    path: '/admin/user-permissions',
+    element: (
+      <Layout>
+        <ProtectedRoute>
+          <UserPermissions />
         </ProtectedRoute>
       </Layout>
     ),
