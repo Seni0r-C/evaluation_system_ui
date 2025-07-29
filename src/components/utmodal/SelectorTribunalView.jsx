@@ -1,5 +1,6 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import BuscadorDocentes from "../utmcomps/BuscadorDocentes";
 import PropTypes from "prop-types";
 
@@ -16,8 +17,6 @@ const SelectorTribunalView = ({ children, selectedTribunal, setSelectedTribunal 
     const delegadoComisionInvestigacionKey = "DELEGADO COM. INVESTIGACIÓN CIENTIFÍCA";
     const [selectedDelegadoComisionInvestigacion, setSelectedDelegadoComisionInvestigacion] = useState([]);
 
-    // Ref para evitar efecto rebote
-    // useEffect(() => {
     const prepareTribunal = (selectedTribunal) => {
         // Quien Preside (qpreside, usually vicedecano), 
         // DELEGADO H. CONSEJO DIRECTIVO (consejo), 
@@ -31,21 +30,25 @@ const SelectorTribunalView = ({ children, selectedTribunal, setSelectedTribunal 
             ) {
                 setSelectedQuienPrecide([qpreside]);
             }
+
             if (
                 JSON.stringify(selectedSuplenteMiembroTribunal) !== JSON.stringify([suplente])
             ) {
                 setSelectedSuplenteMiembroTribunal([suplente]);
             }
+
             if (
                 JSON.stringify(selectedDelegadoConsejoDirectivo) !== JSON.stringify([consejo])
             ) {
                 setSelectedDocenteDelegadoConsejoDirectivo([consejo]);
             }
+
             if (
                 JSON.stringify(selectedDocenteDelArea) !== JSON.stringify([docente])
             ) {
                 setSelectedDocenteDelArea([docente]);
             }
+
             if (
                 JSON.stringify(selectedDelegadoComisionInvestigacion) !== JSON.stringify([comision])
             ) {

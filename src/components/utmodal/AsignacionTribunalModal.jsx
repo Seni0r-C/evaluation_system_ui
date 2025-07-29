@@ -21,7 +21,6 @@ const AsignarTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
     const [selectedDate, setSelectedDate] = useState("");
 
     const [initialDateDefensa, setInitialDateDefensa] = useState("");
-    const [trabajoSelected, setTrabajoSelected] = useState(null);
 
     const handeDateFormat = (fecha, type) => {
         if (fecha.trim() == "") return '';
@@ -41,16 +40,12 @@ const AsignarTribunalModal = ({ isOpen, onClose, trabajoData, title }) => {
     const fetchTrabajoFull = async (trabajoId) => {
         try {
             const setResults = (fetchedTrabajo) => {
-                setTrabajoSelected(fetchedTrabajo);
-
-                // "2025-04-08T10:07""09/04/2025, 09:57"                
                 setInitialDateDefensa(formatDate(fetchedTrabajo?.fecha_defensa, "f"));
                 setSelectedDate(formatDate(fetchedTrabajo?.fecha_defensa, "f"));
             };
             obtenerUnTrabajo(setResults, trabajoId);
-            // alert(JSON.stringify(trabajoSelected, null, 2));
-
         } catch (error) {
+            console.error("Error al obtener el trabajo:", error);
             showError("Error al obtener los datos del trabajo.");
         }
     };

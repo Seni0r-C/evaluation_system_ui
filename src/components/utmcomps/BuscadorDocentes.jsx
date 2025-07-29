@@ -1,13 +1,12 @@
+/* eslint-disable react/prop-types */
 import SearchDropdown from '../common/BuscadorGenerico';
 import { buscarUsuarios as buscarUsuariosService } from '../../services/usuarioService';
-import PropTypes from 'prop-types';
 
-
-const BuscadorDocentes = ({ setSelectedDocentes, initialSelectedItems = [], allowDuplicates = false, maxSelections = -1, required = false, label="Buscar Docentes" }) => {
+const BuscadorDocentes = ({ setSelectedDocentes, initialSelectedItems = [], allowDuplicates = false, maxSelections = -1, required = false, label = "Buscar Docentes" }) => {
     const handleBuscarNombre = (query, setResults, setShowSpinner) => {
         setShowSpinner(true);  // Mostrar el spinner
         setTimeout(() => {
-            // Creao que 3 es el rol de docente xd
+            //rol de docente = 3
             buscarUsuariosService(query, setResults, 3);
             setShowSpinner(false);  // Ocultar el spinner cuando se obtienen los resultados
         }, 500);  // Simulamos un retraso en la búsqueda
@@ -20,21 +19,13 @@ const BuscadorDocentes = ({ setSelectedDocentes, initialSelectedItems = [], allo
                 placeholder="Nombres apellidos del docente"
                 handlerBuscar={handleBuscarNombre}
                 onSelectionChange={(items) => setSelectedDocentes(items)}
-                allowDuplicates={allowDuplicates} 
-                maxSelections={maxSelections}   
+                allowDuplicates={allowDuplicates}
+                maxSelections={maxSelections}
                 required={required}
                 initialSelectedItems={initialSelectedItems}
             />
         </div>
     );
-};
-
-BuscadorDocentes.propTypes = {
-    setSelectedDocentes: PropTypes.func.isRequired,
-    initialSelectedItems: PropTypes.array,
-    allowDuplicates: PropTypes.bool,
-    maxSelections: PropTypes.number,
-    required: PropTypes.bool,
 };
 
 export default BuscadorDocentes;

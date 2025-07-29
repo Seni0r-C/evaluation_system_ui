@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
 import { FaChevronDown, FaChevronUp, FaSearchPlus } from 'react-icons/fa';
 import Spinner from '../shared/logo_carga/Spinner';
@@ -131,7 +131,7 @@ const SearchDropdown = ({
         {label}
         {required && <span className="text-red-500"> *</span>}
       </label>
-  
+
       {/* Contenedor que agrupa input y seleccionados */}
       <div className="flex flex-col md:flex-row md:items-start md:gap-4">
         {/* Campo principal con botones */}
@@ -144,7 +144,7 @@ const SearchDropdown = ({
             className="w-full border-none px-3 py-2 focus:outline-none"
             required={required}
           />
-  
+
           {/* Botón para mostrar campos adicionales */}
           {subSearchHandlers.length > 0 && (
             <button
@@ -162,7 +162,7 @@ const SearchDropdown = ({
             {showDropdown ? <FaChevronUp /> : <FaChevronDown />}
           </button>
         </div>
-  
+
         {/* Ítems seleccionados a la derecha en pantallas md+ */}
         {selectedItems.length > 0 && (
           <div className="mt-2 md:mt-0 flex flex-wrap gap-2 md:max-w-sm min-w-[300px]">
@@ -183,7 +183,7 @@ const SearchDropdown = ({
           </div>
         )}
       </div>
-  
+
       {/* Campos adicionales solo cuando showAdvancedSearch está activo */}
       {showAdvancedSearch &&
         subSearchHandlers.map((search, index) => (
@@ -197,14 +197,14 @@ const SearchDropdown = ({
             />
           </div>
         ))}
-  
+
       {/* Spinner de carga */}
       {showSpinner && (
         <div className="relative left-0 w-full p-3 text-center bg-white border">
           <Spinner />
         </div>
       )}
-  
+
       {/* Resultados del buscador */}
       {showDropdown && searchResults.length > 0 && (
         <ul className="relative border rounded-lg bg-white w-full max-h-40 overflow-auto z-10 mt-1 shadow-lg">
@@ -220,7 +220,7 @@ const SearchDropdown = ({
           ))}
         </ul>
       )}
-  
+
       {showDropdown && searchResults.length <= 0 && (
         <ul className="relative border rounded-lg bg-white w-full max-h-40 overflow-auto z-10 mt-1 shadow-lg">
           <li className="px-3 py-2 cursor-pointer hover:bg-gray-100">
@@ -230,26 +230,7 @@ const SearchDropdown = ({
       )}
     </div>
   );
-  
-};
 
-SearchDropdown.propTypes = {
-  label: PropTypes.string.isRequired,
-  placeholder: PropTypes.string.isRequired,
-  handlerBuscar: PropTypes.func.isRequired,
-  subSearchHandlers: PropTypes.arrayOf(
-    PropTypes.shape({
-      label: PropTypes.string.isRequired,
-      handler: PropTypes.func.isRequired,
-      layout: PropTypes.oneOf(['stacked', 'inline']),
-    })
-  ),
-  onSelectionChange: PropTypes.func.isRequired,
-  allowDuplicates: PropTypes.bool,
-  maxSelections: PropTypes.number,
-  required: PropTypes.bool,
-  initialSelectedItems: PropTypes.array,
-  showMessageMap: PropTypes.object,
 };
 
 export default SearchDropdown;

@@ -35,7 +35,7 @@ const SidebarMenu = ({ menuData }) => {
     return (
         <nav className="space-y-2">
             {menuData.map((item, index) => (
-                <>
+                <div key={index}>
                     {
                         getPermissionId(item) &&
                         <MenuItem
@@ -57,7 +57,7 @@ const SidebarMenu = ({ menuData }) => {
                             toggle={() => setOpenMenuIndex(openMenuIndex === index ? null : index)}
                         />
                     }
-                </>
+                </div>
             ))}
         </nav>
     );
