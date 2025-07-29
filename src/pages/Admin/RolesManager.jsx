@@ -6,7 +6,7 @@ import {
 import RolFormulario from '../../components/formularios/RolFormulario';
 import RolLista from '../../components/listas/RolLista';
 
-function RolesPermisosManager() {
+function RolesManager() {
     const [roles, setRoles] = useState([]);
     const [selectedRol, setSelectedRol] = useState(null);
 
@@ -62,4 +62,4 @@ function RolesPermisosManager() {
     );
 }
 
-export default RolesPermisosManager;
+export default RolesManager;

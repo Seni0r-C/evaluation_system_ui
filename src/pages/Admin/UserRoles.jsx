@@ -1,10 +1,9 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 import { buscarUsuarios } from '../../services/usuarioService';
 import { getRoles, obtenerRolesDeUsuario, actualizarRolesDeUsuario } from '../../services/rolesService';
 import { useMessage } from '../../hooks/useMessage';
 
-const UserPermissions = () => {
+const UserRoles = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
@@ -15,10 +14,13 @@ const UserPermissions = () => {
 
     useEffect(() => {
         getRoles().then(setRoles);
-        buscarUsuarios(searchTerm, setUsers);
     }, []);
-    
+
     const handleSearch = async () => {
+        if (searchTerm.trim() === '') {
+            setUsers([]);
+            return;
+        }
         buscarUsuarios(searchTerm, setUsers);
         setHadSearch(true);
     };
@@ -46,8 +48,8 @@ const UserPermissions = () => {
 
     return (
         <div className="container mx-auto p-4 max-w-6xl">
-            <h1 className="text-2xl font-bold mb-6 text-blue-800">Gestión de Permisos de Usuarios</h1>
-            
+            <h1 className="text-2xl font-bold mb-6 text-blue-800">Gestión de Roles de Usuarios</h1>
+
             <div className="bg-white rounded-lg">
                 <div className="flex flex-col md:flex-row gap-6">
                     {/* Panel de búsqueda de usuarios */}
@@ -62,8 +64,8 @@ const UserPermissions = () => {
                                 className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                             />
-                            <button 
-                                onClick={handleSearch} 
+                            <button
+                                onClick={handleSearch}
                                 className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -71,15 +73,15 @@ const UserPermissions = () => {
                                 </svg>
                             </button>
                         </div>
-                        
+
                         <div className="mt-4">
                             <h3 className="text-sm font-medium text-gray-500 mb-2">Resultados de búsqueda</h3>
                             {users.length > 0 ? (
                                 <ul className="space-y-2">
                                     {users.map(user => (
-                                        <li 
-                                            key={user.id} 
-                                            onClick={() => handleSelectUser(user)} 
+                                        <li
+                                            key={user.id}
+                                            onClick={() => handleSelectUser(user)}
                                             className={`p-3 rounded-lg cursor-pointer transition-colors ${selectedUser?.id === user.id ? 'bg-blue-100 border-l-4 border-blue-500' : 'hover:bg-gray-100'}`}
                                         >
                                             <div className="font-medium">{user.nombre}</div>
@@ -94,31 +96,31 @@ const UserPermissions = () => {
                             )}
                         </div>
                     </div>
-                    
+
                     {/* Panel de asignación de roles */}
                     {selectedUser ? (
                         <div className="w-full md:w-2/3 bg-gray-50 p-6 rounded-lg">
                             <div className="flex items-center justify-between mb-6">
                                 <h2 className="text-xl font-semibold text-gray-800">
-                                    Permisos para: <span className="text-blue-600">{selectedUser.nombre}</span>
+                                    Roles de: <span className="text-blue-600">{selectedUser.nombre}</span>
                                 </h2>
-                                <button 
-                                    onClick={handleSaveChanges} 
+                                <button
+                                    onClick={handleSaveChanges}
                                     className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
                                 >
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                     </svg>
                                     Guardar Cambios
                                 </button>
                             </div>
-                            
+
                             <div className="bg-white p-4 rounded-lg shadow-sm">
                                 <h3 className="text-lg font-medium mb-4 text-gray-700">Seleccione los permisos</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                     {roles.map(rol => (
-                                        <div 
-                                            key={rol.id} 
+                                        <div
+                                            key={rol.id}
                                             className={`p-3 border rounded-lg transition-all ${userRoles.includes(rol.id) ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}
                                         >
                                             <label className="flex items-center space-x-3 cursor-pointer">
@@ -140,11 +142,11 @@ const UserPermissions = () => {
                                     ))}
                                 </div>
                             </div>
-                            
+
                             <div className="mt-6 bg-blue-50 p-4 rounded-lg">
-                                <h3 className="text-sm font-medium text-blue-800 mb-2">¿Cómo funcionan los permisos?</h3>
+                                <h3 className="text-sm font-medium text-blue-800 mb-2">¿Cómo funcionan los roles?</h3>
                                 <p className="text-sm text-blue-700">
-                                    Seleccione los permisos que desea asignar al usuario. Cada permiso otorga diferentes capacidades dentro del sistema. 
+                                    Seleccione los roles que desea asignar al usuario. Cada rol otorga la capacidad de ver ciertas rutas dentro del sistema.
                                     Los cambios se aplicarán después de hacer clic en &quot;Guardar Cambios&quot;.
                                 </p>
                             </div>
@@ -156,7 +158,7 @@ const UserPermissions = () => {
                             </svg>
                             <h3 className="mt-4 text-lg font-medium text-gray-600">Seleccione un usuario</h3>
                             <p className="mt-2 text-sm text-gray-500 text-center">
-                                Busque y seleccione un usuario de la lista para ver y editar sus permisos.
+                                Busque y seleccione un usuario de la lista para ver y editar sus roles.
                             </p>
                         </div>
                     )}
@@ -166,4 +168,4 @@ const UserPermissions = () => {
     );
 };
 
-export default UserPermissions;
+export default UserRoles;

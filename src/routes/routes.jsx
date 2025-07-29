@@ -20,9 +20,8 @@ import AdministrarCarreras from '../pages/admin/Carreras';
 import AdminRutas from '../pages/Admin/Rutas';
 import AdminMenu from '../pages/Admin/AdminMenu';
 import VerCalificar from '../pages/trabajos/VerCalificar';
-import RolesPermisosManager from '../pages/Admin/RolesPermisosManager';
-import UserPermissions from '../pages/admin/UserPermissions';
-// import ReportsPage from '../pages/Reportes';
+import RolesManager from '../pages/admin/RolesManager';
+import UserRoles from '../pages/admin/UserRoles';
 
 export const routes = [
   {
@@ -103,7 +102,7 @@ export const routes = [
     element: (
       <Layout>
         <ProtectedRoute>
-        <RolesPermisosManager />
+        <RolesManager />
         </ProtectedRoute>
       </Layout>
     ),
@@ -113,7 +112,7 @@ export const routes = [
     element: (
       <Layout>
         <ProtectedRoute>
-          <UserPermissions />
+          <UserRoles />
         </ProtectedRoute>
       </Layout>
     ),
