@@ -162,7 +162,7 @@ const Calificar = () => {
 
                 return acc;
             }, {});
-         
+
             setRubricas(rubricasFormatted);
         } catch (error) {
             console.error("Error al obtener las rúbricas:", error);
@@ -299,7 +299,6 @@ const Calificar = () => {
                     const isSetGrade = calificacionesSeleccionadas[student.id]?.[tipo.tipo_evaluacion_nombre]?.[criterioIndex] !== undefined;
                     if (isArticuloAcademico() && !isSetGrade && tipo.tipo_evaluacion_nombre === getInformeFinalKey()) {
                         if (!indexacionSelected) {
-                            // showMsg({ typeMsg: 'info', message: 'Por favor seleccione una indexación' });
                             return false;
                         }
                         handleCalificacionPorcentaje(indexacionSelected.value, getInformeFinalKey());
@@ -514,9 +513,9 @@ const Calificar = () => {
         return summary;
     };
 
-    const renderOverallGradeRow = (overallEvalType, overallGradeData) => {
+    const renderOverallGradeRow = (overallEvalType, overallGradeData, index) => {
         return (
-            <tr className="bg-gray-100 font-bold">
+            <tr className="bg-gray-100 font-bold" key={index}>
                 <td className="py-2 text-sm font-bold text-gray-700 text-left border border-gray-300">
                     <span className="ml-5">{overallEvalType}</span>
                 </td>
@@ -567,13 +566,13 @@ const Calificar = () => {
         // return ((totalSum / evals.length).toFixed(2))*100; // Calculate mean and format to 2 decimals
     }
 
-    const renderOverallGradeTable = (studentData) => {
+    const renderOverallGradeTable = (studentData, index) => {
         if (!studentData) return null;
         const nameStudentSelected = estudiantes.find(estudiante => estudiante?.id == selectedStudent)?.nombre;
         if (studentData?.nombre !== nameStudentSelected) return null;
         return (
             // <table className="min-w-full max-w-4xl border border-gray-300 rounded-lg shadow-sm">
-            <table className="min-w-[75%] border border-gray-300 rounded-lg shadow-sm mb-4">
+            <table className="min-w-[75%] border border-gray-300 rounded-lg shadow-sm mb-4" key={index}>
                 <thead className="bg-blue-50 text-blue-700">
                     <tr>
                         <th className="border border-gray-300 px-4 py-3 text-left w-[300px] min-w-[300px] max-w-[300px] whitespace-nowrap">
@@ -590,8 +589,8 @@ const Calificar = () => {
 
                 <tbody>
                     {/* Fila de Totales */}
-                    {Object.entries(studentData.evaluaciones).map(([evalType, evalData]) => {
-                        return renderOverallGradeRow(evalType, evalData);
+                    {Object.entries(studentData.evaluaciones).map(([evalType, evalData], index) => {
+                        return renderOverallGradeRow(evalType, evalData, index);
                     })}
                     <tr className="bg-gray-100 font-bold">
                         <td className="py-2 text-sm font-bold text-blue-700 text-left border border-gray-300">
@@ -809,7 +808,6 @@ const Calificar = () => {
                                             setIndexacionSelected(indexacion);
                                         }}
                                             selectedId={indexacionSelected}
-                                            disabled={true}
                                         />
                                     </th>
                                 </tr>
@@ -826,8 +824,7 @@ const Calificar = () => {
                                 {
                                     (currentRubrica ? (
                                         Object.values(getRubricaSummary())
-                                            .map((rubrica) => renderOverallGradeTable(rubrica)
-                                            )
+                                            .map((rubrica, index) => renderOverallGradeTable(rubrica, index))
                                     ) : (
                                         <div className="justify-center lg:col-start-2 col-span-1 mb-20">
                                             <div className="text-center text-2xl font-semibold text-blue-600">

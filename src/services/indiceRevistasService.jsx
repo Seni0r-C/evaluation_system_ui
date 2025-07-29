@@ -5,7 +5,7 @@ export const getIndicesRevistasService = async () => {
   try {
     const responseIndexationMagazines = await axiosInstance.get(`/indexacion-revista/`);
     if (responseIndexationMagazines?.error) {
-      return { typeMsg: 'error', message: responseDoc.message };
+      return { typeMsg: 'error', message: responseIndexationMagazines.message };
     }
     return responseIndexationMagazines.data;
   } catch (error) {
