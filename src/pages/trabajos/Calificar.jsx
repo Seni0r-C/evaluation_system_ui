@@ -31,7 +31,6 @@ const Calificar = () => {
     const [calificacionesSeleccionadas, setCalificacionesSeleccionadas] = useState({});
     const [showFinalizar, setShowFinalizar] = useState(false);
     const [indexacionSelected, setIndexacionSelected] = useState(null);
-    const [resumenRequired, setResumenRequired] = useState(false);
 
 
     const navigate = useNavigate();
@@ -51,7 +50,6 @@ const Calificar = () => {
 
     const getInformeFinalKey = () => {
         return isComplexivo() ? "INFORME FINAL (EXAMEN PRACTICO)" : "INFORME FINAL";
-        // return isComplexivo() ? "INFORME FINAL (EXAMEN PRACTICO)" : "INFORME FINAL";
     }
 
 
@@ -91,8 +89,6 @@ const Calificar = () => {
     useEffect(() => {
         if (trabajo) {
             getEstudiantesByTrabajoId(trabajo.id, setEstudiantes);
-            // setSelectedRubricaType(isArticuloAcademico() ? "DEFENSA" : getInformeFinalKey());
-            // handleSelectedRubricaType(isArticuloAcademico() ? "DEFENSA" : getInformeFinalKey());
         }
     }, [trabajo]);
 
@@ -166,11 +162,7 @@ const Calificar = () => {
 
                 return acc;
             }, {});
-            // const rubricasFormatted = {};
-            // Object.entries(rubricasFormatted1).forEach((rubrica, rubricaType) => {
-            //     rubricaType = rubricaType?.replace("(EXAMEN PRACTICO)", "")?.replace("(EXÁMEN PRÁCTICO)", "")?.replace("(EXAMEN PRÁCTICO)", "").trim();
-            //     rubricasFormatted[rubricaType] = rubrica;
-            // })
+         
             setRubricas(rubricasFormatted);
         } catch (error) {
             console.error("Error al obtener las rúbricas:", error);
@@ -202,10 +194,7 @@ const Calificar = () => {
             }
         };
         const rubricGrades = await getGrades()
-        // const rubricGrades = (await getGrades()).map((students)=>{
-        //     students.
-        //     return students
-        // });
+
         if (isArticuloAcademico() && rubricGrades) {
             const informeFinalGrades = Object.values(rubricGrades)[0][getInformeFinalKey()];
             const sumInformeFinal = Object.values(informeFinalGrades).reduce((prev, current) => prev + current, 0);
@@ -432,8 +421,6 @@ const Calificar = () => {
             valor = e.target?.value || e.value;
         }
         const selectedRubricaTypeLocal = selectedRubricaType?.replace("(EXAMEN PRACTICO)", "")?.replace("(EXÁMEN PRÁCTICO)", "")?.replace("(EXAMEN PRÁCTICO)", "").trim();
-        // const value = Math.min(criterio.puntaje_maximo, Math.max(0, e.target.value));
-        // valor = calificacionValue(calculateMinScore(criterio), calculateMaxScore(criterio), criterioIndex) ?? calculateMinScore(criterio);
         const value = Math.min(criterio.puntaje_maximo, Math.max(0, valor));
         if (selectedRubricaTypeLocal === getInformeFinalKey()) {
             selectedStudents.forEach((selectedStudent) => {
@@ -476,29 +463,12 @@ const Calificar = () => {
         // return Math.max(minimo, minimo==0?Number(maximo)/(getIndexPercent()*Number(maximo)):value);
     };
 
-    const getIndexPercent = () => {
-        if (!indexacionSelected) {
-            return 1;
-        }
-        return indexacionSelected.porcentaje;
-    };
-
-
-    const calculateMinScore = (criterio) => {
+    const calculateMinScore = () => {
         return 0;
-        if (!isArticuloAcademico() || !indexacionSelected) return 0;
-        return Number(criterio.puntaje_maximo) * getIndexPercent();
     };
 
     const calculateMaxScore = (criterio) => {
         return criterio.puntaje_maximo;
-        if (!isArticuloAcademico() || !indexacionSelected) return criterio.puntaje_maximo;
-        return calculateMinScore(criterio) + (Number(criterio.puntaje_maximo) * (1 - getIndexPercent()));
-    };
-
-    const hasStudentSelected = () => {
-        if (selectedRubricaType === getInformeFinalKey()) { return selectedStudents.length > 0; }
-        return selectedStudent !== null;
     };
 
     const getRubricaSummary = () => {
@@ -543,27 +513,6 @@ const Calificar = () => {
         });
         return summary;
     };
-    const renderOverallGradeRow2 = (overallEvalType, overallGradeData) => {
-        return (
-            <tr className="bg-gray-100 font-bold">
-                <td className="py-2 text-sm font-bold text-gray-700 text-left border border-gray-300">
-                    <span className="ml-5">{overallEvalType}</span>
-                </td>
-                <td className="text-sm font-semibold text-gray-700 text-center border border-gray-300">
-                    100
-                </td>
-                <td className="px-2 text-lg text-blue-600  text-center border border-gray-300 bg-gray-50">
-                    {isArticuloAcademico() && overallEvalType === getInformeFinalKey() && (
-                        indexacionSelected?.value ?? "N/A"
-                    )}
-                    {isArticuloAcademico() && overallEvalType !== getInformeFinalKey() && (
-                        !indexacionSelected ? "N/A" : ` ( ${overallGradeData.sum}/100 ) x ${100 - indexacionSelected?.value} + ${indexacionSelected?.value} `
-                    )}
-                    {!isArticuloAcademico() ? overallGradeData.sum : null}
-                </td>
-            </tr>
-        )
-    }
 
     const renderOverallGradeRow = (overallEvalType, overallGradeData) => {
         return (
@@ -661,70 +610,6 @@ const Calificar = () => {
         );
     }
 
-
-    // const calcOverallGrades = (studentData) => {
-    //     const evals = Object.entries(studentData.evaluaciones);
-    //     if (evals.length === 0) return "N/A"; // Handle case when no evaluations exist
-    //     const totalSum = evals.reduce((pre, evalValue) => {
-    //         const [evalType, evalData] = evalValue;
-    //         if (isArticuloAcademico() && evalType === getInformeFinalKey()) {
-    //             evalData.sum = indexacionSelected?.value ?? 0;
-    //         }
-    //         if (isArticuloAcademico() && evalType !== getInformeFinalKey()) {
-    //             evalData.sum = (evalData.sum / 100) * (100 - indexacionSelected?.value) + indexacionSelected?.value;
-    //         }
-    //         return pre + evalData.sum;
-    //     }, 0);
-    //     // const percentGrade = (totalSum / (evals.length * 100)) * 100;
-    //     const val = totalSum / (evals.length * 100);
-    //     const percentGrade = customRound(val * 100);
-    //     const percentGradeStr = parseInt(percentGrade + "") + "";
-    //     return percentGradeStr === "NaN" ? "N/A" : percentGradeStr; // Calculate mean and format to 2 decimals
-    //     // return ((totalSum / evals.length).toFixed(2))*100; // Calculate mean and format to 2 decimals
-    // }
-
-    // const renderOverallGradeTable = (studentData) => {
-    //     return (
-    //         // <table className="min-w-full max-w-4xl border border-gray-300 rounded-lg shadow-sm">
-    //         <table className="min-w-[75%] border border-gray-300 rounded-lg shadow-sm mb-4">
-    //             <thead className="bg-blue-50 text-blue-700">
-    //                 <tr>
-    //                     <th className="border border-gray-300 px-4 py-3 text-left w-[300px] min-w-[300px] max-w-[300px] whitespace-nowrap">
-    //                         {studentData.nombre}
-    //                     </th>
-    //                     <th className="border border-gray-300 px-4 py-3 text-center font-semibold w-[100px]">
-    //                         Base
-    //                     </th>
-    //                     <th className="border border-gray-300 px-4 py-3 text-center font-semibold w-[100px]">
-    //                         Nota
-    //                     </th>
-    //                 </tr>
-    //             </thead>
-
-    //             <tbody>
-    //                 {/* Fila de Totales */}
-    //                 {Object.entries(studentData.evaluaciones).map(([evalType, evalData]) => {
-    //                     return renderOverallGradeRow(evalType, evalData);
-    //                 })}
-    //                 <tr className="bg-gray-100 font-bold">
-    //                     <td className="py-2 text-sm font-bold text-blue-700 text-left border border-gray-300">
-    //                         <span className="ml-5">{isArticuloAcademico() ? "TOTAL" : "PROMEDIO"} </span>
-    //                     </td>
-    //                     <td className="text-sm font-semibold text-blue-700 text-center border border-gray-300">
-    //                         100
-    //                     </td>
-    //                     <td className="text-lg text-blue-600 text-center border border-gray-300 bg-gray-50">
-    //                         {calcOverallGrades(studentData)}
-    //                     </td>
-    //                 </tr>
-
-    //             </tbody>
-
-    //         </table>
-    //     );
-    // }
-
-
     return (
         <div className="w-full overflow-hidden relative h-full">
             <div className="bg-white rounded-xl p-8 pr-14 mx-auto">
@@ -785,9 +670,6 @@ const Calificar = () => {
                                                 <th className="border border-gray-300 px-4 py-3 text-center font-semibold">
                                                     Calificación
                                                 </th>
-                                                {/* <th className="text-sm font-semibold text-blue-700 text-center border border-gray-300 px-2" >
-                                                    min - max
-                                                </th> */}
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -934,19 +816,6 @@ const Calificar = () => {
                             </tbody>
                         </table>
                     )}
-                    {/* Validaciones para evitar errores */}
-                    {/* {currentRubrica ? (
-                        Object.values(getRubricaSummary()).map((rubrica) => renderOverallGradeTable(rubrica)
-                        )
-                    ) : (
-                        <div className="justify-center lg:col-start-2 col-span-1 mt-20 mb-20">
-                            <div className="text-center text-2xl font-semibold text-blue-600">
-                                <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-4 border-blue-600">
-                                </div>
-                                <span className="ml-2 text-blue-700">Cargando datos...</span>
-                            </div>
-                        </div>
-                    )} */}
 
                     {/* Promedios y totales de evaluaciones */}
                     {
@@ -955,7 +824,7 @@ const Calificar = () => {
 
                                 {/* Validaciones para evitar errores */}
                                 {
-                                    !resumenRequired && (currentRubrica ? (
+                                    (currentRubrica ? (
                                         Object.values(getRubricaSummary())
                                             .map((rubrica) => renderOverallGradeTable(rubrica)
                                             )
@@ -970,7 +839,6 @@ const Calificar = () => {
                                     ))
                                 }
                             </div>
-
                         )
                     }
                 </div>
