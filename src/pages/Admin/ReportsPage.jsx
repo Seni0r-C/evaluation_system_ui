@@ -15,6 +15,7 @@ const ReportCard = ({ title, description, filters, onGenerate }) => (
 const ReportsPage = () => {
     const { showMsg } = useMessage();
     const [fechasGraduados, setFechasGraduados] = useState({ fechaInicio: '', fechaFin: '' });
+    const [estadoId, setEstadoId] = useState('');
 
     const handleGenerateReport = async (url, params, fileName) => {
         showMsg({ typeMsg: 'wait', message: 'Generando reporte...' });
@@ -51,6 +52,29 @@ const ReportsPage = () => {
                     title="Reporte de Carga de Tutores"
                     description="Genera un reporte con la cantidad de trabajos de titulación asignados a cada tutor."
                     onGenerate={() => handleGenerateReport('/reportes/carga-tutores/excel', {}, 'reporte_carga_tutores.xlsx')}
+                />
+                <ReportCard
+                    title="Reporte de Trabajos Pendientes"
+                    description="Genera un reporte de los trabajos de titulación pendientes por estado."
+                    filters={
+                        <select value={estadoId} onChange={(e) => setEstadoId(e.target.value)} className="w-full p-2 border rounded">
+                            <option value="">Seleccione un estado</option>
+                            <option value="1">Anteproyecto</option>
+                            <option value="2">Sin Tribunal</option>
+                            <option value="3">Con Tribunal</option>
+                        </select>
+                    }
+                    onGenerate={() => handleGenerateReport('/reportes/trabajos-pendientes/excel', { estadoId }, 'reporte_trabajos_pendientes.xlsx')}
+                />
+                <ReportCard
+                    title="Reporte de Calificaciones Promedio por Modalidad"
+                    description="Genera un reporte con el promedio de calificaciones por modalidad."
+                    onGenerate={() => handleGenerateReport('/reportes/calificaciones-promedio/excel', {}, 'reporte_calificaciones_promedio.xlsx')}
+                />
+                <ReportCard
+                    title="Reporte de Tendencias de Rendimiento Académico"
+                    description="Genera un reporte con las tendencias de rendimiento académico a lo largo del tiempo."
+                    onGenerate={() => handleGenerateReport('/reportes/tendencias-rendimiento/excel', {}, 'reporte_tendencias_rendimiento_academico.xlsx')}
                 />
             </div>
         </div>
