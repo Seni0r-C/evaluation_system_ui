@@ -8,12 +8,16 @@ const SelectorTribunalView = ({ children, selectedTribunal, setSelectedTribunal 
     // Selector Docentes
     const quienPrecideKey = "Quien precide";
     const [selectedquienPrecide, setSelectedQuienPrecide] = useState([]);
+
     const suplenteMiembroTribunalKey = "Suplente de miembro de tribunal";
     const [selectedSuplenteMiembroTribunal, setSelectedSuplenteMiembroTribunal] = useState([]);
+
     const delgadoConsejoDirectivoKey = "DELEGADO H. CONSEJO DIRECTIVO";
     const [selectedDelegadoConsejoDirectivo, setSelectedDocenteDelegadoConsejoDirectivo] = useState([]);
+    
     const docenteDelAreaKey = "DOCENTE DEL ÁREA";
     const [selectedDocenteDelArea, setSelectedDocenteDelArea] = useState([]);
+    
     const delegadoComisionInvestigacionKey = "DELEGADO COM. INVESTIGACIÓN CIENTIFÍCA";
     const [selectedDelegadoComisionInvestigacion, setSelectedDelegadoComisionInvestigacion] = useState([]);
 
