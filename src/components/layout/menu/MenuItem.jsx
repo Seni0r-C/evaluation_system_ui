@@ -43,7 +43,7 @@ const MenuItem = ({ item, isOpen, toggle }) => {
             {item.subOptions.length > 0 && isOpen && (
                 <div className="ml-4">
                     {item.subOptions.map((subItem, subIndex) => (
-                            <>
+                            <div key={subIndex}>
                                 {
                                     getPermissionIdSubItem(subItem) &&
                                     <SubMenuItem permissionId={getPermissionIdSubItem(subItem)} key={subIndex} subItem={subItem} />
@@ -52,7 +52,7 @@ const MenuItem = ({ item, isOpen, toggle }) => {
                                     !getPermissionIdSubItem(subItem) &&
                                     <SubMenuItem key={subIndex} subItem={subItem} />
                                 }
-                            </>
+                            </div>
                     ))}
                 </div>
             )}
