@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import SubMenuItem from './SubMenuItem';
-import PermissionInterceptor from '../../../context/PermissionInterceptor';
 
 const getPermissionIdSubItem = (item) => {
     // return item?.name == "Menu" || item?.name == "Administrar Sistema"? "ver_panel_admin_hide" : null;
@@ -44,7 +43,6 @@ const MenuItem = ({ item, isOpen, toggle }) => {
             {item.subOptions.length > 0 && isOpen && (
                 <div className="ml-4">
                     {item.subOptions.map((subItem, subIndex) => (
-                        <PermissionInterceptor key={subIndex}>
                             <>
                                 {
                                     getPermissionIdSubItem(subItem) &&
@@ -55,7 +53,6 @@ const MenuItem = ({ item, isOpen, toggle }) => {
                                     <SubMenuItem key={subIndex} subItem={subItem} />
                                 }
                             </>
-                        </ PermissionInterceptor>
                     ))}
                 </div>
             )}

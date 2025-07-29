@@ -20,7 +20,6 @@ import AdministrarCarreras from '../pages/admin/Carreras';
 import AdminRutas from '../pages/Admin/Rutas';
 import AdminMenu from '../pages/Admin/AdminMenu';
 import VerCalificar from '../pages/trabajos/VerCalificar';
-import PermissionInterceptor from '../context/PermissionInterceptor';
 import RolesPermisosManager from '../pages/Admin/RolesPermisosManager';
 import UserPermissions from '../pages/admin/UserPermissions';
 // import ReportsPage from '../pages/Reportes';
@@ -270,18 +269,6 @@ export const routes = [
       </Layout>
     ),
   },
-  // {
-  //   path: '/reportes',
-  //   element: (
-  //     <ErrorBoundary>
-  //       <Layout>
-  //         <ProtectedRoute>
-  //           <ReportsPage />
-  //         </ProtectedRoute>
-  //       </Layout>
-  //     </ErrorBoundary>
-  //   ),
-  // },
   {
     path: '*',
     element: (
@@ -297,9 +284,7 @@ for (let i = 0; i < routes.length; i++) {
   element = routes[i].element
   element = (
     <ErrorBoundary>
-      <PermissionInterceptor>
         {element}
-      </ PermissionInterceptor>
     </ErrorBoundary>
   )
   routes[i].element = element;

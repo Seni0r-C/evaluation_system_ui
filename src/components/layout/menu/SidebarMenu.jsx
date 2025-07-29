@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import MenuItem from './MenuItem';
-import PermissionInterceptor from '../../../context/PermissionInterceptor';
 
 // SliderMenu -> Slider menu [x], key=base64(id+compName)
 
@@ -27,7 +26,7 @@ import PermissionInterceptor from '../../../context/PermissionInterceptor';
 
 const getPermissionId = (item) => {
     // return item?.name == "Menu" || item?.name == "Administrar Sistema"? "ver_panel_admin_hide" : null;
-    return item?.name == "Menu"? "ver_panel_admin_hide" : null;
+    return item?.name == "Menu" ? "ver_panel_admin_hide" : null;
 };
 
 const SidebarMenu = ({ menuData }) => {
@@ -36,7 +35,7 @@ const SidebarMenu = ({ menuData }) => {
     return (
         <nav className="space-y-2">
             {menuData.map((item, index) => (
-                <PermissionInterceptor key={index}>
+                <>
                     {
                         getPermissionId(item) &&
                         <MenuItem
@@ -58,7 +57,7 @@ const SidebarMenu = ({ menuData }) => {
                             toggle={() => setOpenMenuIndex(openMenuIndex === index ? null : index)}
                         />
                     }
-                </PermissionInterceptor>
+                </>
             ))}
         </nav>
     );
