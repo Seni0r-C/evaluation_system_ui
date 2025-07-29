@@ -1,6 +1,5 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react-hooks/exhaustive-deps */
-//TODO: Eliminar el componente porque nos e utiliza en ningún lado.
-
 import { useState, useEffect } from 'react';
 import axiosInstance from '../../services/axiosConfig';
 import { obtenerCarreras } from '../../services/carreraService';

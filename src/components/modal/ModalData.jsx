@@ -99,22 +99,26 @@ const InfoTrabajoModal = ({ isOpen, onClose, data, title }) => {
                             <div>
                                 <h3 className="text-lg font-semibold">Enlaces</h3>
                                 <ul className="text-sm text-blue-500 space-y-1">
-                                    <li>
-                                        <a href={data?.link_anteproyecto} target="_blank" rel="noopener noreferrer">
-                                            Ver Anteproyecto
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href={data?.link_final} target="_blank" rel="noopener noreferrer">
-                                            Ver Trabajo Final
-                                        </a>
-                                    </li>
+                                    {data?.link_anteproyecto && (
+                                        <li>
+                                            <a href={data.link_anteproyecto} target="_blank" rel="noopener noreferrer">
+                                                Ver Anteproyecto
+                                            </a>
+                                        </li>
+                                    )}
+                                    {data?.link_final && (
+                                        <li>
+                                            <a href={data.link_final} target="_blank" rel="noopener noreferrer">
+                                                Ver Trabajo Final
+                                            </a>
+                                        </li>
+                                    )}
                                 </ul>
                             </div>
                         )}
                     </div>
                 )}
-    
+
             </div>
         </GenericModal>
     );
