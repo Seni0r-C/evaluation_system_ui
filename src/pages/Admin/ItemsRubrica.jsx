@@ -12,6 +12,7 @@ import RubricaCriterios from '../Admin/RubricaCriterios';
 import axiosInstance from '../../services/axiosConfig';
 import TipoEvaluacionJerarquiaForm from '../../components/formularios/TipoEvaluacionJerarquiaForm';
 import TipoEvaluacionJerarquiaList from '../../components/listas/TipoEvaluacionJerarquiaList';
+import { useMessage } from '../../hooks/useMessage';
 
 function App() {
     const [tiposEvaluacion, setTiposEvaluacion] = useState([]);
@@ -19,6 +20,8 @@ function App() {
     const [rubricas, setRubricas] = useState([]);
     const [rubricaCriterios, setRubricaCriterios] = useState([]);
     const [modalidades, setModalidades] = useState([]);
+
+    const { showMsg } = useMessage();
 
     const [selectedTipoEvaluacion, setSelectedTipoEvaluacion] = useState(null);
     const [selectedTipoEvaluacionJerarquia, setSelectedTipoEvaluacionJerarquia] = useState(null);
@@ -33,6 +36,7 @@ function App() {
             setTiposEvaluacion(response.data);
         } catch (error) {
             console.error('Error al cargar los tipos de evaluación', error);
+            showMsg({ typeMsg: "error", message: "Error al cargar tipos de evaluación" });
         }
     };
 
@@ -42,6 +46,7 @@ function App() {
             setTiposEvaluacionJerarquia(response.data);
         } catch (error) {
             console.error('Error al cargar los tipos de evaluación', error);
+            showMsg({ typeMsg: "error", message: "Error al cargar tipos de evaluación" });
         }
     };
 
@@ -51,6 +56,7 @@ function App() {
             setRubricas(response.data);
         } catch (error) {
             console.error('Error al cargar las rúbricas', error);
+            showMsg({ typeMsg: "error", message: "Error al cargar rúbricas" });
         }
     };
 
@@ -60,6 +66,7 @@ function App() {
             setRubricaCriterios(response.data);
         } catch (error) {
             console.error('Error al cargar los criterios de rúbrica', error);
+            showMsg({ typeMsg: "error", message: "Error al cargar criterios de rúbrica" });
         }
     };
 
@@ -69,6 +76,7 @@ function App() {
             setModalidades(response.data);
         } catch (error) {
             console.error('Error al cargar las modalidades', error);
+            showMsg({ typeMsg: "error", message: "Error al cargar modalidades" });
         }
     };
 
@@ -88,6 +96,7 @@ function App() {
             fetchTiposEvaluacion();
         } catch (error) {
             console.error('Error al crear el tipo de evaluación', error);
+            showMsg({ typeMsg: "error", message: "Error al crear tipo de evaluación" });
         }
     };
 
@@ -97,6 +106,7 @@ function App() {
             setTiposEvaluacion(tiposEvaluacion.map(item => item.id === id ? response.data : item));
         } catch (error) {
             console.error('Error al actualizar el tipo de evaluación', error);
+            showMsg({ typeMsg: "error", message: "Error al actualizar tipo de evaluación" });
         }
     };
 
@@ -106,6 +116,7 @@ function App() {
             setTiposEvaluacion(tiposEvaluacion.filter(item => item.id !== id));
         } catch (error) {
             console.error('Error al eliminar el tipo de evaluación', error);
+            showMsg({ typeMsg: "error", message: "Error al eliminar tipo de evaluación" });
         }
     };
 
@@ -118,6 +129,7 @@ function App() {
             fetchTiposEvaluacionJerarquia();
         } catch (error) {
             console.error('Error al crear el tipo de evaluación', error);
+            showMsg({ typeMsg: "error", message: "Error al crear tipo de evaluación" });
         }
     };
 
@@ -127,6 +139,7 @@ function App() {
             setTiposEvaluacionJerarquia(tiposEvaluacion.map(item => item.id === id ? response.data : item));
         } catch (error) {
             console.error('Error al actualizar el tipo de evaluación', error);
+            showMsg({ typeMsg: "error", message: "Error al actualizar tipo de evaluación" });
         }
     };
 
@@ -136,6 +149,7 @@ function App() {
             setTiposEvaluacionJerarquia(tiposEvaluacion.filter(item => item.id !== id));
         } catch (error) {
             console.error('Error al eliminar el tipo de evaluación', error);
+            showMsg({ typeMsg: "error", message: "Error al eliminar tipo de evaluación" });
         }
     };
 
@@ -147,6 +161,7 @@ function App() {
             fetchRubricas();
         } catch (error) {
             console.error('Error al crear la rúbrica', error);
+            showMsg({ typeMsg: "error", message: "Error al crear rúbrica" });
         }
     };
 
@@ -164,8 +179,10 @@ function App() {
         try {
             await deleteRubrica(id);
             setRubricas(rubricas.filter(item => item.id !== id));
+            showMsg({ typeMsg: "success", message: "Rúbrica eliminada correctamente" });
         } catch (error) {
             console.error('Error al eliminar la rúbrica', error);
+            showMsg({ typeMsg: "error", message: "Error al eliminar rúbrica" });
         }
     };
 
@@ -177,6 +194,7 @@ function App() {
             fetchRubricaCriterios();
         } catch (error) {
             console.error('Error al crear el criterio de rúbrica', error);
+            showMsg({ typeMsg: "error", message: "Error al crear criterio de rúbrica" });
         }
     };
 
@@ -186,6 +204,7 @@ function App() {
             setRubricaCriterios(rubricaCriterios.map(item => item.id === id ? response.data : item));
         } catch (error) {
             console.error('Error al actualizar el criterio de rúbrica', error);
+            showMsg({ typeMsg: "error", message: "Error al actualizar criterio de rúbrica" });
         }
     };
 
@@ -195,6 +214,7 @@ function App() {
             setRubricaCriterios(rubricaCriterios.filter(item => item.id !== id));
         } catch (error) {
             console.error('Error al eliminar el criterio de rúbrica', error);
+            showMsg({ typeMsg: "error", message: "Error al eliminar criterio de rúbrica" });
         }
     };
 
