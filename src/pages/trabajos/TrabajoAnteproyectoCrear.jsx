@@ -48,8 +48,8 @@ const TrabajoAnteproyectoCrear = () => {
 
   // Resetear formulario
   const resetForm = () => {
-    setCarreras([]);
-    setModalidades([]);
+    setSelectedCarrera('');
+    setSelectedModalidad('');
     setTutores([]);
     setSelectedTutor(null);
     setSelectedCotutor(null);
