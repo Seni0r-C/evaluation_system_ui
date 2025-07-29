@@ -22,7 +22,7 @@ import AdminMenu from '../pages/Admin/AdminMenu';
 import VerCalificar from '../pages/trabajos/VerCalificar';
 import RolesManager from '../pages/admin/RolesManager';
 import UserRoles from '../pages/admin/UserRoles';
-
+import ReportsPage from '../pages/admin/ReportsPage';
 export const routes = [
   {
     path: '/login',
@@ -266,6 +266,18 @@ export const routes = [
           <UserProfile />
         </ProtectedRoute>
       </Layout>
+    ),
+  },
+  {
+    path: '/reportes',
+    element: (
+      <ErrorBoundary>
+        <Layout>
+          <ProtectedRoute>
+            <ReportsPage />
+          </ProtectedRoute>
+        </Layout>
+      </ErrorBoundary>
     ),
   },
   {
