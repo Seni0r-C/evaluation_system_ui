@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 import { buscarUsuarios } from '../../services/usuarioService';
 import { getRoles, obtenerRolesDeUsuario, actualizarRolesDeUsuario } from '../../services/rolesService';
@@ -14,13 +15,10 @@ const UserPermissions = () => {
 
     useEffect(() => {
         getRoles().then(setRoles);
+        buscarUsuarios(searchTerm, setUsers);
     }, []);
-
+    
     const handleSearch = async () => {
-        if (searchTerm.trim() === '') {
-            setUsers([]);
-            return;
-        }
         buscarUsuarios(searchTerm, setUsers);
         setHadSearch(true);
     };
