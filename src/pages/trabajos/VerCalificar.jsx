@@ -288,17 +288,16 @@ const VerCalificar = () => {
         getOverallSummary();
     }, [tribunalMembers]);
 
-    const calcularPromedios = (datos) => {
+    const calcularPromedios = (datos, finalGradesData) => {
         let resultadoPorEstudiante = {};
 
+        // Process grades from tribunal members
         Object.values(datos).forEach(docentes => {
             Object.entries(docentes).forEach(([idEstudiante, info]) => {
                 if (!resultadoPorEstudiante[idEstudiante]) {
                     resultadoPorEstudiante[idEstudiante] = {
                         nombre: idEstudiante,
                         evaluaciones: {},
-                        totalSum: 0,
-                        totalCount: 0
                     };
                 }
 
@@ -309,17 +308,45 @@ const VerCalificar = () => {
                     let sumNotas = Object.values(notas).reduce((acc, val) => acc + val, 0);
                     resultadoPorEstudiante[idEstudiante].evaluaciones[evaluacion].sum += sumNotas;
                     resultadoPorEstudiante[idEstudiante].evaluaciones[evaluacion].count++;
-                    resultadoPorEstudiante[idEstudiante].totalSum += sumNotas;
-                    resultadoPorEstudiante[idEstudiante].totalCount++;
                 });
             });
         });
 
-        Object.values(resultadoPorEstudiante).forEach(estudiante => {
-            Object.values(estudiante.evaluaciones).forEach(valores => {
-                valores.mean = valores.sum / valores.count;
+        // Process final grades entered by the user
+        Object.entries(finalGradesData).forEach(([studentId, evaluations]) => {
+            if (!resultadoPorEstudiante[studentId]) {
+                resultadoPorEstudiante[studentId] = {
+                    nombre: studentId,
+                    evaluaciones: {},
+                };
+            }
+            Object.entries(evaluations).forEach(([evaluacionId, criterios]) => {
+                const tipoEval = tipoEvaluacion.find(t => t.tipo_evaluacion_id == evaluacionId);
+                if (tipoEval && tipoEval.pos_evaluation === 1) {
+                    const evalName = tipoEval.tipo_evaluacion_nombre;
+                    const sumNotas = Object.values(criterios).reduce((acc, val) => acc + (Number(val) || 0), 0);
+
+                    if (!resultadoPorEstudiante[studentId].evaluaciones[evalName]) {
+                        resultadoPorEstudiante[studentId].evaluaciones[evalName] = { sum: 0, count: 0 };
+                    }
+                    resultadoPorEstudiante[studentId].evaluaciones[evalName].sum = sumNotas;
+                    resultadoPorEstudiante[studentId].evaluaciones[evalName].count = 1; // This is a single entry, not an average
+                }
             });
-            estudiante.totalMean = estudiante.totalSum / estudiante.totalCount;
+        });
+
+
+        // Calculate mean for each evaluation and the overall total mean for each student
+        Object.values(resultadoPorEstudiante).forEach(estudiante => {
+            let totalMeanSum = 0;
+            let evalCount = 0;
+            Object.entries(estudiante.evaluaciones).forEach(([evalName, valores]) => {
+                const mean = valores.count > 0 ? valores.sum / valores.count : 0;
+                estudiante.evaluaciones[evalName].mean = mean;
+                totalMeanSum += mean;
+                evalCount++;
+            });
+            estudiante.totalMean = evalCount > 0 ? totalMeanSum / evalCount : 0;
         });
 
         return { promedioPorEstudiante: resultadoPorEstudiante };
@@ -516,8 +543,8 @@ const VerCalificar = () => {
                         </div>
                         {resumenRequired ? (
                             <div className="flex flex-col items-center mt-16 mb-4 space-y-4">
-                                {calcularPromedios(overallSummary)?.promedioPorEstudiante ? (
-                                    Object.values(calcularPromedios(overallSummary).promedioPorEstudiante).map((rubrica) => (
+                                {calcularPromedios(overallSummary, finalGrades)?.promedioPorEstudiante ? (
+                                    Object.values(calcularPromedios(overallSummary, finalGrades).promedioPorEstudiante).map((rubrica) => (
                                         <div key={rubrica.nombre} className="w-full flex justify-center">
                                             {renderOverallTriGradeTable(rubrica)}
                                         </div>
