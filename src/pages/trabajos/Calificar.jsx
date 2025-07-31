@@ -110,6 +110,7 @@ const Calificar = () => {
                 }
             });
             setTipoEvaluacion(tiposEvaluacion);
+
             const tipoRubrica = tiposEvaluacion.find((tipo) => tipo.calificacion_global === 1);
             handleSelectedRubricaType(tipoRubrica?.tipo_evaluacion_nombre ?? tiposEvaluacion[0]?.tipo_evaluacion_nombre);
 

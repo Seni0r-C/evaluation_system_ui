@@ -60,70 +60,55 @@ const VerCalificar = () => {
     const { showMsg } = useMessage();
     const location = useLocation();
     const trabajo = location.state.trabajo ?? null;
-    const [selectedStudent, setSelectedStudent] = useState(null);
-    const [resumenRequired, setResumenRequired] = useState(false);
-    const [selectedStudents, setSelectedStudents] = useState([]);
-    const [selectedRubricaType, setSelectedRubricaType] = useState("INFORME FINAL");
-    const [selectedTribunalMember, setSelectedTribunalMember] = useState(null);
-    const [tribunalMembers, setTribunalMembers] = useState([]);
+
     const [estudiantes, setEstudiantes] = useState([]);
+    const [selectedStudent, setSelectedStudent] = useState(null);
+    const [selectedStudents, setSelectedStudents] = useState([]);
     const [photos, setPhotos] = useState({}); // Estado para las fotos, { [id]: fotoBase64 }
+
+    const [resumenRequired, setResumenRequired] = useState(false);
+
     const [rubricas, setRubricas] = useState(null);
-    const [rubricGradesData, setRubricGradesData] = useState(null);
-    const [tipoEvaluacion, setTipoEvaluacion] = useState([]);
     const [currentRubrica, setCurrentRubrica] = useState(null);
+    const [selectedRubricaType, setSelectedRubricaType] = useState("");
+    const [rubricGradesData, setRubricGradesData] = useState(null);
+
+    const [tipoEvaluacion, setTipoEvaluacion] = useState([]);
+
     const [calificacionesSeleccionadas, setCalificacionesSeleccionadas] = useState({});
-    const [teoricExamGrade, setTeoricExamGrade] = useState(0);
-    // 
-    const [indexacionSelected, setIndexacionSelected] = useState(null);
+
+    const [tribunalMembers, setTribunalMembers] = useState([]);
+    const [selectedTribunalMember, setSelectedTribunalMember] = useState(null);
+
     const [overallSummary, setOverallSummary] = useState({});
 
-    const isArticuloAcademico = () => {
-        const ARTICULO_ACADEMICO_KEYS = ["ARTICULO CIENTIFICO", "ARTICULO ACADEMICO", "ARTÍCULO ACADÉMICO", "ARTÍCULO CIENTÍFICO"];
-        const modalidad = (trabajo.modalidad || "").toUpperCase();
-        return ARTICULO_ACADEMICO_KEYS.some(moda => moda === modalidad);
-    };
-
-    const isComplexivo = () => {
-        const EXAMEN_COMPLEXIVO_KEYS = ["EXAMEN COMPLEXIVO", "EXÁMEN COMPLEXIVO"];
-        const modalidad = (trabajo.modalidad || "").toUpperCase();
-        return EXAMEN_COMPLEXIVO_KEYS.some(moda => moda === modalidad);
-    };
-
-    const getInformeFinalKey = () => {
-        return isComplexivo() ? "INFORME FINAL (EXAMEN PRACTICO)" : "INFORME FINAL";
-    }
-
-    const isInformeFinal = (kind) => {
-        return kind === getInformeFinalKey();
-    }
-
-    const isExamenTeoricoComplexivo = (kind) => {
-        return isComplexivo() && kind === "EXAMEN TEORICO";
-    }
-
     const handleSelectedStudent = (studentId) => {
-        if (isInformeFinal(selectedRubricaType)) {
-            setSelectedStudents(estudiantes.map((student) => student.id));
-            return;
-        }
         setSelectedStudent(studentId);
     };
 
+    const esTipoDeEvaluacionGlobal = (tipo_evaluacion_nombre) => {
+        return tipoEvaluacion.find((tipo) => tipo.tipo_evaluacion_nombre === tipo_evaluacion_nombre)?.calificacion_global === 1;
+    }
+
     const hadleStudentsOnChangeRubricType = () => {
-        if (isInformeFinal(selectedRubricaType)) {
+        if (tipoEvaluacion.length === 0) return;
+        if (!selectedRubricaType) return;
+
+        if (esTipoDeEvaluacionGlobal(selectedRubricaType)) {
+            // Para calificación grupal, se seleccionan todos los estudiantes
             setSelectedStudents(estudiantes.map((student) => student.id));
-            return;
-        }
-        if (!selectedStudent) {
-            setSelectedStudent(estudiantes[0].id);
+        } else {
+            // Para calificación individual, solo el estudiante seleccionado
+            setSelectedStudents(selectedStudent ? [selectedStudent] : []);
         }
     }
 
     useEffect(() => {
         if (trabajo) {
             getEstudiantesByTrabajoId(trabajo.id, setEstudiantes);
-            setSelectedRubricaType(isArticuloAcademico() ? "DEFENSA" : getInformeFinalKey());
+
+            //TODO aqui poner que se selecione la que tien el global o sino la primer 
+            setSelectedRubricaType();
         }
     }, [trabajo]);
 
@@ -131,7 +116,7 @@ const VerCalificar = () => {
         if (selectedRubricaType && rubricas) {
             const rubricaSeleccionada = rubricas[selectedRubricaType] ?? null;
             setCurrentRubrica(rubricaSeleccionada);
-            hadleStudentsOnChangeRubricType(rubricaSeleccionada);
+            hadleStudentsOnChangeRubricType();
         }
     }, [selectedRubricaType, rubricas]);
 
@@ -175,10 +160,15 @@ const VerCalificar = () => {
             const tiposEvaluacion = tiposResponse.map((tipo) => {
                 return {
                     tipo_evaluacion_id: tipo.id,
-                    tipo_evaluacion_nombre: tipo.nombre
+                    tipo_evaluacion_nombre: tipo.nombre,
+                    calificacion_global: tipo.calificacion_global
                 }
-            }).filter(tipo => !isExamenTeoricoComplexivo(tipo.tipo_evaluacion_nombre));
+            });
             setTipoEvaluacion(tiposEvaluacion);
+
+            const tipoRubrica = tiposEvaluacion.find((tipo) => tipo.calificacion_global === 1);
+            handleSelectedRubricaType(tipoRubrica?.tipo_evaluacion_nombre ?? tiposEvaluacion[0]?.tipo_evaluacion_nombre);
+
             const rubricasPromises = tiposEvaluacion.map(async (tipo) => {
                 try {
                     const response = await axiosInstance.get("/calificacion/rubrica", {
@@ -239,19 +229,12 @@ const VerCalificar = () => {
         const rubricGrades = await getGrades(selectedTribunalMember);
         setRubricGradesData(rubricGrades || {}); // Siempre actualiza, usa {} como fallback
 
-        if (isArticuloAcademico() && rubricGrades) {
-            const indexaciones = await getIndicesRevistasService();
-            if (indexaciones.typeMsg === 'error') {
-                showMsg({ typeMsg: 'error', message: indexaciones.message });
-            }
-        }
+        //TODO aqui hay que verificar si el tipo de evaluación tiene opciones
+
     };
 
     useEffect(() => {
         fetchRubricas();
-        if (!trabajo?.id) return;
-        if (!isComplexivo()) return;
-        fetchGetExamenTeoricoGrade();
     }, [trabajo]);
 
     useEffect(() => {
@@ -267,98 +250,21 @@ const VerCalificar = () => {
     }, [rubricGradesData]);
 
     const isStudentSelected = (studentId) => {
-        if (isInformeFinal(selectedRubricaType)) {
+        if (!selectedRubricaType) return false;
+        if (esTipoDeEvaluacionGlobal(selectedRubricaType)) {
             return selectedStudents.includes(studentId)
         }
         return selectedStudent === studentId;
     }
     const handleSelectedRubricaType = (tipo_evaluacion_nombre) => {
         setSelectedRubricaType(tipo_evaluacion_nombre);
-        if (isInformeFinal(selectedRubricaType)) {
+
+        if (esTipoDeEvaluacionGlobal(tipo_evaluacion_nombre)) {
             setSelectedStudents(estudiantes.map((student) => student.id));
             return;
         }
         if (!selectedStudent) {
             setSelectedStudent(estudiantes[0].id);
-        }
-    };
-
-    const handleFinalizarInformeFinalArticuloAcademicoGradement = async () => {
-        if (isArticuloAcademico() && !indexacionSelected) {
-            showMsg({ typeMsg: 'warning', message: 'Por favor seleccione una indexación' });
-            return;
-        }
-
-        try {
-            // Preparar datos en un solo array para enviar al servidor
-            const payload = [];
-            for (const docent of tribunalMembers) {
-                for (const studentId in calificacionesSeleccionadas) {
-                    for (const tipoEvaluacion in calificacionesSeleccionadas[studentId]) {
-                        if (isArticuloAcademico() && !isInformeFinal(tipoEvaluacion)) continue;
-                        const rubrica = rubricas[tipoEvaluacion];
-
-                        if (!rubrica) continue;
-
-                        const rubricaId = rubrica.rubrica_id;
-                        const criterios = rubrica.rubrica.criterios;
-
-                        const sumResult = Object.values(calificacionesSeleccionadas[studentId][tipoEvaluacion]).reduce((sum, val) => sum + val, 0);
-                        const newGradement = Object.values(calificacionesSeleccionadas[studentId][tipoEvaluacion]).map((value) => {
-                            return (value / sumResult) * indexacionSelected.value
-                        });
-                        calificacionesSeleccionadas[studentId][tipoEvaluacion] = newGradement;
-                        for (const [criterioIndex, puntajeObtenido] of Object.entries(calificacionesSeleccionadas[studentId][tipoEvaluacion])) {
-                            const criterio = criterios[criterioIndex];
-
-                            // Agregar cada calificación al array
-                            payload.push({
-                                trabajo_id: trabajo.id,
-                                rubrica_id: rubricaId,
-                                rubrica_criterio_id: criterio.id,
-                                docente_id: docent.id,
-                                estudiante_id: studentId,
-                                puntaje_obtenido: puntajeObtenido,
-                            });
-                        }
-                    }
-                }
-            }
-
-            // Enviar el array completo al servidor
-            await axiosInstance.post(`/calificacion/rubrica-evaluacion`, { calificaciones: payload });
-
-            showMsg({ typeMsg: 'success', message: 'El tipo de indexación ha sido guardado correctamente.' });
-            // navigate("/calificacion-de-trabajo-titulacion");
-        } catch (error) {
-            console.error("Error al guardar el tipo de indexación:", error);
-            showMsg({ typeMsg: 'error', message: 'Error al guardar el tipo de indexación.' });
-        }
-    };
-
-    const handleExamenTeoricoGrade = async () => {
-        if (isArticuloAcademico() && !indexacionSelected) {
-            showMsg({ typeMsg: 'warning', message: 'Por favor seleccione una indexación' });
-            return;
-        }
-        try {
-            // Enviar el array completo al servidor
-            await axiosInstance.post(`/calificacion/rubrica-evaluacion-examen-teorico`, { trabajo_id: trabajo.id, docents: tribunalMembers, students: estudiantes, teoricExamGrade: teoricExamGrade });
-            showMsg({ typeMsg: 'success', message: 'Calificacion de EXAMEN TEORICO  guardada correctamente.' });
-            // navigate("/ver-calificacion-de-trabajo-titulacion");
-        } catch (error) {
-            console.error("Error al finalizar las calificaciones:", error);
-            showMsg({ typeMsg: 'error', message: 'Error al guardar calificaciones de EXAMEN TEORICO.' });
-        }
-    };
-
-    const fetchGetExamenTeoricoGrade = async () => {
-        try {
-            const response = await axiosInstance.get(`/calificacion/rubrica-evaluacion-examen-teorico/${trabajo.id}`);
-            setTeoricExamGrade(parseInt(response?.data?.grade ?? 0));
-        } catch (error) {
-            console.error("Error al finalizar las calificaciones:", error);
-            showMsg({ typeMsg: 'error', message: 'Error al guardar calificaciones de EXAMEN TEORICO.' });
         }
     };
 
@@ -368,20 +274,7 @@ const VerCalificar = () => {
             valor = e.target?.value || e.value;
         }
         const value = Math.min(criterio.puntaje_maximo, Math.max(0, valor));
-        if (isInformeFinal(selectedRubricaType)) {
-            selectedStudents.forEach((selectedStudent) => {
-                setCalificacionesSeleccionadas((prev) => ({
-                    ...prev,
-                    [selectedStudent]: {
-                        ...prev[selectedStudent],
-                        [selectedRubricaType]: {
-                            ...prev[selectedStudent]?.[selectedRubricaType],
-                            [criterioIndex]: value,
-                        },
-                    },
-                }));
-            });
-        } else {
+        selectedStudents.forEach((selectedStudent) => {
             setCalificacionesSeleccionadas((prev) => ({
                 ...prev,
                 [selectedStudent]: {
@@ -392,16 +285,11 @@ const VerCalificar = () => {
                     },
                 },
             }));
-        }
-    };
-
-    const getSelectedStudent = () => {
-        return isInformeFinal(selectedRubricaType) ? selectedStudents[0] : selectedStudent
+        });
     };
 
     const calificacionValue = (minimo, maximo, criterioIndex) => {
-        const sStudent = getSelectedStudent();
-        const value = calificacionesSeleccionadas[sStudent]?.[selectedRubricaType]?.[criterioIndex];
+        const value = calificacionesSeleccionadas[selectedStudent]?.[selectedRubricaType]?.[criterioIndex];
         return Math.max(minimo, value ?? 0);
     };
 
@@ -541,21 +429,14 @@ const VerCalificar = () => {
                 </td>
                 <td className="font-semibold text-gray-700 text-center border border-gray-300">
                     {
-                        isComplexivo() && overallEvalType === "EXAMEN PRÁCTICO" ? 60 :
-                            isComplexivo() && overallEvalType === "EXAMEN TEÓRICO" ? 40 :
-                                isArticuloAcademico() && overallEvalType === "INFORME FINAL" ? `${indexacionSelected?.value}` :
-                                    isArticuloAcademico() && overallEvalType === "DEFENSA" ? `${100 - indexacionSelected?.value}` :
-                                        100
+
+                        100
                     }
                 </td>
                 <td className="px-2 text-blue-600  text-center border border-gray-300 bg-gray-50">
-                    {isArticuloAcademico() && isInformeFinal(overallEvalType) && (
-                        indexacionSelected?.value ?? "N/A"
-                    )}
-                    {isArticuloAcademico() && !isInformeFinal(overallEvalType) && (
-                        !indexacionSelected ? "N/A" : (overallGradeData.sum / 100) * (100 - indexacionSelected?.value)
-                    )}
-                    {!isArticuloAcademico() ? overallGradeData.sum : null}
+                    {
+                        overallGradeData
+                    }
                 </td>
             </tr>
         )
@@ -565,19 +446,12 @@ const VerCalificar = () => {
         const evals = Object.entries(studentData.evaluaciones);
         if (evals.length === 0) return "N/A"; // Handle case when no evaluations exist
         const totalSum = evals.reduce((pre, evalValue) => {
-            const [evalType, evalData] = evalValue;
-            if (isArticuloAcademico() && isInformeFinal(evalType)) {
-                evalData.sum = indexacionSelected?.value ?? 0;
-            }
-            if (isArticuloAcademico() && !isInformeFinal(evalType)) {
-                evalData.sum = (evalData.sum / 100) * (100 - indexacionSelected?.value);
-                // evalData.sum = (evalData.sum / 100) * (100 - indexacionSelected?.value) + indexacionSelected?.value;
-            }
+            const [evalData] = evalValue;
             return pre + evalData.sum;
         }, 0);
-        if (isArticuloAcademico()) {
-            return totalSum;
-        }
+        // if (isArticuloAcademico()) {
+        //     return totalSum;
+        // }
         const val = totalSum / (evals.length * 100);
         const percentGrade = customRound(val * 100);
         const percentGradeStr = percentGrade;
@@ -608,7 +482,7 @@ const VerCalificar = () => {
                     })}
                     <tr className="bg-gray-100 font-bold">
                         <td className="py-2 font-bold text-blue-700 text-left border border-gray-300">
-                            <span className="ml-5">{isComplexivo() || isArticuloAcademico() ? "TOTAL" : "PROMEDIO"} </span>
+                            <span className="ml-5">{"TOTAL"} </span>
                         </td>
                         <td className="font-semibold text-blue-700 text-center border border-gray-300">
                             100
@@ -633,12 +507,7 @@ const VerCalificar = () => {
         return entries;
     }
 
-    const getFinalGradeArticuloAcademico = (studentData) => {
-        const evalTypeDefensaGrade = Object.entries(studentData.evaluaciones).map(([evalType, evalData]) => [evalType, evalData.mean]).filter(([evalType]) => !isInformeFinal(evalType))[0][1]
-        return customRound(evalTypeDefensaGrade * ((100 - indexacionSelected?.value) / 100)) + indexacionSelected?.value
-    }
-
-    const renderOverallTriGradeRow = (overallEvalType, overallGradeData) => {
+    const renderOverallTriGradeRow = (overallEvalType) => {
         return (
             <tr className="bg-gray-100 font-bold">
                 {/* Nombre de la evaluación */}
@@ -648,31 +517,14 @@ const VerCalificar = () => {
 
                 <td className="text-sm font-semibold text-gray-700 text-center border border-gray-300">
                     {
-                        isComplexivo() && overallEvalType === "EXAMEN PRÁCTICO" ? 60 :
-                            isComplexivo() && overallEvalType === "EXAMEN TEÓRICO" ? 40 :
-                                isArticuloAcademico() && overallEvalType === "INFORME FINAL" ? `${indexacionSelected?.value}` :
-                                    isArticuloAcademico() && overallEvalType === "DEFENSA" ? `${100 - indexacionSelected?.value}` :
-                                        100
+                        100
                     }
                 </td>
 
                 {/* Cálculo del promedio o formato especial para Artículo Académico */}
                 <td className="px-2 text-lg text-blue-600 text-center border border-gray-300 bg-gray-50">
                     {
-                        isArticuloAcademico() && isInformeFinal(overallEvalType) ? (
-                            indexacionSelected?.value ?? "N/A"
-                        ) : isArticuloAcademico() && !isInformeFinal(overallEvalType) ? (
-                            !indexacionSelected
-                                ? "N/A"
-                                : customRound(overallGradeData.mean * ((100 - indexacionSelected?.value) / 100))
-                        ) : (
-                            isComplexivo() && overallEvalType === "EXAMEN PRÁCTICO" ? (
-                                overallGradeData.mean ?? false ?
-                                    // `60 x ${customRound(overallGradeData.mean)}%` : "N/A"
-                                    customRound(0.6 * overallGradeData.mean) : "N/A"
-                            ) :
-                                customRound(overallGradeData.mean)
-                        )
+                        //TODO hacer eso
                     }
                 </td>
             </tr>
@@ -711,14 +563,14 @@ const VerCalificar = () => {
                     {/* Fila de Promedio Total */}
                     <tr className="bg-gray-100 font-bold">
                         <td className="py-2 text-sm font-bold text-blue-700 text-left border border-gray-300">
-                            <span className="ml-5">{!studentData?.complexivo && !isArticuloAcademico() ? "PROMEDIO" : "TOTAL"}</span>
+                            {/* <span className="ml-5">{!studentData?.complexivo && !isArticuloAcademico() ? "PROMEDIO" : "TOTAL"}</span> */}
+                            <span className="ml-5">TOTAL</span>
                         </td>
                         <td className="text-sm font-semibold text-blue-700 text-center border border-gray-300">
                             100
                         </td>
                         <td className="text-lg text-blue-600 text-center border border-gray-300 bg-gray-50">
-                            {isArticuloAcademico() && JSON.stringify(getFinalGradeArticuloAcademico(studentData), 2, null)}
-                            {!isArticuloAcademico() && studentData?.totalMean && customRound(studentData.totalMean)}
+                            {customRound(studentData.totalMean)}
 
                         </td>
                     </tr>
@@ -727,24 +579,24 @@ const VerCalificar = () => {
         );
     };
 
-    const calcOverallComplexive = (data) => {
-        const [key, value] = Object.entries(data)[0];
-        const totalMean = value.totalMean;
-        const examenTeorico = teoricExamGrade;
+    // const calcOverallComplexive = (data) => {
+    //     const [key, value] = Object.entries(data)[0];
+    //     const totalMean = value.totalMean;
+    //     const examenTeorico = teoricExamGrade;
 
-        value.evaluaciones = {
-            "EXAMEN PRÁCTICO": {
-                "mean": totalMean
-            }, "EXAMEN TEÓRICO": {
-                "mean": examenTeorico
-            }
-        };
-        value.totalMean = examenTeorico + (totalMean / 100) * 60;
-        value.complexivo = true;
-        return {
-            [key]: value
-        };
-    }
+    //     value.evaluaciones = {
+    //         "EXAMEN PRÁCTICO": {
+    //             "mean": totalMean
+    //         }, "EXAMEN TEÓRICO": {
+    //             "mean": examenTeorico
+    //         }
+    //     };
+    //     value.totalMean = examenTeorico + (totalMean / 100) * 60;
+    //     value.complexivo = true;
+    //     return {
+    //         [key]: value
+    //     };
+    // }
 
     return (
         <div className="w-full overflow-hidden relative h-full">
@@ -823,7 +675,8 @@ const VerCalificar = () => {
                         {resumenRequired && (
                             <div className="flex flex-col items-center mt-16 mb-4 space-y-4">
 
-                                {isArticuloAcademico() && (
+                                {/* //TODO puera wea estatica .) */}
+                                {/* {isArticuloAcademico() && (
                                     <table className="table-auto mb-4 bg-gray-100 text-blue-600">
                                         <tbody>
                                             <tr>
@@ -848,14 +701,15 @@ const VerCalificar = () => {
                                             </tr>
                                         </tbody>
                                     </table>
-                                )}
+                                )} */}
 
                                 {
-                                    isComplexivo() && (
-                                        <div className="flex items-center space-x-2 mb-4">
-                                            <span className="text-lg font-semibold text-blue-700">EXAMEN PRÁCTICO</span>
-                                        </div>
-                                    )
+                                    //TODO LO MISMO DE ABAJO
+                                    // isComplexivo() && (
+                                    //     <div className="flex items-center space-x-2 mb-4">
+                                    //         <span className="text-lg font-semibold text-blue-700">EXAMEN PRÁCTICO</span>
+                                    //     </div>
+                                    // )
                                 }
 
                                 {
@@ -874,27 +728,28 @@ const VerCalificar = () => {
                                     )
                                 }
                                 {
-                                    isComplexivo() && (
-                                        <>
-                                            <div className="flex items-center space-x-2 mb-4">
-                                                <GradeInput
-                                                    gradeCategory={"EXAMEN TEÓRICO"}
-                                                    initialValue={teoricExamGrade}
-                                                    maxGradeValue={40}
-                                                    onValueChange={setTeoricExamGrade}
-                                                    onSubmit={async () => await handleExamenTeoricoGrade()}
-                                                />
-                                            </div>
-                                            {
-                                                Object.values(calcOverallComplexive(calcularPromedios(overallSummary).promedioPorEstudiante)).map((rubrica) => (
-                                                    <div key={rubrica.nombre} className="w-full flex justify-center">
-                                                        {renderOverallTriGradeTable(rubrica)}
-                                                    </div>
-                                                ))
-                                            }
-                                        </>
+                                    //todo tengo que ver que muetsro para lo del examen complexivo o en general mejor dicho
+                                    // isComplexivo() && (
+                                    //     <>
+                                    //         <div className="flex items-center space-x-2 mb-4">
+                                    //             <GradeInput
+                                    //                 gradeCategory={"EXAMEN TEÓRICO"}
+                                    //                 initialValue={teoricExamGrade}
+                                    //                 maxGradeValue={40}
+                                    //                 onValueChange={setTeoricExamGrade}
+                                    //                 onSubmit={async () => await handleExamenTeoricoGrade()}
+                                    //             />
+                                    //         </div>
+                                    //         {
+                                    //             Object.values(calcOverallComplexive(calcularPromedios(overallSummary).promedioPorEstudiante)).map((rubrica) => (
+                                    //                 <div key={rubrica.nombre} className="w-full flex justify-center">
+                                    //                     {renderOverallTriGradeTable(rubrica)}
+                                    //                 </div>
+                                    //             ))
+                                    //         }
+                                    //     </>
 
-                                    )
+                                    // )
                                 }
                             </div>
                         )}
@@ -905,11 +760,6 @@ const VerCalificar = () => {
                                 <div className="flex justify-center mb-4">
                                     {tipoEvaluacion
                                         .sort((a, b) => b.tipo_evaluacion_nombre.localeCompare(a.tipo_evaluacion_nombre))
-                                        .filter((tipo) =>
-                                            (isArticuloAcademico() &&
-                                                tipo.tipo_evaluacion_nombre !== getInformeFinalKey()) ||
-                                            (!isArticuloAcademico())
-                                        )
                                         .map((tipo, index) => {
                                             const isSelected = selectedRubricaType === tipo.tipo_evaluacion_nombre;
 
@@ -1002,7 +852,7 @@ const VerCalificar = () => {
                                                                         calculateMinScore(criterio),
                                                                         calculateMaxScore(criterio),
                                                                         index,
-                                                                        getSelectedStudent()
+                                                                        selectedStudent
                                                                     ) ?? calculateMinScore(criterio)),
                                                                 0
                                                             )}
