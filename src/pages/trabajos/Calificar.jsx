@@ -35,26 +35,6 @@ const Calificar = () => {
 
     const navigate = useNavigate();
 
-    const isArticuloAcademico = () => {
-        const ARTICULO_ACADEMICO_KEYS = ["ARTICULO CIENTIFICO", "ARTICULO ACADEMICO", "ARTÍCULO ACADÉMICO", "ARTÍCULO CIENTÍFICO"];
-        const modalidad = (trabajo.modalidad || "").toUpperCase();
-        return ARTICULO_ACADEMICO_KEYS.some(moda => moda === modalidad);
-    };
-
-    const isComplexivo = () => {
-        const EXAMEN_COMPLEXIVO_KEYS = ["EXAMEN COMPLEXIVO", "EXÁMEN COMPLEXIVO"];
-        const modalidad = (trabajo.modalidad || "").toUpperCase();
-        return EXAMEN_COMPLEXIVO_KEYS.some(moda => moda === modalidad);
-    };
-
-    const getInformeFinalKey = () => {
-        return isComplexivo() ? "INFORME FINAL (EXAMEN PRACTICO)" : "INFORME FINAL";
-    }
-
-    const isInformeFinal = (kind) => {
-        return kind === getInformeFinalKey();
-    }
-
     // Maneja la selección de un estudiante para ver sus calificaciones
     const handleSelectedStudent = (studentId) => {
         setSelectedStudent(studentId);
@@ -62,7 +42,10 @@ const Calificar = () => {
 
     // Sincroniza el estado de los estudiantes a calificar basado en la rúbrica y el estudiante seleccionado
     useEffect(() => {
-        if (isInformeFinal(selectedRubricaType)) {
+        if (!selectedRubricaType) return;
+        if (tipoEvaluacion.length === 0) return;
+
+        if (tipoEvaluacion.find((tipo) => tipo.tipo_evaluacion_nombre === selectedRubricaType).calificacion_global === 1) {
             // Para calificación grupal, se seleccionan todos los estudiantes
             setSelectedStudents(estudiantes.map((student) => student.id));
         } else {
@@ -122,10 +105,12 @@ const Calificar = () => {
             const tiposEvaluacion = tiposResponse.filter(tipo => tipo.pos_evaluation === 0).map((tipo) => {
                 return {
                     tipo_evaluacion_id: tipo.id,
-                    tipo_evaluacion_nombre: tipo.nombre
+                    tipo_evaluacion_nombre: tipo.nombre,
+                    calificacion_global: tipo.calificacion_global
                 }
             });
             setTipoEvaluacion(tiposEvaluacion);
+            handleSelectedRubricaType(tiposEvaluacion[0].tipo_evaluacion_nombre);
 
             const rubricasPromises = tiposEvaluacion.map(async (tipo) => {
                 try {
@@ -374,9 +359,9 @@ const Calificar = () => {
 
         const totalSum = evals.reduce((sum, evalData) => sum + evalData.sum, 0);
 
-        if (isArticuloAcademico()) {
-            return totalSum;
-        }
+        // if (isArticuloAcademico()) {
+        //     return totalSum;
+        // }
 
         const totalPossible = evals.length * 100;
         if (totalPossible === 0) return "N/A";
@@ -409,7 +394,7 @@ const Calificar = () => {
                     })}
                     <tr className="bg-gray-100 font-bold">
                         <td className="py-2 text-sm font-bold text-blue-700 text-left border border-gray-300">
-                            <span className="ml-5">{isComplexivo() || isArticuloAcademico() ? "TOTAL" : "PROMEDIO"} </span>
+                            <span className="ml-5">TOTAL</span>
                         </td>
                         <td className="text-sm font-semibold text-blue-700 text-center border border-gray-300">
                             100
@@ -446,11 +431,6 @@ const Calificar = () => {
                         <div className="flex justify-center mb-4">
                             {tipoEvaluacion
                                 .sort((a, b) => b.tipo_evaluacion_nombre.localeCompare(a.tipo_evaluacion_nombre))
-                                .filter((tipo) =>
-                                    (isArticuloAcademico() &&
-                                        tipo.tipo_evaluacion_nombre !== getInformeFinalKey()) ||
-                                    (!isArticuloAcademico())
-                                )
                                 .map((tipo, index) => {
                                     const isSelected = selectedRubricaType === tipo.tipo_evaluacion_nombre;
 
@@ -614,28 +594,24 @@ const Calificar = () => {
                 <div className="overflow-x-auto mt-4">
 
                     {/* Promedios y totales de evaluaciones */}
-                    {
-                        selectedRubricaType !== getInformeFinalKey() && (
-                            <div className="overflow-x-auto">
+                    <div className="overflow-x-auto">
 
-                                {/* Validaciones para evitar errores */}
-                                {
-                                    (currentRubrica ? (
-                                        Object.values(getRubricaSummary())
-                                            .map((rubrica, index) => renderOverallGradeTable(rubrica, index))
-                                    ) : (
-                                        <div className="justify-center lg:col-start-2 col-span-1 mb-20">
-                                            <div className="text-center text-2xl font-semibold text-blue-600">
-                                                <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-4 border-blue-600">
-                                                </div>
-                                                <span className="ml-2 text-blue-700">Cargando datos...</span>
-                                            </div>
+                        {/* Validaciones para evitar errores */}
+                        {
+                            (currentRubrica ? (
+                                Object.values(getRubricaSummary())
+                                    .map((rubrica, index) => renderOverallGradeTable(rubrica, index))
+                            ) : (
+                                <div className="justify-center lg:col-start-2 col-span-1 mb-20">
+                                    <div className="text-center text-2xl font-semibold text-blue-600">
+                                        <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-4 border-blue-600">
                                         </div>
-                                    ))
-                                }
-                            </div>
-                        )
-                    }
+                                        <span className="ml-2 text-blue-700">Cargando datos...</span>
+                                    </div>
+                                </div>
+                            ))
+                        }
+                    </div>
                 </div>
             </div>
         </div>
