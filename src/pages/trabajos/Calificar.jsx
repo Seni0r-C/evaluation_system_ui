@@ -110,7 +110,8 @@ const Calificar = () => {
                 }
             });
             setTipoEvaluacion(tiposEvaluacion);
-            handleSelectedRubricaType(tiposEvaluacion[0].tipo_evaluacion_nombre);
+            const tipoRubrica = tiposEvaluacion.find((tipo) => tipo.calificacion_global === 1);
+            handleSelectedRubricaType(tipoRubrica?.tipo_evaluacion_nombre ?? tiposEvaluacion[0]?.tipo_evaluacion_nombre);
 
             const rubricasPromises = tiposEvaluacion.map(async (tipo) => {
                 try {
