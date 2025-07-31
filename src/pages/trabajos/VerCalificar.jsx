@@ -10,7 +10,6 @@ import ComboBoxIndexacionRevistas from "../../components/utmcomps/ComboBoxIndexa
 import { useMessage } from "../../hooks/useMessage";
 import { getIndicesRevistasService } from "../../services/indiceRevistasService";
 
-
 const GradeInput = ({ gradeCategory, initialValue = 0, minGradeValue = 0, maxGradeValue = 100, onValueChange, onSubmit }) => {
     const [value, setValue] = useState(initialValue);
 
@@ -53,14 +52,11 @@ const GradeInput = ({ gradeCategory, initialValue = 0, minGradeValue = 0, maxGra
     );
 };
 
-
 function customRound(num) {
     return (num % 1 >= 0.5) ? Math.ceil(num) : Math.floor(num);
 }
 
-
 const VerCalificar = () => {
-
     const { showMsg } = useMessage();
     const location = useLocation();
     const trabajo = location.state.trabajo ?? null;
@@ -111,7 +107,6 @@ const VerCalificar = () => {
             setSelectedStudents(estudiantes.map((student) => student.id));
             return;
         }
-        // setSelectedStudents([]);
         setSelectedStudent(studentId);
     };
 
@@ -173,7 +168,6 @@ const VerCalificar = () => {
         setSelectedTribunalMember(member);
         setResumenRequired(false);
     };
-
 
     const fetchRubricas = async () => {
         try {
@@ -237,24 +231,17 @@ const VerCalificar = () => {
     };
 
     const fetchRubricGrades = async (selectedTribunalMember) => {
-
-        const indexaciones = await getIndicesRevistasService();
-        if (indexaciones.typeMsg === 'error') {
-            showMsg({ typeMsg: 'error', message: indexaciones.message });
-            return;
-        }
-
         const rubricGrades = await getGrades(selectedTribunalMember);
         if (!rubricGrades) {
             return;
         }
         setRubricGradesData(rubricGrades);
+
         if (isArticuloAcademico() && rubricGrades) {
-            const informeFinalGrades = Object.values(rubricGrades)[0][getInformeFinalKey()];
-            const sumInformeFinal = Object.values(informeFinalGrades).reduce((prev, current) => prev + current, 0);
-            const indexItem = indexaciones.find((indexItem) => indexItem.value === sumInformeFinal);
-            if (indexItem) {
-                setIndexacionSelected(indexItem);
+            const indexaciones = await getIndicesRevistasService();
+            if (indexaciones.typeMsg === 'error') {
+                showMsg({ typeMsg: 'error', message: indexaciones.message });
+                return;
             }
         }
     };
