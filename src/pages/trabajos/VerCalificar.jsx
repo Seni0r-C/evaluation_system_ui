@@ -34,8 +34,13 @@ const VerCalificar = () => {
     const [overallSummary, setOverallSummary] = useState({});
     const [finalGrades, setFinalGrades] = useState({});
 
-    const handleFinalGradeChange = (studentId, evaluacionId, criterioIndex, grade) => {
-        const numericGrade = Number(grade);
+    const handleFinalGradeChange = (studentId, evaluacionId, criterioIndex, grade, max_grade) => {
+        let numericGrade = Number(grade);
+        const numericMaxGrade = Number(max_grade);
+        if (isNaN(numericGrade)) return;
+        if (numericGrade < 0) return;
+        if (numericGrade > numericMaxGrade) numericGrade = numericMaxGrade;
+
         setFinalGrades(prev => ({
             ...prev,
             [studentId]: {
@@ -370,8 +375,10 @@ const VerCalificar = () => {
                                                 <input
                                                     type="number"
                                                     className="w-full border-none rounded-md px-2 py-1 text-center bg-transparent focus:outline-none"
-                                                    value={finalGrades[studentId]?.[evaluacion.tipo_evaluacion_id]?.[criterioIndex] ?? ''}
-                                                    onChange={(e) => handleFinalGradeChange(studentId, evaluacion.tipo_evaluacion_id, criterioIndex, e.target.value)}
+                                                    value={finalGrades[studentId]?.[evaluacion.tipo_evaluacion_id]?.[criterioIndex] ?? '0'}
+                                                    onChange={(e) => handleFinalGradeChange(studentId, evaluacion.tipo_evaluacion_id, criterioIndex, e.target.value, criterio.puntaje_maximo)}
+                                                    max={criterio.puntaje_maximo}
+                                                    min={0}
                                                 />
                                             </td>
                                         </tr>
