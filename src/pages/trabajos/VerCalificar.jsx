@@ -572,11 +572,11 @@ const VerCalificar = () => {
 
     const renderOverallGradeRow = (overallEvalType, overallGradeData, index) => {
         return (
-            <tr className="bg-gray-100 font-bold" key={index}>
-                <td className="py-2 text-sm font-bold text-gray-700 text-left border border-gray-300">
+            <tr className="bg-gray-100 font-bold text-sm" key={index}>
+                <td className="py-2 font-bold text-gray-700 text-left border border-gray-300">
                     <span className="ml-5">{overallEvalType}</span>
                 </td>
-                <td className="text-sm font-semibold text-gray-700 text-center border border-gray-300">
+                <td className="font-semibold text-gray-700 text-center border border-gray-300">
                     {
                         isComplexivo() && overallEvalType === "EXAMEN PRÁCTICO" ? 60 :
                             isComplexivo() && overallEvalType === "EXAMEN TEÓRICO" ? 40 :
@@ -585,7 +585,7 @@ const VerCalificar = () => {
                                         100
                     }
                 </td>
-                <td className="px-2 text-lg text-blue-600  text-center border border-gray-300 bg-gray-50">
+                <td className="px-2 text-blue-600  text-center border border-gray-300 bg-gray-50">
                     {isArticuloAcademico() && isInformeFinal(overallEvalType) && (
                         indexacionSelected?.value ?? "N/A"
                     )}
@@ -628,34 +628,29 @@ const VerCalificar = () => {
         if (studentData?.nombre !== nameStudentSelected) return null;
         return (
             // <table className="min-w-full max-w-4xl border border-gray-300 rounded-lg shadow-sm">
-            <table className="min-w-[75%] border border-gray-300 rounded-lg shadow-sm mb-4" key={index}>
+            <table className="min-w-[75%] border border-gray-300 rounded-lg shadow-sm mb-4 text-sm" key={index}>
                 <thead className="bg-blue-50 text-blue-700">
                     <tr>
-                        <th className="border border-gray-300 px-4 py-3 text-left w-[300px] min-w-[300px] max-w-[300px] whitespace-nowrap">
-                            {studentData.nombre}
-                        </th>
-                        <th className="border border-gray-300 px-4 py-3 text-center font-semibold w-[100px]">
-                            Base
-                        </th>
-                        <th className="border border-gray-300 px-4 py-3 text-center font-semibold w-[100px]">
-                            Nota
-                        </th>
+                        {[studentData.nombre, "Base", "Nota"].map((header, index) => (
+                            <th className={`border border-gray-300 px-4 py-3 text-center font-semibold ${index === 0 ? "text-left whitespace-nowrap w-[300px] min-w-[300px] max-w-[300px]" : "text-center w-[100px]"}`} key={index}>
+                                {header}
+                            </th>
+                        ))}
                     </tr>
                 </thead>
-
                 <tbody>
                     {/* Fila de Totales */}
                     {Object.entries(studentData.evaluaciones).map(([evalType, evalData], index) => {
                         return renderOverallGradeRow(evalType, evalData, index);
                     })}
                     <tr className="bg-gray-100 font-bold">
-                        <td className="py-2 text-sm font-bold text-blue-700 text-left border border-gray-300">
+                        <td className="py-2 font-bold text-blue-700 text-left border border-gray-300">
                             <span className="ml-5">{isComplexivo() || isArticuloAcademico() ? "TOTAL" : "PROMEDIO"} </span>
                         </td>
-                        <td className="text-sm font-semibold text-blue-700 text-center border border-gray-300">
+                        <td className="font-semibold text-blue-700 text-center border border-gray-300">
                             100
                         </td>
-                        <td className="text-lg text-blue-600 text-center border border-gray-300 bg-gray-50">
+                        <td className="text-blue-600 text-center border border-gray-300 bg-gray-50">
                             {calcOverallGrades(studentData)}
                         </td>
                     </tr>
@@ -827,38 +822,40 @@ const VerCalificar = () => {
                                                 ${!isSelected && index !== tipoEvaluacion.length ? "border-r border-gray-400" : isSelected ? "border-l border-gray-300" : ""} 
                                             `}
                                         >
-                                            <span>{member.nombre}</span>
+                                            <span className="text-sm">{member.nombre}</span>
                                             <span
-                                                className={`mt-1 px-4 py-1 text-sm font-semibold rounded-md ${isSelected
+                                                className={`mt-2 px-4 py-0 text-sm font-semibold rounded-md ${isSelected
                                                     ? "bg-gray-200 text-gray-800 hover:bg-gray-300"
                                                     : "bg-blue-600 text-white"
                                                     }`}
                                             >
-                                                {member.estado}
+                                                <span className="text-xs"> {member.estado}</span>
                                             </span>
                                         </button>
 
                                     );
                                 })}
 
-                            {tribunalMembers.length > 0 && (<button
-                                key={"resumen"}
-                                onClick={() => {
-                                    const isSummary = !resumenRequired && selectedTribunalMember;
-                                    if (isSummary) {
-                                        setSelectedTribunalMember({})
-                                    } else {
-                                        setSelectedTribunalMember(tribunalMembers[0])
+                            {tribunalMembers.length > 0 && (
+                                <button
+                                    key={"resumen"}
+                                    onClick={() => {
+                                        const isSummary = !resumenRequired && selectedTribunalMember;
+                                        if (isSummary) {
+                                            setSelectedTribunalMember({})
+                                        } else {
+                                            setSelectedTribunalMember(tribunalMembers[0])
 
+                                        }
+                                        setResumenRequired(!resumenRequired)
+                                    }}
+                                    className={
+                                        `${resumenRequired ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-800 hover:bg-blue-200"} border-l border-gray-400 px-6 py-2 font-semibold flex items-center rounded-r-lg`
                                     }
-                                    setResumenRequired(!resumenRequired)
-                                }}
-                                className={
-                                    `${resumenRequired ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-800 hover:bg-blue-200"} border-l border-gray-400 px-6 py-2 font-semibold flex items-center rounded-r-lg`
-                                }
-                            >
-                                {"TOTALES"}
-                            </button>)}
+                                >
+                                    <span className="text-sm">TOTALES</span>
+                                </button>
+                            )}
                         </div>
                         {resumenRequired && (
                             <div className="flex flex-col items-center mt-16 mb-4 space-y-4">
@@ -962,7 +959,7 @@ const VerCalificar = () => {
                                                         : "bg-gray-200 text-gray-800 hover:bg-gray-300"
                                                         } ${index === 0 ? "rounded-l-lg" : ""} ${index === tipoEvaluacion.length - 1 ? "rounded-r-lg" : ""
 
-                                                        }`}
+                                                        } text-sm`}
                                                 >
                                                     {tipo.tipo_evaluacion_nombre}
                                                 </button>
@@ -977,12 +974,12 @@ const VerCalificar = () => {
                                             <table className="min-w-full border border-gray-300 rounded-lg shadow-sm">
                                                 <thead className="bg-blue-50 text-blue-700">
                                                     <tr>
-                                                        <th className="border border-gray-300 px-4 py-3 text-left">Criterio</th>
+                                                        <th className="border border-gray-300 px-4 py-1 text-left">Criterio</th>
 
-                                                        <th className="border border-gray-300 px-4 py-3 text-center font-semibold">
+                                                        <th className="border border-gray-300 px-4 py-1 text-center font-semibold">
                                                             Nota Máxima
                                                         </th>
-                                                        <th className="border border-gray-300 px-4 py-3 text-center font-semibold">
+                                                        <th className="border border-gray-300 px-4 py-1 text-center font-semibold">
                                                             Calificación
                                                         </th>
                                                     </tr>
@@ -991,16 +988,16 @@ const VerCalificar = () => {
                                                     {currentRubrica.rubrica.criterios.map((criterio, criterioIndex) => (
                                                         <tr
                                                             key={criterioIndex}
-                                                            className="odd:bg-white even:bg-gray-50"
+                                                            className="odd:bg-white even:bg-gray-50 text-sm"
                                                         >
                                                             <td className="border border-gray-300 px-4 py-3 font-medium">
                                                                 {criterio.nombre.replace("::>", ': ')}
                                                             </td>
 
-                                                            <td className="text-sm font-semibold text-blue-700 text-center border border-gray-300" >
+                                                            <td className="font-semibold text-blue-700 text-center border border-gray-300" >
                                                                 {criterio.puntaje_maximo}
                                                             </td>
-                                                            <td className="text-sm font-semibold text-blue-700 text-center border border-gray-300" >
+                                                            <td className="font-semibold text-blue-700 text-center border border-gray-300" >
                                                                 {
                                                                     <input
                                                                         disabled
@@ -1023,18 +1020,18 @@ const VerCalificar = () => {
                                                     ))}
                                                     {/* Fila de Totales */}
                                                     <tr className="bg-gray-100 font-bold">
-                                                        <td className="py-2 text-sm font-bold text-blue-700 text-left border border-gray-300">
+                                                        <td className="py-2 font-bold text-blue-700 text-left border border-gray-300">
                                                             <span className="ml-5">TOTAL</span>
                                                         </td>
 
                                                         {/* Suma de puntajes máximos */}
-                                                        <td className="text-sm font-semibold text-blue-700 text-center border border-gray-300">
+                                                        <td className="font-semibold text-blue-700 text-center border border-gray-300">
                                                             {currentRubrica.rubrica.criterios.reduce(
                                                                 (total, criterio) => Number(total) + Number(criterio.puntaje_maximo), 0
                                                             )}
                                                         </td>
 
-                                                        <td className="text-sm font-semibold text-blue-700 text-center border border-gray-300">
+                                                        <td className="font-semibold text-blue-700 text-center border border-gray-300">
                                                             {currentRubrica.rubrica.criterios.reduce(
                                                                 (total, criterio, index) =>
                                                                     total +
@@ -1065,8 +1062,8 @@ const VerCalificar = () => {
                         )}
 
                     </div>
-                    <div className="col-span-1 lg:col-span-1 lg:col-start-4">
-                        <h2 className="text-2xl font-semibold mb-4 text-blue-600">Estudiantes</h2>
+                    <div className="col-span-1 lg:col-span-1 lg:col-start-4 text-sm">
+                        <h2 className="text-2xl font-semibold mb-4 text-gray-600">Estudiantes</h2>
                         <div className="space-y-4">
                             {estudiantes.map((student) => (
                                 <button
@@ -1103,30 +1100,25 @@ const VerCalificar = () => {
                 </div>
 
                 {/* Promedios y totales de evaluaciones */}
-                {
-                    selectedRubricaType !== getInformeFinalKey() && (
-                        <div className="overflow-x-auto">
+                <div className="overflow-x-auto">
 
-                            {/* Validaciones para evitar errores */}
-                            {
-                                !resumenRequired && (currentRubrica ? (
-                                    Object.values(getRubricaSummary())
-                                        .map((rubrica, index) => renderOverallGradeTable(rubrica, index)
-                                        )
-                                ) : (
-                                    <div className="justify-center lg:col-start-2 col-span-1 mb-20">
-                                        <div className="text-center text-2xl font-semibold text-blue-600">
-                                            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-4 border-blue-600">
-                                            </div>
-                                            <span className="ml-2 text-blue-700">Cargando datos...</span>
-                                        </div>
+                    {/* Validaciones para evitar errores */}
+                    {
+                        !resumenRequired && (currentRubrica ? (
+                            Object.values(getRubricaSummary())
+                                .map((rubrica, index) => renderOverallGradeTable(rubrica, index)
+                                )
+                        ) : (
+                            <div className="justify-center lg:col-start-2 col-span-1 mb-20">
+                                <div className="text-center text-2xl font-semibold text-blue-600">
+                                    <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-4 border-blue-600">
                                     </div>
-                                ))
-                            }
-                        </div>
-
-                    )
-                }
+                                    <span className="ml-2 text-blue-700">Cargando datos...</span>
+                                </div>
+                            </div>
+                        ))
+                    }
+                </div>
             </div>
         </div>
     );
