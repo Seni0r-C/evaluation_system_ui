@@ -804,6 +804,7 @@ const Calificar = () => {
                                             setIndexacionSelected(indexacion);
                                         }}
                                             selectedId={indexacionSelected}
+                                            disabled={true}
                                         />
                                     </th>
                                 </tr>
