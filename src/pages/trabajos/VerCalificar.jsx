@@ -568,6 +568,28 @@ const VerCalificar = () => {
             });
         }
 
+        const totalNota = Object.entries(evaluationsToRender).reduce((sum, [evalType, evalData]) => {
+            if (!tipoEvaluacion) return sum;
+
+            const tieneModificador = tipoEvaluacion.find((tipo) => tipo.modificador === 1);
+            const overallEvalTypeData = tipoEvaluacion.find((tipo) => tipo.tipo_evaluacion_nombre === evalType);
+            let valortotal = Number(evalData.mean);
+            const base = overallEvalTypeData?.valor_base || 100;
+
+            if (tieneModificador?.pos_evaluation === 0) {
+                // valortotal is not changed
+            } else {
+                valortotal = (base * (valortotal / 100)).toFixed(0);
+            }
+            
+            return sum + Number(valortotal);
+        }, 0);
+
+        const count = Object.keys(evaluationsToRender).length;
+        const displayValue = esPromedio
+            ? (count > 0 ? (totalNota / count).toFixed(0) : 0)
+            : totalNota.toFixed(0);
+
         return (
             <table className="min-w-[75%] border border-gray-300 rounded-lg shadow-sm mb-4">
                 <thead className="bg-blue-50 text-blue-700">
@@ -589,7 +611,7 @@ const VerCalificar = () => {
                         </td>
                         <td className="text-sm font-semibold text-blue-700 text-center border border-gray-300">100</td>
                         <td className="text-lg text-blue-600 text-center border border-gray-300 bg-gray-50">
-                            {customRound(esPromedio ? studentData.totalMean : studentData.total)}
+                            {displayValue}
                         </td>
                     </tr>
                 </tbody>
