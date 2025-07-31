@@ -57,10 +57,6 @@ const Calificar = () => {
         return kind === getInformeFinalKey();
     }
 
-    const isExamenTeoricoComplexivo = (kind) => {
-        return isComplexivo() && kind === "EXAMEN TEORICO";
-    }
-
     const handleSelectedStudent = (studentId) => {
         if (isInformeFinal(selectedRubricaType)) {
             setSelectedStudents(estudiantes.map((student) => student.id));
@@ -128,8 +124,9 @@ const Calificar = () => {
                     tipo_evaluacion_id: tipo.id,
                     tipo_evaluacion_nombre: tipo.nombre
                 }
-            }).filter(tipo => !isExamenTeoricoComplexivo(tipo.tipo_evaluacion_nombre));
+            });
             setTipoEvaluacion(tiposEvaluacion);
+
             const rubricasPromises = tiposEvaluacion.map(async (tipo) => {
                 try {
                     const response = await axiosInstance.get("/calificacion/rubrica", {
