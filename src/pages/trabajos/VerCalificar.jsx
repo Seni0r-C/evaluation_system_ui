@@ -153,8 +153,10 @@ const VerCalificar = () => {
                 tipo_evaluacion_id: tipo.id,
                 tipo_evaluacion_nombre: tipo.nombre,
                 calificacion_global: tipo.calificacion_global,
-                pos_evaluation: tipo.pos_evaluation
-
+                pos_evaluation: tipo.pos_evaluation,
+                padre_id: tipo.padre_id,
+                valor_base: tipo.valor_base,
+                modificador: tipo.modificador
             }));
             setTipoEvaluacion(tiposEvaluacion);
 
@@ -255,16 +257,18 @@ const VerCalificar = () => {
                 const criterios = rubrica.rubrica.criterios;
                 let sum = 0;
                 let count = 0;
+                let max = 0;
 
                 criterios.forEach((_, criterioIndex) => {
                     const grade = calificacionesSeleccionadas[student.id]?.[evalName]?.[criterioIndex];
                     if (grade !== undefined && grade !== null) {
                         sum += Number(grade);
                         count++;
+                        max += Number(_.puntaje_maximo);
                     }
                 });
 
-                summary[student.id].evaluaciones[evalName] = { sum, mean: count > 0 ? sum / count : 0 };
+                summary[student.id].evaluaciones[evalName] = { sum, mean: count > 0 ? sum / count : 0, max };
                 totalSum += sum;
                 totalCount += count;
             });
@@ -452,16 +456,25 @@ const VerCalificar = () => {
         );
     };
 
+    const renderOverallGradeRow = (overallEvalType, overallGradeData, index) => {
+        if (!tipoEvaluacion) return null;
+        const tieneModificador = tipoEvaluacion.find((tipo) => tipo.modificador === 1);
+        const overallEvalTypeData = tipoEvaluacion.find((tipo) => tipo.tipo_evaluacion_nombre === overallEvalType);
+        let base = overallEvalTypeData?.valor_base || 100;
+        if (tieneModificador?.pos_evaluation === 0) {
+            base = tieneModificador.valor_base || 100;
+        }
 
-    const renderOverallGradeRow = (overallEvalType, overallGradeData, index) => (
-        <tr className="bg-gray-100 font-bold text-sm" key={index}>
-            <td className="py-2 font-bold text-gray-700 text-left border border-gray-300">
-                <span className="ml-5">{overallEvalType}</span>
-            </td>
-            <td className="font-semibold text-gray-700 text-center border border-gray-300">100</td>
-            <td className="px-2 text-blue-600 text-center border border-gray-300 bg-gray-50">{overallGradeData}</td>
-        </tr>
-    );
+        return (
+            <tr className="bg-gray-100 font-bold text-sm" key={index}>
+                <td className="py-2 font-bold text-gray-700 text-left border border-gray-300">
+                    <span className="ml-5">{overallEvalType}</span>
+                </td>
+                <td className="font-semibold text-gray-700 text-center border border-gray-300">{base}</td>
+                <td className="px-2 text-blue-600 text-center border border-gray-300 bg-gray-50">{overallGradeData}</td>
+            </tr>
+        )
+    };
 
     const calcOverallGrades = (studentData) => {
         const evals = Object.values(studentData.evaluaciones);
@@ -514,7 +527,7 @@ const VerCalificar = () => {
             <table className="min-w-[75%] border border-gray-300 rounded-lg shadow-sm mb-4">
                 <thead className="bg-blue-50 text-blue-700">
                     <tr>
-                        <th className="border border-gray-300 px-4 py-3 text-left w-[300px] min-w-[300px] max-w-[300px] whitespace-nowrap">
+                        <th className="border border-gray-300 px-4 py-3 text-left w-[300px] min-w-[300px] max-w-[300px]">
                             {studentData?.nombre}
                         </th>
                         <th className="border border-gray-300 px-4 py-3 text-center font-semibold w-[100px]">Base</th>
