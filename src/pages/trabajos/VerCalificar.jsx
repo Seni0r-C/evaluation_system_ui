@@ -410,6 +410,7 @@ const VerCalificar = () => {
                 {finalEvaluations.map(evaluacion => {
                     const rubrica = rubricas[evaluacion.tipo_evaluacion_nombre];
                     if (!rubrica) return null;
+                    if (rubrica.rubrica.criterios.length === 0) return null;
 
                     return (
                         <div key={evaluacion.tipo_evaluacion_id} className="mb-8">
@@ -460,9 +461,13 @@ const VerCalificar = () => {
         if (!tipoEvaluacion) return null;
         const tieneModificador = tipoEvaluacion.find((tipo) => tipo.modificador === 1);
         const overallEvalTypeData = tipoEvaluacion.find((tipo) => tipo.tipo_evaluacion_nombre === overallEvalType);
+        let valortotal = Number(overallGradeData);
         let base = overallEvalTypeData?.valor_base || 100;
         if (tieneModificador?.pos_evaluation === 0) {
             base = tieneModificador.valor_base || 100;
+        } else {
+            const porcentaje = (valortotal / 100) * 100;
+            valortotal = (base * (porcentaje * 0.01)).toFixed(0);
         }
 
         return (
@@ -471,7 +476,7 @@ const VerCalificar = () => {
                     <span className="ml-5">{overallEvalType}</span>
                 </td>
                 <td className="font-semibold text-gray-700 text-center border border-gray-300">{base}</td>
-                <td className="px-2 text-blue-600 text-center border border-gray-300 bg-gray-50">{overallGradeData}</td>
+                <td className="px-2 text-blue-600 text-center border border-gray-300 bg-gray-50">{valortotal}</td>
             </tr>
         )
     };
@@ -523,6 +528,46 @@ const VerCalificar = () => {
     const renderOverallTriGradeTable = (studentData) => {
         studentData.nombre = estudiantes.find(estudiante => estudiante?.id == studentData.nombre)?.nombre;
 
+        const parentEvalMap = new Map(); // key: parent_id, value: parent_name
+        const childToParentMap = new Map(); // key: child_name, value: parent_id
+
+        tipoEvaluacion.forEach(tipo => {
+            if (tipo.padre_id) {
+                childToParentMap.set(tipo.tipo_evaluacion_nombre, tipo.padre_id);
+                if (!parentEvalMap.has(tipo.padre_id)) {
+                    const parent = tipoEvaluacion.find(p => p.tipo_evaluacion_id === tipo.padre_id);
+                    if (parent) {
+                        parentEvalMap.set(tipo.padre_id, parent.tipo_evaluacion_nombre);
+                    }
+                }
+            }
+        });
+
+        const evaluationsToRender = {};
+        const parentAverages = {};
+
+        if (studentData?.evaluaciones) {
+            Object.entries(studentData.evaluaciones).forEach(([evalType, evalData]) => {
+                const parentId = childToParentMap.get(evalType);
+                if (parentId) {
+                    if (!parentAverages[parentId]) {
+                        parentAverages[parentId] = { sum: 0, count: 0 };
+                    }
+                    parentAverages[parentId].sum += evalData.mean;
+                    parentAverages[parentId].count++;
+                } else {
+                    evaluationsToRender[evalType] = evalData;
+                }
+            });
+
+            Object.entries(parentAverages).forEach(([parentId, data]) => {
+                const parentName = parentEvalMap.get(Number(parentId));
+                if (parentName) {
+                    evaluationsToRender[parentName] = { mean: data.count > 0 ? data.sum / data.count : 0 };
+                }
+            });
+        }
+
         return (
             <table className="min-w-[75%] border border-gray-300 rounded-lg shadow-sm mb-4">
                 <thead className="bg-blue-50 text-blue-700">
@@ -535,8 +580,8 @@ const VerCalificar = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {studentData?.evaluaciones && Object.entries(studentData.evaluaciones).map(([evalType, evalData]) =>
-                        renderOverallGradeRow(evalType, evalData.mean.toFixed(2))
+                    {Object.entries(evaluationsToRender).map(([evalType, evalData], index) =>
+                        renderOverallGradeRow(evalType, evalData.mean.toFixed(2), index)
                     )}
                     <tr className="bg-gray-100 font-bold">
                         <td className="py-2 text-sm font-bold text-blue-700 text-left border border-gray-300">
