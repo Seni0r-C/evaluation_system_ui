@@ -118,7 +118,9 @@ const VerCalificar = () => {
             const tiposEvaluacion = tiposResponse.map((tipo) => ({
                 tipo_evaluacion_id: tipo.id,
                 tipo_evaluacion_nombre: tipo.nombre,
-                calificacion_global: tipo.calificacion_global
+                calificacion_global: tipo.calificacion_global,
+                pos_evaluation: tipo.pos_evaluation
+
             }));
             setTipoEvaluacion(tiposEvaluacion);
 
@@ -449,7 +451,7 @@ const VerCalificar = () => {
                         ) : (
                             <div>
                                 <div className="flex justify-center mb-4">
-                                    {tipoEvaluacion
+                                    {tipoEvaluacion.filter((tipo) => tipo.pos_evaluation === 0)
                                         .sort((a, b) => b.tipo_evaluacion_nombre.localeCompare(a.tipo_evaluacion_nombre))
                                         .map((tipo, index) => {
                                             const isSelected = selectedRubricaType === tipo.tipo_evaluacion_nombre;
