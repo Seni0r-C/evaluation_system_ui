@@ -6,7 +6,6 @@ import { getEstudiantesByTrabajoId, getUserPhoto } from "../../services/usuarioS
 import { MdDoneOutline } from "react-icons/md";
 import axiosInstance from "../../services/axiosConfig";
 import { obtenerTiposEvaluacionByModalidadList } from "../../services/rubricaCriterioService";
-import ComboBoxIndexacionRevistas from "../../components/utmcomps/ComboBoxIndexacionRevistas";
 import { useMessage } from "../../hooks/useMessage";
 import { getIndicesRevistasService } from "../../services/indiceRevistasService";
 
@@ -15,23 +14,25 @@ function customRound(num) {
 }
 
 const Calificar = () => {
-
     const { showMsg } = useMessage();
     const location = useLocation();
     const trabajo = location.state.trabajo ?? null;
+
+    const [estudiantes, setEstudiantes] = useState([]);
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [selectedStudents, setSelectedStudents] = useState([]);
-    const [selectedRubricaType, setSelectedRubricaType] = useState("INFORME FINAL");
-    const [estudiantes, setEstudiantes] = useState([]);
-    const [photos, setPhotos] = useState({}); // Estado para las fotos, { [id]: fotoBase64 }
-    const [rubricas, setRubricas] = useState(null);
-    const [rubricGradesData, setRubricGradesData] = useState(null);
-    const [tipoEvaluacion, setTipoEvaluacion] = useState([]);
-    const [currentRubrica, setCurrentRubrica] = useState(null);
-    const [calificacionesSeleccionadas, setCalificacionesSeleccionadas] = useState({});
-    const [showFinalizar, setShowFinalizar] = useState(false);
-    const [indexacionSelected, setIndexacionSelected] = useState(null);
+    const [photos, setPhotos] = useState({});
 
+    const [rubricas, setRubricas] = useState(null);
+    const [currentRubrica, setCurrentRubrica] = useState(null);
+    const [rubricGradesData, setRubricGradesData] = useState(null);
+    const [selectedRubricaType, setSelectedRubricaType] = useState("");
+
+    const [tipoEvaluacion, setTipoEvaluacion] = useState([]);
+
+    const [calificacionesSeleccionadas, setCalificacionesSeleccionadas] = useState({});
+
+    const [showFinalizar, setShowFinalizar] = useState(false);
 
     const navigate = useNavigate();
 
@@ -47,26 +48,21 @@ const Calificar = () => {
         return EXAMEN_COMPLEXIVO_KEYS.some(moda => moda === modalidad);
     };
 
-
     const getInformeFinalKey = () => {
         return isComplexivo() ? "INFORME FINAL (EXAMEN PRACTICO)" : "INFORME FINAL";
     }
-
 
     const isInformeFinal = (kind) => {
         return kind === getInformeFinalKey();
     }
 
     const handleSelectedStudent = (studentId) => {
-        if (isInformeFinal(selectedRubricaType)) {
+        if (studentId) {
             setSelectedStudents(estudiantes.map((student) => student.id));
             return;
         }
-        // setSelectedStudents([]);
-        setSelectedStudent(studentId);
-
+        setSelectedStudent(estudiantes.length > 0 ? estudiantes[0].id : null);
     };
-
 
     const hadleStudentsOnChangeRubricType = () => {
         if (isInformeFinal(selectedRubricaType)) {
@@ -80,7 +76,7 @@ const Calificar = () => {
 
     useEffect(() => {
         setShowFinalizar(isCalificacionCompleta());
-    }, [calificacionesSeleccionadas, indexacionSelected]);
+    }, [calificacionesSeleccionadas]);
 
     useEffect(() => {
         if (trabajo) {
@@ -113,7 +109,8 @@ const Calificar = () => {
         };
 
         fetchPhotos();
-        handleSelectedRubricaType(isArticuloAcademico() ? "DEFENSA" : getInformeFinalKey());
+        handleSelectedRubricaType();
+        handleSelectedStudent();
     }, [estudiantes]);
 
     const fetchRubricas = async () => {
@@ -188,18 +185,8 @@ const Calificar = () => {
                 return {};
             }
         };
-        const rubricGrades = await getGrades()
 
-        if (isArticuloAcademico() && rubricGrades) {
-            const informeFinalGrades = Object.values(rubricGrades)[0][getInformeFinalKey()];
-            const sumInformeFinal = Object.values(informeFinalGrades).reduce((prev, current) => prev + current, 0);
-            const indexItem = indexaciones.find((indexItem) => indexItem.value === sumInformeFinal);
-            if (indexItem) {
-                setIndexacionSelected(indexItem);
-            }
-            // rubricGrades[]
-        }
-        console.log({ rubricGrades });
+        const rubricGrades = await getGrades()
         setRubricGradesData(rubricGrades);
     };
 
@@ -226,7 +213,6 @@ const Calificar = () => {
                     setCalificacionesSeleccionadas((prev) => ({
                         ...prev,
                         [selectedStudent]: prev[selectedStudent] || defaultGrade(selectedStudent),
-                        // [selectedStudent]: defaultGrade(selectedStudent),
                     }));
                 })
             return;
@@ -234,7 +220,6 @@ const Calificar = () => {
         if (selectedStudent) {
             setCalificacionesSeleccionadas((prev) => ({
                 ...prev,
-                // [selectedStudent]: defaultGrade(selectedStudent),
                 [selectedStudent]: prev[selectedStudent] || defaultGrade(selectedStudent),
             }));
         }
@@ -242,7 +227,6 @@ const Calificar = () => {
 
     const setSaveGradesEffect = () => {
         // Aquí puedes cargar los datos guardados desde el backend para el estudiante y rúbrica seleccionados.
-        // Si no hay datos, simplemente asegura que se inicialicen correctamente.
         if (selectedStudents.length === 0 && selectedRubricaType === getInformeFinalKey()) return;
         if (selectedRubricaType === getInformeFinalKey()) {
             selectedStudents
@@ -258,7 +242,6 @@ const Calificar = () => {
         if (selectedStudent) {
             setCalificacionesSeleccionadas((prev) => ({
                 ...prev,
-                // [selectedStudent]: defaultGrade(selectedStudent),
                 [selectedStudent]: defaultGrade(selectedStudent),
             }));
         }
@@ -276,29 +259,19 @@ const Calificar = () => {
 
 
     const isCalificacionCompleta = () => {
-        if (selectedStudents.length === 0 && selectedRubricaType === getInformeFinalKey())
+        if (selectedStudents.length === 0 && !selectedRubricaType)
             return false;
         if (selectedStudent === null)
             return false;
+
         return estudiantes.every((student) => {
             return tipoEvaluacion.every((tipo) => {
-                tipo = { ...tipo };
-                tipo.tipo_evaluacion_nombree = tipo.tipo_evaluacion_nombre;
-                tipo.tipo_evaluacion_nombre = tipo.tipo_evaluacion_nombre.replace("(EXAMEN PRACTICO)", "").replace("(EXÁMEN PRÁCTICO)", "").replace("(EXAMEN PRÁCTICO)", "").trim();
+                const rubrica = rubricas[tipo.tipo_evaluacion_nombre];
 
-                const rubrica = rubricas[tipo.tipo_evaluacion_nombree];
-                if (isArticuloAcademico() && !rubrica && tipo.tipo_evaluacion_nombree !== getInformeFinalKey()) return false;
-                if (!isArticuloAcademico() && !rubrica) return false; // Verifica que la rúbrica exista
+                if (!rubrica) return false; // Verifica que la rúbrica exista
 
                 const everySetGrades = rubrica.rubrica.criterios.every((criterio, criterioIndex) => {
                     const isSetGrade = calificacionesSeleccionadas[student.id]?.[tipo.tipo_evaluacion_nombre]?.[criterioIndex] !== undefined;
-                    if (isArticuloAcademico() && !isSetGrade && tipo.tipo_evaluacion_nombre === getInformeFinalKey()) {
-                        if (!indexacionSelected) {
-                            return false;
-                        }
-                        handleCalificacionPorcentaje(indexacionSelected.value, getInformeFinalKey());
-                        return true;
-                    }
                     return isSetGrade;
                 });
 
@@ -314,29 +287,15 @@ const Calificar = () => {
         return selectedStudent === studentId;
     }
     const handleSelectedRubricaType = (tipo_evaluacion_nombre) => {
-        if (estudiantes.length === 0) return;
-        if (isComplexivo()) {
-            setSelectedStudent(estudiantes[0].id);
-            setSelectedStudents(estudiantes.map((student) => student.id));
+        if (tipo_evaluacion_nombre) {
             setSelectedRubricaType(tipo_evaluacion_nombre);
             return;
         }
-        if (tipo_evaluacion_nombre === getInformeFinalKey()) {
-            setSelectedStudents(estudiantes.map((student) => student.id));
-            setSelectedRubricaType(tipo_evaluacion_nombre);
-            return;
-        }
-        if (!selectedStudent) {
-            setSelectedStudent(estudiantes[0].id);
-        }
-        setSelectedRubricaType(tipo_evaluacion_nombre);
+
+        setSelectedRubricaType(tipoEvaluacion.length > 0 ? tipoEvaluacion[0].tipo_evaluacion_nombre : "");
     };
 
     const handleFinalizar = async () => {
-        if (isArticuloAcademico() && !indexacionSelected) {
-            showMsg({ typeMsg: 'warning', message: 'Por favor seleccione una indexación' });
-            return;
-        }
         const info = localStorage.getItem('userInfo');
         const user = JSON.parse(info);
         try {
@@ -344,10 +303,7 @@ const Calificar = () => {
             const payload = [];
             for (const studentId in calificacionesSeleccionadas) {
                 for (const tipoEvaluacion in calificacionesSeleccionadas[studentId]) {
-                    // for (const tipoEvaluacionn in calificacionesSeleccionadas[studentId]) {
-                    const tipoEvaluacionn = !isComplexivo() ? tipoEvaluacion : `${tipoEvaluacion} (EXAMEN PRACTICO)`;
-
-                    const rubrica = rubricas[tipoEvaluacionn];
+                    const rubrica = rubricas[tipoEvaluacion];
 
                     if (!rubrica) continue;
 
@@ -381,80 +337,35 @@ const Calificar = () => {
         }
     };
 
-    const handleCalificacionPorcentaje = (percentage, rubricaType) => {
-        if (!rubricaType || percentage < 0 || percentage > 100) {
-            console.error("Invalid rubric type or percentage");
-            return;
-        }
-        setCalificacionesSeleccionadas((prev) => {
-            const updatedCalificaciones = { ...prev };
-
-            estudiantes.forEach((student) => {
-                const newCalificaciones = { ...updatedCalificaciones[student.id]?.[rubricaType] };
-
-                // Apply the percentage to each criterion
-                rubricas[rubricaType].rubrica.criterios.forEach((criterio, criterioIndex) => {
-                    const calculatedGrade = Math.round((criterio.puntaje_maximo * percentage) / 100);
-                    newCalificaciones[criterioIndex] = calculatedGrade;
-                });
-
-                updatedCalificaciones[student.id] = {
-                    ...updatedCalificaciones[student.id],
-                    [rubricaType]: newCalificaciones,
-                };
-            });
-
-            return updatedCalificaciones;
-        });
-    };
-
 
     const handleCalificacion = (e, criterioIndex, criterio) => {
         let valor = 0
         if (e) {
             valor = e.target?.value || e.value;
         }
-        const selectedRubricaTypeLocal = selectedRubricaType?.replace("(EXAMEN PRACTICO)", "")?.replace("(EXÁMEN PRÁCTICO)", "")?.replace("(EXAMEN PRÁCTICO)", "").trim();
         const value = Math.min(criterio.puntaje_maximo, Math.max(0, valor));
-        if (selectedRubricaTypeLocal === getInformeFinalKey()) {
-            selectedStudents.forEach((selectedStudent) => {
-                setCalificacionesSeleccionadas((prev) => ({
-                    ...prev,
-                    [selectedStudent]: {
-                        ...prev[selectedStudent],
-                        [selectedRubricaTypeLocal]: {
-                            ...prev[selectedStudent]?.[selectedRubricaTypeLocal],
-                            [criterioIndex]: value,
-                        },
-                    },
-                }));
-            });
-        } else {
+        selectedStudents.forEach((selectedStudent) => {
             setCalificacionesSeleccionadas((prev) => ({
                 ...prev,
                 [selectedStudent]: {
                     ...prev[selectedStudent],
-                    [selectedRubricaTypeLocal]: {
-                        ...prev[selectedStudent]?.[selectedRubricaTypeLocal],
+                    [selectedRubricaType]: {
+                        ...prev[selectedStudent]?.[selectedRubricaType],
                         [criterioIndex]: value,
                     },
                 },
             }));
-        }
+        });
+
     };
 
     const getSelectedStudent = () => {
-        return selectedRubricaType === getInformeFinalKey() ? selectedStudents[0] : selectedStudent
+        return selectedStudent
     };
 
     const calificacionValue = (minimo, maximo, criterioIndex) => {
-        // tipo_evaluacion_nombre = tipo_evaluacion_nombre?.replace("(EXAMEN PRACTICO)", "")?.replace("(EXÁMEN PRÁCTICO)", "")?.replace("(EXAMEN PRÁCTICO)", "").trim();
-        const sStudent = getSelectedStudent();
-        const keyRType = selectedRubricaType?.replace("(EXAMEN PRACTICO)", "")?.replace("(EXÁMEN PRÁCTICO)", "")?.replace("(EXAMEN PRÁCTICO)", "").trim();
-        // alert(JSON.stringify({ hola: "Hello", califica: calificacionesSeleccionadas[sStudent], selectedRubricaType}, null, 2));
-        const value = calificacionesSeleccionadas[sStudent]?.[keyRType]?.[criterioIndex];
+        const value = calificacionesSeleccionadas[selectedStudent]?.[selectedRubricaType]?.[criterioIndex];
         return Math.max(minimo, value ?? 0);
-        // return Math.max(minimo, minimo==0?Number(maximo)/(getIndexPercent()*Number(maximo)):value);
     };
 
     const calculateMinScore = () => {
@@ -473,8 +384,8 @@ const Calificar = () => {
             let totalCount = 0;
 
             tipoEvaluacion.forEach((tipo) => {
-                const tipo_evaluacion_nombre = tipo.tipo_evaluacion_nombre?.replace("(EXAMEN PRACTICO)", "")?.replace("(EXÁMEN PRÁCTICO)", "")?.replace("(EXAMEN PRÁCTICO)", "").trim();
-                const rubrica = rubricas[tipo.tipo_evaluacion_nombre];
+                const tipo_evaluacion_nombre = tipo.tipo_evaluacion_nombre;
+                const rubrica = rubricas[tipo_evaluacion_nombre];
                 if (!rubrica) return;
 
                 const criterios = rubrica.rubrica.criterios;
@@ -483,7 +394,6 @@ const Calificar = () => {
 
                 criterios.forEach((_, criterioIndex) => {
                     const grade = calificacionesSeleccionadas[student.id]?.[tipo_evaluacion_nombre]?.[criterioIndex];
-                    // const grade = calificacionesSeleccionadas[student.id]?.[tipo.tipo_evaluacion_nombre]?.[criterioIndex];
                     if (grade !== undefined) {
                         sum += grade;
                         count++;
@@ -497,7 +407,6 @@ const Calificar = () => {
                 };
                 totalSum += sum;
                 totalCount += count;
-                // }
             });
 
             if (totalCount > 0) {
@@ -514,22 +423,10 @@ const Calificar = () => {
                     <span className="ml-5">{overallEvalType}</span>
                 </td>
                 <td className="text-sm font-semibold text-gray-700 text-center border border-gray-300">
-                    {
-                        isComplexivo() && overallEvalType === "EXAMEN PRÁCTICO" ? 60 :
-                            isComplexivo() && overallEvalType === "EXAMEN TEÓRICO" ? 40 :
-                                isArticuloAcademico() && overallEvalType === "INFORME FINAL" ? `${indexacionSelected?.value}` :
-                                    isArticuloAcademico() && overallEvalType === "DEFENSA" ? `${100 - indexacionSelected?.value}` :
-                                        100
-                    }
+                    xd
                 </td>
                 <td className="px-2 text-lg text-blue-600  text-center border border-gray-300 bg-gray-50">
-                    {isArticuloAcademico() && isInformeFinal(overallEvalType) && (
-                        indexacionSelected?.value ?? "N/A"
-                    )}
-                    {isArticuloAcademico() && !isInformeFinal(overallEvalType) && (
-                        !indexacionSelected ? "N/A" : (overallGradeData.sum / 100) * (100 - indexacionSelected?.value)
-                    )}
-                    {!isArticuloAcademico() ? overallGradeData.sum : null}
+                    {overallGradeData.sum}
                 </td>
             </tr>
         )
@@ -539,15 +436,9 @@ const Calificar = () => {
         const evals = Object.entries(studentData.evaluaciones);
         if (evals.length === 0) return "N/A"; // Handle case when no evaluations exist
         const totalSum = evals.reduce((pre, evalValue) => {
-            const [evalType, evalData] = evalValue;
-            if (isArticuloAcademico() && isInformeFinal(evalType)) {
-                evalData.sum = indexacionSelected?.value ?? 0;
-            }
-            if (isArticuloAcademico() && !isInformeFinal(evalType)) {
-                evalData.sum = (evalData.sum / 100) * (100 - indexacionSelected?.value);
-                // evalData.sum = (evalData.sum / 100) * (100 - indexacionSelected?.value) + indexacionSelected?.value;
-            }
-            return pre + evalData.sum;
+            const [evalData] = evalValue;
+
+            return pre + evalData.sum;  
         }, 0);
         if (isArticuloAcademico()) {
             return totalSum;
@@ -789,25 +680,6 @@ const Calificar = () => {
                 </div>
                 {/* Promedios y totales de evaluaciones */}
                 <div className="overflow-x-auto mt-4">
-                    {isArticuloAcademico() && (
-                        <table className="table-auto mb-4 bg-gray-100 text-blue-600">
-                            <tbody>
-                                <tr>
-                                    <th className=" border border-gray-300 px-4 py-3 text-center font-bold">
-                                        Indexación
-                                    </th>
-                                    <th className="border border-gray-300 px-4 py-3 text-center font-semibold">
-                                        <ComboBoxIndexacionRevistas onSelect={(indexacion) => {
-                                            setIndexacionSelected(indexacion);
-                                        }}
-                                            selectedId={indexacionSelected}
-                                            disabled={true}
-                                        />
-                                    </th>
-                                </tr>
-                            </tbody>
-                        </table>
-                    )}
 
                     {/* Promedios y totales de evaluaciones */}
                     {
