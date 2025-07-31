@@ -526,7 +526,8 @@ const VerCalificar = () => {
     }
 
     const renderOverallTriGradeTable = (studentData) => {
-        studentData.nombre = estudiantes.find(estudiante => estudiante?.id == studentData.nombre)?.nombre;
+        const studentId = studentData.nombre;
+        studentData.nombre = estudiantes.find(estudiante => estudiante?.id == studentId)?.nombre;
 
         const parentEvalMap = new Map(); // key: parent_id, value: parent_name
         const childToParentMap = new Map(); // key: child_name, value: parent_id
@@ -567,6 +568,20 @@ const VerCalificar = () => {
                 }
             });
         }
+
+        const finalEvaluations = tipoEvaluacion.filter(tipo => tipo.pos_evaluation === 1);
+        finalEvaluations.forEach(evaluacion => {
+            const isParent = [...parentEvalMap.values()].includes(evaluacion.tipo_evaluacion_nombre);
+            if (isParent) return;
+
+            const evaluacionId = evaluacion.tipo_evaluacion_id;
+            const studentGradesForEval = finalGrades[studentId]?.[evaluacionId];
+            let sum = 0;
+            if (studentGradesForEval) {
+                sum = Object.values(studentGradesForEval).reduce((acc, grade) => acc + Number(grade || 0), 0);
+            }
+            evaluationsToRender[evaluacion.tipo_evaluacion_nombre] = { mean: sum };
+        });
 
         const totalNota = Object.entries(evaluationsToRender).reduce((sum, [evalType, evalData]) => {
             if (!tipoEvaluacion) return sum;
