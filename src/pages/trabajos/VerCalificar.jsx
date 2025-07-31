@@ -463,8 +463,13 @@ const VerCalificar = () => {
         const overallEvalTypeData = tipoEvaluacion.find((tipo) => tipo.tipo_evaluacion_nombre === overallEvalType);
         let valortotal = Number(overallGradeData);
         let base = overallEvalTypeData?.valor_base || 100;
-        if (tieneModificador?.pos_evaluation === 0) {
-            base = tieneModificador.valor_base || 100;
+        if (tieneModificador) {
+            if (tieneModificador?.pos_evaluation === 0) {
+                base = tieneModificador.valor_base || 100;
+            } else {
+                //ACCIONES SOLICITADAS
+                base = valortotal;
+            }
         } else {
             const porcentaje = (valortotal / 100) * 100;
             valortotal = (base * (porcentaje * 0.01)).toFixed(0);
