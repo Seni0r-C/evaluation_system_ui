@@ -231,17 +231,18 @@ const VerCalificar = () => {
     };
 
     const fetchRubricGrades = async (selectedTribunalMember) => {
-        const rubricGrades = await getGrades(selectedTribunalMember);
-        if (!rubricGrades) {
+        // Si no hay un miembro del tribunal seleccionado, no se hace nada.
+        if (!selectedTribunalMember?.id) {
+            setRubricGradesData({});
             return;
         }
-        setRubricGradesData(rubricGrades);
+        const rubricGrades = await getGrades(selectedTribunalMember);
+        setRubricGradesData(rubricGrades || {}); // Siempre actualiza, usa {} como fallback
 
         if (isArticuloAcademico() && rubricGrades) {
             const indexaciones = await getIndicesRevistasService();
             if (indexaciones.typeMsg === 'error') {
                 showMsg({ typeMsg: 'error', message: indexaciones.message });
-                return;
             }
         }
     };
@@ -253,40 +254,17 @@ const VerCalificar = () => {
         fetchGetExamenTeoricoGrade();
     }, [trabajo]);
 
-    const defaultGrade = (selectedStudentId) => {
-        if (!selectedStudentId || !rubricGradesData) {
-            return {};
-        }
-        return rubricGradesData[selectedStudentId];
-    };
-
-    const setGradesByTribunalMember = async () => {
-        if (isInformeFinal(selectedRubricaType)) {
-            selectedStudents
-                .filter((v) => v || v === "null")
-                .forEach((selectedStudent) => {
-                    setCalificacionesSeleccionadas((prev) => ({
-                        ...prev,
-                        [selectedStudent]: defaultGrade(selectedStudent),
-                    }));
-                })
-            return;
-        }
-        if (selectedStudent) {
-            setCalificacionesSeleccionadas((prev) => ({
-                ...prev,
-                [selectedStudent]: defaultGrade(selectedStudent),
-            }));
-        }
-    }
-
     useEffect(() => {
         fetchRubricGrades(selectedTribunalMember);
     }, [selectedTribunalMember]);
 
     useEffect(() => {
-        setGradesByTribunalMember();
-    }, [selectedStudent, selectedStudents, selectedTribunalMember, rubricGradesData, selectedRubricaType]);
+        // Cuando los datos de las calificaciones del backend cambian (al seleccionar un nuevo miembro del tribunal),
+        // este efecto se activa y actualiza el estado 'calificacionesSeleccionadas' con los nuevos datos.
+        // Esto asegura que la interfaz siempre muestre las calificaciones del miembro del tribunal seleccionado,
+        // evitando que se mezclen con datos de otros evaluadores.
+        setCalificacionesSeleccionadas(rubricGradesData || {});
+    }, [rubricGradesData]);
 
     const isStudentSelected = (studentId) => {
         if (isInformeFinal(selectedRubricaType)) {
