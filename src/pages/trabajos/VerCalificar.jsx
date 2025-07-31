@@ -240,7 +240,7 @@ const VerCalificar = () => {
             let totalSum = 0;
             let totalCount = 0;
 
-            tipoEvaluacion.forEach((tipo) => {
+            tipoEvaluacion.filter((tipo) => tipo.pos_evaluation === 0).forEach((tipo) => {
                 const evalName = tipo.tipo_evaluacion_nombre;
                 const rubrica = rubricas[evalName];
                 if (!rubrica) return;
@@ -288,7 +288,7 @@ const VerCalificar = () => {
         getOverallSummary();
     }, [tribunalMembers]);
 
-    const calcularPromedios = (datos, finalGradesData) => {
+    const calcularPromedios = (datos) => {
         let resultadoPorEstudiante = {};
 
         // Process grades from tribunal members
@@ -312,37 +312,24 @@ const VerCalificar = () => {
             });
         });
 
-        // Process final grades entered by the user
-        Object.entries(finalGradesData).forEach(([studentId, evaluations]) => {
+        // Initialize and update final grades for all students
+        estudiantes.forEach(student => {
+            const studentId = student.id;
             if (!resultadoPorEstudiante[studentId]) {
                 resultadoPorEstudiante[studentId] = {
                     nombre: studentId,
                     evaluaciones: {},
                 };
             }
-            Object.entries(evaluations).forEach(([evaluacionId, criterios]) => {
-                const tipoEval = tipoEvaluacion.find(t => t.tipo_evaluacion_id == evaluacionId);
-                if (tipoEval && tipoEval.pos_evaluation === 1) {
-                    const evalName = tipoEval.tipo_evaluacion_nombre;
-                    const sumNotas = Object.values(criterios).reduce((acc, val) => acc + (Number(val) || 0), 0);
-
-                    if (!resultadoPorEstudiante[studentId].evaluaciones[evalName]) {
-                        resultadoPorEstudiante[studentId].evaluaciones[evalName] = { sum: 0, count: 0 };
-                    }
-                    resultadoPorEstudiante[studentId].evaluaciones[evalName].sum = sumNotas;
-                    resultadoPorEstudiante[studentId].evaluaciones[evalName].count = 1; // This is a single entry, not an average
-                }
-            });
         });
-
 
         // Calculate mean for each evaluation and the overall total mean for each student
         Object.values(resultadoPorEstudiante).forEach(estudiante => {
             let totalMeanSum = 0;
             let evalCount = 0;
-            Object.entries(estudiante.evaluaciones).forEach(([evalName, valores]) => {
+            Object.values(estudiante.evaluaciones).forEach(valores => {
                 const mean = valores.count > 0 ? valores.sum / valores.count : 0;
-                estudiante.evaluaciones[evalName].mean = mean;
+                valores.mean = mean;
                 totalMeanSum += mean;
                 evalCount++;
             });
@@ -543,8 +530,8 @@ const VerCalificar = () => {
                         </div>
                         {resumenRequired ? (
                             <div className="flex flex-col items-center mt-16 mb-4 space-y-4">
-                                {calcularPromedios(overallSummary, finalGrades)?.promedioPorEstudiante ? (
-                                    Object.values(calcularPromedios(overallSummary, finalGrades).promedioPorEstudiante).map((rubrica) => (
+                                {calcularPromedios(overallSummary)?.promedioPorEstudiante ? (
+                                    Object.values(calcularPromedios(overallSummary).promedioPorEstudiante).map((rubrica) => (
                                         <div key={rubrica.nombre} className="w-full flex justify-center">
                                             {renderOverallTriGradeTable(rubrica)}
                                         </div>
