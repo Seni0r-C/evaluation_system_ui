@@ -368,15 +368,14 @@ const VerCalificar = () => {
             valor = e.target?.value || e.value;
         }
         const value = Math.min(criterio.puntaje_maximo, Math.max(0, valor));
-        const selectedRubricaTypeLocal = selectedRubricaType?.replace("(EXAMEN PRACTICO)", "")?.replace("(EXÁMEN PRÁCTICO)", "")?.replace("(EXAMEN PRÁCTICO)", "").trim();
-        if (isInformeFinal(selectedRubricaTypeLocal)) {
+        if (isInformeFinal(selectedRubricaType)) {
             selectedStudents.forEach((selectedStudent) => {
                 setCalificacionesSeleccionadas((prev) => ({
                     ...prev,
                     [selectedStudent]: {
                         ...prev[selectedStudent],
-                        [selectedRubricaTypeLocal]: {
-                            ...prev[selectedStudent]?.[selectedRubricaTypeLocal],
+                        [selectedRubricaType]: {
+                            ...prev[selectedStudent]?.[selectedRubricaType],
                             [criterioIndex]: value,
                         },
                     },
@@ -387,8 +386,8 @@ const VerCalificar = () => {
                 ...prev,
                 [selectedStudent]: {
                     ...prev[selectedStudent],
-                    [selectedRubricaTypeLocal]: {
-                        ...prev[selectedStudent]?.[selectedRubricaTypeLocal],
+                    [selectedRubricaType]: {
+                        ...prev[selectedStudent]?.[selectedRubricaType],
                         [criterioIndex]: value,
                     },
                 },
@@ -402,8 +401,7 @@ const VerCalificar = () => {
 
     const calificacionValue = (minimo, maximo, criterioIndex) => {
         const sStudent = getSelectedStudent();
-        const keyRType = selectedRubricaType?.replace("(EXAMEN PRACTICO)", "")?.replace("(EXÁMEN PRÁCTICO)", "")?.replace("(EXAMEN PRÁCTICO)", "").trim();
-        const value = calificacionesSeleccionadas[sStudent]?.[keyRType]?.[criterioIndex];
+        const value = calificacionesSeleccionadas[sStudent]?.[selectedRubricaType]?.[criterioIndex];
         return Math.max(minimo, value ?? 0);
     };
 
@@ -423,8 +421,8 @@ const VerCalificar = () => {
             let totalCount = 0;
 
             tipoEvaluacion.forEach((tipo) => {
-                const tipo_evaluacion_nombre = tipo.tipo_evaluacion_nombre?.replace("(EXAMEN PRACTICO)", "")?.replace("(EXÁMEN PRÁCTICO)", "")?.replace("(EXAMEN PRÁCTICO)", "").trim();
-                const rubrica = rubricas[tipo.tipo_evaluacion_nombre];
+                const evalName = tipo.tipo_evaluacion_nombre;
+                const rubrica = rubricas[evalName];
                 if (!rubrica) return;
 
                 const criterios = rubrica.rubrica.criterios;
@@ -432,17 +430,17 @@ const VerCalificar = () => {
                 let count = 0;
 
                 criterios.forEach((_, criterioIndex) => {
-                    const grade = calificacionesSeleccionadas[student.id]?.[tipo_evaluacion_nombre]?.[criterioIndex];
-                    if (grade !== undefined) {
-                        sum += grade;
+                    const grade = calificacionesSeleccionadas[student.id]?.[evalName]?.[criterioIndex];
+                    if (grade !== undefined && grade !== null) {
+                        sum += Number(grade);
                         count++;
                     }
                 });
 
                 summary[student.id] = summary[student.id] || { nombre: student.nombre, evaluaciones: {} };
-                summary[student.id].evaluaciones[tipo.tipo_evaluacion_nombre] = {
+                summary[student.id].evaluaciones[evalName] = {
                     sum,
-                    mean: sum / count,
+                    mean: count > 0 ? sum / count : 0,
                 };
                 totalSum += sum;
                 totalCount += count;
