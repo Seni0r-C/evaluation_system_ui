@@ -581,7 +581,7 @@ const VerCalificar = () => {
             } else {
                 valortotal = (base * (valortotal / 100)).toFixed(0);
             }
-            
+
             return sum + Number(valortotal);
         }, 0);
 
@@ -660,8 +660,19 @@ const VerCalificar = () => {
                             {tribunalMembers.length > 0 && (
                                 <button
                                     key={"resumen"}
-                                    onClick={() => setResumenRequired(!resumenRequired)}
-                                    className={`${resumenRequired ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-800 hover:bg-blue-200"} border-l border-gray-400 px-6 py-2 font-semibold flex items-center rounded-r-lg`}
+                                    onClick={() => {
+                                        const isSummary = !resumenRequired && selectedTribunalMember;
+                                        if (isSummary) {
+                                            setSelectedTribunalMember({})
+                                        } else {
+                                            setSelectedTribunalMember(tribunalMembers[0])
+
+                                        }
+                                        setResumenRequired(!resumenRequired)
+                                    }}
+                                    className={
+                                        `${resumenRequired ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-800 hover:bg-blue-200"} border-l border-gray-400 px-6 py-2 font-semibold flex items-center rounded-r-lg`
+                                    }
                                 >
                                     <span className="text-sm">TOTALES</span>
                                 </button>
