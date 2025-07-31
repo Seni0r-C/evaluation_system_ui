@@ -34,6 +34,8 @@ const VerCalificar = () => {
     const [overallSummary, setOverallSummary] = useState({});
     const [finalGrades, setFinalGrades] = useState({});
 
+    const [esPromedio] = useState(trabajo.puntaje_final_promedio === 1 ? true : false);
+
     const handleFinalGradeChange = (studentId, evaluacionId, criterioIndex, grade, max_grade) => {
         let numericGrade = Number(grade);
         const numericMaxGrade = Number(max_grade);
@@ -296,6 +298,8 @@ const VerCalificar = () => {
     const calcularPromedios = (datos) => {
         let resultadoPorEstudiante = {};
 
+        //TODO verificar si esas calificaciones del tipo de evaluación pertenecen a un padre
+
         // Process grades from tribunal members
         Object.values(datos).forEach(docentes => {
             Object.entries(docentes).forEach(([idEstudiante, info]) => {
@@ -342,6 +346,54 @@ const VerCalificar = () => {
         });
 
         return { promedioPorEstudiante: resultadoPorEstudiante };
+    };
+
+    const calcularTotal = (datos) => {
+        let resultadoPorEstudiante = {};
+        // Process grades from tribunal members
+        Object.values(datos).forEach(docentes => {
+            Object.entries(docentes).forEach(([idEstudiante, info]) => {
+                if (!resultadoPorEstudiante[idEstudiante]) {
+                    resultadoPorEstudiante[idEstudiante] = {
+                        nombre: idEstudiante,
+                        evaluaciones: {},
+                    };
+                }
+
+                Object.entries(info).forEach(([evaluacion, notas]) => {
+                    if (!resultadoPorEstudiante[idEstudiante].evaluaciones[evaluacion]) {
+                        resultadoPorEstudiante[idEstudiante].evaluaciones[evaluacion] = { sum: 0, count: 0 };
+                    }
+                    let sumNotas = Object.values(notas).reduce((acc, val) => acc + val, 0);
+                    resultadoPorEstudiante[idEstudiante].evaluaciones[evaluacion].sum += sumNotas;
+                    resultadoPorEstudiante[idEstudiante].evaluaciones[evaluacion].count++;
+                });
+            });
+        });
+
+        // Initialize and update final grades for all students
+        estudiantes.forEach(student => {
+            const studentId = student.id;
+            if (!resultadoPorEstudiante[studentId]) {
+                resultadoPorEstudiante[studentId] = {
+                    nombre: studentId,
+                    evaluaciones: {},
+                };
+            }
+        });
+
+        // Calculate mean for each evaluation and the overall total sum for each student
+        Object.values(resultadoPorEstudiante).forEach(estudiante => {
+            let totalSum = 0;
+            Object.values(estudiante.evaluaciones).forEach(valores => {
+                const mean = valores.count > 0 ? valores.sum / valores.count : 0;
+                valores.mean = mean;
+                totalSum += mean;
+            });
+            estudiante.total = totalSum;
+        });
+
+        return { totalPorEstudiante: resultadoPorEstudiante };
     };
 
     const renderFinalGradeForm = (studentId) => {
@@ -475,7 +527,7 @@ const VerCalificar = () => {
                     )}
                     <tr className="bg-gray-100 font-bold">
                         <td className="py-2 text-sm font-bold text-blue-700 text-left border border-gray-300">
-                            <span className="ml-5">TOTAL</span>
+                            <span className="ml-5">{esPromedio ? "PROMEDIO" : "TOTAL"}</span>
                         </td>
                         <td className="text-sm font-semibold text-blue-700 text-center border border-gray-300">100</td>
                         <td className="text-lg text-blue-600 text-center border border-gray-300 bg-gray-50">
@@ -537,8 +589,8 @@ const VerCalificar = () => {
                         </div>
                         {resumenRequired ? (
                             <div className="flex flex-col items-center mt-16 mb-4 space-y-4">
-                                {calcularPromedios(overallSummary)?.promedioPorEstudiante ? (
-                                    Object.values(calcularPromedios(overallSummary).promedioPorEstudiante).map((rubrica) => (
+                                {esPromedio ? calcularPromedios(overallSummary)?.promedioPorEstudiante : calcularTotal(overallSummary)?.totalPorEstudiante ? (
+                                    Object.values(esPromedio ? calcularPromedios(overallSummary).promedioPorEstudiante : calcularTotal(overallSummary).totalPorEstudiante).map((rubrica) => (
                                         <div key={rubrica.nombre} className="w-full flex justify-center">
                                             {renderOverallTriGradeTable(rubrica)}
                                         </div>
@@ -560,7 +612,7 @@ const VerCalificar = () => {
                                             const isSelected = selectedRubricaType === tipo.tipo_evaluacion_nombre;
                                             return (
                                                 <button
-                                                    key={tipo.tipo_evaluacion_id}
+                                                    key={tipo.id}
                                                     onClick={() => handleSelectedRubricaType(tipo.tipo_evaluacion_nombre)}
                                                     className={`px-6 py-2 font-semibold flex items-center text-sm ${isSelected ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-800 hover:bg-gray-300"} ${index === 0 ? "rounded-l-lg" : ""} ${index === tipoEvaluacion.length - 1 ? "rounded-r-lg" : ""}`}
                                                 >

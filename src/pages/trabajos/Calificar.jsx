@@ -361,10 +361,6 @@ const Calificar = () => {
 
         const totalSum = evals.reduce((sum, evalData) => sum + evalData.sum, 0);
 
-        // if (isArticuloAcademico()) {
-        //     return totalSum;
-        // }
-
         const totalPossible = evals.length * 100;
         if (totalPossible === 0) return "N/A";
 
