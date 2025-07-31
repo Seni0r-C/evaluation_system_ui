@@ -19,13 +19,12 @@ const Calificar = () => {
     const trabajo = location.state.trabajo ?? null;
 
     const [estudiantes, setEstudiantes] = useState([]);
-    const [selectedStudent, setSelectedStudent] = useState(null);
-    const [selectedStudents, setSelectedStudents] = useState([]);
+    const [selectedStudent, setSelectedStudent] = useState(null); // Alumno seleccionado para ver/calificar
+    const [selectedStudents, setSelectedStudents] = useState([]); // Alumnos a los que se aplica la calificación
     const [photos, setPhotos] = useState({});
 
     const [rubricas, setRubricas] = useState(null);
     const [currentRubrica, setCurrentRubrica] = useState(null);
-    const [rubricGradesData, setRubricGradesData] = useState(null);
     const [selectedRubricaType, setSelectedRubricaType] = useState("");
 
     const [tipoEvaluacion, setTipoEvaluacion] = useState([]);
@@ -56,27 +55,26 @@ const Calificar = () => {
         return kind === getInformeFinalKey();
     }
 
+    // Maneja la selección de un estudiante para ver sus calificaciones
     const handleSelectedStudent = (studentId) => {
-        if (studentId) {
-            setSelectedStudents(estudiantes.map((student) => student.id));
-            return;
-        }
-        setSelectedStudent(estudiantes.length > 0 ? estudiantes[0].id : null);
+        setSelectedStudent(studentId);
     };
 
-    const hadleStudentsOnChangeRubricType = () => {
+    // Sincroniza el estado de los estudiantes a calificar basado en la rúbrica y el estudiante seleccionado
+    useEffect(() => {
         if (isInformeFinal(selectedRubricaType)) {
+            // Para calificación grupal, se seleccionan todos los estudiantes
             setSelectedStudents(estudiantes.map((student) => student.id));
-            return;
+        } else {
+            // Para calificación individual, solo el estudiante seleccionado
+            setSelectedStudents(selectedStudent ? [selectedStudent] : []);
         }
-        if (!selectedStudent) {
-            setSelectedStudent(estudiantes[0].id);
-        }
-    }
+    }, [selectedStudent, selectedRubricaType, estudiantes]);
+
 
     useEffect(() => {
         setShowFinalizar(isCalificacionCompleta());
-    }, [calificacionesSeleccionadas]);
+    }, [calificacionesSeleccionadas, estudiantes, tipoEvaluacion, rubricas]);
 
     useEffect(() => {
         if (trabajo) {
@@ -88,20 +86,21 @@ const Calificar = () => {
         if (selectedRubricaType && rubricas) {
             const rubricaSeleccionada = rubricas[selectedRubricaType] ?? null;
             setCurrentRubrica(rubricaSeleccionada);
-            hadleStudentsOnChangeRubricType(rubricaSeleccionada);
         }
     }, [selectedRubricaType, rubricas]);
 
     useEffect(() => {
+        if (estudiantes.length === 0) return;
+
         const fetchPhotos = async () => {
             const photoPromises = estudiantes.map(async (student) => {
                 const photo = await getUserPhoto(student.id_personal);
                 return { id: student.id_personal, photo };
             });
 
-            const photosArray = await Promise.all(photoPromises); // Espera todas las fotos
+            const photosArray = await Promise.all(photoPromises);
             const photosObject = photosArray.reduce((acc, { id, photo }) => {
-                acc[id] = photo; // Crea un objeto con el id como clave y la foto como valor
+                acc[id] = photo;
                 return acc;
             }, {});
 
@@ -110,7 +109,11 @@ const Calificar = () => {
 
         fetchPhotos();
         handleSelectedRubricaType();
-        handleSelectedStudent();
+
+        // Selecciona el primer estudiante por defecto si no hay ninguno seleccionado
+        if (!selectedStudent) {
+            setSelectedStudent(estudiantes[0].id);
+        }
     }, [estudiantes]);
 
     const fetchRubricas = async () => {
@@ -145,13 +148,12 @@ const Calificar = () => {
             const rubricasData = await Promise.all(rubricasPromises);
             const rubricasFormatted = rubricasData.reduce((acc, item) => {
                 if (item.rubrica) {
-                    const { id } = item.rubrica.rubrica;  // Extraer el id de la rubrica
+                    const { id } = item.rubrica.rubrica;
                     acc[item.tipo] = {
-                        rubrica: item.rubrica,  // La información completa de la rubrica
-                        rubrica_id: id          // El id de la rubrica
+                        rubrica: item.rubrica,
+                        rubrica_id: id
                     };
                 }
-
                 return acc;
             }, {});
 
@@ -162,7 +164,6 @@ const Calificar = () => {
     };
 
     const fetchRubricGrades = async () => {
-
         const indexaciones = await getIndicesRevistasService();
         if (indexaciones.typeMsg === 'error') {
             showMsg({ typeMsg: 'error', message: indexaciones.message });
@@ -186,8 +187,9 @@ const Calificar = () => {
             }
         };
 
-        const rubricGrades = await getGrades()
-        setRubricGradesData(rubricGrades);
+        const rubricGrades = await getGrades();
+        // Inicializa el estado de calificaciones con los datos del backend
+        setCalificacionesSeleccionadas(rubricGrades || {});
     };
 
     useEffect(() => {
@@ -195,116 +197,52 @@ const Calificar = () => {
         fetchRubricas();
     }, [trabajo]);
 
-    const defaultGrade = (selectedStudentId) => {
-        if (!selectedStudentId || !rubricGradesData) {
-            return {};
-        }
-        return rubricGradesData[selectedStudentId];
-    };
-
-    const setGradesEffect = () => {
-        // Aquí puedes cargar los datos guardados desde el backend para el estudiante y rúbrica seleccionados.
-        // Si no hay datos, simplemente asegura que se inicialicen correctamente.
-        if (selectedStudents.length === 0 && selectedRubricaType === getInformeFinalKey()) return;
-        if (selectedRubricaType === getInformeFinalKey()) {
-            selectedStudents
-                .filter((v) => v || v === "null")
-                .forEach((selectedStudent) => {
-                    setCalificacionesSeleccionadas((prev) => ({
-                        ...prev,
-                        [selectedStudent]: prev[selectedStudent] || defaultGrade(selectedStudent),
-                    }));
-                })
-            return;
-        }
-        if (selectedStudent) {
-            setCalificacionesSeleccionadas((prev) => ({
-                ...prev,
-                [selectedStudent]: prev[selectedStudent] || defaultGrade(selectedStudent),
-            }));
-        }
-    }
-
-    const setSaveGradesEffect = () => {
-        // Aquí puedes cargar los datos guardados desde el backend para el estudiante y rúbrica seleccionados.
-        if (selectedStudents.length === 0 && selectedRubricaType === getInformeFinalKey()) return;
-        if (selectedRubricaType === getInformeFinalKey()) {
-            selectedStudents
-                .filter((v) => v || v === "null")
-                .forEach((selectedStudent) => {
-                    setCalificacionesSeleccionadas((prev) => ({
-                        ...prev,
-                        [selectedStudent]: defaultGrade(selectedStudent),
-                    }));
-                })
-            return;
-        }
-        if (selectedStudent) {
-            setCalificacionesSeleccionadas((prev) => ({
-                ...prev,
-                [selectedStudent]: defaultGrade(selectedStudent),
-            }));
-        }
-    }
-
-    useEffect(() => {
-        if (!rubricas) return;
-        setSaveGradesEffect();
-    }, [trabajo, rubricas]);
-
-    useEffect(() => {
-        if (!rubricas) return;
-        setGradesEffect();
-    }, [trabajo, selectedStudent, selectedStudents, selectedRubricaType]);
-
-
     const isCalificacionCompleta = () => {
-        if (selectedStudents.length === 0 && !selectedRubricaType)
+        if (!rubricas || estudiantes.length === 0 || tipoEvaluacion.length === 0) {
             return false;
-        if (selectedStudent === null)
-            return false;
+        }
 
         return estudiantes.every((student) => {
             return tipoEvaluacion.every((tipo) => {
                 const rubrica = rubricas[tipo.tipo_evaluacion_nombre];
+                if (!rubrica) return true; // Si no hay rúbrica para este tipo, se considera completo
 
-                if (!rubrica) return false; // Verifica que la rúbrica exista
-
-                const everySetGrades = rubrica.rubrica.criterios.every((criterio, criterioIndex) => {
-                    const isSetGrade = calificacionesSeleccionadas[student.id]?.[tipo.tipo_evaluacion_nombre]?.[criterioIndex] !== undefined;
-                    return isSetGrade;
+                return rubrica.rubrica.criterios.every((_, criterioIndex) => {
+                    const grade = calificacionesSeleccionadas[student.id]?.[tipo.tipo_evaluacion_nombre]?.[criterioIndex];
+                    return grade !== undefined && grade !== null;
                 });
-
-                return everySetGrades;
             });
         });
     };
 
     const isStudentSelected = (studentId) => {
-        if (selectedRubricaType === getInformeFinalKey()) {
-            return selectedStudents.includes(studentId)
-        }
-        return selectedStudent === studentId;
+        // El resaltado visual se basa en el grupo de estudiantes a calificar
+        return selectedStudents.includes(studentId);
     }
+
     const handleSelectedRubricaType = (tipo_evaluacion_nombre) => {
         if (tipo_evaluacion_nombre) {
             setSelectedRubricaType(tipo_evaluacion_nombre);
             return;
         }
 
-        setSelectedRubricaType(tipoEvaluacion.length > 0 ? tipoEvaluacion[0].tipo_evaluacion_nombre : "");
+        // Selecciona el primer tipo de evaluación por defecto
+        if (tipoEvaluacion.length > 0) {
+            const tiposOrdenados = [...tipoEvaluacion].sort((a, b) => b.tipo_evaluacion_nombre.localeCompare(a.tipo_evaluacion_nombre));
+            setSelectedRubricaType(tiposOrdenados[0].tipo_evaluacion_nombre);
+        } else {
+            setSelectedRubricaType("");
+        }
     };
 
     const handleFinalizar = async () => {
         const info = localStorage.getItem('userInfo');
         const user = JSON.parse(info);
         try {
-            // Preparar datos en un solo array para enviar al servidor
             const payload = [];
             for (const studentId in calificacionesSeleccionadas) {
                 for (const tipoEvaluacion in calificacionesSeleccionadas[studentId]) {
                     const rubrica = rubricas[tipoEvaluacion];
-
                     if (!rubrica) continue;
 
                     const rubricaId = rubrica.rubrica_id;
@@ -312,8 +250,6 @@ const Calificar = () => {
 
                     for (const [criterioIndex, puntajeObtenido] of Object.entries(calificacionesSeleccionadas[studentId][tipoEvaluacion])) {
                         const criterio = criterios[criterioIndex];
-
-                        // Agregar cada calificación al array
                         payload.push({
                             trabajo_id: trabajo.id,
                             rubrica_id: rubricaId,
@@ -326,9 +262,7 @@ const Calificar = () => {
                 }
             }
 
-            // Enviar el array completo al servidor
             await axiosInstance.post(`/calificacion/rubrica-evaluacion`, { calificaciones: payload });
-
             showMsg({ typeMsg: 'success', message: 'Calificaciones finalizadas y guardadas correctamente.' });
             navigate("/calificacion-de-trabajo-titulacion");
         } catch (error) {
@@ -337,33 +271,34 @@ const Calificar = () => {
         }
     };
 
-
     const handleCalificacion = (e, criterioIndex, criterio) => {
-        let valor = 0
+        let valor = 0;
         if (e) {
             valor = e.target?.value || e.value;
         }
         const value = Math.min(criterio.puntaje_maximo, Math.max(0, valor));
-        selectedStudents.forEach((selectedStudent) => {
+
+        // Aplica la calificación a los estudiantes correspondientes (uno o todos)
+        selectedStudents.forEach((studentId) => {
             setCalificacionesSeleccionadas((prev) => ({
                 ...prev,
-                [selectedStudent]: {
-                    ...prev[selectedStudent],
+                [studentId]: {
+                    ...prev[studentId],
                     [selectedRubricaType]: {
-                        ...prev[selectedStudent]?.[selectedRubricaType],
+                        ...prev[studentId]?.[selectedRubricaType],
                         [criterioIndex]: value,
                     },
                 },
             }));
         });
-
     };
 
     const getSelectedStudent = () => {
-        return selectedStudent
+        return selectedStudent;
     };
 
     const calificacionValue = (minimo, maximo, criterioIndex) => {
+        // Muestra siempre la calificación del estudiante seleccionado (el que se está viendo)
         const value = calificacionesSeleccionadas[selectedStudent]?.[selectedRubricaType]?.[criterioIndex];
         return Math.max(minimo, value ?? 0);
     };
@@ -378,6 +313,7 @@ const Calificar = () => {
 
     const getRubricaSummary = () => {
         const summary = {};
+        if (!rubricas) return summary;
 
         estudiantes.forEach((student) => {
             let totalSum = 0;
@@ -394,8 +330,8 @@ const Calificar = () => {
 
                 criterios.forEach((_, criterioIndex) => {
                     const grade = calificacionesSeleccionadas[student.id]?.[tipo_evaluacion_nombre]?.[criterioIndex];
-                    if (grade !== undefined) {
-                        sum += grade;
+                    if (grade !== undefined && grade !== null) {
+                        sum += Number(grade);
                         count++;
                     }
                 });
@@ -403,7 +339,7 @@ const Calificar = () => {
                 summary[student.id] = summary[student.id] || { nombre: student.nombre, evaluaciones: {} };
                 summary[student.id].evaluaciones[tipo.tipo_evaluacion_nombre] = {
                     sum,
-                    mean: sum / count,
+                    mean: count > 0 ? sum / count : 0,
                 };
                 totalSum += sum;
                 totalCount += count;
@@ -423,7 +359,7 @@ const Calificar = () => {
                     <span className="ml-5">{overallEvalType}</span>
                 </td>
                 <td className="text-sm font-semibold text-gray-700 text-center border border-gray-300">
-                    xd
+                    100
                 </td>
                 <td className="px-2 text-lg text-blue-600  text-center border border-gray-300 bg-gray-50">
                     {overallGradeData.sum}
@@ -433,29 +369,25 @@ const Calificar = () => {
     }
 
     const calcOverallGrades = (studentData) => {
-        const evals = Object.entries(studentData.evaluaciones);
-        if (evals.length === 0) return "N/A"; // Handle case when no evaluations exist
-        const totalSum = evals.reduce((pre, evalValue) => {
-            const [evalData] = evalValue;
+        const evals = Object.values(studentData.evaluaciones);
+        if (evals.length === 0) return "N/A";
 
-            return pre + evalData.sum;  
-        }, 0);
+        const totalSum = evals.reduce((sum, evalData) => sum + evalData.sum, 0);
+
         if (isArticuloAcademico()) {
             return totalSum;
         }
-        const val = totalSum / (evals.length * 100);
-        const percentGrade = customRound(val * 100);
-        const percentGradeStr = percentGrade;
-        return percentGradeStr === "NaN" ? "N/A" : percentGradeStr; // Calculate mean and format to 2 decimals
-        // return ((totalSum / evals.length).toFixed(2))*100; // Calculate mean and format to 2 decimals
+
+        const totalPossible = evals.length * 100;
+        if (totalPossible === 0) return "N/A";
+
+        const percentGrade = customRound((totalSum / totalPossible) * 100);
+        return isNaN(percentGrade) ? "N/A" : percentGrade;
     }
 
     const renderOverallGradeTable = (studentData, index) => {
         if (!studentData) return null;
-        const nameStudentSelected = estudiantes.find(estudiante => estudiante?.id == selectedStudent)?.nombre;
-        if (studentData?.nombre !== nameStudentSelected) return null;
         return (
-            // <table className="min-w-full max-w-4xl border border-gray-300 rounded-lg shadow-sm">
             <table className="min-w-[75%] border border-gray-300 rounded-lg shadow-sm mb-4" key={index}>
                 <thead className="bg-blue-50 text-blue-700">
                     <tr>
@@ -472,7 +404,6 @@ const Calificar = () => {
                 </thead>
 
                 <tbody>
-                    {/* Fila de Totales */}
                     {Object.entries(studentData.evaluaciones).map(([evalType, evalData], index) => {
                         return renderOverallGradeRow(evalType, evalData, index);
                     })}
@@ -492,6 +423,7 @@ const Calificar = () => {
             </table>
         );
     }
+
 
     return (
         <div className="w-full overflow-hidden relative h-full">
