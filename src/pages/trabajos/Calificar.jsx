@@ -123,7 +123,7 @@ const Calificar = () => {
     const fetchRubricas = async () => {
         try {
             const tiposResponse = await obtenerTiposEvaluacionByModalidadList(trabajo?.modalidad_id);
-            const tiposEvaluacion = tiposResponse.map((tipo) => {
+            const tiposEvaluacion = tiposResponse.filter(tipo => tipo.pos_evaluation === 0).map((tipo) => {
                 return {
                     tipo_evaluacion_id: tipo.id,
                     tipo_evaluacion_nombre: tipo.nombre
