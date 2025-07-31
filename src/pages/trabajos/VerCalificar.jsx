@@ -32,9 +32,36 @@ const VerCalificar = () => {
     const [selectedTribunalMember, setSelectedTribunalMember] = useState(null);
 
     const [overallSummary, setOverallSummary] = useState({});
+    const [finalGrades, setFinalGrades] = useState({});
+
+    const handleFinalGradeChange = (studentId, evaluacionId, criterioIndex, grade) => {
+        const numericGrade = Number(grade);
+        setFinalGrades(prev => ({
+            ...prev,
+            [studentId]: {
+                ...prev[studentId],
+                [evaluacionId]: {
+                    ...prev[studentId]?.[evaluacionId],
+                    [criterioIndex]: numericGrade
+                }
+            }
+        }));
+    };
 
     const handleSelectedStudent = (studentId) => {
         setSelectedStudent(studentId);
+    };
+
+    const handleSaveFinalGrades = async () => {
+        // Logic to save the final grades will go here.
+        // For now, I'll just log the data.
+        console.log("Saving final grades:", finalGrades);
+        // You would typically make an API call here, e.g.:
+        // await axiosInstance.post('/calificacion/final', {
+        //     trabajo_id: trabajo.id,
+        //     calificaciones: finalGrades
+        // });
+        alert("Calificaciones finales guardadas (simulación).");
     };
 
     const esTipoDeEvaluacionGlobal = (tipo_evaluacion_nombre) => {
@@ -298,6 +325,60 @@ const VerCalificar = () => {
         return { promedioPorEstudiante: resultadoPorEstudiante };
     };
 
+    const renderFinalGradeForm = (studentId) => {
+        const finalEvaluations = tipoEvaluacion.filter(tipo => tipo.pos_evaluation === 1);
+        if (finalEvaluations.length === 0) return null;
+
+        return (
+            <div className="w-full max-w-4xl mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
+                <h3 className="text-xl font-bold mb-6 text-center text-gray-800">Calificación Final</h3>
+                {finalEvaluations.map(evaluacion => {
+                    const rubrica = rubricas[evaluacion.tipo_evaluacion_nombre];
+                    if (!rubrica) return null;
+
+                    return (
+                        <div key={evaluacion.tipo_evaluacion_id} className="mb-8">
+                            <h4 className="text-lg font-semibold mb-4 text-blue-700">{evaluacion.tipo_evaluacion_nombre}</h4>
+                            <table className="min-w-full border border-gray-300 rounded-lg shadow-sm">
+                                <thead className="bg-blue-50 text-blue-700">
+                                    <tr>
+                                        <th className="border border-gray-300 px-4 py-2 text-left">Criterio</th>
+                                        <th className="border border-gray-300 px-4 py-2 text-center">Nota Máxima</th>
+                                        <th className="border border-gray-300 px-4 py-2 text-center">Calificación</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {rubrica.rubrica.criterios.map((criterio, criterioIndex) => (
+                                        <tr key={criterioIndex} className="odd:bg-white even:bg-gray-50 text-sm">
+                                            <td className="border border-gray-300 px-4 py-2 font-medium">{criterio.nombre.replace('::>', ': ')}</td>
+                                            <td className="font-semibold text-blue-700 text-center border border-gray-300">{criterio.puntaje_maximo}</td>
+                                            <td className="font-semibold text-blue-700 text-center border border-gray-300">
+                                                <input
+                                                    type="number"
+                                                    className="w-full border-none rounded-md px-2 py-1 text-center bg-transparent focus:outline-none"
+                                                    value={finalGrades[studentId]?.[evaluacion.tipo_evaluacion_id]?.[criterioIndex] ?? ''}
+                                                    onChange={(e) => handleFinalGradeChange(studentId, evaluacion.tipo_evaluacion_id, criterioIndex, e.target.value)}
+                                                />
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    );
+                })}
+                <div className="flex justify-end mt-6">
+                    <button
+                        onClick={handleSaveFinalGrades}
+                        className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    >
+                        Guardar Calificaciones Finales
+                    </button>
+                </div>
+            </div>
+        );
+    };
+
 
     const renderOverallGradeRow = (overallEvalType, overallGradeData, index) => (
         <tr className="bg-gray-100 font-bold text-sm" key={index}>
@@ -447,6 +528,7 @@ const VerCalificar = () => {
                                         <span className="ml-2 text-blue-700">Cargando datos...</span>
                                     </div>
                                 )}
+                                {selectedStudent && renderFinalGradeForm(selectedStudent)}
                             </div>
                         ) : (
                             <div>
