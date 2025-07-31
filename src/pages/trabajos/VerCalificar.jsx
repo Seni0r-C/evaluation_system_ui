@@ -495,7 +495,7 @@ const VerCalificar = () => {
                     )}
                     <tr className="bg-gray-100 font-bold">
                         <td className="py-2 font-bold text-blue-700 text-left border border-gray-300">
-                            <span className="ml-5">TOTAL</span>
+                            <span className="ml-5">{esPromedio ? "PROMEDIO" : "TOTAL"}</span>
                         </td>
                         <td className="font-semibold text-blue-700 text-center border border-gray-300">100</td>
                         <td className="text-blue-600 text-center border border-gray-300 bg-gray-50">
@@ -531,7 +531,7 @@ const VerCalificar = () => {
                         </td>
                         <td className="text-sm font-semibold text-blue-700 text-center border border-gray-300">100</td>
                         <td className="text-lg text-blue-600 text-center border border-gray-300 bg-gray-50">
-                            {customRound(studentData.totalMean)}
+                            {customRound(esPromedio ? studentData.totalMean : studentData.total)}
                         </td>
                     </tr>
                 </tbody>
@@ -589,18 +589,24 @@ const VerCalificar = () => {
                         </div>
                         {resumenRequired ? (
                             <div className="flex flex-col items-center mt-16 mb-4 space-y-4">
-                                {esPromedio ? calcularPromedios(overallSummary)?.promedioPorEstudiante : calcularTotal(overallSummary)?.totalPorEstudiante ? (
-                                    Object.values(esPromedio ? calcularPromedios(overallSummary).promedioPorEstudiante : calcularTotal(overallSummary).totalPorEstudiante).map((rubrica) => (
-                                        <div key={rubrica.nombre} className="w-full flex justify-center">
-                                            {renderOverallTriGradeTable(rubrica)}
+                                {(() => {
+                                    const result = esPromedio ? calcularPromedios(overallSummary) : calcularTotal(overallSummary);
+                                    const studentData = esPromedio ? result?.promedioPorEstudiante : result?.totalPorEstudiante;
+
+                                    if (studentData) {
+                                        return Object.values(studentData).map((data) => (
+                                            <div key={data.nombre} className="w-full flex justify-center">
+                                                {renderOverallTriGradeTable(data)}
+                                            </div>
+                                        ));
+                                    }
+                                    return (
+                                        <div className="text-center text-2xl font-semibold text-blue-600">
+                                            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-4 border-blue-600" />
+                                            <span className="ml-2 text-blue-700">Cargando datos...</span>
                                         </div>
-                                    ))
-                                ) : (
-                                    <div className="text-center text-2xl font-semibold text-blue-600">
-                                        <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-4 border-blue-600" />
-                                        <span className="ml-2 text-blue-700">Cargando datos...</span>
-                                    </div>
-                                )}
+                                    );
+                                })()}
                                 {selectedStudent && renderFinalGradeForm(selectedStudent)}
                             </div>
                         ) : (
