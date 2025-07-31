@@ -534,10 +534,12 @@ const VerCalificar = () => {
         const studentId = studentData.nombre;
         studentData.nombre = estudiantes.find(estudiante => estudiante?.id == studentId)?.nombre;
 
-        const parentEvalMap = new Map(); // key: parent_id, value: parent_name
-        const childToParentMap = new Map(); // key: child_name, value: parent_id
+        const parentEvalMap = new Map();
+        const childToParentMap = new Map();
+        const evalTypeDataMap = new Map();
 
         tipoEvaluacion.forEach(tipo => {
+            evalTypeDataMap.set(tipo.tipo_evaluacion_nombre, tipo);
             if (tipo.padre_id) {
                 childToParentMap.set(tipo.tipo_evaluacion_nombre, tipo.padre_id);
                 if (!parentEvalMap.has(tipo.padre_id)) {
@@ -588,24 +590,52 @@ const VerCalificar = () => {
             evaluationsToRender[evaluacion.tipo_evaluacion_nombre] = { mean: sum };
         });
 
-        const totalNota = Object.entries(evaluationsToRender).reduce((sum, [evalType, evalData]) => {
-            if (!tipoEvaluacion) return sum;
+        const tieneModificador = tipoEvaluacion.find((tipo) => tipo.modificador === 1);
+        let adjustedEvaluations = [];
 
-            const tieneModificador = tipoEvaluacion.find((tipo) => tipo.modificador === 1);
-            const overallEvalTypeData = tipoEvaluacion.find((tipo) => tipo.tipo_evaluacion_nombre === evalType);
-            let valortotal = Number(evalData.mean);
-            const base = overallEvalTypeData?.valor_base || 100;
+        if (tieneModificador && evaluationsToRender[tieneModificador.tipo_evaluacion_nombre]) {
+            const modificadorEvalName = tieneModificador.tipo_evaluacion_nombre;
+            const modificadorGrade = Number(evaluationsToRender[modificadorEvalName].mean);
+            const modificadorBase = Math.round(modificadorGrade);
 
-            if (tieneModificador?.pos_evaluation === 0) {
-                // valortotal is not changed
-            } else {
-                valortotal = (base * (valortotal / 100)).toFixed(0);
-            }
+            adjustedEvaluations.push({
+                evalType: modificadorEvalName,
+                base: modificadorBase,
+                nota: modificadorBase
+            });
 
-            return sum + Number(valortotal);
-        }, 0);
+            const otherEvals = Object.entries(evaluationsToRender).filter(([name]) => name !== modificadorEvalName);
+            const otherEvalsTotalOriginalBase = otherEvals.reduce((sum, [name]) => {
+                const typeData = evalTypeDataMap.get(name);
+                return sum + (typeData?.valor_base || 0);
+            }, 0);
 
-        const count = Object.keys(evaluationsToRender).length;
+            const remainingBase = 100 - modificadorBase;
+
+            otherEvals.forEach(([evalType, evalData]) => {
+                const typeData = evalTypeDataMap.get(evalType);
+                const originalBase = typeData?.valor_base || 0;
+                const proportion = otherEvalsTotalOriginalBase > 0 ? originalBase / otherEvalsTotalOriginalBase : (otherEvals.length > 0 ? 1 / otherEvals.length : 0);
+                const newBase = remainingBase * proportion;
+                const newNota = (Number(evalData.mean) / 100) * newBase;
+                adjustedEvaluations.push({
+                    evalType,
+                    base: Math.round(newBase),
+                    nota: newNota
+                });
+            });
+
+        } else {
+            adjustedEvaluations = Object.entries(evaluationsToRender).map(([evalType, evalData]) => {
+                const typeData = evalTypeDataMap.get(evalType);
+                const base = typeData?.valor_base || 100;
+                const nota = (Number(evalData.mean) / 100) * base;
+                return { evalType, base, nota };
+            });
+        }
+
+        const totalNota = adjustedEvaluations.reduce((sum, item) => sum + Number(item.nota), 0);
+        const count = adjustedEvaluations.length;
         const displayValue = esPromedio
             ? (count > 0 ? (totalNota / count).toFixed(0) : 0)
             : totalNota.toFixed(0);
@@ -622,9 +652,15 @@ const VerCalificar = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {Object.entries(evaluationsToRender).map(([evalType, evalData], index) =>
-                        renderOverallGradeRow(evalType, evalData.mean.toFixed(2), index)
-                    )}
+                    {adjustedEvaluations.map(({ evalType, base, nota }, index) => (
+                        <tr className="bg-gray-100 font-bold text-sm" key={index}>
+                            <td className="py-2 font-bold text-gray-700 text-left border border-gray-300">
+                                <span className="ml-5">{evalType}</span>
+                            </td>
+                            <td className="font-semibold text-gray-700 text-center border border-gray-300">{base}</td>
+                            <td className="px-2 text-blue-600 text-center border border-gray-300 bg-gray-50">{nota.toFixed(0)}</td>
+                        </tr>
+                    ))}
                     <tr className="bg-gray-100 font-bold">
                         <td className="py-2 text-sm font-bold text-blue-700 text-left border border-gray-300">
                             <span className="ml-5">{esPromedio ? "PROMEDIO" : "TOTAL"}</span>
