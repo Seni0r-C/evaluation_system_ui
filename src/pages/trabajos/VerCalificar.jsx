@@ -765,7 +765,7 @@ const VerCalificar = () => {
                                             const isSelected = selectedRubricaType === tipo.tipo_evaluacion_nombre;
                                             return (
                                                 <button
-                                                    key={tipo.id}
+                                                    key={tipo.tipo_evaluacion_id}
                                                     onClick={() => handleSelectedRubricaType(tipo.tipo_evaluacion_nombre)}
                                                     className={`px-6 py-2 font-semibold flex items-center text-sm ${isSelected ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-800 hover:bg-gray-300"} ${index === 0 ? "rounded-l-lg" : ""} ${index === tipoEvaluacion.length - 1 ? "rounded-r-lg" : ""}`}
                                                 >
