@@ -12,6 +12,8 @@ const useAccessControl = () => {
             return
         }
         try {
+            if (localStorage.getItem('token') === null) return
+
             const response = await axiosInstance.post('/rutas/hasAccess', {
                 rol: roles, // Suponiendo que el primer rol del usuario es el rol principal
                 ruta,
