@@ -4,7 +4,7 @@ import { FaFilePdf } from "react-icons/fa";
 import { useLocation } from 'react-router-dom';
 import { getEstudiantesByTrabajoId, getTribunalMembersByTrabajoId, getUserPhoto } from "../../services/usuarioService";
 import axiosInstance from "../../services/axiosConfig";
-import { obtenerTiposEvaluacionByModalidadList } from "../../services/rubricaCriterioService";
+import { obtenerTiposEvaluacionByModalidadList, getTipoEvaluacionOptions } from "../../services/rubricaCriterioService";
 
 function customRound(num) {
     return (num % 1 >= 0.5) ? Math.ceil(num) : Math.floor(num);
@@ -35,6 +35,7 @@ const VerCalificar = () => {
     const [finalGrades, setFinalGrades] = useState({});
 
     const [esPromedio] = useState(trabajo.puntaje_final_promedio === 1 ? true : false);
+    const [evaluationOptions, setEvaluationOptions] = useState({});
 
     const handleFinalGradeChange = (studentId, evaluacionId, criterioIndex, grade, max_grade) => {
         let numericGrade = Number(grade);
@@ -299,6 +300,23 @@ const VerCalificar = () => {
         getOverallSummary();
     }, [tribunalMembers]);
 
+    useEffect(() => {
+        const fetchOptions = async () => {
+            const options = {};
+            for (const tipo of tipoEvaluacion) {
+                if (tipo.pos_evaluation === 1) {
+                    const fetchedOptions = await getTipoEvaluacionOptions(tipo.tipo_evaluacion_id);
+                    options[tipo.tipo_evaluacion_id] = fetchedOptions;
+                }
+            }
+            setEvaluationOptions(options);
+        };
+
+        if (tipoEvaluacion.length > 0) {
+            fetchOptions();
+        }
+    }, [tipoEvaluacion]);
+
     const calcularPromedios = (datos) => {
         let resultadoPorEstudiante = {};
 
@@ -411,6 +429,7 @@ const VerCalificar = () => {
                     const rubrica = rubricas[evaluacion.tipo_evaluacion_nombre];
                     if (!rubrica) return null;
                     if (rubrica.rubrica.criterios.length === 0) return null;
+                    const options = evaluationOptions[evaluacion.tipo_evaluacion_id];
 
                     return (
                         <div key={evaluacion.tipo_evaluacion_id} className="mb-8">
@@ -429,14 +448,29 @@ const VerCalificar = () => {
                                             <td className="border border-gray-300 px-4 py-2 font-medium">{criterio.nombre.replace('::>', ': ')}</td>
                                             <td className="font-semibold text-blue-700 text-center border border-gray-300">{criterio.puntaje_maximo}</td>
                                             <td className="font-semibold text-blue-700 text-center border border-gray-300">
-                                                <input
-                                                    type="number"
-                                                    className="w-full border-none rounded-md px-2 py-1 text-center bg-transparent focus:outline-none"
-                                                    value={finalGrades[studentId]?.[evaluacion.tipo_evaluacion_id]?.[criterioIndex] ?? '0'}
-                                                    onChange={(e) => handleFinalGradeChange(studentId, evaluacion.tipo_evaluacion_id, criterioIndex, e.target.value, criterio.puntaje_maximo)}
-                                                    max={criterio.puntaje_maximo}
-                                                    min={0}
-                                                />
+                                                {options && options.length > 0 ? (
+                                                    <select
+                                                        className="w-full border-none rounded-md px-2 py-1 text-center bg-transparent focus:outline-none"
+                                                        value={finalGrades[studentId]?.[evaluacion.tipo_evaluacion_id]?.[criterioIndex] ?? ''}
+                                                        onChange={(e) => handleFinalGradeChange(studentId, evaluacion.tipo_evaluacion_id, criterioIndex, e.target.value, criterio.puntaje_maximo)}
+                                                    >
+                                                        <option value="">Seleccione</option>
+                                                        {options.map(option => (
+                                                            <option key={option.id} value={option.valor}>
+                                                                {option.nombre_option}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                ) : (
+                                                    <input
+                                                        type="number"
+                                                        className="w-full border-none rounded-md px-2 py-1 text-center bg-transparent focus:outline-none"
+                                                        value={finalGrades[studentId]?.[evaluacion.tipo_evaluacion_id]?.[criterioIndex] ?? '0'}
+                                                        onChange={(e) => handleFinalGradeChange(studentId, evaluacion.tipo_evaluacion_id, criterioIndex, e.target.value, criterio.puntaje_maximo)}
+                                                        max={criterio.puntaje_maximo}
+                                                        min={0}
+                                                    />
+                                                )}
                                             </td>
                                         </tr>
                                     ))}

@@ -128,3 +128,14 @@ export const eliminarCriterioRubrica = async (id) => {
         return { typeMsg: 'error', message: 'Error al eliminar criterio.' };
     }
 }
+
+// Obtener opciones de un tipo de evaluación
+export const getTipoEvaluacionOptions = async (tipoEvaluacionId) => {
+    try {
+        const response = await axiosInstance.get(`/rubrica/tipo_evaluacion/${tipoEvaluacionId}/options`);
+        return response.data;
+    } catch (error) {
+        console.error('Error al obtener opciones de tipo de evaluación:', error);
+        return [];
+    }
+};
