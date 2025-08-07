@@ -37,7 +37,7 @@ const VerCalificar = () => {
     const [esPromedio] = useState(trabajo.puntaje_final_promedio === 1 ? true : false);
     const [evaluationOptions, setEvaluationOptions] = useState({});
 
-    const handleFinalGradeChange = (studentId, evaluacionId, criterioIndex, grade, max_grade) => {
+    const handleFinalGradeChange = (studentId, evaluacionId, criterioId, grade, max_grade) => {
         let numericGrade = Number(grade);
         const numericMaxGrade = Number(max_grade);
         if (isNaN(numericGrade)) return;
@@ -50,7 +50,7 @@ const VerCalificar = () => {
                 ...prev[studentId],
                 [evaluacionId]: {
                     ...prev[studentId]?.[evaluacionId],
-                    [criterioIndex]: numericGrade
+                    [criterioId]: numericGrade
                 }
             }
         }));
@@ -451,8 +451,8 @@ const VerCalificar = () => {
                                                 {options && options.length > 0 ? (
                                                     <select
                                                         className="w-full border-none rounded-md px-2 py-1 text-center bg-transparent focus:outline-none"
-                                                        value={finalGrades[studentId]?.[evaluacion.tipo_evaluacion_id]?.[criterioIndex] ?? ''}
-                                                        onChange={(e) => handleFinalGradeChange(studentId, evaluacion.tipo_evaluacion_id, criterioIndex, e.target.value, criterio.puntaje_maximo)}
+                                                        value={finalGrades[studentId]?.[evaluacion.tipo_evaluacion_id]?.[criterio.id] ?? ''}
+                                                        onChange={(e) => handleFinalGradeChange(studentId, evaluacion.tipo_evaluacion_id, criterio.id, e.target.value, criterio.puntaje_maximo)}
                                                     >
                                                         <option value="">Seleccione</option>
                                                         {options.map(option => (
@@ -466,7 +466,7 @@ const VerCalificar = () => {
                                                         type="number"
                                                         className="w-full border-none rounded-md px-2 py-1 text-center bg-transparent focus:outline-none"
                                                         value={finalGrades[studentId]?.[evaluacion.tipo_evaluacion_id]?.[criterioIndex] ?? '0'}
-                                                        onChange={(e) => handleFinalGradeChange(studentId, evaluacion.tipo_evaluacion_id, criterioIndex, e.target.value, criterio.puntaje_maximo)}
+                                                        onChange={(e) => handleFinalGradeChange(studentId, evaluacion.tipo_evaluacion_id, criterio.id, e.target.value, criterio.puntaje_maximo)}
                                                         max={criterio.puntaje_maximo}
                                                         min={0}
                                                     />
@@ -903,3 +903,6 @@ const VerCalificar = () => {
 };
 
 export default VerCalificar;
+
+// handleExamenTeoricoGrade
+// handleFinalizarInformeFinalArticuloAcademicoGradement
