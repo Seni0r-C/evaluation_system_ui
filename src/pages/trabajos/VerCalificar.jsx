@@ -465,7 +465,7 @@ const VerCalificar = () => {
                                                     <input
                                                         type="number"
                                                         className="w-full border-none rounded-md px-2 py-1 text-center bg-transparent focus:outline-none"
-                                                        value={finalGrades[studentId]?.[evaluacion.tipo_evaluacion_id]?.[criterioIndex] ?? '0'}
+                                                        value={finalGrades[studentId]?.[evaluacion.tipo_evaluacion_id]?.[criterio.id] ?? '0'}
                                                         onChange={(e) => handleFinalGradeChange(studentId, evaluacion.tipo_evaluacion_id, criterio.id, e.target.value, criterio.puntaje_maximo)}
                                                         max={criterio.puntaje_maximo}
                                                         min={0}
