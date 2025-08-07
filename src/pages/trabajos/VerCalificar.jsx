@@ -368,10 +368,54 @@ const VerCalificar = () => {
         }
     }, [tipoEvaluacion]);
 
+    useEffect(() => {
+        if (Object.keys(calificacionesSeleccionadas).length > 0 && rubricas && tipoEvaluacion.length > 0) {
+            const newFinalGrades = {};
+            for (const studentId in calificacionesSeleccionadas) {
+                if (!newFinalGrades[studentId]) newFinalGrades[studentId] = {};
+                for (const evalName in calificacionesSeleccionadas[studentId]) {
+                    const tipoEval = tipoEvaluacion.find(t => t.tipo_evaluacion_nombre === evalName);
+                    if (tipoEval && tipoEval.pos_evaluation === 1) {
+                        const evaluacionId = tipoEval.tipo_evaluacion_id;
+                        if (!newFinalGrades[studentId][evaluacionId]) newFinalGrades[studentId][evaluacionId] = {};
+                        const rubricaData = rubricas[evalName];
+                        if (rubricaData?.rubrica?.criterios) {
+                            const criterios = rubricaData.rubrica.criterios;
+                            for (const criterioIndex in calificacionesSeleccionadas[studentId][evalName]) {
+                                if (criterios[criterioIndex]) {
+                                    const criterioId = criterios[criterioIndex].id;
+                                    const grade = calificacionesSeleccionadas[studentId][evalName][criterioIndex];
+                                    newFinalGrades[studentId][evaluacionId][criterioId] = grade;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            setFinalGrades(prevFinalGrades => {
+                const mergedGrades = JSON.parse(JSON.stringify(prevFinalGrades));
+                for (const studentId in newFinalGrades) {
+                    if (!mergedGrades[studentId]) {
+                        mergedGrades[studentId] = {};
+                    }
+                    for (const evaluacionId in newFinalGrades[studentId]) {
+                        if (!mergedGrades[studentId][evaluacionId]) {
+                            mergedGrades[studentId][evaluacionId] = {};
+                        }
+                        mergedGrades[studentId][evaluacionId] = {
+                            ...mergedGrades[studentId][evaluacionId],
+                            ...newFinalGrades[studentId][evaluacionId],
+                        };
+                    }
+                }
+                return mergedGrades;
+            });
+        }
+    }, [calificacionesSeleccionadas, rubricas, tipoEvaluacion]);
+
     const calcularPromedios = (datos) => {
         let resultadoPorEstudiante = {};
-
-        //TODO verificar si esas calificaciones del tipo de evaluación pertenecen a un padre
 
         // Process grades from tribunal members
         Object.values(datos).forEach(docentes => {
