@@ -5,6 +5,7 @@ import { useLocation } from 'react-router-dom';
 import { getEstudiantesByTrabajoId, getTribunalMembersByTrabajoId, getUserPhoto } from "../../services/usuarioService";
 import axiosInstance from "../../services/axiosConfig";
 import { obtenerTiposEvaluacionByModalidadList, getTipoEvaluacionOptions } from "../../services/rubricaCriterioService";
+import { useMessage } from "../../hooks/useMessage";
 
 function customRound(num) {
     return (num % 1 >= 0.5) ? Math.ceil(num) : Math.floor(num);
@@ -13,6 +14,7 @@ function customRound(num) {
 const VerCalificar = () => {
     const location = useLocation();
     const trabajo = location.state.trabajo ?? null;
+    const { showMsg } = useMessage();
 
     const [estudiantes, setEstudiantes] = useState([]);
     const [selectedStudent, setSelectedStudent] = useState(null);
@@ -61,15 +63,64 @@ const VerCalificar = () => {
     };
 
     const handleSaveFinalGrades = async () => {
-        // Logic to save the final grades will go here.
-        // For now, I'll just log the data.
-        console.log("Saving final grades:", finalGrades);
-        // You would typically make an API call here, e.g.:
-        // await axiosInstance.post('/calificacion/final', {
-        //     trabajo_id: trabajo.id,
-        //     calificaciones: finalGrades
-        // });
-        alert("Calificaciones finales guardadas (simulación).");
+        if (Object.keys(finalGrades).length === 0) {
+            showMsg({ typeMsg: 'info', message: 'No hay calificaciones finales para guardar.' });
+            return;
+        }
+
+        showMsg({ typeMsg: 'wait', message: 'Guardando calificaciones finales...' });
+
+        try {
+            const payload = [];
+
+            for (const studentId in finalGrades) {
+                for (const evaluacionId in finalGrades[studentId]) {
+                    const tipoEval = tipoEvaluacion.find(t => t.tipo_evaluacion_id == evaluacionId);
+                    if (!tipoEval) continue;
+
+                    const tipoEvaluacionNombre = tipoEval.tipo_evaluacion_nombre;
+                    const rubrica = rubricas[tipoEvaluacionNombre];
+                    if (!rubrica) continue;
+
+                    const rubricaId = rubrica.rubrica_id;
+                    const criterios = rubrica.rubrica.criterios;
+
+                    for (const criterioId in finalGrades[studentId][evaluacionId]) {
+                        const puntajeObtenido = finalGrades[studentId][evaluacionId][criterioId];
+                        const criterio = criterios.find(c => c.id == criterioId);
+
+                        if (criterio) {
+                            for (const member of tribunalMembers) {
+                                if (member && member.id) {
+                                    payload.push({
+                                        trabajo_id: trabajo.id,
+                                        rubrica_id: rubricaId,
+                                        rubrica_criterio_id: criterio.id,
+                                        docente_id: member.id,
+                                        estudiante_id: studentId,
+                                        puntaje_obtenido: puntajeObtenido,
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (payload.length === 0) {
+                showMsg({ typeMsg: 'warning', message: 'No se generaron calificaciones para enviar.' });
+                return;
+            }
+
+            await axiosInstance.post(`/calificacion/rubrica-evaluacion`, { calificaciones: payload });
+            showMsg({ typeMsg: 'success', message: 'Calificaciones finales guardadas correctamente.' });
+
+            fetchRubricGrades(selectedTribunalMember);
+
+        } catch (error) {
+            console.error("Error al guardar las calificaciones finales:", error);
+            showMsg({ typeMsg: 'error', message: 'Error al guardar las calificaciones finales.' });
+        }
     };
 
     const esTipoDeEvaluacionGlobal = (tipo_evaluacion_nombre) => {
@@ -903,6 +954,3 @@ const VerCalificar = () => {
 };
 
 export default VerCalificar;
-
-// handleExamenTeoricoGrade
-// handleFinalizarInformeFinalArticuloAcademicoGradement
