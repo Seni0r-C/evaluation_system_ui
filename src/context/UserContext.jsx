@@ -18,9 +18,10 @@ export const UserProvider = ({ children }) => {
   const [roles, setRoles] = useState([]); // Roles del usuario
   const [userName, setUserName] = useState(null);
   const [userPhoto, setUserPhoto] = useState(null);
+  const [selectedRole, setSelectedRole] = useState(null); // Rol seleccionado
 
   const initUser = (newUserData) => {
-    setUser(newUserData);    
+    setUser(newUserData);
     const userNameStr = getUserName(newUserData);
     setUserName(userNameStr);
     if (newUserData.fotoBase64) {
@@ -28,12 +29,26 @@ export const UserProvider = ({ children }) => {
     } else {
       setUserPhoto(`https://ui-avatars.com/api/?name=${userNameStr.replaceAll(' ', '+')}&rounded=true`);
     }
-    setRoles(newUserData.roles || []);
+    const userRoles = newUserData.roles || [];
+    setRoles(userRoles);
+
+    const storedRoleName = localStorage.getItem('selectedRole');
+    const roleToSet = userRoles.find(r => r.nombre === storedRoleName) || userRoles[0];
+
+    if (roleToSet) {
+      setSelectedRole(roleToSet);
+      localStorage.setItem('selectedRole', roleToSet.nombre);
+    }
   };
 
   const updateUser = (newUserData) => {
     localStorage.setItem('userInfo', JSON.stringify(newUserData));
     initUser(newUserData);
+  };
+
+  const selectRole = (role) => {
+    setSelectedRole(role);
+    localStorage.setItem('selectedRole', role.nombre);
   };
 
   useEffect(() => {
@@ -55,7 +70,7 @@ export const UserProvider = ({ children }) => {
   };
 
   return (
-    <UserContext.Provider value={{ updateUser, userName, userPhoto, hasRole, user, roles }}>
+    <UserContext.Provider value={{ updateUser, userName, userPhoto, hasRole, user, roles, selectedRole, selectRole }}>
       {children}
     </UserContext.Provider>
   );

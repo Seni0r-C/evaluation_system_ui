@@ -14,7 +14,7 @@ import { useUser } from '../../hooks/useUser';
 
 
 const Layout = ({ children }) => {
-    const { userName, userPhoto, roles } = useUser(); // Obtiene el nombre y foto del usuario desde el contexto
+    const { userName, userPhoto, roles, selectedRole, selectRole } = useUser();
     // Lee el estado inicial de localStorage
     const [isSidebarVisible, setSidebarVisible] = useState(() => {
         const savedState = localStorage.getItem('isSidebarVisible');
@@ -25,7 +25,6 @@ const Layout = ({ children }) => {
     const { setIsAuthenticated } = useAuth();
     const dropdownRef = useRef(null);
     const [menuData, setMenuData] = useState([]);
-    const [selectedRole, setSelectedRole] = useState(roles[0]?.nombre || "");
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -44,33 +43,23 @@ const Layout = ({ children }) => {
     }, []);
 
     useEffect(() => {
-        if (!selectedRole) {
-            setSelectedRole(roles[0]?.nombre || "");
-        }
-    }, [roles]);
-
-    useEffect(() => {
         const fetchMenuData = async () => {
             try {
-                if (roles.length === 0) return; // Si no hay roles, no hace la solicitud
+                if (!selectedRole) return; // Si no hay rol seleccionado, no hace la solicitud
 
-                const rolEncontrado = roles.find(role => role.nombre === selectedRole);
+                // Realiza la solicitud solo para el rol seleccionado
+                const response = await axiosInstance.get(`/rutas/menu/${selectedRole.id}`);
 
-                if (rolEncontrado) {
-                    // Realiza la solicitud solo para el rol seleccionado
-                    const response = await axiosInstance.get(`/rutas/menu/${rolEncontrado.id}`);
-
-                    // Transforma los datos para el componente
-                    const transformedData = transformMenuData(response.data);
-                    setMenuData(transformedData);
-                }
+                // Transforma los datos para el componente
+                const transformedData = transformMenuData(response.data);
+                setMenuData(transformedData);
             } catch (error) {
                 console.error('Error fetching menu data:', error);
             }
         };
 
         fetchMenuData();
-    }, [selectedRole, roles]);
+    }, [selectedRole]);
 
     const toggleSidebar = () => {
         setSidebarVisible((prevVisible) => {
@@ -82,6 +71,14 @@ const Layout = ({ children }) => {
 
     const toggleDropdown = () => {
         setIsDropdownVisible(!isDropdownVisible);
+    };
+
+    const handleRoleChange = (e) => {
+        const roleName = e.target.value;
+        const roleToSelect = roles.find(r => r.nombre === roleName);
+        if (roleToSelect) {
+            selectRole(roleToSelect);
+        }
     };
 
     return (
@@ -121,7 +118,7 @@ const Layout = ({ children }) => {
                                     {userName}
                                 </span>
                                 <span className="block font-semibold text-xs md:text-sm text-gray-200">
-                                    {capitalizeWords(selectedRole)}
+                                    {capitalizeWords(selectedRole?.nombre || '')}
                                 </span>
                             </div>
                             <img
@@ -141,8 +138,8 @@ const Layout = ({ children }) => {
                                 <select
                                     id="role-select"
                                     className=" block w-full py-2 px-3  text-pretty md:text-md font-medium rounded-md border border-gray-600 focus:outline-none focus:ring-1 focus:border-none"
-                                    value={selectedRole}
-                                    onChange={(e) => setSelectedRole(e.target.value)}
+                                    value={selectedRole?.nombre || ''}
+                                    onChange={handleRoleChange}
                                 >
                                     {roles.map((role) => (
                                         <option key={role.nombre} value={role.nombre}>
