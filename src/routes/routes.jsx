@@ -23,11 +23,18 @@ import VerCalificar from '../pages/trabajos/VerCalificar';
 import RolesManager from '../pages/admin/RolesManager';
 import UserRoles from '../pages/admin/UserRoles';
 import ReportsPage from '../pages/admin/ReportsPage';
+import Register from '../pages/usuario/Register';
 export const routes = [
   {
     path: '/login',
     element: (
       <Login />
+    ),
+  },
+  {
+    path: '/register',
+    element: (
+      <Register />
     ),
   },
   {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import background from "../../assets/utm.webp";
 import { baseRoute, VERSION } from "../../utils/constants";
 import { useAuth } from "../../hooks/useAuth";
@@ -58,7 +58,7 @@ const Login = () => {
                     />
                 </div>
 
-                <div className="max-w-lg w-full md:w-1/2 md:bg-white md:bg-opacity-10 p-10 rounded-lg md:shadow-xl backdrop-filter md:backdrop-blur-md">
+                <div className="max-w-lg w-full md:w-1/2 md:mt-0 mt-5 bg-white bg-opacity-10 p-10 rounded-lg shadow-xl backdrop-filter backdrop-blur-md">
                     <LoginForm
                         usuario={usuario}
                         setUsuario={setUsuario}
@@ -68,9 +68,12 @@ const Login = () => {
                         toggleShowPassword={toggleShowPassword}
                         handleSubmit={handleSubmit}
                     />
+                    <div className="text-center mt-4">
+                        <Link to="/register" className="text-white hover:underline">¿No tienes una cuenta? Regístrate</Link>
+                    </div>
                 </div>
 
-                <footer className="absolute bottom-4 w-full text-center text-white text-xs">
+                <footer className="absolute bottom-4 w-full text-center text-white text-[0.6rem]">
                     <p>Desarrollado por Arteaga Carlos y Rodriguez Jostin</p>
                     <p>Versión {VERSION}</p>
                 </footer>
