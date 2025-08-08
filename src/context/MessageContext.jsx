@@ -1,8 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 // MessageContext.js
-import { createContext, useState, useCallback, useRef } from 'react';
+import { createContext, useState, useCallback, useRef, useEffect } from 'react';
 import MessageDialog from '../components/shared/MessageDialog';
 import PropTypes from 'prop-types';
+import eventEmitter from '../services/eventEmitter';
 
 const MessageContext = createContext();
 
@@ -74,6 +75,19 @@ export const MessageProvider = ({ children }) => {
         (message) => showMessage(message, 'warning'),
         [showMessage]
     );
+
+    useEffect(() => {
+        const handleShowMessage = ({ message, iconType }) => {
+            showMessage(message, iconType);
+        };
+
+        eventEmitter.subscribe('show-message', handleShowMessage);
+
+        return () => {
+            // No es estrictamente necesario remover el listener en este caso,
+            // pero es una buena práctica.
+        };
+    }, [showMessage]);
 
     return (
         <MessageContext.Provider

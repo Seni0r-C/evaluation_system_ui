@@ -2,6 +2,7 @@
 
 import axios from 'axios';
 import { API_URL } from '../utils/constants';
+import eventEmitter from './eventEmitter';
 
 // Crear una instancia de Axios con la configuración base
 const axiosInstance = axios.create({
@@ -30,7 +31,10 @@ axiosInstance.interceptors.response.use(
     // Aquí puedes manejar los errores globalmente
     if (error.response && error.response.status === 401) {
       // Manejar errores de autenticación, por ejemplo, redirigiendo al login
-      console.log('Sesión expirada');
+      eventEmitter.dispatch('show-message', { 
+        message: 'Su sesión ha expirado. Por favor, inicie sesión de nuevo.', 
+        iconType: 'error' 
+      });
     }
     return Promise.reject(error);
   }
