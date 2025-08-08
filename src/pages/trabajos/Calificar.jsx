@@ -7,7 +7,6 @@ import { MdDoneOutline } from "react-icons/md";
 import axiosInstance from "../../services/axiosConfig";
 import { obtenerTiposEvaluacionByModalidadList } from "../../services/rubricaCriterioService";
 import { useMessage } from "../../hooks/useMessage";
-import { getIndicesRevistasService } from "../../services/indiceRevistasService";
 
 function customRound(num) {
     return (num % 1 >= 0.5) ? Math.ceil(num) : Math.floor(num);
@@ -151,11 +150,6 @@ const Calificar = () => {
     };
 
     const fetchRubricGrades = async () => {
-        const indexaciones = await getIndicesRevistasService();
-        if (indexaciones.typeMsg === 'error') {
-            showMsg({ typeMsg: 'error', message: indexaciones.message });
-            return;
-        }
 
         const getGrades = async () => {
             const info = localStorage.getItem('userInfo');
