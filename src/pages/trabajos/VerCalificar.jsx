@@ -836,7 +836,7 @@ const VerCalificar = () => {
                                             ${isSelected ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-800 hover:bg-gray-300"}`}
                                     >
                                         <span className="text-sm">{member.nombre}</span>
-                                        <span className={`mt-2 px-4 py-0 text-sm font-semibold rounded-md ${isSelected ? "bg-gray-200 text-gray-800" : "bg-blue-600 text-white"}`}>
+                                        <span className={`mt-2 px-4 py-0 text-sm font-semibold rounded-md ${member.estado === 'CALIFICADO' ? "bg-green-600 text-white" : "bg-yellow-600 text-white"}`}>
                                             <span className="text-xs">{member.estado}</span>
                                         </span>
                                     </button>

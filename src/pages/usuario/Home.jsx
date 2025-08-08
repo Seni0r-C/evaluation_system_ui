@@ -19,7 +19,7 @@ const Home = () => {
     const [dashboardData, setDashboardData] = useState(null);
 
     useEffect(() => {
-        if (hasRole(["DECANATO", "VICEDECANATO"])) {
+        if (hasRole(["DECANATO", "VICEDECANATO", "ADMINISTRACIÓN", "SECRETARíA"])) {
             axiosInstance.get('/reportes/dashboard-summary').then(response => {
                 setDashboardData(response.data);
             });
