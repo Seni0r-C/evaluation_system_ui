@@ -24,6 +24,10 @@ Este proyecto está construido con un stack de tecnologías modernas de JavaScri
 - **Axios:** Cliente HTTP para la comunicación con la API del backend.
 - **Heroicons:** Colección de íconos SVG de alta calidad.
 - **Recharts:** Biblioteca de gráficos para la visualización de datos.
+- **Crypto-JS:** Librería para funciones de cifrado.
+- **Framer Motion:** Para animaciones fluidas y complejas.
+- **React Icons:** Colección de iconos populares.
+- **React Tooltip:** Para la creación de tooltips informativos.
 
 ## Estructura del Proyecto
 
@@ -46,19 +50,19 @@ El proyecto sigue una estructura organizada por funcionalidades, lo que facilita
 
 Sigue estos pasos para configurar el entorno de desarrollo local:
 
-* **Instalar dependencias:**
+1. **Instalar dependencias:**
    ```bash
    npm install
    ```
 
-3. **Configurar variables de entorno:**
+2. **Configurar variables de entorno:**
    - Copia el archivo `.env.example` a un nuevo archivo. Puedes nombrarlo de las siguientes maneras según el entorno:
      - `.env`: Para todas las variables de entorno.
      - `.env.development`: Para variables específicas del entorno de desarrollo.
      - `.env.production`: Para variables específicas del entorno de producción.
    - Modifica el archivo `.env` (o el que hayas creado) con la URL de la API del backend y otras configuraciones necesarias.
 
-4. **Iniciar el servidor de desarrollo:**
+3. **Iniciar el servidor de desarrollo:**
    ```bash
    npm run dev
    ```
@@ -70,6 +74,9 @@ Sigue estos pasos para configurar el entorno de desarrollo local:
 - `npm run build`: Compila la aplicación para producción.
 - `npm run lint`: Ejecuta ESLint para analizar el código en busca de errores y problemas de estilo.
 - `npm run preview`: Inicia un servidor local para previsualizar la compilación de producción.
+- `npm run test`: Ejecuta las pruebas unitarias y de integración con Vitest.
+- `npm run test:watch`: Ejecuta las pruebas en modo de observación, ideal para el desarrollo.
+- `npm run coverage`: Genera un informe de cobertura de pruebas.
 
 
 ## Autores
