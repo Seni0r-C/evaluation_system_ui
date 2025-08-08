@@ -30,15 +30,19 @@ const RubricaCriterioForm = ({ onCreate, onUpdate, selected, setSelected }) => {
 
     return (
         <form onSubmit={handleSubmit} className="mb-4">
+            <label htmlFor="nombre-criterio" className="sr-only">Nombre del criterio</label>
             <input
                 type="text"
+                id="nombre-criterio"
                 value={nombre}
                 onChange={(e) => setNombre(e.target.value)}
                 className="border p-2 mr-2"
                 placeholder="Nombre del criterio"
             />
+            <label htmlFor="puntaje-maximo" className="sr-only">Puntaje máximo</label>
             <input
                 type="text"
+                id="puntaje-maximo"
                 value={puntajeMaximo}
                 onChange={(e) => setPuntajeMaximo(e.target.value)}
                 className="border p-2 mr-2"

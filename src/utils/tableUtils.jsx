@@ -28,7 +28,7 @@ const renderTableHeaders = (data) => {
         return (
             <tr className="bg-gray-200">
                 {Object.keys(data[0]).map((key) => (
-                    <th key={key} className="border border-gray-300 p-2">{key}</th>
+                    <th key={key} scope="col" className="border border-gray-300 p-2">{key}</th>
                 ))}
             </tr>
         );

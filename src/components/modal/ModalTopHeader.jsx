@@ -1,19 +1,12 @@
 import { MdClose } from "react-icons/md";
 import PropTypes from "prop-types";
+import { forwardRef } from "react";
 
-/**
- * Este es un componente pa hacer la parte de arriba de un modal.
- * Tiene un título y un botón pa cerrarlo.
- * @param {{ onClose: function, title: string }} props
- * @prop {function} onClose - La función que se llama cuando le das al botón de cerrar.
- * @prop {string} title - El título que va arriba en el modal.
- * @returns {ReactElement} - Devuelve algo que es la parte de arriba del modal.
- */
-
-const ModalHeader = ({ onClose, title }) => (
+const ModalHeader = forwardRef(({ onClose, title }, ref) => (
     <div className="sticky top-0 bg-white p-4 flex justify-between items-center border-b">
-        <h2 className="text-xl font-bold">{title}</h2>
+        <h2 id="modal-title" className="text-xl font-bold">{title}</h2>
         <button
+            ref={ref}
             className="text-gray-500 hover:text-gray-700"
             onClick={onClose}
             aria-label="Cerrar"
@@ -21,7 +14,9 @@ const ModalHeader = ({ onClose, title }) => (
             <MdClose className="h-6 w-6" />
         </button>
     </div>
-);
+));
+
+ModalHeader.displayName = 'ModalHeader';
 
 ModalHeader.propTypes = {
     onClose: PropTypes.func.isRequired,

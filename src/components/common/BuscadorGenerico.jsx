@@ -124,46 +124,66 @@ const SearchDropdown = ({
     onSelectionChange(updatedItems);
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setHighlightedIndex((prevIndex) =>
+        prevIndex < searchResults.length - 1 ? prevIndex + 1 : prevIndex
+      );
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setHighlightedIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0));
+    } else if (e.key === "Enter" && highlightedIndex !== -1) {
+      handleItemSelect(searchResults[highlightedIndex]);
+    } else if (e.key === "Escape") {
+      setShowDropdown(false);
+    }
+  };
+
   return (
     <div className="pl-4 pr-4 pt-2">
-      {/* Etiqueta del campo */}
-      <label className="block text-sm font-medium text-gray-700">
+      <label htmlFor="search-input" className="block text-sm font-medium text-gray-700">
         {label}
         {required && <span className="text-red-500"> *</span>}
       </label>
 
-      {/* Contenedor que agrupa input y seleccionados */}
       <div className="flex flex-col md:flex-row md:items-start md:gap-4">
-        {/* Campo principal con botones */}
         <div className="relative flex items-center border rounded-md overflow-hidden flex-1 min-w-[300px]">
           <input
+            id="search-input"
             type="text"
             value={searchValue}
             onChange={(e) => handleSearchChange(e.target.value, handlerBuscar)}
+            onKeyDown={handleKeyDown}
             placeholder={placeholder}
             className="w-full border-none px-3 py-2 focus:outline-none"
             required={required}
+            role="combobox"
+            aria-expanded={showDropdown}
+            aria-controls="search-results"
           />
 
-          {/* Botón para mostrar campos adicionales */}
           {subSearchHandlers.length > 0 && (
             <button
               onClick={handleButtonAdvancedSearch}
               className={`p-3 border-l text-lg ${showAdvancedSearch ? 'bg-green-700 text-green-100 hover:bg-green-700' : 'bg-green-300 hover:bg-green-400'}`}
+              aria-label="Búsqueda avanzada"
+              aria-expanded={showAdvancedSearch}
             >
               <FaSearchPlus />
             </button>
           )}
-          {/* Botón para resultados de búsquedas */}
           <button
             onClick={handleButtonDropdown}
             className="p-3 border-l bg-gray-100 hover:bg-gray-200 text-lg"
+            aria-label={showDropdown ? "Ocultar resultados" : "Mostrar resultados"}
+            aria-haspopup="true"
+            aria-expanded={showDropdown}
           >
             {showDropdown ? <FaChevronUp /> : <FaChevronDown />}
           </button>
         </div>
 
-        {/* Ítems seleccionados a la derecha en pantallas md+ */}
         {selectedItems.length > 0 && (
           <div className="mt-2 md:mt-0 flex flex-wrap gap-2 md:max-w-sm min-w-[300px]">
             {selectedItems.filter(item => item).map((item, index) => (
@@ -175,6 +195,7 @@ const SearchDropdown = ({
                 <button
                   onClick={() => handleRemoveItem(index)}
                   className="text-red-500 hover:text-red-700 font-bold"
+                  aria-label={`Eliminar ${item.nombre || item.title || item.name}`}
                 >
                   ✕
                 </button>
@@ -184,11 +205,12 @@ const SearchDropdown = ({
         )}
       </div>
 
-      {/* Campos adicionales solo cuando showAdvancedSearch está activo */}
       {showAdvancedSearch &&
         subSearchHandlers.map((search, index) => (
           <div key={index} className={`mt-2 ${search.layout === 'inline' ? 'flex' : 'block'}`}>
+            <label htmlFor={`sub-search-${index}`} className="sr-only">{search.label}</label>
             <input
+              id={`sub-search-${index}`}
               type="text"
               placeholder={search.label}
               value={subSearchValues[search.label]}
@@ -198,19 +220,20 @@ const SearchDropdown = ({
           </div>
         ))}
 
-      {/* Spinner de carga */}
       {showSpinner && (
         <div className="relative left-0 w-full p-3 text-center bg-white border">
           <Spinner />
         </div>
       )}
 
-      {/* Resultados del buscador */}
       {showDropdown && searchResults.length > 0 && (
-        <ul className="relative border rounded-lg bg-white w-full max-h-40 overflow-auto z-10 mt-1 shadow-lg">
+        <ul id="search-results" role="listbox" className="relative border rounded-lg bg-white w-full max-h-40 overflow-auto z-10 mt-1 shadow-lg">
           {searchResults.filter(item => item).map((item, index) => (
             <li
               key={`${item.id}-${index}`}
+              id={`search-result-${index}`}
+              role="option"
+              aria-selected={highlightedIndex === index}
               className={`px-3 py-2 cursor-pointer hover:bg-gray-100 ${highlightedIndex === index ? 'bg-gray-100' : ''}`}
               onClick={() => handleItemSelect(item)}
               onMouseEnter={() => setHighlightedIndex(index)}

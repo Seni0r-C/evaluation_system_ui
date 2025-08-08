@@ -25,6 +25,7 @@ const ComboBox = ({
     disabled = false 
 }) => {
     const [selectedItem, setSelectedItem] = useState(null);
+    const selectId = label ? `combobox-${label.toLowerCase().replace(/\s+/g, '-')}` : 'combobox-';
 
     useEffect(() => {
         if (items && (selectedInitialItem?.id??null !== null)) {
@@ -42,8 +43,9 @@ const ComboBox = ({
 
     return (
         <div className="my-2">
-            {label && <label className="text-sm font-medium text-gray-700">{label}</label>}
+            {label && <label htmlFor={selectId} className="text-sm font-medium text-gray-700">{label}</label>}
             <select
+                id={selectId}
                 disabled={disabled}
                 onChange={handleChange}
                 value={selectedItem?.id || ""}

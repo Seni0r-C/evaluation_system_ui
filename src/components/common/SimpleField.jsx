@@ -8,10 +8,13 @@ import PropTypes from "prop-types";
  * @returns {ReactElement} - Un ReactElement que representa el campo de texto.
  */
 const SimpleField = ({ label, value }) => {
+    const inputId = `simple-field-${label.toLowerCase().replace(/\s+/g, '-')}`;
+
     return (
         <div className="mb-4">
-            <label className="block mb-2 font-medium">{label}</label>
+            <label htmlFor={inputId} className="block mb-2 font-medium">{label}</label>
             <input
+                id={inputId}
                 type="text"
                 value={value || ""}
                 readOnly

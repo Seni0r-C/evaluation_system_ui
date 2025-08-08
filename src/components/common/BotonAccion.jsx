@@ -36,7 +36,7 @@ const ActionButton = ({ onClick, icono: Icono, variant = 'primary', tooltip }) =
     <button
       onClick={onClick}
       className={`${baseClasses} ${appliedClasses}`}
-      title={tooltip}
+      aria-label={tooltip}
     >
       {Icono && <Icono className="text-lg" />}
     </button>

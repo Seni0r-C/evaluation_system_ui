@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 const RubricaList = ({ rubricas, onDelete, onSelect }) => {
     // Agrupar las rúbricas por modalidad y tipo de evaluación
@@ -27,10 +27,20 @@ const RubricaList = ({ rubricas, onDelete, onSelect }) => {
     }, {});
 
     const [selectedRubrica, setSelectedRubrica] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const modalTriggerRef = useRef(null);
+
+    const openModal = (rubrica) => {
+        setSelectedRubrica(rubrica);
+        setIsModalOpen(true);
+        modalTriggerRef.current = document.activeElement;
+    };
 
     // Manejar el cierre del modal
     const closeModal = () => {
+        setIsModalOpen(false);
         setSelectedRubrica(null);
+        modalTriggerRef.current && modalTriggerRef.current.focus();
     };
 
     return (
@@ -38,10 +48,10 @@ const RubricaList = ({ rubricas, onDelete, onSelect }) => {
             <table className="table-auto w-full border-collapse">
                 <thead>
                     <tr>
-                        <th className="px-4 py-2 border">ID</th>
-                        <th className="px-4 py-2 border">Modalidad</th>
-                        <th className="px-4 py-2 border">Tipo de Evaluación</th>
-                        <th className="px-4 py-2 border">Acciones</th>
+                        <th scope="col" className="px-4 py-2 border">ID</th>
+                        <th scope="col" className="px-4 py-2 border">Modalidad</th>
+                        <th scope="col" className="px-4 py-2 border">Tipo de Evaluación</th>
+                        <th scope="col" className="px-4 py-2 border">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -53,7 +63,7 @@ const RubricaList = ({ rubricas, onDelete, onSelect }) => {
                                 <td className="px-4 py-2 border">{tipoEvaluacion}</td>
                                 <td className="px-4 py-2 border">
                                     <button
-                                        onClick={() => setSelectedRubrica(groupedRubricas[modalidad][tipoEvaluacion])}
+                                        onClick={() => openModal(groupedRubricas[modalidad][tipoEvaluacion])}
                                         className="bg-blue-500 text-white px-2 py-1 mr-2"
                                     >
                                         Ver Criterios
@@ -78,14 +88,19 @@ const RubricaList = ({ rubricas, onDelete, onSelect }) => {
             </table>
 
             {/* Modal para mostrar criterios */}
-            {selectedRubrica && (
-                <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50">
+            {isModalOpen && selectedRubrica && (
+                <div
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="modal-title"
+                    className="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50"
+                >
                     <div className="bg-white p-6 rounded-lg shadow-lg max-w-7xl">
-                        <h3 className="text-xl font-bold mb-4">Criterios</h3>
+                        <h3 id="modal-title" className="text-xl font-bold mb-4">Criterios</h3>
                         {selectedRubrica.every(criterio => criterio.criterio_nombre === null) ? (
                             <p className="mb-4">No hay criterios disponibles.</p>
                         ) : (
-                            <ul className="mb-4">
+                            <ul className="mb-4" aria-live="polite">
                                 {selectedRubrica.map((criterio, index) => (
                                     criterio.criterio_nombre !== null && (
                                         <li key={index} className="mb-2">
@@ -98,6 +113,7 @@ const RubricaList = ({ rubricas, onDelete, onSelect }) => {
                         <button
                             onClick={closeModal}
                             className="bg-red-500 text-white px-4 py-2 rounded"
+                            autoFocus
                         >
                             Cerrar
                         </button>

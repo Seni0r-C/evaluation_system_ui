@@ -6,11 +6,11 @@ const TipoEvaluacionJerarquiaList = ({ jerarquias, onDelete, onSelect }) => {
             <table className="table-auto w-full border-collapse">
                 <thead>
                     <tr>
-                        <th className="px-4 py-2 border">ID</th>
-                        <th className="px-4 py-2 border">Hijo</th>
-                        <th className="px-4 py-2 border">Padre</th>
-                        <th className="px-4 py-2 border">Modalidad</th>
-                        <th className="px-4 py-2 border">Acciones</th>
+                        <th scope="col" className="px-4 py-2 border">ID</th>
+                        <th scope="col" className="px-4 py-2 border">Hijo</th>
+                        <th scope="col" className="px-4 py-2 border">Padre</th>
+                        <th scope="col" className="px-4 py-2 border">Modalidad</th>
+                        <th scope="col" className="px-4 py-2 border">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>

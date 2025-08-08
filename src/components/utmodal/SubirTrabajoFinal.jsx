@@ -19,7 +19,7 @@ const TrabajoFinalModal = ({ isOpen, onClose, trabajoData }) => {
     }
 
     return (
-        <GenericModal onClose={onClose} title="Subir Trabajo Final">
+        <GenericModal isOpen={isOpen} onClose={onClose} title="Subir Trabajo Final">
             <div className="p-6 bg-white shadow-xl rounded-2xl">
                 <div className="space-y-4">
                     <p className="text-lg font-semibold text-gray-700">
@@ -28,7 +28,9 @@ const TrabajoFinalModal = ({ isOpen, onClose, trabajoData }) => {
                             {trabajoData?.titulo || "Sin título"}
                         </span>
                     </p>
+                    <label htmlFor="link-trabajo-final" className="sr-only">Link del trabajo final</label>
                     <input
+                        id="link-trabajo-final"
                         type="text"
                         value={link}
                         onChange={(e) => setLink(e.target.value)}

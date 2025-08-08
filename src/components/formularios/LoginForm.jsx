@@ -49,6 +49,7 @@ const LoginForm = ({ usuario, setUsuario, password, setPassword, showPassword, t
                     type="button"
                     onClick={toggleShowPassword}
                     className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-800 hover:text-black"
+                    aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
                 >
                     {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
                 </button>

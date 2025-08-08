@@ -92,6 +92,9 @@ const Layout = ({ children }) => {
                     <button
                         onClick={toggleSidebar}
                         className="p-2 rounded hover:bg-green-800 text-white transition-all ml-4"
+                        aria-label={isSidebarVisible ? "Cerrar menú de navegación" : "Abrir menú de navegación"}
+                        aria-expanded={isSidebarVisible}
+                        aria-controls="sidebar-menu"
                     >
                         {isSidebarVisible ? (
                             <IoMdClose className="h-6 w-6" />
@@ -106,9 +109,12 @@ const Layout = ({ children }) => {
                 </div>
                 <div className="relative" ref={dropdownRef}>
                     {roles.length > 0 && (
-                        <div
+                        <button
                             onClick={toggleDropdown}
                             className="cursor-pointer flex items-center md:space-x-4 mr-8 rounded hover:bg-green-800 px-4 py-1 transition-all"
+                            aria-haspopup="true"
+                            aria-expanded={isDropdownVisible}
+                            aria-controls="user-dropdown"
                         >
                             <div className="text-right">
                                 <span className="block font-semibold text-xs md:text-base text-white">
@@ -117,24 +123,23 @@ const Layout = ({ children }) => {
                                 <span className="block font-semibold text-xs md:text-sm text-gray-200">
                                     {capitalizeWords(selectedRole)}
                                 </span>
-                                {/* <span className="block font-semibold text-xs md:text-sm text-gray-200">
-                                    {roles.map(role => `${capitalizeWords(role.nombre)}`).join(', ')}
-                                </span> */}
                             </div>
                             <img
                                 src={userPhoto}
                                 alt="Foto de perfil"
                                 className="rounded-full w-16 h-16 bg-blue-500 flex justify-center items-center text-gray-800 font-semibold border-2 border-green-600 object-cover"
                             />
-                        </div>
+                        </button>
                     )}
 
                     {isDropdownVisible && (
-                        <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg py-2">
+                        <div id="user-dropdown" className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg py-2">
                             <div
                                 className="w-full flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 text-gray-700"
                             >
+                                <label htmlFor="role-select" className="sr-only">Seleccionar Rol</label>
                                 <select
+                                    id="role-select"
                                     className=" block w-full py-2 px-3  text-pretty md:text-md font-medium rounded-md border border-gray-600 focus:outline-none focus:ring-1 focus:border-none"
                                     value={selectedRole}
                                     onChange={(e) => setSelectedRole(e.target.value)}
@@ -179,7 +184,9 @@ const Layout = ({ children }) => {
                     ></div>
 
                     {/* Barra lateral */}
-                    <aside
+                    <nav
+                        id="sidebar-menu"
+                        aria-label="Menú de navegación principal"
                         className={`bg-gray-100 text-gray-950 py-6 px-2 z-30 space-y-6 w-56 h-full fixed transition-transform duration-300 ease-in-out ${isSidebarVisible ? 'translate-x-0 opacity-100' : '-translate-x-full'
                             } border-r-2 border-gray-200 overflow-y-scroll pb-20`}
                         style={{
@@ -187,7 +194,7 @@ const Layout = ({ children }) => {
                         }}
                     >
                         <SidebarMenu menuData={menuData} />
-                    </aside>
+                    </nav>
 
                     {/* Contenido principal */}
                     <main

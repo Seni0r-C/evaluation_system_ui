@@ -30,7 +30,8 @@ const RubricaForm = ({ onCreate, onUpdate, selected, setSelected, modalidades, t
 
     return (
         <form onSubmit={handleSubmit} className="mb-4">
-            <select name="modalidad_id" value={modalidadId} onChange={(e) => setModalidadId(e.target.value)} className="border p-2 mr-2" required>
+            <label htmlFor="modalidad_id" className="sr-only">Modalidad</label>
+            <select id="modalidad_id" name="modalidad_id" value={modalidadId} onChange={(e) => setModalidadId(e.target.value)} className="border p-2 mr-2" required>
                 <option value="">Seleccione una modalidad</option>
                 {modalidades.map((modalidad) => (
                     <option key={modalidad.id} value={modalidad.id}>
@@ -38,7 +39,8 @@ const RubricaForm = ({ onCreate, onUpdate, selected, setSelected, modalidades, t
                     </option>
                 ))}
             </select>
-            <select name="tipo_evaluacion_id" value={tipoEvaluacionId} onChange={(e) => setTipoEvaluacionId(e.target.value)} className="border p-2 mr-2" required>
+            <label htmlFor="tipo_evaluacion_id" className="sr-only">Tipo de evaluación</label>
+            <select id="tipo_evaluacion_id" name="tipo_evaluacion_id" value={tipoEvaluacionId} onChange={(e) => setTipoEvaluacionId(e.target.value)} className="border p-2 mr-2" required>
                 <option value="">Seleccione un tipo de evaluación</option>
                 {tipoEvaluaciones.map((tipoEvaluacion) => (
                     <option key={tipoEvaluacion.id} value={tipoEvaluacion.id}>

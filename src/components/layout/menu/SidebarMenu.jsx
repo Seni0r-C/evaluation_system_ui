@@ -33,31 +33,15 @@ const SidebarMenu = ({ menuData }) => {
     const [openMenuIndex, setOpenMenuIndex] = useState(null);
 
     return (
-        <nav className="space-y-2">
+        <nav className="space-y-2" aria-label="Menú lateral">
             {menuData.map((item, index) => (
-                <div key={index}>
-                    {
-                        getPermissionId(item) &&
-                        <MenuItem
-                            permissionId={getPermissionId(item)}
-                            key={index}
-                            item={item}
-                            // permissionId={item.permissionId}
-                            isOpen={openMenuIndex === index}
-                            toggle={() => setOpenMenuIndex(openMenuIndex === index ? null : index)}
-                        />
-                    }
-                    {
-                        !getPermissionId(item) &&
-                        <MenuItem
-                            key={index}
-                            item={item}
-                            // permissionId={item.permissionId}
-                            isOpen={openMenuIndex === index}
-                            toggle={() => setOpenMenuIndex(openMenuIndex === index ? null : index)}
-                        />
-                    }
-                </div>
+                <MenuItem
+                    key={index}
+                    item={item}
+                    permissionId={getPermissionId(item)}
+                    isOpen={openMenuIndex === index}
+                    toggle={() => setOpenMenuIndex(openMenuIndex === index ? null : index)}
+                />
             ))}
         </nav>
     );

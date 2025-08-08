@@ -13,6 +13,7 @@ const MenuItem = ({ item, isOpen, toggle }) => {
 
     // Verifica si este es el enlace seleccionado
     const isSelected = item.href === location.pathname;
+    const subMenuId = `submenu-${item.name.toLowerCase().replace(/\s+/g, '-')}`;
 
     return (
         <div>
@@ -27,21 +28,23 @@ const MenuItem = ({ item, isOpen, toggle }) => {
                 </Link>
             ) : (
                 // Opción principal sin href (con sub-opciones)
-                <div
-                    className={`flex items-center py-2 px-4 rounded-md cursor-pointer justify-start gap-4 hover:scale-105 hover:shadow-md hover:bg-gray-200 transition-transform ${isOpen ? 'bg-gray-200' : ''
-                        }`}
+                <button
                     onClick={toggle}
+                    aria-expanded={isOpen}
+                    aria-controls={subMenuId}
+                    className={`flex items-center py-2 px-4 rounded-md cursor-pointer justify-start gap-4 hover:scale-105 hover:shadow-md hover:bg-gray-200 transition-transform w-full text-left ${isOpen ? 'bg-gray-200' : ''
+                        }`}
                 >
                     {item.icon}{item.name}
-                    <span className="ml-2">
+                    <span className="ml-auto">
                         {isOpen ? <FaChevronUp className="h-4 w-4" /> : <FaChevronDown className="h-4 w-4" />}
                     </span>
-                </div>
+                </button>
             )}
 
             {/* Sub-opciones */}
             {item.subOptions.length > 0 && isOpen && (
-                <div className="ml-4">
+                <div id={subMenuId} className="ml-4">
                     {item.subOptions.map((subItem, subIndex) => (
                             <div key={subIndex}>
                                 {

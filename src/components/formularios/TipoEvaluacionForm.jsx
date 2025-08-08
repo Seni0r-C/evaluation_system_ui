@@ -26,8 +26,10 @@ const TipoEvaluacionForm = ({ onCreate, onUpdate, selected, setSelected }) => {
 
     return (
         <form onSubmit={handleSubmit} className="mb-4">
+            <label htmlFor="nombre-tipo-evaluacion" className="sr-only">Nombre del tipo de evaluación</label>
             <input
                 type="text"
+                id="nombre-tipo-evaluacion"
                 value={nombre}
                 onChange={(e) => setNombre(e.target.value)}
                 className="border p-2 mr-2"

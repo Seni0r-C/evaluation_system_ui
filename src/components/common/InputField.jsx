@@ -27,7 +27,7 @@ const InputField = ({
     required = false,
     capitalize = false
 }) => {
-    const inputId = name;
+    const inputId = `input-field-${name}`;
 
     return (
         <div className="mb-4">

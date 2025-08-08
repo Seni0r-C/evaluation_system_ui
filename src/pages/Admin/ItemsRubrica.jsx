@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 import { getTiposEvaluacion, createTipoEvaluacion, updateTipoEvaluacion, deleteTipoEvaluacion, createTipoEvaluacionJerarquia, updateTipoEvaluacionJerarquia, deleteTipoEvaluacionJerarquia, getTiposEvaluacionJerarquia } from '../../services/rubricaService';
 import { getRubricas, createRubrica, updateRubrica, deleteRubrica } from '../../services/rubricaService';

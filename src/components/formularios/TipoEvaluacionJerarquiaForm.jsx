@@ -34,9 +34,10 @@ const TipoEvaluacionJerarquiaForm = ({ onCreate, onUpdate, selected, setSelected
 
     return (
         <form onSubmit={handleSubmit} className="mb-4">
-            <label className="block mb-2">
+            <label htmlFor="comp_id" className="block mb-2">
                 Tipo de Evaluación Hijo:
                 <select
+                    id="comp_id"
                     value={comp_id}
                     onChange={(e) => setCompId(e.target.value)}
                     className="border p-2 w-full"
@@ -51,9 +52,10 @@ const TipoEvaluacionJerarquiaForm = ({ onCreate, onUpdate, selected, setSelected
                 </select>
             </label>
 
-            <label className="block mb-2">
+            <label htmlFor="comp_parent_id" className="block mb-2">
                 Tipo de Evaluación Padre (opcional):
                 <select
+                    id="comp_parent_id"
                     value={comp_parent_id || ''}
                     onChange={(e) => setCompParentId(e.target.value || null)}
                     className="border p-2 w-full"
@@ -67,9 +69,10 @@ const TipoEvaluacionJerarquiaForm = ({ onCreate, onUpdate, selected, setSelected
                 </select>
             </label>
 
-            <label className="block mb-2">
+            <label htmlFor="trabajo_modalidad_id" className="block mb-2">
                 Modalidad de Titulación:
                 <select
+                    id="trabajo_modalidad_id"
                     value={trabajo_modalidad_id}
                     onChange={(e) => setTrabajoModalidadId(e.target.value)}
                     className="border p-2 w-full"

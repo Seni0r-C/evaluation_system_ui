@@ -35,8 +35,8 @@ const ArrayTable = ({ label, data }) => {
 
     return (
         <div className="mb-4">
-            <label className="block mb-2 font-medium">{label}</label>
             <table className="w-full border-collapse border border-gray-300">
+                <caption className="sr-only">{label}</caption>
                 <thead>
                     {renderTableHeaders(data)}
                 </thead>

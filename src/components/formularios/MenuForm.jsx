@@ -30,80 +30,106 @@ const MenuForm = ({ formState, setFormState, handleInputChange, handleCreateMenu
         <div className="border rounded-lg p-4 shadow-md">
             <h2 className="text-lg font-semibold mb-2">Agregar Menú</h2>
             <div className="space-y-2">
-                <input
-                    type="text"
-                    name="nombre"
-                    placeholder="Nombre del menú"
-                    value={formState.nombre}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border rounded"
-                    required
-                />
-                <select
-                    name="ruta_id"
-                    value={formState.ruta_id || ""}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border rounded"
-                    required
-                >
-                    <option value="">Seleccionar Ruta</option>
-                    {rutas.map((ruta) => (
-                        <option key={ruta.id} value={ruta.id}>
-                            {ruta.ruta}
-                        </option>
-                    ))}
-                </select>
-                <select
-                    name="padre_id"
-                    value={formState.padre_id || ""}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border rounded"
-                >
-                    <option value="">Sin Padre</option>
-                    {menuItems.map((menu) => (
-                        <option key={menu.id} value={menu.id}>
-                            {menu.name}
-                        </option>
-                    ))}
-                </select>
-                <select
-                    name="todos"
-                    value={formState.todos}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border rounded"
-                >
-                    <option value={0}>No visible para todos</option>
-                    <option value={1}>Visible para todos</option>
-                </select>
+                <div>
+                    <label htmlFor="nombre" className="block text-sm font-medium text-gray-700">Nombre del menú</label>
+                    <input
+                        type="text"
+                        name="nombre"
+                        id="nombre"
+                        placeholder="Nombre del menú"
+                        value={formState.nombre}
+                        onChange={handleInputChange}
+                        className="w-full p-2 border rounded"
+                        required
+                    />
+                </div>
+                <div>
+                    <label htmlFor="ruta_id" className="block text-sm font-medium text-gray-700">Ruta</label>
+                    <select
+                        name="ruta_id"
+                        id="ruta_id"
+                        value={formState.ruta_id || ""}
+                        onChange={handleInputChange}
+                        className="w-full p-2 border rounded"
+                        required
+                    >
+                        <option value="">Seleccionar Ruta</option>
+                        {rutas.map((ruta) => (
+                            <option key={ruta.id} value={ruta.id}>
+                                {ruta.ruta}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div>
+                    <label htmlFor="padre_id" className="block text-sm font-medium text-gray-700">Menú Padre</label>
+                    <select
+                        name="padre_id"
+                        id="padre_id"
+                        value={formState.padre_id || ""}
+                        onChange={handleInputChange}
+                        className="w-full p-2 border rounded"
+                    >
+                        <option value="">Sin Padre</option>
+                        {menuItems.map((menu) => (
+                            <option key={menu.id} value={menu.id}>
+                                {menu.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div>
+                    <label htmlFor="todos" className="block text-sm font-medium text-gray-700">Visibilidad</label>
+                    <select
+                        name="todos"
+                        id="todos"
+                        value={formState.todos}
+                        onChange={handleInputChange}
+                        className="w-full p-2 border rounded"
+                    >
+                        <option value={0}>No visible para todos</option>
+                        <option value={1}>Visible para todos</option>
+                    </select>
+                </div>
                 <div className="relative">
+                    <label htmlFor="icon-button" className="block text-sm font-medium text-gray-700">Icono</label>
                     <button
+                        id="icon-button"
                         type="button"
                         ref={buttonRef}
                         onClick={() => setShowIconMenu((prev) => !prev)}
                         className="w-full p-2 border rounded bg-white text-left flex items-center space-x-2"
+                        aria-haspopup="true"
+                        aria-expanded={showIconMenu}
+                        aria-controls="icon-menu"
                     >
                         <span className="text-xl">{iconsMap[formState.icon] && React.createElement(iconsMap[formState.icon])}</span>
                         <span>{formState.icon || "Seleccionar Ícono"}</span>
                     </button>
                     {showIconMenu && (
                         <ul
+                            id="icon-menu"
+                            role="menu"
                             className={`absolute z-10 w-full bg-white border rounded shadow-md ${menuPosition === "top" ? "bottom-full mb-1" : "top-full mt-1"
                                 }`}
                         >
-                            <li
-                                className="p-2 hover:bg-gray-100 cursor-pointer"
-                                onClick={() => handleIconSelect("")}
-                            >
-                                Seleccionar Ícono
+                            <li role="menuitem">
+                                <button
+                                    onClick={() => handleIconSelect("")}
+                                    className="w-full text-left p-2 hover:bg-gray-100 cursor-pointer"
+                                >
+                                    Seleccionar Ícono
+                                </button>
                             </li>
                             {Object.keys(iconsMap).map((key) => (
-                                <li
-                                    key={key}
-                                    onClick={() => handleIconSelect(key)}
-                                    className="cursor-pointer p-2 hover:bg-gray-100 flex items-center space-x-2"
-                                >
-                                    <span className="text-xl">{React.createElement(iconsMap[key])}</span>
-                                    <span>{key}</span>
+                                <li key={key} role="menuitem">
+                                    <button
+                                        onClick={() => handleIconSelect(key)}
+                                        className="w-full text-left cursor-pointer p-2 hover:bg-gray-100 flex items-center space-x-2"
+                                    >
+                                        <span className="text-xl">{React.createElement(iconsMap[key])}</span>
+                                        <span>{key}</span>
+                                    </button>
                                 </li>
                             ))}
                         </ul>

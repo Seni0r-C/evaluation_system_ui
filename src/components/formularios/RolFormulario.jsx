@@ -26,8 +26,10 @@ const RolFormulario = ({ onCreate, onUpdate, selected, setSelected }) => {
 
     return (
         <form onSubmit={handleSubmit} className="mb-4">
+            <label htmlFor="nombre-rol" className="sr-only">Nombre del rol</label>
             <input
                 type="text"
+                id="nombre-rol"
                 value={nombre}
                 onChange={(e) => setNombre(e.target.value)}
                 className="border p-2 mr-2"

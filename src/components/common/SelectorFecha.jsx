@@ -14,9 +14,11 @@ import { hourAndDateFromDateTimeMySQL } from '../../utils/constants';
  * con validación para evitar fechas anteriores a la actual.
  */
 
-const SelectorFecha = ({ onDateChange, required = false, trabajoData }) => {
+const SelectorFecha = ({ label, onDateChange, required = false, trabajoData }) => {
     const [selectedDate, setSelectedDate] = useState("");
     const [error, setError] = useState('');
+    const inputId = `selector-fecha-${label ? label.toLowerCase().replace(/\s+/g, '-') : ''}`;
+    const errorId = `${inputId}-error`;
 
     useEffect(() => {
         if (trabajoData?.fecha_defensa && !selectedDate) {
@@ -47,24 +49,27 @@ const SelectorFecha = ({ onDateChange, required = false, trabajoData }) => {
 
     return (
         <div className="">
-
+            {label && <label htmlFor={inputId} className="block text-sm font-medium text-gray-700 mb-1">{label}</label>}
             {/* Selector de Fecha */}
             <input
+                id={inputId}
                 type="datetime-local"
                 value={selectedDate}
                 onChange={handleDateChange}
                 className={`w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 ${error ? 'border-red-500' : 'border-gray-300'
                     }`}
                 required={required}
+                aria-describedby={error ? errorId : undefined}
             />
 
             {/* Mensaje de Error */}
-            {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+            {error && <p id={errorId} className="text-red-500 text-sm mt-1" aria-live="assertive">{error}</p>}
         </div>
     );
 };
 
 SelectorFecha.propTypes = {
+    label: PropTypes.string,
     onDateChange: PropTypes.func.isRequired,
     required: PropTypes.bool,
     trabajoData: PropTypes.object,
