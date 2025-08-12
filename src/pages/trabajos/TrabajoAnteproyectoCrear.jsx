@@ -311,7 +311,7 @@ const TrabajoAnteproyectoCrear = () => {
               {/* Buscar Tutor */}
               {!iamDocente && (<BuscadorYSelectorDeUsuarios
                 label="Buscar Tutor"
-                placeholder="Ingrese el nombre del tutor"
+                placeholder="Ingrese la cédula o nombre del tutor"
                 searchValue={tutorSearch}
                 setSearchValue={setTutorSearch}
                 searchResults={tutores}
@@ -332,7 +332,7 @@ const TrabajoAnteproyectoCrear = () => {
               <BuscadorYSelectorDeUsuarios
                 label="Buscar Co-tutor"
                 optional={true}
-                placeholder="Ingrese el nombre del cotutor"
+                placeholder="Ingrese la cédula o nombre del cotutor"
                 searchValue={cotutorSearch}
                 setSearchValue={setCotutorSearch}
                 searchResults={cotutores}
@@ -351,7 +351,7 @@ const TrabajoAnteproyectoCrear = () => {
               {/* Buscar Estudiantes */}
               <BuscadorYSelectorDeUsuarios
                 label="Buscar Estudiante"
-                placeholder="Ingrese el nombre del estudiante"
+                placeholder="Ingrese la cédula o nombre del estudiante"
                 searchValue={estudianteSearch}
                 setSearchValue={setEstudianteSearch}
                 searchResults={estudiantes}

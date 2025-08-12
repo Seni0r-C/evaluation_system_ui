@@ -23,6 +23,7 @@ const BuscadorDocentes = ({ setSelectedDocentes, initialSelectedItems = [], allo
                 maxSelections={maxSelections}
                 required={required}
                 initialSelectedItems={initialSelectedItems}
+                type="usuario"
             />
         </div>
     );

@@ -1,7 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import PropTypes from 'prop-types';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import Spinner from '../shared/logo_carga/Spinner';
 import { capitalizeWords } from '../../utils/constants';
+import { useEffect, useState } from 'react';
 
 const BuscadorYSelectorDeUsuarios = ({
   label,
@@ -24,24 +26,46 @@ const BuscadorYSelectorDeUsuarios = ({
   role, // New prop for role
 }) => {
   const inputId = `search-input-${type}`;
-  let showSpinner = false;
+  const [showSpinner, setShowSpinner] = useState(false);
+  const [showResults, setShowResults] = useState(false);
 
   const handleSearchChange = (e) => {
     const searchValue = e.target.value;
     setSearchValue(searchValue);
-    showSpinner = true;
-    handleBuscar(searchValue, setSearchResults, role); // Pass role to handleBuscar
   };
 
   const handleButtonClick = () => {
+    setShowResults(!showResults);
     if (searchResults.length > 0) {
       setSearchResults([]);
-      setSearchValue('');
       setHighlightedIndex(-1);
-    } else {
-      showSpinner = true;
-      handleBuscar(searchValue, setSearchResults, role); // Pass role to handleBuscar
     }
+    if (searchValue && !showResults) {
+      setShowSpinner(true);
+      const timer = setTimeout(() => {
+        handleBuscar(searchValue, setSearchResults, role); // Pass role to handleBuscar
+        setShowSpinner(false);
+      }, 400); // Simulate a delay for the search
+      return () => clearTimeout(timer);
+    }
+  };
+
+  useEffect(() => {
+    if (searchValue) {
+      setShowResults(!!searchValue);
+      setShowSpinner(true);
+      const timer = setTimeout(async () => {
+        await handleBuscar(searchValue, setSearchResults, role); // Pass role to handleBuscar
+        setShowSpinner(false);
+      }, 400); // Simulate a delay for the search
+      return () => clearTimeout(timer);
+    } else {
+      setShowSpinner(false);
+    }
+  }, [searchValue]);
+
+  const handleAddNewUser = () => {
+    console.log('Función para agregar nuevo usuario aún no implementada');
   };
 
   return (
@@ -69,7 +93,7 @@ const BuscadorYSelectorDeUsuarios = ({
             {searchResults.length > 0 ? <FaChevronUp className="text-gray-600" /> : <FaChevronDown className="text-gray-600" />}
           </button>
         </div>
-        {(searchResults.length > 0 || showSpinner || searchValue) && (
+        {(searchResults.length > 0 || showSpinner || showResults) && (
           <ul className="absolute border rounded bg-white w-full max-h-40 overflow-auto z-10">
             {showSpinner ? (
               <div className="p-3 text-center">
@@ -86,15 +110,34 @@ const BuscadorYSelectorDeUsuarios = ({
                     setSearchValue("");
                     setSearchResults([]);
                     setHighlightedIndex(-1);
+                    setShowResults(false);
                   }}
                 >
                   {capitalizeWords(user.nombre)}
                 </li>
               ))
-            ) : searchValue && (
-              <div className="p-3 text-center text-red-500">
-                No se encontraron resultados.
-              </div>
+            ) : showResults && (
+              searchValue ?
+                (
+                  <div className="p-3 text-center text-red-500">
+                    No se encontraron resultados.
+                    <button
+                      onClick={handleAddNewUser} // Función para agregar nuevo usuario
+                      className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center mx-auto"
+                      type='button'
+                    >
+                      <svg className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
+                      </svg>
+                      Agregar Usuario
+                    </button>
+                  </div>
+                )
+                : (
+                  <div className="p-3 text-center text-gray-500">
+                    Ingrese un término de búsqueda.
+                  </div>
+                )
             )}
           </ul>
         )}

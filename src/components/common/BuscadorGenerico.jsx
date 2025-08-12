@@ -32,7 +32,8 @@ const SearchDropdown = ({
   showMessageMap = {
     maxSelectionError: { typeMsg: 'warning', message: 'Se ha alcanzado el límite de selecciones permitidas (' + maxSelections + ').' },
     duplicateError: { typeMsg: 'warning', message: 'No se permiten duplicados.' }
-  }
+  },
+  type = 'default', // Tipo de búsqueda, por ejemplo: 'usuario'
 }) => {
   const [searchValue, setSearchValue] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -140,6 +141,10 @@ const SearchDropdown = ({
     }
   };
 
+  const handleAddNewUser = () => {
+    console.log('Función para agregar nuevo usuario aún no implementada');
+  };
+
   return (
     <div className="pl-4 pr-4 pt-2">
       <label htmlFor="search-input" className="block text-sm font-medium text-gray-700">
@@ -244,10 +249,23 @@ const SearchDropdown = ({
         </ul>
       )}
 
-      {showDropdown && searchResults.length <= 0 && (
+      {showDropdown && searchResults.length === 0 && (
         <ul className="relative border rounded-lg bg-white w-full max-h-40 overflow-auto z-10 mt-1 shadow-lg">
           <li className="px-3 py-2 cursor-pointer hover:bg-gray-100">
             {searchedMessage}
+
+            {type == "usuario" && (
+              <button
+                onClick={handleAddNewUser} // Función para agregar nuevo usuario
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center mx-auto"
+                type='button'
+              >
+                <svg className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
+                </svg>
+                Agregar Usuario
+              </button>
+            )}
           </li>
         </ul>
       )}
