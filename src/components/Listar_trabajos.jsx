@@ -41,7 +41,7 @@ const CustomTrabajoTitulacionListar = ({
   useEffect(() => {
     obtenerCarreras(setCarreras);
     if (firstStates && includeStateFiltter) {
-    // if (JSON.stringify(firstStates)!==JSON.stringify(estados) && firstStates && includeStateFiltter) {
+      // if (JSON.stringify(firstStates)!==JSON.stringify(estados) && firstStates && includeStateFiltter) {
       setEstados(firstStates);
     } else if (firstStates === '' && includeStateFiltter) {
       obtenerEstados(setEstados);

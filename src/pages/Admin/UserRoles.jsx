@@ -85,7 +85,7 @@ const UserRoles = () => {
                                             className={`p-3 rounded-lg cursor-pointer transition-colors ${selectedUser?.id === user.id ? 'bg-blue-100 border-l-4 border-blue-500' : 'hover:bg-gray-100'}`}
                                         >
                                             <div className="font-medium">{user.nombre}</div>
-                                            <div className="text-sm text-gray-500">{user.email}</div>
+                                            <div className="text-sm text-gray-500">Cédula: {user.cedula}</div>
                                         </li>
                                     ))}
                                 </ul>

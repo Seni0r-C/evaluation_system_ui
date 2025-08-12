@@ -2,7 +2,14 @@ import axiosInstance from './axiosConfig';
 
 // Función para buscar usuarios
 export const buscarUsuarios = (query, setResults, rol = null) => {
-  axiosInstance.get(`/usuarios`, { params: { nombre: query, rol } })
+  axiosInstance.get(`/usuarios`, { params: { searchParams: query, rol } })
+    .then(response => setResults(response.data))
+    .catch(error => console.error('Error al buscar usuarios:', error))
+};
+
+// Función para buscar usuarios
+export const buscarUsuariosUTM = (query, setResults, rol = null) => {
+  axiosInstance.get(`/usuarios/utm`, { params: { searchParams: query, rol } })
     .then(response => setResults(response.data))
     .catch(error => console.error('Error al buscar usuarios:', error))
 };
