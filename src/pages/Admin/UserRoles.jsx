@@ -46,6 +46,10 @@ const UserRoles = () => {
         showQuestion('¿Está seguro de que desea guardar los cambios?', action);
     };
 
+    const handleAddNewUser = () => {
+        console.log('Función para agregar nuevo usuario aún no implementada');
+    };
+
     return (
         <div className="container mx-auto p-4 max-w-6xl">
             <h1 className="text-2xl font-bold mb-6 text-blue-800">Gestión de Roles de Usuarios</h1>
@@ -90,8 +94,23 @@ const UserRoles = () => {
                                     ))}
                                 </ul>
                             ) : (
-                                <div className="p-4 text-center text-gray-500">
-                                    {!hadSearch ? 'Ingrese un término de búsqueda' : 'No se encontraron usuarios'}
+                                <div className="p-4 text-center">
+                                    {!hadSearch ? (
+                                        <p className="text-gray-500">Ingrese un término de búsqueda</p>
+                                    ) : (
+                                        <div className="flex flex-col items-center">
+                                            <p className="text-gray-500 mb-4">No se encontraron usuarios en la base de datos.</p>
+                                            <button
+                                                onClick={handleAddNewUser} // Función para agregar nuevo usuario
+                                                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
+                                                </svg>
+                                                Agregar Usuario
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </div>
