@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 const NotFound = () => {
     return (
         <div className="flex items-center justify-center min-h-screen bg-[#0e9343]">
-            <motion.div 
+            <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.6, ease: 'easeOut' }}
@@ -22,7 +22,7 @@ const NotFound = () => {
                     className="mt-6"
                 >
                     <Link
-                        to={baseRoute}
+                        to={baseRoute + "/"}
                         className="px-6 py-3 text-lg font-semibold text-white bg-[#0e9343] rounded-full shadow-md hover:bg-opacity-90 transition-colors">
                         Volver al inicio
                     </Link>

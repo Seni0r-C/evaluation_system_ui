@@ -5,9 +5,10 @@ import { FaChalkboardTeacher, FaUserShield, FaBook, FaFileSignature, FaUsersCog 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
 import UserContext from '../../context/UserContext';
 import axiosInstance from '../../services/axiosConfig';
+import { baseRoute } from '../../utils/constants';
 
 const ActionCard = ({ to, icon, title, description }) => (
-    <Link to={to} className="bg-white shadow-lg rounded-lg p-6 flex flex-col items-center text-center hover:bg-gray-100 transition-colors duration-300">
+    <Link to={baseRoute + to} className="bg-white shadow-lg rounded-lg p-6 flex flex-col items-center text-center hover:bg-gray-100 transition-colors duration-300">
         <div className="text-4xl text-blue-500 mb-4">{icon}</div>
         <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
         <p className="text-gray-600 mt-2">{description}</p>

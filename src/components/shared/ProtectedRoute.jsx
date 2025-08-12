@@ -5,6 +5,7 @@ import { useContext, useEffect } from 'react';
 import useAccessControl from '../../hooks/useAccessControl';
 import Spinner from './logo_carga/Spinner';
 import Unauthorized from '../../pages/usuario/Unauthorized';
+import { baseRoute } from '../../utils/constants';
 
 const ProtectedRoute = ({ children }) => {
     const { isAuthenticated } = useContext(AuthContext);
@@ -21,7 +22,7 @@ const ProtectedRoute = ({ children }) => {
 
     // Si no está autenticado, redirige al login
     if (!isAuthenticated) {
-        return <Navigate to="/login" replace />;
+        return <Navigate to={baseRoute + "/login"} replace />;
     }
 
     // Mientras se verifica el permiso, muestra un indicador de carga elegante

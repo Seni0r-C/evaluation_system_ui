@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef, useState } from 'react';
 import { IoMdClose, IoMdMenu, IoIosLogOut } from "react-icons/io";
 import { FaUserCircle } from "react-icons/fa";
@@ -150,7 +149,7 @@ const Layout = ({ children }) => {
                             </div>
                             <button
                                 className="w-full flex items-center space-x-2 px-4 py-2 hover:bg-gray-100 text-gray-700"
-                                onClick={() => { navigate("/profile"); setIsDropdownVisible(false); }}
+                                onClick={() => { navigate(baseRoute + "/profile"); setIsDropdownVisible(false); }}
                             >
                                 <FaUserCircle className="h-5 w-5" />
                                 <span>Ver Perfil</span>

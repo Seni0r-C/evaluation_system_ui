@@ -3,6 +3,7 @@ import { login, fetchUserData } from "../services/authService";
 import { useAuth } from "./useAuth";
 import { useMessage } from "./useMessage";
 import UserContext from "../context/UserContext";
+import { baseRoute } from "../utils/constants";
 
 export const useAuthActions = (navigate) => {
     const { updateUser } = useContext(UserContext);
@@ -24,7 +25,7 @@ export const useAuthActions = (navigate) => {
                 if (userInfo.data.exito == true) {
                     setIsAuthenticated(true);
                     updateUser(userInfo.data.datos);
-                    navigate("/");
+                    navigate(baseRoute + "/");
                 } else {
                     throw new Error(userInfo.data.mensaje || "Error al obtener información del usuario.");
                 }
