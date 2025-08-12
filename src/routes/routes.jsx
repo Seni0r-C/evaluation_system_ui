@@ -23,6 +23,7 @@ import VerCalificar from '../pages/trabajos/VerCalificar';
 import RolesManager from '../pages/admin/RolesManager';
 import UserRoles from '../pages/admin/UserRoles';
 import ReportsPage from '../pages/admin/ReportsPage';
+
 export const routes = [
   {
     path: '/login',
@@ -37,7 +38,7 @@ export const routes = [
     ),
   },
   {
-    path: baseRoute,
+    path: '/',
     element: (
       <Layout>
         <ProtectedRoute>
@@ -102,7 +103,7 @@ export const routes = [
     element: (
       <Layout>
         <ProtectedRoute>
-        <RolesManager />
+          <RolesManager />
         </ProtectedRoute>
       </Layout>
     ),
@@ -290,15 +291,20 @@ export const routes = [
 
 
 let element = null;
-
+let path = null;
 for (let i = 0; i < routes.length; i++) {
   element = routes[i].element
+  path = routes[i].path
+
   element = (
     <ErrorBoundary>
-        {element}
+      {element}
     </ErrorBoundary>
   )
+  path = path === '*' ? '*' : (baseRoute + path);
+
   routes[i].element = element;
+  routes[i].path = path;
 }
 
 
