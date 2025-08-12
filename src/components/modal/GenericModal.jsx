@@ -1,8 +1,8 @@
+/* eslint-disable react/prop-types */
 import { ModalHeader, ModalFooter } from './ModalTopHeader';
-import PropTypes from 'prop-types';
 import { useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 
-const GenericModal = forwardRef(({ isOpen, onClose, title, children, className = '' }, ref) => {
+const GenericModal = forwardRef(({ isOpen = true, onClose, title, children, className = '' }, ref) => {
     const modalRef = useRef();
     const closeButtonRef = useRef();
 
@@ -14,7 +14,8 @@ const GenericModal = forwardRef(({ isOpen, onClose, title, children, className =
 
     useEffect(() => {
         if (isOpen) {
-            const focusableElements = modalRef.current.querySelectorAll(
+            const modalNode = modalRef.current;
+            const focusableElements = modalNode.querySelectorAll(
                 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
             );
             const firstElement = focusableElements[0];
@@ -38,11 +39,11 @@ const GenericModal = forwardRef(({ isOpen, onClose, title, children, className =
                 }
             };
 
-            modalRef.current.addEventListener('keydown', handleTabKeyPress);
+            modalNode.addEventListener('keydown', handleTabKeyPress);
             document.addEventListener('keydown', handleEscapeKeyPress);
 
             return () => {
-                modalRef.current?.removeEventListener('keydown', handleTabKeyPress);
+                modalNode?.removeEventListener('keydown', handleTabKeyPress);
                 document.removeEventListener('keydown', handleEscapeKeyPress);
             };
         }
@@ -72,13 +73,5 @@ const GenericModal = forwardRef(({ isOpen, onClose, title, children, className =
 });
 
 GenericModal.displayName = 'GenericModal';
-
-GenericModal.propTypes = {
-    isOpen: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired,
-    title: PropTypes.string,
-    children: PropTypes.node,
-    className: PropTypes.string
-};
 
 export default GenericModal;
