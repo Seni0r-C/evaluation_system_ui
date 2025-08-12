@@ -10,6 +10,7 @@ export const VERSION = "0.6.5";
  * @returns {string} 
  */
 export function capitalizeWords(str) {
+    if (!str) return '';
     str = str.toLowerCase();
     return str.replace(/(?:^|\s)\S/g, (char) => char.toUpperCase());
 }

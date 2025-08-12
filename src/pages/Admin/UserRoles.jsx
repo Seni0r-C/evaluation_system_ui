@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { buscarUsuarios } from '../../services/usuarioService';
 import { getRoles, obtenerRolesDeUsuario, actualizarRolesDeUsuario } from '../../services/rolesService';
 import { useMessage } from '../../hooks/useMessage';
+import BuscadorUsuariosUTM from '../../components/utmcomps/BuscadorUsuariosUTM';
 
 const UserRoles = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -11,6 +12,7 @@ const UserRoles = () => {
     const [userRoles, setUserRoles] = useState([]);
     const { showMsg, showQuestion } = useMessage();
     const [hadSearch, setHadSearch] = useState(false);
+    const [showUTMSearch, setShowUTMSearch] = useState(false);
 
     useEffect(() => {
         getRoles().then(setRoles);
@@ -47,7 +49,17 @@ const UserRoles = () => {
     };
 
     const handleAddNewUser = () => {
-        console.log('Función para agregar nuevo usuario aún no implementada');
+        setShowUTMSearch(true);
+    };
+
+    const handleCloseUTMSearch = () => {
+        setShowUTMSearch(false);
+    };
+
+    const handleUserAdded = (user) => {
+        setUsers([user, ...users]);
+        handleSelectUser(user);
+        setShowUTMSearch(false);
     };
 
     return (
@@ -183,6 +195,13 @@ const UserRoles = () => {
                     )}
                 </div>
             </div>
+            {showUTMSearch && (
+                <BuscadorUsuariosUTM
+                    initialSearchTerm={searchTerm}
+                    onUserAdded={handleUserAdded}
+                    onClose={handleCloseUTMSearch}
+                />
+            )}
         </div>
     );
 };

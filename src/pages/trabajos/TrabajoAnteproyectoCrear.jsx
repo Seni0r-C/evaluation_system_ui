@@ -9,6 +9,7 @@ import MessageDialog from '../../components/shared/MessageDialog';
 import InputField from '../../components/common/InputField';
 import UserContext from '../../context/UserContext';
 import PropTypes from 'prop-types';
+import BuscadorUsuariosUTM from '../../components/utmcomps/BuscadorUsuariosUTM';
 
 const TrabajoAnteproyectoCrear = () => {
   // Datos de la base de datos
@@ -43,6 +44,8 @@ const TrabajoAnteproyectoCrear = () => {
   const [message, setMessage] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [iconType, setIconType] = useState(null);
+  const [showUTMSearch, setShowUTMSearch] = useState(false);
+  const [utmSearchTerm, setUtmSearchTerm] = useState('');
 
   // Funciones
 
@@ -245,6 +248,23 @@ const TrabajoAnteproyectoCrear = () => {
     }
   };
 
+  const handleAddNewUser = (searchTerm) => {
+    setUtmSearchTerm(searchTerm);
+    setShowUTMSearch(true);
+  };
+
+  const handleCloseUTMSearch = () => {
+    setShowUTMSearch(false);
+  };
+
+  const handleUserAdded = (user) => {
+    // Lógica para agregar el usuario a la lista correcta (tutor, cotutor, estudiante)
+    // Esto dependerá de cómo identifiques el tipo de usuario que se está agregando.
+    // Por ahora, lo agregaré a la lista de estudiantes como ejemplo.
+    handleEstudianteSelect(user);
+    setShowUTMSearch(false);
+  };
+
   return (
     <>
       <MessageDialog message={message} isOpen={isOpen} onClose={() => setIsOpen(false)} iconType={iconType} />
@@ -326,6 +346,7 @@ const TrabajoAnteproyectoCrear = () => {
                 handleBuscar={buscarUsuariosConRol}
                 required={true}
                 role={3} // Rol para tutores
+                onAddNewUser={handleAddNewUser}
               />)}
 
               {/* Buscar Co-tutor */}
@@ -346,6 +367,7 @@ const TrabajoAnteproyectoCrear = () => {
                 highlightedIndex={highlightedIndexCotutor}
                 handleBuscar={buscarUsuariosConRol}
                 required={false}
+                onAddNewUser={handleAddNewUser}
               />
 
               {/* Buscar Estudiantes */}
@@ -366,6 +388,7 @@ const TrabajoAnteproyectoCrear = () => {
                 highlightedIndex={highlightedIndexEstudiante}
                 handleBuscar={(query, setResults) => buscarUsuariosConRol(query, setResults, 4)} // Rol para estudiantes
                 required={true}
+                onAddNewUser={handleAddNewUser}
               />
             </div>
           </div>
@@ -378,6 +401,14 @@ const TrabajoAnteproyectoCrear = () => {
           </button>
 
         </form>
+
+        {showUTMSearch && (
+          <BuscadorUsuariosUTM
+            initialSearchTerm={utmSearchTerm}
+            onUserAdded={handleUserAdded}
+            onClose={handleCloseUTMSearch}
+          />
+        )}
 
       </div>
     </>

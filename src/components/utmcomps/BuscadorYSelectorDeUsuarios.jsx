@@ -24,6 +24,7 @@ const BuscadorYSelectorDeUsuarios = ({
   handleBuscar,
   required,
   role, // New prop for role
+  onAddNewUser,
 }) => {
   const inputId = `search-input-${type}`;
   const [showSpinner, setShowSpinner] = useState(false);
@@ -65,7 +66,9 @@ const BuscadorYSelectorDeUsuarios = ({
   }, [searchValue]);
 
   const handleAddNewUser = () => {
-    console.log('Función para agregar nuevo usuario aún no implementada');
+    if (onAddNewUser) {
+      onAddNewUser(searchValue);
+    }
   };
 
   return (
@@ -193,6 +196,7 @@ BuscadorYSelectorDeUsuarios.propTypes = {
   handleBuscar: PropTypes.func.isRequired,
   required: PropTypes.bool,
   role: PropTypes.number, // New prop type
+  onAddNewUser: PropTypes.func,
 };
 
 export default BuscadorYSelectorDeUsuarios;

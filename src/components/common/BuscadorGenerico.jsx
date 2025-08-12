@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { FaChevronDown, FaChevronUp, FaSearchPlus } from 'react-icons/fa';
 import Spinner from '../shared/logo_carga/Spinner';
 import { useMessage } from "../../hooks/useMessage";
+import BuscadorUsuariosUTM from '../utmcomps/BuscadorUsuariosUTM';
 
 /**
  * Componente de búsqueda genérico que permite buscar en una API o base de datos
@@ -49,6 +50,8 @@ const SearchDropdown = ({
       return acc;
     }, {})
   );
+
+  const [showUTMSearch, setShowUTMSearch] = useState(false);
 
   const { showMsg } = useMessage();
 
@@ -142,7 +145,16 @@ const SearchDropdown = ({
   };
 
   const handleAddNewUser = () => {
-    console.log('Función para agregar nuevo usuario aún no implementada');
+    setShowUTMSearch(true);
+  };
+
+  const handleCloseUTMSearch = () => {
+    setShowUTMSearch(false);
+  };
+
+  const handleUserAdded = (user) => {
+    handleItemSelect(user);
+    setShowUTMSearch(false);
   };
 
   return (
@@ -268,6 +280,14 @@ const SearchDropdown = ({
             )}
           </li>
         </ul>
+      )}
+
+      {showUTMSearch && (
+        <BuscadorUsuariosUTM
+          initialSearchTerm={searchValue}
+          onUserAdded={handleUserAdded}
+          onClose={handleCloseUTMSearch}
+        />
       )}
     </div>
   );
