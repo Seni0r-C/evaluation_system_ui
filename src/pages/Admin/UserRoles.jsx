@@ -74,7 +74,7 @@ const UserRoles = () => {
                         <div className="flex gap-2">
                             <input
                                 type="text"
-                                placeholder="Nombre o correo del usuario"
+                                placeholder="Nombre o Cédula"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
