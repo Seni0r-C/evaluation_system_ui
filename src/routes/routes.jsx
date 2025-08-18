@@ -26,7 +26,7 @@ import ReportsPage from '../pages/admin/ReportsPage';
 
 export const routes = [
   {
-    path: '/login',
+    path: baseRoute + 'login',
     element: (
       <Login />
     ),
@@ -38,7 +38,7 @@ export const routes = [
     ),
   },
   {
-    path: '/',
+    path: baseRoute,
     element: (
       <Layout>
         <ProtectedRoute>
@@ -48,7 +48,7 @@ export const routes = [
     ),
   },
   {
-    path: '/carreras',
+    path: baseRoute + 'carreras',
     element: (
       <Layout>
         <ProtectedRoute>
@@ -58,7 +58,7 @@ export const routes = [
     ),
   },
   {
-    path: '/rutas',
+    path: baseRoute + 'rutas',
     element: (
       <Layout>
         <ProtectedRoute>
@@ -68,7 +68,7 @@ export const routes = [
     ),
   },
   {
-    path: '/menu',
+    path: baseRoute + 'menu',
     element: (
       <Layout>
         <ProtectedRoute>
@@ -79,7 +79,7 @@ export const routes = [
     ),
   },
   {
-    path: '/modalidades',
+    path: baseRoute + 'modalidades',
     element: (
       <Layout>
         <ProtectedRoute>
@@ -89,7 +89,7 @@ export const routes = [
     ),
   },
   {
-    path: '/items-rubrica',
+    path: baseRoute + 'items-rubrica',
     element: (
       <Layout>
         <ProtectedRoute>
@@ -99,7 +99,7 @@ export const routes = [
     ),
   },
   {
-    path: '/gestion-roles',
+    path: baseRoute + 'gestion-roles',
     element: (
       <Layout>
         <ProtectedRoute>
@@ -109,7 +109,7 @@ export const routes = [
     ),
   },
   {
-    path: '/admin/user-permissions',
+    path: baseRoute + 'admin/user-permissions',
     element: (
       <Layout>
         <ProtectedRoute>
@@ -119,7 +119,7 @@ export const routes = [
     ),
   },
   {
-    path: '/registro-anteproyecto',
+    path: baseRoute + 'registro-anteproyecto',
     element: (
       <Layout>
         <ProtectedRoute>
@@ -129,7 +129,7 @@ export const routes = [
     ),
   },
   {
-    path: '/registro-trabajo-final',
+    path: baseRoute + 'registro-trabajo-final',
     element: (
       <Layout>
         <ProtectedRoute>
@@ -147,7 +147,7 @@ export const routes = [
     ),
   },
   {
-    path: '/calificacion-de-trabajo-titulacion',
+    path: baseRoute + 'calificacion-de-trabajo-titulacion',
     element: (
       <Layout>
         <ProtectedRoute>
@@ -167,7 +167,7 @@ export const routes = [
     ),
   },
   {
-    path: '/ver-calificacion-de-trabajo-titulacion',
+    path: baseRoute + 'ver-calificacion-de-trabajo-titulacion',
     element: (
       <Layout>
         <ProtectedRoute>
@@ -187,7 +187,7 @@ export const routes = [
     ),
   },
   {
-    path: '/trabajos-titulacion-realizados',
+    path: baseRoute + 'trabajos-titulacion-realizados',
     element: (
       <Layout>
         <ProtectedRoute>
@@ -203,7 +203,7 @@ export const routes = [
     ),
   },
   {
-    path: '/calificar',
+    path: baseRoute + 'calificar',
     element: (
       <Layout>
         <ProtectedRoute>
@@ -213,7 +213,7 @@ export const routes = [
     ),
   },
   {
-    path: '/ver-calificar',
+    path: baseRoute + 'ver-calificar',
     element: (
       <Layout>
         <ProtectedRoute>
@@ -223,7 +223,7 @@ export const routes = [
     ),
   },
   {
-    path: '/asignacion-de-tribunal',
+    path: baseRoute + 'asignacion-de-tribunal',
     element: (
       <Layout>
         <ProtectedRoute>
@@ -242,7 +242,7 @@ export const routes = [
     ),
   },
   {
-    path: '/generacion-de-documento',
+    path: baseRoute + 'generacion-de-documento',
     element: (
       <Layout>
         <ProtectedRoute>
@@ -260,7 +260,7 @@ export const routes = [
     ),
   },
   {
-    path: '/profile',
+    path: baseRoute + 'profile',
     element: (
       <Layout>
         <ProtectedRoute>
@@ -270,7 +270,7 @@ export const routes = [
     ),
   },
   {
-    path: '/reportes',
+    path: baseRoute + 'reportes',
     element: (
       <ErrorBoundary>
         <Layout>
@@ -289,24 +289,18 @@ export const routes = [
   }
 ];
 
-
 let element = null;
-let path = null;
 for (let i = 0; i < routes.length; i++) {
   element = routes[i].element
-  path = routes[i].path
 
   element = (
     <ErrorBoundary>
       {element}
     </ErrorBoundary>
   )
-  path = path === '*' ? '*' : (baseRoute + path);
 
   routes[i].element = element;
-  routes[i].path = path;
-}
-
+};
 
 const router = createBrowserRouter(routes);
 
