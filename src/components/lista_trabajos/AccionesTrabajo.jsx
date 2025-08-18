@@ -12,6 +12,7 @@ import { GrDocumentUser } from 'react-icons/gr';
 import TrabajoFinalModal from '../utmodal/SubirTrabajoFinal';
 import { generarActa } from '../../services/actaService';
 import { useMessage } from '../../hooks/useMessage';
+import { baseRoute } from '../../utils/constants';
 
 
 const AccionesTrabajo = ({ trabajo, permisosAcciones, user }) => {
@@ -30,11 +31,11 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user }) => {
 
   // Handlers
   const handleCalificar = (trabajo) => {
-    navigate('/calificar', { state: { trabajo } });
+    navigate(baseRoute + '/calificar', { state: { trabajo } });
   };
 
   const handleVerCalificar = (trabajo) => {
-    navigate('/ver-calificar', { state: { trabajo } });
+    navigate(baseRoute + '/ver-calificar', { state: { trabajo } });
   };
 
   const handleAsignarTribunal = (trabajo) => {
