@@ -7,6 +7,7 @@ import { MdDoneOutline } from "react-icons/md";
 import axiosInstance from "../../services/axiosConfig";
 import { obtenerTiposEvaluacionByModalidadList } from "../../services/rubricaCriterioService";
 import { useMessage } from "../../hooks/useMessage";
+import { baseRoute } from "../../utils/constants";
 
 function customRound(num) {
     return (num % 1 >= 0.5) ? Math.ceil(num) : Math.floor(num);
@@ -245,7 +246,7 @@ const Calificar = () => {
 
             await axiosInstance.post(`/calificacion/rubrica-evaluacion`, { calificaciones: payload });
             showMsg({ typeMsg: 'success', message: 'Calificaciones finalizadas y guardadas correctamente.' });
-            navigate("/calificacion-de-trabajo-titulacion");
+            navigate(baseRoute + "calificacion-de-trabajo-titulacion");
         } catch (error) {
             console.error("Error al finalizar las calificaciones:", error);
             showMsg({ typeMsg: 'error', message: 'Error al finalizar las calificaciones.' });

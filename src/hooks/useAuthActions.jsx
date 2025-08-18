@@ -25,7 +25,7 @@ export const useAuthActions = (navigate) => {
                 if (userInfo.data.exito == true) {
                     setIsAuthenticated(true);
                     updateUser(userInfo.data.datos);
-                    navigate(baseRoute + "/");
+                    navigate(baseRoute);
                 } else {
                     throw new Error(userInfo.data.mensaje || "Error al obtener información del usuario.");
                 }

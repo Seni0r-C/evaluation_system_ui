@@ -10,9 +10,9 @@ import { MdChecklist } from 'react-icons/md';
 import BotonAccion from '../../components/common/BotonAccion';
 import InputField from '../../components/common/InputField';
 import { useNavigate } from 'react-router-dom';
-import { capitalizeWords } from '../../utils/constants';
+import { baseRoute, capitalizeWords } from '../../utils/constants';
 
-const TrabajoTitulacionListar = ({title = 'Trabajos de Titulación'}) => {
+const TrabajoTitulacionListar = ({ title = 'Trabajos de Titulación' }) => {
   const [trabajos, setTrabajos] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -130,7 +130,7 @@ const TrabajoTitulacionListar = ({title = 'Trabajos de Titulación'}) => {
   };
 
   const handleCalificar = (trabajo) => {
-    navigate("/calificar", { state: { trabajo } });
+    navigate(baseRoute + "calificar", { state: { trabajo } });
   };
 
   const acciones = [

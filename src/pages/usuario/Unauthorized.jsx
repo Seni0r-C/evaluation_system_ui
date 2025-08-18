@@ -44,7 +44,7 @@ const Unauthorized = () => {
                     className="mt-6"
                 >
                     <Link
-                        to={baseRoute + "/"}
+                        to={baseRoute}
                         className="px-6 py-3 text-lg font-semibold text-white bg-[#0e9343] rounded-full shadow-md hover:bg-opacity-90 transition-colors"
                     >
                         Volver al Inicio

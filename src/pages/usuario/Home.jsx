@@ -34,9 +34,9 @@ const Home = () => {
                 <p className="text-gray-600 mt-2">Gestiona y supervisa el sistema de evaluación.</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <ActionCard to="/admin/user-permissions" icon={<FaUsersCog />} title="Gestionar Permisos" description="Asigna roles y permisos a los usuarios del sistema." />
-                <ActionCard to="/items-rubrica" icon={<FaFileSignature />} title="Configurar Rúbricas" description="Define los criterios de evaluación para los trabajos." />
-                <ActionCard to="/carreras" icon={<FaBook />} title="Administrar Carreras" description="Gestiona las carreras y modalidades de titulación." />
+                <ActionCard to="admin/user-permissions" icon={<FaUsersCog />} title="Gestionar Permisos" description="Asigna roles y permisos a los usuarios del sistema." />
+                <ActionCard to="items-rubrica" icon={<FaFileSignature />} title="Configurar Rúbricas" description="Define los criterios de evaluación para los trabajos." />
+                <ActionCard to="carreras" icon={<FaBook />} title="Administrar Carreras" description="Gestiona las carreras y modalidades de titulación." />
             </div>
         </>
     );
@@ -48,8 +48,8 @@ const Home = () => {
                 <p className="text-gray-600 mt-2">Revisa y califica los trabajos de titulación asignados.</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <ActionCard to="/calificacion-de-trabajo-titulacion" icon={<FaChalkboardTeacher />} title="Tesis por Calificar" description="Accede a la lista de trabajos pendientes de calificación." />
-                <ActionCard to="/registro-anteproyecto" icon={<FaFileSignature />} title="Registrar Anteproyecto" description="Inicia un nuevo proceso de titulación." />
+                <ActionCard to="calificacion-de-trabajo-titulacion" icon={<FaChalkboardTeacher />} title="Tesis por Calificar" description="Accede a la lista de trabajos pendientes de calificación." />
+                <ActionCard to="registro-anteproyecto" icon={<FaFileSignature />} title="Registrar Anteproyecto" description="Inicia un nuevo proceso de titulación." />
             </div>
         </>
     );

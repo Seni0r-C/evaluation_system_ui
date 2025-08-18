@@ -31,11 +31,11 @@ const AccionesTrabajo = ({ trabajo, permisosAcciones, user }) => {
 
   // Handlers
   const handleCalificar = (trabajo) => {
-    navigate(baseRoute + '/calificar', { state: { trabajo } });
+    navigate(baseRoute + 'calificar', { state: { trabajo } });
   };
 
   const handleVerCalificar = (trabajo) => {
-    navigate(baseRoute + '/ver-calificar', { state: { trabajo } });
+    navigate(baseRoute + 'ver-calificar', { state: { trabajo } });
   };
 
   const handleAsignarTribunal = (trabajo) => {

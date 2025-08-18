@@ -22,7 +22,7 @@ const ProtectedRoute = ({ children }) => {
 
     // Si no está autenticado, redirige al login
     if (!isAuthenticated) {
-        return <Navigate to={baseRoute + "/login"} replace />;
+        return <Navigate to={baseRoute + "login"} replace />;
     }
 
     // Mientras se verifica el permiso, muestra un indicador de carga elegante

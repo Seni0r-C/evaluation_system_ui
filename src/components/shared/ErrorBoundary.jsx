@@ -35,7 +35,7 @@ class ErrorBoundary extends React.Component {
                             <Link
                                 className="w-full sm:w-auto px-4 py-2 bg-green-700 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-700 focus:ring-opacity-75 transition duration-300 ease-in-out"
                                 onClick={() => { this.setState({ hasError: false }); }}
-                                to={baseRoute + "/"}
+                                to={baseRoute}
                             >
                                 Regresar al inicio
                             </Link>
