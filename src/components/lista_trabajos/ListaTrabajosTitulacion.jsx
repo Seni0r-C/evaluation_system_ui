@@ -4,7 +4,7 @@ import { capitalizeWords } from '../../utils/constants';
 import PropTypes from 'prop-types';
 
 const TrabajosTable = ({ trabajos, permisosAcciones, user }) => {
-    const titleColumn = ['Título', 'Carrera', 'Archivo', 'Modalidad', 'Estado'];
+    const titleColumn = ['Título', 'Carrera', 'Modalidad', 'Estado'];
     const updatedColumnNames = permisosAcciones?.length > 0 ? [...titleColumn, 'Acciones'] : titleColumn;
     return (
         <table className="min-w-full table-auto border-collapse border border-gray-200 shadow-md rounded-lg">
@@ -23,15 +23,6 @@ const TrabajosTable = ({ trabajos, permisosAcciones, user }) => {
                         const columns = [
                             trabajo.titulo,
                             capitalizeWords(trabajo.carrera),
-                            <a
-                                key={trabajo.id}
-                                href={trabajo.link_archivo}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="text-green-700 hover:underline font-normal"
-                            >
-                                Ver archivo
-                            </a>,
                             trabajo.modalidad,
                             <EstadoTrabajo estado={trabajo.estado} estado_id={trabajo.estado_id} key={trabajo.id} />,
                         ];
@@ -64,7 +55,6 @@ const TrabajosTable = ({ trabajos, permisosAcciones, user }) => {
                     </tr>
                 )}
             </tbody>
-
         </table>
     );
 }
