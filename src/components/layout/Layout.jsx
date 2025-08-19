@@ -123,7 +123,7 @@ const Layout = ({ children }) => {
                             <img
                                 src={userPhoto}
                                 alt="Foto de perfil"
-                                className="rounded-full w-16 h-16 bg-blue-500 flex justify-center items-center text-gray-800 font-semibold border-2 border-green-600 object-cover"
+                                className="rounded-full w-12 h-12 bg-blue-500 flex justify-center items-center text-gray-800 font-semibold border-2 border-green-600 object-cover"
                             />
                         </button>
                     )}
