@@ -2,11 +2,13 @@
 import { useState } from 'react';
 import axiosInstance from '../../services/axiosConfig';
 import { useMessage } from '../../hooks/useMessage';
+import BuscadorYSelectorDeUsuarios from '../../components/utmcomps/BuscadorYSelectorDeUsuarios';
+import { buscarUsuarios } from '../../services/usuarioService';
 
 const ReportCard = ({ title, description, filters, onGenerate }) => (
-    <div className="bg-white shadow-lg rounded-lg p-6">
+    <div className="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform duration-300">
         <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
-        <p className="text-gray-600 mt-2">{description}</p>
+        <p className="text-gray-600 mt-2 h-24">{description}</p>
         <div className="mt-4">{filters}</div>
         <button onClick={onGenerate} className="mt-4 w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600">Generar Excel</button>
     </div>
@@ -16,6 +18,10 @@ const ReportsPage = () => {
     const { showMsg } = useMessage();
     const [fechasGraduados, setFechasGraduados] = useState({ fechaInicio: '', fechaFin: '' });
     const [estadoId, setEstadoId] = useState('');
+    const [selectedEstudiante, setSelectedEstudiante] = useState(null);
+    const [estudianteSearch, setEstudianteSearch] = useState('');
+    const [estudiantes, setEstudiantes] = useState([]);
+    const [highlightedIndexEstudiante, setHighlightedIndexEstudiante] = useState(-1);
 
     const handleGenerateReport = async (url, params, fileName) => {
         showMsg({ typeMsg: 'wait', message: 'Generando reporte...' });
@@ -34,8 +40,8 @@ const ReportsPage = () => {
     };
 
     return (
-        <div className="p-6">
-            <h1 className="text-2xl font-bold mb-6">Página de Reportes</h1>
+        <div className="p-6 bg-gray-50 min-h-screen">
+            <h1 className="text-3xl font-bold mb-8 text-gray-800 border-b-2 pb-2">Página de Reportes</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <ReportCard
                     title="Reporte de Defensas"
@@ -75,6 +81,35 @@ const ReportsPage = () => {
                     title="Reporte de Tendencias de Rendimiento Académico"
                     description="Genera un reporte con las tendencias de rendimiento académico a lo largo del tiempo."
                     onGenerate={() => handleGenerateReport('/reportes/tendencias-rendimiento/excel', {}, 'reporte_tendencias_rendimiento_academico.xlsx')}
+                />
+                <ReportCard
+                    title="Reporte por Estudiante"
+                    description="Genera un reporte detallado de un estudiante específico."
+                    filters={
+                        <BuscadorYSelectorDeUsuarios
+                            label="Buscar Estudiante"
+                            placeholder="Ingrese la cédula o nombre del estudiante"
+                            searchValue={estudianteSearch}
+                            setSearchValue={setEstudianteSearch}
+                            searchResults={estudiantes}
+                            setSearchResults={setEstudiantes}
+                            selectedUser={selectedEstudiante}
+                            setSelectedUser={setSelectedEstudiante}
+                            handleKeyDown={() => {}}
+                            handleChipRemove={() => setSelectedEstudiante(null)}
+                            type="estudiante"
+                            setHighlightedIndex={setHighlightedIndexEstudiante}
+                            highlightedIndex={highlightedIndexEstudiante}
+                            handleBuscar={(query, setResults) => buscarUsuarios(query, setResults, 4)} // Rol para estudiantes
+                        />
+                    }
+                    onGenerate={() => {
+                        if (selectedEstudiante) {
+                            handleGenerateReport(`/reportes/estudiante/${selectedEstudiante.id}/excel`, {}, `reporte_${selectedEstudiante.nombre}.xlsx`);
+                        } else {
+                            showMsg({ typeMsg: 'warning', message: 'Por favor, seleccione un estudiante.' });
+                        }
+                    }}
                 />
             </div>
         </div>
