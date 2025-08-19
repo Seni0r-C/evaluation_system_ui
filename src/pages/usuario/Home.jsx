@@ -158,7 +158,7 @@ const Home = () => {
                         </ResponsiveContainer>
                     </div>
                     <div className="bg-white p-6 rounded-lg shadow-lg col-span-1 lg:col-span-2">
-                        <h3 className="font-semibold mb-4">Graduados por Mes (Año Actual)</h3>
+                        <h3 className="font-semibold mb-4">Defensas por Mes (Año Actual)</h3>
                         <ResponsiveContainer width="100%" height={300}>
                             <LineChart data={graduadosPorMes}>
                                 <CartesianGrid strokeDasharray="3 3" />

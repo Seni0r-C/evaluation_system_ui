@@ -38,8 +38,8 @@ const ReportsPage = () => {
             <h1 className="text-2xl font-bold mb-6">Página de Reportes</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <ReportCard
-                    title="Reporte de Graduados"
-                    description="Genera un reporte de los estudiantes graduados en un rango de fechas."
+                    title="Reporte de Defensas"
+                    description="Genera un reporte de los estudiantes que han defendido su trabajo de titulación en un rango de fechas."
                     filters={
                         <div className="flex gap-4">
                             <input type="date" value={fechasGraduados.fechaInicio} onChange={(e) => setFechasGraduados({ ...fechasGraduados, fechaInicio: e.target.value })} className="w-full p-2 border rounded" />

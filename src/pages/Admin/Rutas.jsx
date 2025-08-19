@@ -124,7 +124,7 @@ const AdminRutas = () => {
                                 <td className="px-4 py-2 border text-center">{ruta.id}</td>
                                 <td className="px-4 py-2 border">
                                     <Link to={ruta.path} className="text-blue-500 hover:underline">
-                                        {ruta.path}
+                                        {ruta.path.replace(baseRoute, '/') || '/'}
                                     </Link>
                                 </td>
                                 <td className="px-4 py-2 border text-center">
