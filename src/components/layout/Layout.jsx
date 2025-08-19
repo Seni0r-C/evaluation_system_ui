@@ -171,10 +171,10 @@ const Layout = ({ children }) => {
             <div className="relative">
                 {/* Contenedor principal que incluye la barra lateral y el contenido */}
                 <div
-                    className={`flex flex-grow overflow-hidden transition-all duration-300 ease-in-out pt-16`}
+                    className={`flex flex-grow overflow-hidden transition-all duration-300 ease-in-out pt-12`}
                 >
                     <div
-                        onClick={() => setSidebarVisible(false)} // Cierra el menú al hacer clic
+                        onClick={() => toggleSidebar()} // Cierra el menú al hacer clic
                         className={`md:hidden fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300 ease-in-out z-10 ${isSidebarVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
                             }`}
                     ></div>

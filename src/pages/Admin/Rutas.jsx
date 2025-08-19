@@ -105,63 +105,64 @@ const AdminRutas = () => {
             <section className="mb-8">
                 <h2 className="text-xl font-semibold mb-2">Rutas</h2>
 
-                <table className="table-auto w-full border border-gray-300">
-                    <thead>
-                        <tr>
-                            <th className="px-4 py-2 border">ID</th>
-                            <th className="px-4 py-2 border">Ruta</th>
-                            <th className="px-4 py-2 border">En Base de Datos</th>
-                            <th className="px-4 py-2 border">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {rutasConEstado.sort((a, b) => {
-                            if (a.id == null) return 1; // Si a no tiene id, va al final
-                            if (b.id == null) return -1; // Si b no tiene id, va al final
-                            return a.id - b.id; // Orden normal por id
-                        }).map((ruta, index) => (
-                            <tr key={index} className="hover:bg-gray-100">
-                                <td className="px-4 py-2 border text-center">{ruta.id}</td>
-                                <td className="px-4 py-2 border">
-                                    <Link to={ruta.path} className="text-blue-500 hover:underline">
-                                        {ruta.path.replace(baseRoute, '/') || '/'}
-                                    </Link>
-                                </td>
-                                <td className="px-4 py-2 border text-center">
-                                    {ruta.enBaseDatos ? "Sí" : "No"}
-                                </td>
-                                <td className="px-4 py-2 border text-center">
-                                    {ruta.enBaseDatos ? (
-                                        <>
-                                            <button className="bg-blue-500 text-white px-2 py-1 rounded mr-2"
-                                                onClick={() => {
-                                                    handleRutaClick(ruta);
-                                                }}>
-                                                Permisos
-                                            </button>
-                                            <button
-                                                className="bg-red-500 text-white px-2 py-1 rounded"
-                                                onClick={() =>
-                                                    eliminarRutaDB(ruta.id)
-                                                }
-                                            >
-                                                Eliminar
-                                            </button>
-                                        </>
-
-                                    ) : (
-                                        <button
-                                            className="bg-green-500 text-white px-2 py-1 rounded"
-                                            onClick={() => agregarRutaDB(ruta.path)}
-                                        >
-                                            Agregar
-                                        </button>
-                                    )}
-                                </td>
+                <div className="overflow-x-auto">
+                    <table className="table-auto w-full border border-gray-300 text-sm sm:text-base">
+                        <thead>
+                            <tr>
+                                <th className="px-2 py-2 sm:px-4 border">ID</th>
+                                <th className="px-2 py-2 sm:px-4 border">Ruta</th>
+                                <th className="px-2 py-2 sm:px-4 border">En BD</th>
+                                <th className="px-2 py-2 sm:px-4 border">Acciones</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {rutasConEstado
+                                .sort((a, b) => {
+                                    if (a.id == null) return 1;
+                                    if (b.id == null) return -1;
+                                    return a.id - b.id;
+                                })
+                                .map((ruta, index) => (
+                                    <tr key={index} className="hover:bg-gray-100">
+                                        <td className="px-2 py-2 sm:px-4 border text-center">{ruta.id}</td>
+                                        <td className="px-2 py-2 sm:px-4 border">
+                                            <Link to={ruta.path} className="text-blue-500 hover:underline">
+                                                {ruta.path.replace(baseRoute, "/") || "/"}
+                                            </Link>
+                                        </td>
+                                        <td className="px-2 py-2 sm:px-4 border text-center">
+                                            {ruta.enBaseDatos ? "Sí" : "No"}
+                                        </td>
+                                        <td className="px-2 py-2 sm:px-4 border text-center space-y-1 sm:space-y-0 sm:space-x-2 flex flex-col sm:flex-row justify-center">
+                                            {ruta.enBaseDatos ? (
+                                                <>
+                                                    <button
+                                                        className="bg-blue-500 text-white px-2 py-1 rounded"
+                                                        onClick={() => handleRutaClick(ruta)}
+                                                    >
+                                                        Permisos
+                                                    </button>
+                                                    <button
+                                                        className="bg-red-500 text-white px-2 py-1 rounded"
+                                                        onClick={() => eliminarRutaDB(ruta.id)}
+                                                    >
+                                                        Eliminar
+                                                    </button>
+                                                </>
+                                            ) : (
+                                                <button
+                                                    className="bg-green-500 text-white px-2 py-1 rounded"
+                                                    onClick={() => agregarRutaDB(ruta.path)}
+                                                >
+                                                    Agregar
+                                                </button>
+                                            )}
+                                        </td>
+                                    </tr>
+                                ))}
+                        </tbody>
+                    </table>
+                </div>
             </section>
 
             {showRolesModal && (
