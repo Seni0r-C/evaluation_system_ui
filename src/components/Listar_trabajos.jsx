@@ -123,7 +123,9 @@ const CustomTrabajoTitulacionListar = ({
         :
         (<FiltroTrabajoTitulacion key={`filtro-${user.id}`} {...{ filters, onFilterChange: handleFilterChange, carreras, modalidades, verTodo, user }} />)
       }
-      <ListaTrabajosTitulacion key={`trabajos-${user.id}`} trabajos={trabajos} user={user} permisosAcciones={permisosAcciones} />
+      <div className="overflow-x-auto max-w-[85svw]">
+        <ListaTrabajosTitulacion key={`trabajos-${user.id}`} trabajos={trabajos} user={user} permisosAcciones={permisosAcciones} />
+      </div>
       <Paginacion {...{ page, total, limit, onPageChange: setPage, onLimitChange: (e) => setLimit(e.target.value) }} />
     </div>
   );

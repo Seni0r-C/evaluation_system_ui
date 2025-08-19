@@ -21,7 +21,7 @@ const TrabajosTable = ({ trabajos, permisosAcciones, user }) => {
                 {trabajos.length > 0 ? (
                     trabajos.map((trabajo) => {
                         const columns = [
-                            trabajo.titulo,
+                            trabajo.titulo.trim().length > 60 ? `${trabajo.titulo.trim().substring(0, 60)}...` : trabajo.titulo,
                             capitalizeWords(trabajo.carrera),
                             trabajo.modalidad,
                             <EstadoTrabajo estado={trabajo.estado} estado_id={trabajo.estado_id} key={trabajo.id} />,
