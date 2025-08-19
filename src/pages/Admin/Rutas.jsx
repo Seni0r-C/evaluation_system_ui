@@ -3,6 +3,7 @@ import axiosInstance from '../../services/axiosConfig';
 import { routes } from '../../routes/routes';
 import GenericModal from '../../components/modal/GenericModal';
 import { Link } from 'react-router-dom';
+import { baseRoute } from '../../utils/constants';
 
 const AdminRutas = () => {
     const [roles, setRoles] = useState([]);
@@ -56,8 +57,10 @@ const AdminRutas = () => {
         fetchRutasRol();
     }, []);
 
+    const rutasExcluidas = [baseRoute + 'login', baseRoute, baseRoute + 'profile', '*', baseRoute + 'rutas'];
+
     const rutasConEstado = routes
-        .filter((ruta) => !['/login', '/', '/profile', "*", "/rutas"].includes(ruta.path)) // Filtra las rutas que no quieres mostrar
+        .filter((ruta) => !rutasExcluidas.includes(ruta.path))
         .map((ruta) => ({
             ...ruta,
             enBaseDatos: rutas.some((r) => r.ruta === ruta.path),
